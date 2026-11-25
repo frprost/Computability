@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>The Church-Turing thesis · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html" aria-current="page"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>The Church-Turing thesis</h1>
+<p class="chapo">A claim that is not a theorem and cannot be one: the functions computable by an effective procedure are exactly the functions computable by a Turing machine.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="equivalence.html">Equivalence of the models</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#enonce-de-la-these">Statement of the thesis</a></li><li><a href="#raisonner-par-la-these-de-church">Reasoning “by Church’s thesis”</a></li><li><a href="#variantes-et-extensions">Variants and extensions</a></li><li><a href="#ce-que-la-these-ne-dit-pas">What the thesis does not say</a></li></ol></nav>
+
+
+<h2 id="enonce-de-la-these">Statement of the thesis</h2>
+
+<div class="resultat theoreme" id="these"><div class="entete-res"><div class="type">Thesis</div><div class="nom">Church-Turing thesis</div></div>
+<div class="enonce"><p>A function from $\N^n$ to $\N$ is computable by an effective procedure (a mechanical, unambiguous method, which can be carried out with paper and pencil in finitely many steps, without intuition or ingenuity) if and only if it is Turing-computable, that is, recursive, that is, λ-definable.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>It is not a theorem: the left-hand side, “computable by an effective procedure”, is an intuitive notion, which has no mathematical definition. The thesis proposes to <em>identify</em> this intuitive notion with a precise one, as physics identifies the intuitive notion of heat with a measurable quantity. It can be supported, challenged, perhaps refuted by a counterexample, but not proved.</p>
+<p>It is nevertheless accepted almost unanimously, for three reasons:</p>
+<ul>
+<li><strong>convergence</strong>: all the definitions proposed, born of very different ideas (Turing machines, λ-calculus, recursive functions, Post systems, register machines, cellular automata, programming languages), give the same class of functions;</li>
+<li><strong>Turing’s analysis</strong>: his 1936 paper does not merely propose a model, it analyses what a human computer does (attention limited to a bounded number of symbols, finitely many states of mind, elementary actions) and shows that this behaviour reduces to a machine;</li>
+<li><strong>the absence of a counterexample</strong>: since 1936, no intuitively computable function has escaped Turing machines.</li>
+</ul>
+<p>Gödel, at first sceptical of Church’s proposal based on the λ-calculus, was convinced by Turing’s analysis; he wrote in 1964 that, thanks to it, one had a “precise and unquestionably adequate” definition of the notion of mechanical procedure.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>One direction is a theorem in the sense that nobody disputes it: every Turing-computable function is effectively computable (a Turing machine <em>is</em> an effective procedure). The other direction is the thesis proper.</p>
+<p>The mathematician Robin Gandy (1980) proposed an analysis of <em>machines</em> (no longer of humans) that compute discretely, deterministically, with a bounded speed of propagation and parts of bounded size, and proved that everything such a machine computes is Turing-computable (<a href="#gandy">Gandy’s theorem</a>, below). Under these precise hypotheses, the thesis becomes a theorem; the question then shifts to the relevance of the hypotheses.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="gandy"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Discrete machines with local causality are Turing-computable (Gandy, 1980, in Sieg’s form)</div></div>
+<div class="enonce">
+<p>A <strong>machine with local causality</strong> is given by a finite alphabet $\Lambda$, a maximal degree $\Delta$ and two finite tables $R$ and $E$ described below. A <em>state</em> is a finite undirected graph whose vertices carry labels from $\Lambda$ and have degree at most $\Delta$, considered up to isomorphism. The <em>type</em> $\tau(v)$ of a vertex $v$ is the isomorphism class of its radius-$1$ neighbourhood (the vertex, its neighbours, their labels and the edges between them, $v$ being distinguished); there are only finitely many possible types. The table $R$ associates with each type $\tau$ a finite labelled graph $R(\tau)$ whose vertices are numbered $1,\dots,m_\tau$; the table $E$ associates with each pair of types $(\tau,\tau')$ a set $E(\tau,\tau')$ of pairs $(i,j)$ with $i\le m_\tau$, $j\le m_{\tau'}$. The <em>successor</em> $F(X)$ of a state $X$ is obtained by replacing, simultaneously, each vertex $v$ by a copy $R_v$ of $R(\tau(v))$, and by joining, for each edge $vw$ of $X$, vertex $i$ of $R_v$ to vertex $j$ of $R_w$ for $(i,j)\in E(\tau(v),\tau(w))$ (the tables are assumed such that the result still has degree at most $\Delta$, and $E(\tau',\tau)$ symmetric to $E(\tau,\tau')$). Some labels are declared <em>terminal</em>: the computation stops when a vertex carries such a label.</p>
+<p><strong>Theorem.</strong> The function $F$, read on codes of states, is recursive; consequently, every function computed by a machine with local causality (inputs and outputs encoded by states) is Turing-computable.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>Turing analysed a human computer, who acts step by step on a small part of their sheet. A machine can do much more: act in parallel everywhere at once, like a cellular automaton or a network of processors, and even grow its own structure. Gandy sought the minimal physical hypotheses under which a discrete, deterministic machine remains Turing-computable: states made of finitely many parts, a description independent of the names given to the parts, parts of bounded size, and <em>local causality</em> (what happens to a part depends only on its neighbours, because information propagates at finite speed). These are the hypotheses that the definition above makes precise.</p>
+<p>Under these hypotheses, the thesis becomes a theorem; the question shifts to their relevance. Machines that violate them are not absurd for all that: instantaneous propagation, or arbitrarily small parts, fall outside the framework, and that is where proposals for “hypercomputation” lie.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>A state is encoded by an integer: number its $N$ vertices $1,\dots,N$, and encode the list of labels and the list of edges. The same state has several codes (one per numbering); two codes represent the same state if and only if some permutation of $\{1,\dots,N\}$ maps one to the other, which is checked by trying the $N!$ permutations. It therefore suffices to compute, from a code of $X$, <em>one</em> code of $F(X)$.</p>
+<ul>
+<li><em>Types.</em> For each vertex $v$, extract the radius-$1$ neighbourhood (at most $\Delta+1$ vertices) and look, among the representatives of the types (finitely many, fixed once and for all together with the tables), for the one to which it is isomorphic by an isomorphism fixing $v$: a finite search among at most $(\Delta+1)!$ bijections.</li>
+<li><em>Replacement.</em> Number the vertices of $F(X)$ by the pairs $(v,i)$, $i\le m_{\tau(v)}$, in lexicographic order; copy the labels and internal edges of $R(\tau(v))$, then, for each edge $vw$ of $X$ and each $(i,j)\in E(\tau(v),\tau(w))$, the edge $(v,i)(w,j)$.</li>
+</ul>
+<p>Each step is a bounded loop over finite objects, from the finite tables $R$ and $E$: $F$ is primitive recursive on codes, and the result does not depend, up to isomorphism, on the numbering chosen for $X$, since the construction uses only the types and the edges. The predicate “the state with code $c$ has a terminal vertex” is primitive recursive. The computation of the machine on the initial state $X_0$ is the sequence $X_{n+1}=F(X_n)$; the “result” function is computed by minimization: search for the first $n$ such that $X_n$ is terminal, and decode the output. This is a partial recursive function, hence Turing-computable (<a href="equivalence.html#classe-calculable">equivalence of the models</a>).</p>
+<p>Cellular automata (fixed graph, $R(\tau)$ reduced to one vertex), Turing machines (the tape is a path, the head a label) and branching networks are machines with local causality. Gandy (“Church’s thesis and principles for mechanisms”, 1980) starts from more abstract hypotheses: states are hereditarily finite sets built on atoms, the dynamics commutes with permutations of the atoms, and the “principle of local causality” says that the next state is assembled from regions determined by parts of bounded size. The longest part of his paper derives from these principles a finite local description of the kind given by our tables $R$ and $E$. Sieg (2002) showed that this local description can be taken directly as an axiom, the proof of computability then becoming the one just given: this is the point of view adopted here.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="justifications"><div class="entete-res"><div class="type">Remark</div><div class="nom">Three further justifications: sociological, linguistic, historical</div></div>
+<div class="enonce"><p>Three further arguments are often put forward in support of the thesis: a <em>sociological</em> argument (for nearly a century, every new model of computation proposed has computed exactly the Turing-computable functions, or fewer if it is too weak); a <em>linguistic</em> argument (every machine must be describable by a blueprint, otherwise a “magic” part would remain unexplained, and a blueprint is a text); a <em>historical</em> argument (very old models, such as Diophantine equations, define exactly the same sets as Turing machines).</p></div>
+<div class="niveau" data-niveau="philo">
+<p>The linguistic argument deserves attention. Everything science produces, books, articles, images, videos, measurements, can be digitized, hence written as a long sequence of 0s and 1s: all scientific output could come out of a single piece of software, a text editor. Science thus finds itself embedded in a small part of itself, computer science. This is the same idea as Gödel coding, which makes formulas and proofs into mere integers (<a href="incompleteness.html">Incompleteness</a>). Consequence: the limits of computability apply to every structured discourse, hence to all sciences, and not only to computer science.</p>
+<p>The historical argument is of another nature: it says that mathematicians who were not at all trying to define computation (Diophantus, then number theory) met, without knowing it, exactly the same boundary.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>A set $A\subseteq\N$ is <strong>Diophantine</strong> if there is a polynomial $P(a,x_1,\dots,x_k)$ with integer coefficients such that $a\in A\iff\exists x_1,\dots,x_k\in\N\ P(a,x_1,\dots,x_k)=0$. Matiyasevich’s theorem (1970), the culmination of the work of Davis, Putnam and J. Robinson (MRDP theorem), says: <em>the Diophantine sets are exactly the <a href="semi-decidability.html">semi-decidable</a> sets</em>. For example $\{a\mid\exists x,y\ 47x^2+12y^3-a=0\}$ is semi-decidable: enumerate the pairs $(x,y)$ until a solution is found. This yields a negative answer to Hilbert’s tenth problem: there is no algorithm deciding whether a Diophantine equation has a solution, since there are semi-decidable sets that are not decidable. The chapter <a href="diophantine-equations.html">Diophantine equations</a> proves this theorem and explains why the coincidence of the two classes is an argument for the thesis (<a href="diophantine-equations.html#equation-universelle">universal equation</a>).</p>
+<p>The sociological argument is the “convergence” seen above. The linguistic argument rests on the <a href="motivations.html">finiteness of descriptions</a>: a program is a finite word over a finite alphabet, which suffices to show that there are only countably many computable functions.</p>
+</div>
+</div>
+
+
+<h2 id="raisonner-par-la-these-de-church">Reasoning “by Church’s thesis”</h2>
+
+<p>The practice, very widespread in computability texts, of merely describing an algorithm informally in order to conclude that a function is computable, is sometimes called “arguing by Church’s thesis”.</p>
+
+<div class="resultat theoreme" id="preuve-par-church"><div class="entete-res"><div class="type">Principle</div><div class="nom">Proofs by Church’s thesis</div></div>
+<div class="enonce"><p>To show that a function is computable, it suffices to describe an algorithm computing it, in ordinary language, provided each step can manifestly be mechanized. The thesis guarantees that one could, if one wished, write the corresponding Turing machine.</p></div>
+<div class="niveau" data-niveau="philo"><p>This is what every computer scientist does when writing an algorithm in pseudo-code: nobody writes Turing machines. The practice is sound because the path from pseudo-code to machine is long but holds no mystery, as the <a href="equivalence.html#compilateur">compiler</a> of this manual shows.</p></div>
+<div class="niveau" data-niveau="tech"><p>This is not an illegitimate logical shortcut: each appeal to the thesis can be replaced by an explicit construction, and reference works (Rogers, 1967) do so systematically in principle. The risk is real only for arguments in which the “algorithm” uses non-computable information (for example “if the program halts, then…”): the thesis does not exempt one from checking that each test is effective.</p></div>
+<div class="niveau" data-niveau="techno"><p>In this manual, the technological level replaces appeals to the thesis by actual constructions as far as possible: executable machines, reduced terms, compilation.</p></div>
+</div>
+
+<h2 id="variantes-et-extensions">Variants and extensions</h2>
+
+<div class="resultat theoreme" id="these-physique"><div class="entete-res"><div class="type">Thesis</div><div class="nom">Physical Church-Turing thesis and extended thesis</div></div>
+<div class="enonce">
+<p><strong>Physical thesis</strong>: every function computable by a physical system (not only by a human following rules) is Turing-computable. <strong>Extended</strong> (or “strong”) <strong>thesis</strong>: every physically realizable model of computation can be simulated by a Turing machine with at most a polynomial overhead in <a href="turing-machines.html#temps-p-np">time</a>.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>These versions no longer concern logic but nature. They are physical hypotheses, and they can be seriously discussed.</p>
+<ul>
+<li><strong>Quantum computing.</strong> A quantum computer computes <em>only</em> Turing-computable functions (it can be simulated, slowly, on a classical computer): it does not threaten the physical thesis. It does, however, threaten the extended thesis: Shor’s algorithm (1994) factors integers in polynomial time, and no classical algorithm that fast is known. Both points are proved or detailed in the chapter <a href="randomness-quantum.html#quantique">Randomness, approximation and quantum computing</a>.</li>
+<li><strong>Hypercomputation.</strong> Various theoretical devices would perform infinitely many steps in finite time (“accelerated” machines, special trajectories in general relativity, real values measured with infinite precision). None is realizable with known physics: they assume infinite precision, energy or stability.</li>
+<li><strong>Deutsch’s formulation.</strong> D. Deutsch (1985) proposed a strong physical version: “every finitely realizable physical system can be perfectly simulated by a universal model computing machine operating by finite means”. The word “realizable” hides a subtlety: it is easy to confuse what we know (physics, a theory) with what is (reality). Science requires its theories to be <em>correct</em> (in agreement with experiments), not to be <em>complete</em>; whether our representation of reality is complete remains an open question, and Deutsch’s thesis depends on it. This objection is developed below (<a href="#physique-vivant">physics is a text, the living is not a blueprint</a>).</li>
+<li><strong>The human mind.</strong> If the physical thesis is true and the brain is a physical system, then everything a human can compute, a machine can too. Some authors (Lucas in 1961, Penrose in 1989) have argued, from Gödel’s theorems, that the human mind surpasses machines; these arguments are overwhelmingly judged incorrect by logicians (see <a href="incompleteness.html">Incompleteness</a>).</li>
+</ul>
+</div>
+<div class="niveau" data-niveau="tech"><p>The extended thesis is the foundation of complexity theory: it gives a model-independent meaning to the class P of “feasible” problems. Its probabilistic version (BPP instead of P) is challenged by quantum computing (class BQP), if one accepts the unproved conjecture that factoring is not in BPP.</p></div>
+</div>
+
+<div class="resultat theoreme" id="physique-vivant"><div class="entete-res"><div class="type">Question</div><div class="nom">Physics is a text, the living is not a blueprint</div></div>
+<div class="enonce">
+<p>What is called “physics” is not reality but a <em>model</em> of reality. A model must be explicitly writable; physical theories are therefore finite texts, and they form a countable set. They are thereby subject to diagonal arguments: no enumerable family of predictive theories predicts all possible behaviours, nor even all computable behaviours.</p>
+<p>Deutsch’s thesis is true, almost by construction, of the systems we <em>build</em> by following a blueprint written in the language of a theory. The living did not come from a blueprint. There may be a countable way of formalizing it, but we have no proof of that; and if there is none, we will never be able to know.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p><strong>Two kinds of proof.</strong> A mathematical proof is a syntactic object: a tree whose leaves are axioms and whose nodes are inference rules, which can be checked without understanding what it says. A “proof” in physics is of another nature: it is an experimental link between a theory and the world. A statement is “proved” as long as there is an effective way of searching for counterexamples and none has been found; Newtonian mechanics is proved within its domain, which relativity later enlarged. A physical theory need not be complete, only correct where it applies. To say that Deutsch “proved” that every physical system is simulable, and to conclude that the brain is a computer, is to confuse the two senses of the word.</p>
+<p><strong>Physics is countable by construction.</strong> Setting up an experiment means writing the text that defines it; testing a theory means computing its prediction in the language of the theory and comparing it with a finite measurement. One can only speak of the experiments one knows how to describe. It is therefore not surprising that every constructed experiment obeys the Church-Turing-Deutsch principle: the principle describes the limits of the language in which the experiment is conceived. These limits do not necessarily apply to the world. Requiring reality to bend to the theory is to lay it on the bed of Procrustes, the brigand of Greek mythology who stretched or amputated his guests to fit them to the length of his bed.</p>
+<p><strong>Diagonalization.</strong> Because they are texts, theories can be numbered, and everything numbered lends itself to Cantor’s diagonal. A predictive theory is a procedure that, from past observations, announces the following ones; against any enumerable list of such procedures, one builds a behaviour that contradicts the $n$-th procedure at the $n$-th observation, and that none of them predicts. The phenomenon is not merely abstract: a system that consults a prediction concerning itself and does the opposite defeats the predictor, as in the <a href="computability-ai.html#predicteur">theorem on predictors</a>, and a theory rich enough to describe itself meets <a href="incompleteness.html#godel1">incompleteness</a>. Every theory of the world, because it is written, has blind spots of this kind. The cardinality argument of the <a href="cantor.html#argument-theorie">appendix on Cantor</a> is thereby strengthened: the objection that a finite law covers uncountably many cases holds only for what the law <em>says</em>, not for what can be <em>tested</em>, since a test compares a finite computation with a measurement of finite precision.</p>
+<p><strong>The living.</strong> A brain, a cell, an organism were not built from a blueprint: they are the product of an evolutionary history, and nothing guarantees a priori that they are “finitely realizable physical systems” in Deutsch’s sense. To apply his thesis to the brain, one would first have to establish this point, and that is precisely what is missing. One may hope to do so constructively: propose a formalization, program it, and check experimentally that the program behaves like the living system. But if no countable formalization exists, no experiment will show it: one will only observe, indefinitely, that the attempts fail. This is the asymmetry of the <a href="undecidability.html#arret">halting problem</a>, already met in connection with <a href="#conscience">consciousness</a>: a success can be observed, an impossibility of this kind cannot.</p>
+<p>This argument does not say that the living escapes computation; it says that the question is open, and that one of its two sides is beyond the reach of experiment. It takes up a post by the author of this manual, “Mathematical Necessity, Nature and the bed of Procrustes” (2023), written in response to the claim that Deutsch had proved that the brain is a computer.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>The two underlying mathematical arguments are elementary; it is their physical reading that is debatable.</p>
+<p><strong>Cardinality.</strong> Fix a finite alphabet. Theories, being finite texts, form a countable set $\{T_0,T_1,\dots\}$ (enumerate the words by length and then alphabetically). Model the observable behaviour of a system by an infinite sequence of binary measurement results, $s\in\{0,1\}^{\N}$. Say that $T_i$ <em>predicts</em> $s$ if $T_i$ determines each of the $s_n$. Each theory predicts at most one sequence: $i\mapsto$ “the sequence predicted by $T_i$” is a partial function from $\N$ onto the set of predicted sequences, which is therefore countable. But $\{0,1\}^\N$ is not (<a href="cantor.html#cantor-reels">Cantor</a>). Better, for the uniform measure (independent bits, of probability $1/2$), each sequence has measure zero, hence so does the countable set of predicted sequences: a “random” sequence is predicted by no theory, with probability 1.</p>
+<p><strong>Effective diagonal.</strong> Let $(P_i)$ be an <em>enumerable</em> list of total computable predictors, where $P_i(n)\in\{0,1\}$ predicts the $n$-th observation. The sequence $d_n=1-P_n(n)$ is computable (compute $P_n$, then evaluate it at $n$), and it differs from the prediction of $P_i$ at rank $i$, for every $i$. Thus no enumerable list of total predictors covers even the <em>computable</em> behaviours: each time, one more theory is needed. This is why the total computable functions cannot be enumerated (this is the diagonal argument given for $\mathrm{Tot}$ in the <a href="undecidability.html#exemples-reductions">proof of the reductions of K</a>). If partial predictors are accepted, the list becomes enumerable (all machines), but one can no longer decide which ones answer: the diagonal turns into the halting problem.</p>
+<p><strong>What these arguments do not show.</strong> They do not show that the real world produces non-computable behaviours: it might produce only computable ones, or be observable only to finite precision, in which case every finite sequence of measurements is trivially predicted by some theory (the list of results). They show that the hypothesis “reality is described by a theory” is a restriction, and that every family of written theories lets possible behaviours escape. Whether the living falls into these blind spots is an empirical question, and we have seen that only a positive answer could be established.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="conscience"><div class="entete-res"><div class="type">Question</div><div class="nom">Is consciousness Turing-computable?</div></div>
+<div class="enonce"><p>Nobody knows whether human consciousness (or, more modestly, the behaviour of a human being) can be reproduced by a Turing machine. The two possible answers do not have the same status: a positive answer might one day be established scientifically, a negative answer could not be by the usual means of science.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>If consciousness is computable, one may hope to show it constructively: propose a theory of consciousness, program it, and check that the program behaves as the theory predicts. It is difficult, but it is an ordinary scientific approach.</p>
+<p>If it is not, how could this be proved? A scientific theory of consciousness would have to make verifiable predictions, hence be, in one way or another, an effective procedure: a machine. But a theory that was a machine completely describing consciousness would contradict the hypothesis. One therefore cannot hope to obtain a complete scientific theory of a non-computable consciousness; one could only observe, indefinitely, that the attempts fail. The question “is consciousness non-computable?” is not falsifiable in Popper’s sense, and in this sense it is not scientific.</p>
+<p>The situation recalls that of the <a href="undecidability.html#arret">halting problem</a>: that a program halts can be observed, that it never halts cannot.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>The analogy can be made precise. A statement of the form “there is a program $e$ satisfying $P$”, where $P(e)$ is decidable, is semi-decidable: a witness $e$ suffices to confirm it. Its negation, “no program satisfies $P$”, has the form $\Pi_1$ (<a href="arithmetical-hierarchy.html">arithmetical hierarchy</a>) and admits no finite certificate in general. The argument above assumes that “describing consciousness” is a property of this type, which is itself an idealization: we do not know how to formalize $P$. Note also that in mathematics negative statements are routinely proved (halting is not decidable); the asymmetry here concerns <em>experimental</em> verification, not proof.</p>
+</div>
+</div>
+
+<h2 id="ce-que-la-these-ne-dit-pas">What the thesis does not say</h2>
+<ul>
+<li>It does not say that everything is computation: it delimits what is <em>computable</em>, and the rest of the manual shows that many precise questions are not.</li>
+<li>It says nothing about efficiency (that is the extended thesis, more fragile).</li>
+<li>It concerns only functions on finite objects (integers, words). For real numbers or continuous functions, there is a theory of computability (computable analysis) with its own choices of definitions.</li>
+</ul>
+
+<nav class="nav-chap"><a href="equivalence.html"><small>← Previous</small>Equivalence of the models of computation</a><a href="universality.html" style="text-align:right"><small>Next →</small>Universal functions and enumeration</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

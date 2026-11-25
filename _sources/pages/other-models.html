@@ -1,0 +1,205 @@
+<!--
+titre: Other models of computation
+court: Other models
+chapo: Two counters, dominoes, fractions, a local rule with two states: universality emerges in systems of disconcerting simplicity. And one stack is not enough.
+prerequis: equivalence.html|Equivalence of models ; undecidability.html|Undecidability ; languages.html|Languages and grammars
+-->
+
+
+
+<h2 id="machines-a-compteurs">Counter machines</h2>
+
+<res type="Theorem" nom="Universality of two-counter machines (Minsky, 1961)" id="compteurs">
+<enonce>
+<p>A <strong>counter machine</strong> has a finite number of registers holding natural numbers and a program made of numbered instructions of two kinds: $\mathrm{INC}(r,j)$ (add 1 to register $r$, go to instruction $j$) and $\mathrm{DEC}(r,j,k)$ (if $r>0$, subtract 1 and go to $j$; otherwise go to $k$). Every computable function is computable by a counter machine, and even by a machine with <em>two</em> counters, provided the input $x$ is coded by $2^x$ and the output $y$ by $2^y$.</p>
+</enonce>
+<philo><p>Two boxes of pebbles, and all one can do is add or remove a pebble and test whether a box is empty: that is enough to compute everything. Memory need not be structured; it only needs to be unbounded.</p></philo>
+<tech>
+<p><strong>Step 1: any number of counters.</strong> A counter machine $M$ <em>computes</em> $f:\N^n\rightharpoonup\N$ if, started at instruction $1$ with $x_1,\dots,x_n$ in counters $r_1,\dots,r_n$ and $0$ in the others, it reaches the halting instruction if and only if $f(\vec x)$ is defined, and then $r_0$ contains $f(\vec x)$ (the other counters contain anything). First we program a few fragments, which are chained by replacing their “end” with the next instruction:</p>
+<ul>
+<li>$\mathrm{CLR}(r)$, which sets $r$ to zero: the instruction $\mathrm{DEC}(r,\text{itself},\text{end})$;</li>
+<li>$\mathrm{COPY}(r,s;t)$, which copies $r$ into $s$ without destroying $r$, using an auxiliary counter $t$: $\mathrm{CLR}(s)$, $\mathrm{CLR}(t)$, then while $\mathrm{DEC}(r)$ succeeds, $\mathrm{INC}(s)$ and $\mathrm{INC}(t)$; then while $\mathrm{DEC}(t)$ succeeds, $\mathrm{INC}(r)$.</li>
+</ul>
+<p>A machine uses only finitely many counters; those of a machine $G$ can be renamed so as to be distinct from all those of a given program, and we write “run $G$ on $u_1,\dots,u_p$” for the fragment that sets all counters of $G$ to zero, copies $u_1,\dots,u_p$ into its input counters, then executes $G$ with its halt replaced by a jump to what follows; it terminates if and only if $G$ halts, and the output counter of $G$ then contains the result. We then show, by induction on the <a href="recursive-functions.html#def-mu">definition of recursive functions</a>, that every recursive function is computed by a counter machine:</p>
+<ul>
+<li>base functions: $\mathrm{CLR}(r_0)$ followed by $m$ times $\mathrm{INC}(r_0)$ for the constant $m$; $\mathrm{COPY}(r_1,r_0;t)$ then $\mathrm{INC}(r_0)$ for the successor; $\mathrm{COPY}(r_i,r_0;t)$ for the projection;</li>
+<li>substitution $\sigma[g,h_1,\dots,h_k]$: run $H_1,\dots,H_k$ in turn on $\vec x$, then $G$ on their $k$ outputs, and copy the output of $G$ into $r_0$. If some $h_i(\vec x)$ is undefined, $H_i$ does not halt, and neither does the machine;</li>
+<li>recursion $\rho[g,h]$, the recursion argument being in $r_1$ and the others in $r_2,\dots$: run $G$ on $r_2,\dots$ and copy its output into a counter $a$; set $i$ to zero and copy $r_1$ into $c$; then while $\mathrm{DEC}(c)$ succeeds: run $H$ on $(i,a,r_2,\dots)$, copy its output into $a$, $\mathrm{INC}(i)$. At the end, $a$ contains $f(r_1,\dots)$ by induction on the number of rounds;</li>
+<li>minimization $\mu[g]$: set $y$ to zero; repeat: run $G$ on $(\vec x,y)$; if $\mathrm{DEC}$ of the output counter fails (the value is $0$), copy $y$ into $r_0$ and halt, otherwise $\mathrm{INC}(y)$ and start again. The machine tries $y=0,1,2,\dots$ in order, and halts only if all the values $g(\vec x,z)$, $z<y$, are defined and nonzero and $g(\vec x,y)=0$: this is the definition of $\mu$.</li>
+</ul>
+<p>Since the computable functions are the recursive functions (<a href="equivalence.html#classe-calculable">equivalence of models</a>), every computable function is computed by a counter machine. Adding a final fragment if necessary, we also assume that on halting the result is in $r_1$ and all other counters are zero (copy $r_0$ into $r_1$, then empty the others).</p>
+<p><strong>Step 2: two counters.</strong> Let $M$ be such a machine, with counters $r_1,\dots,r_k$, and $p_1=2,p_2=3,\dots,p_k$ the first $k$ primes. The contents $(c_1,\dots,c_k)$ of its counters are coded by the single number $N=p_1^{c_1}\cdots p_k^{c_k}$, stored in a counter $A$, the other counter $B$ being $0$. Each instruction of $M$ is replaced by a fragment that starts and ends with $B=0$:</p>
+<ul>
+<li>$\mathrm{INC}(r,j)$, with $p=p_r$: while $\mathrm{DEC}(A)$ succeeds, do $p$ times $\mathrm{INC}(B)$; then while $\mathrm{DEC}(B)$ succeeds, $\mathrm{INC}(A)$; go to fragment $j$. This gives $A=pN$, that is, $c_r+1$.</li>
+<li>$\mathrm{DEC}(r,j,k)$, with $p=p_r$: divide $A$ by $p$ with $p$ instructions $d_1,\dots,d_p$; $d_i$ is $\mathrm{DEC}(A,d_{i+1},R_{i-1})$, and after $d_p$ succeeds we do $\mathrm{INC}(B)$ and return to $d_1$. When a $\mathrm{DEC}$ fails at $d_i$, $B$ contains the quotient $\lfloor N/p\rfloor$ and state $R_{i-1}$ knows the remainder $\rho=i-1$. If $\rho=0$, $p$ divides $N$, so $c_r>0$: transfer $B$ into $A$, which gives $A=N/p$ ($c_r-1$), and go to fragment $j$. If $\rho>0$, then $c_r=0$: rebuild $A=pB+\rho$ ($\rho$ times $\mathrm{INC}(A)$, then while $\mathrm{DEC}(B)$ succeeds, $p$ times $\mathrm{INC}(A)$), that is, $A=N$, and go to fragment $k$.</li>
+<li>halting stays halting.</li>
+</ul>
+<p>Each fragment thus transforms the code of the configuration of $M$ before the instruction into the code of the configuration after. The resulting two-counter machine, started on $(2^x,0)$, that is, on the code of $(x,0,\dots,0)$, halts if and only if $M$ halts, and then on $(2^{f(x)},0)$. The exponential coding of inputs and outputs is indispensable: this is <a href="#schroeppel">Schroeppel’s theorem</a> below.</p>
+</tech>
+<techno>
+<p>Addition $r_0:=r_0+r_1$ with two instructions:</p>
+<pre><code>0 : DEC(r1, 1, 2)     // if r1 > 0: r1--, go to 1; otherwise end
+1 : INC(r0, 0)        // r0++, back to 0
+2 : (halt)</code></pre>
+</techno>
+</res>
+
+<res type="Theorem" nom="Two counters do not compute 2^x (Schroeppel, 1972)" id="schroeppel">
+<enonce><p>Consider a two-counter machine which, started on $(x,0)$, halts for every $x$, with $f(x)$ in its first counter, where $f$ is injective. Then there are integers $x_0\ge0$, $L\ge1$ and $G\ge0$ such that $f(x_0+kL)=f(x_0)+kG$ for every $k\ge0$. In particular, no two-counter machine computes $x\mapsto2^x$, or $x\mapsto x^2$, on the input $x$ coded directly.</p></enonce>
+<philo><p>With two counters, one of them is almost always empty when the other is large: the machine then keeps only a single number and its state in memory. On large enough, well-chosen inputs, all it can do with this number is multiply it by a fixed fraction and add a constant to it; its behaviour is “piecewise affine”. It cannot manufacture exponential growth from $x$; it has to be given it as input, in the form $2^x$.</p></philo>
+<tech>
+<p>The instructions are numbered $1,\dots,m$ and a configuration is a triple $(i,a,b)$. It is <em>null</em> if $a=0$ or $b=0$.</p>
+<p><strong>Phase lemma.</strong> For each instruction $i$, there are integers $T_i$ and $d_i\ge1$ such that one of the following two things happens for all $n\ge T_i$: (α) the computation starting from $(i,n,0)$ never reaches, after at least one step, a null configuration or a halt; (β) it reaches a first one, $C(n)$, whose instruction $i'$ does not depend on $n$, and there is $(u,v)\in\N^2$ independent of $n$ such that $C(n+d_i)=C(n)+(0,u,v)$, with $u=0$ if the first counter of $C(n)$ is zero and $v=0$ if the second is. The same holds, symmetrically, starting from $(i,0,n)$.</p>
+<p><em>Proof.</em> Start from $(i,n,0)$ with $n\ge2$. If instruction $i$ is $\mathrm{INC}(a)$, $\mathrm{DEC}(a)$ or $\mathrm{DEC}(b)$ (which fails), or the halt, the next configuration is null or halting, of the form $(i',n+c,0)$ with $c\in\{-1,0,1\}$: (β) holds with $d_i=1$ and $(u,v)=(1,0)$. There remains the case $\mathrm{INC}(b)$, which leads to $(j,n,1)$. As long as both counters stay positive, every $\mathrm{DEC}$ succeeds: the sequence of instructions $j=j_0,j_1,j_2,\dots$ depends only on $j$, and after $s$ steps the counters are $n+A(s)$ and $1+B(s)$, where $A(s)$ and $B(s)$ do not depend on $n$ and satisfy $|A(s)|\le s$. If this sequence reaches the halt, let $s_h$ be the step at which this happens; if $1+B(s)$ vanishes, let $s_b$ be the first step at which this happens. These numbers do not depend on $n$.</p>
+<ul>
+<li>If $s_h$ or $s_b$ exists, let $s^*$ be the smaller of the two. For $n>s^*$, counter $a$ has not vanished before $s^*$, so $C(n)$ is the configuration at step $s^*$, $(j_{s^*},n+A(s^*),1+B(s^*))$: (β) with $d_i=1$, $(u,v)=(1,0)$.</li>
+<li>Otherwise the sequence $(j_s)$ is infinite and, having only $m$ possible values, it is eventually periodic: there are $p$ and $\ell\ge1$ such that $j_{s+\ell}=j_s$ for $s\ge p$. The variations of the counters over one period are therefore constant: $A(s+\ell)=A(s)+A_c$ and $B(s+\ell)=B(s)+B_c$ for $s\ge p$. Since $1+B(s)$ never vanishes, $B_c\ge0$. If $A_c\ge0$, then $A(s)\ge-(p+\ell)$ for all $s$, and for $n>p+\ell$ counter $a$ never vanishes either: this is (α). If $A_c<0$, set $d_i=-A_c$, and take $n>p+\ell$; let $h(n)$ be the first step at which $n+A(s)=0$ (it exists, since $A(s)\to-\infty$), so that $h(n)\ge p+\ell$. For $n'=n+d_i$: at steps $s<p+\ell$, $n'+A(s)\ge n'-(p+\ell)>0$; at steps $s+\ell$ with $s\ge p$, $n'+A(s+\ell)=n+A(s)$. The first zero of $a$ for $n'$ is therefore at step $h(n)+\ell$, with the same instruction $j_{h(n)+\ell}=j_{h(n)}$, and $b$ there equals $1+B(h(n))+B_c$. This is (β) with $(u,v)=(0,B_c)$.</li>
+</ul>
+<p>Take $T_i$ larger than $2$, $s^*$ and $p+\ell$. By induction, $C(n+t\,d_i)=C(n)+t\,(0,u,v)$ for all $t\ge0$. $\square$</p>
+<p><strong>Proof of the theorem.</strong> Let $D$ be a common multiple of all the $d_i$ (for both sides) and $T$ the largest of the $T_i$. Call <em>small</em> a null configuration both of whose counters are $<T$; there are finitely many. If the computation starting from $(1,x,0)$ passes through a small configuration, the rest of the computation, hence $f(x)$, is determined by that configuration: these $x$ have only finitely many values $f(x)$, and since $f$ is injective, there are finitely many of them. Choose $x_0\ge T$ whose computation passes through no small configuration. This computation halts; write $C_0=(1,x_0,0)$, then $C_1,\dots,C_N$ for its successive null configurations, and $C_{N+1}$ for its halting configuration. Each $C_j$, $j\le N$, has one zero counter and the other, written $n_j$, at least $T$; and $C_{j+1}$ is the first null or halting configuration following $C_j$.</p>
+<p>Set $L=D^{N+2}$ and $x_k=x_0+kL$. We show by induction on $j\le N+1$ that the $j$-th null (or halting) configuration of the computation starting from $x_k$ is $C_j+k\,g_j\,e_j$, where $e_j$ is a fixed vector with nonnegative integer coordinates, zero on the zero counter of $C_j$, and $g_j$ is an integer divisible by $D^{N+2-j}$. For $j=0$, $g_0=L$ and $e_0=(0,1,0)$. If it holds for $j\le N$, the nonzero value $n_j+kg_j$ is $\ge T$, and $kg_j$ is a multiple of $d_{i_j}$; the phase lemma, applied $kg_j/d_{i_j}$ times, gives the next configuration $C_{j+1}+k\,(g_j/d_{i_j})\,(0,u,v)$, and $g_j/d_{i_j}$ is divisible by $D^{N+1-j}$. For $j=N+1$, we get that the computation starting from $x_k$ halts, with first counter equal to $f(x_0)+kG$, where $G\ge0$ does not depend on $k$.</p>
+<p>For $f(x)=2^x$, we would have $2^{x_0+2L}-2^{x_0}=2\,(2^{x_0+L}-2^{x_0})$, that is, $(2^L-1)^2=0$, impossible for $L\ge1$. For $f(x)=x^2$, we would have $4x_0L+4L^2=4x_0L+2L^2$, impossible too. Schroeppel gave the first result of this type in 1972; the proof above shows more generally that the sequence $k\mapsto f(x_0+kL)$ is affine.</p>
+</tech>
+</res>
+
+<h2 id="automates-a-pile">Pushdown automata</h2>
+
+<res type="Proposition" nom="One stack is not enough, two stacks are" id="piles">
+<enonce><p>Automata with one stack (a finite automaton equipped with a stack) recognize exactly the context-free languages; they are not universal: for example the language $\{a^nb^nc^n:n\ge0\}$, obviously decidable, is recognized by no pushdown automaton. On the other hand, a finite automaton equipped with <em>two</em> stacks simulates a Turing machine.</p></enonce>
+<philo><p>A stack is a memory of which only the top is visible: it can be used to check brackets, not to compare three quantities. Two stacks back to back form a Turing tape: the head sits between the two tops. The frontier of universality runs between “one” and “two”.</p></philo>
+<tech><p>Simulating a tape with two stacks: the left stack holds the cells to the left of the head (top = neighbouring cell), the right stack the cell being read and the following ones. A move to the right pops on the right and pushes on the left. One-stack automata accept exactly the context-free languages (<a href="languages.html#automates-pile">proof</a>), and the <a href="languages.html#lemme-etoile">pumping lemma</a> shows that $a^nb^nc^n$ is not context-free. Problems about pushdown automata remain partly decidable (emptiness of a context-free language is <a href="languages.html#decidables-grammaires">decidable</a>), but the <em>equivalence</em> of two nondeterministic pushdown automata, or the universality of a grammar, are <a href="languages.html#indecidables-2">undecidable</a> (one passes effectively from grammars to automata and back).</p></tech>
+</res>
+
+<h2 id="probleme-de-correspondance-de-post">Post’s correspondence problem</h2>
+
+<res type="Theorem" nom="Undecidability of Post’s correspondence problem (1946)" id="pcp">
+<enonce>
+<p>An <strong>instance</strong> is a finite list of dominoes $\frac{u_1}{v_1},\dots,\frac{u_k}{v_k}$, where the $u_i,v_i$ are words. A <strong>solution</strong> is a nonempty sequence of indices $i_1,\dots,i_m$ (repetitions allowed) such that $u_{i_1}\cdots u_{i_m}=v_{i_1}\cdots v_{i_m}$. There is no algorithm that decides whether an instance has a solution.</p>
+</enonce>
+<philo><p>A domino game a child understands, and no program can say in general whether it has a solution. Post’s problem is the favourite tool for proving the undecidability of questions about grammars and languages, because it speaks only of words. It is also used to prove the undecidability of questions about <a href="undecidable-mathematics.html#matrices-post">matrix products</a>.</p></philo>
+<tech><p>The complete proof is given in the chapter <a href="languages.html#post-langages">Languages and grammars</a>: one reduces the word problem of a semi-Thue system, itself undecidable by a reduction from halting, to the modified Post problem (whose solution must start with a prescribed domino), then the latter to Post’s problem. The dominoes are designed so that the only way to make top and bottom equal is to write, on top, the sequence of words of a derivation, the bottom always being one word ahead; catching up is possible only if the derivation reaches the target word. The problem is semi-decidable (try all sequences by increasing length), hence $\Sigma_1$-complete. It is decidable for two dominoes, undecidable from five on (Neary, 2015).</p></tech>
+<techno>
+<p>Example: dominoes $\frac{a}{baa}$, $\frac{ab}{aa}$, $\frac{bba}{bb}$. The sequence $3,2,3,1$ gives on top $bba\cdot ab\cdot bba\cdot a=bbaabbbaa$ and on the bottom $bb\cdot aa\cdot bb\cdot baa=bbaabbbaa$: it is a solution.</p>
+</techno>
+</res>
+
+<h2 id="diophantiennes">Diophantine equations</h2>
+
+<p>Polynomial equations with integer coefficients also form a universal model of computation: a set is semi-decidable if and only if it is the set of parameters for which an equation has an integer solution. This result, the Matiyasevich-Robinson-Davis-Putnam theorem, and its consequences in arithmetic have their own chapter: <a href="diophantine-equations.html">Diophantine equations</a>.</p>
+
+<h2 id="systemes-multiplicatifs-fractran">Multiplicative systems: FRACTRAN</h2>
+
+<res type="Theorem" nom="Universality of FRACTRAN (Conway, 1987)" id="fractran">
+<enonce><p>A FRACTRAN program is a finite list of fractions $f_1,\dots,f_k$. Starting from an integer $n$, find the first fraction $f_i$ such that $n f_i$ is an integer, replace $n$ by $nf_i$, and start again; stop if none works. This model is universal: for every computable function $f$, there is a program and a prime $q$ such that, starting from $q\,2^x$, the program halts if and only if $f(x)$ is defined, and then on $3^{f(x)}$.</p></enonce>
+<philo><p>A program is a list of fractions; computing is multiplying. The strangest and most frugal language imaginable, and yet it computes everything computable. John Conway even wrote a fourteen-fraction program (PRIMEGAME) that generates the primes. A FRACTRAN program is also a generalized Collatz function, which makes these iterations <a href="undecidable-mathematics.html#collatz-generalise">undecidable</a>.</p></philo>
+<tech>
+<p>Let $f$ be a computable function and $M$ a counter machine that computes it in the sense of step 1 of <a href="#compteurs">Minsky’s theorem</a> (input in $r_1$; on halting, result in $r_0$ and other counters zero, emptying them if necessary). We also assume that no instruction jumps to itself: if needed, such an instruction $i$ is replaced by a detour through two new instructions, $\mathrm{INC}(t,i^*)$ and $i^*:\mathrm{DEC}(t,i,i)$, on an unused counter $t$.</p>
+<p>Associate a prime $p_r$ with each counter $r_r$, with $p_1=2$ and $p_0=3$ (here the index is that of the counter, not the rank of the prime), and a prime $q_i$ with each instruction, all distinct. The configuration “instruction $i$, counters $c_r$” is coded by $n=q_i\prod_rp_r^{c_r}$. The FRACTRAN program contains, for each instruction $i$:</p>
+<ul>
+<li>if $i$ is $\mathrm{INC}(r,j)$: the fraction $\dfrac{q_jp_r}{q_i}$;</li>
+<li>if $i$ is $\mathrm{DEC}(r,j,k)$: the fraction $\dfrac{q_j}{q_ip_r}$, then, further down the list, $\dfrac{q_k}{q_i}$;</li>
+<li>if $i$ is the halt: the fraction $\dfrac1{q_i}$.</li>
+</ul>
+<p>Since $j,k\ne i$, these fractions are in lowest terms, and $nf$ is an integer if and only if the denominator of $f$ divides $n$. If $n$ codes a configuration with instruction $i$, only $q_i$ among the $q$ divides $n$, so only the fractions of instruction $i$ apply: for $\mathrm{INC}$, $n$ becomes the code of the next configuration; for $\mathrm{DEC}$, the first fraction applies if and only if $p_r$ divides $n$, that is, $c_r>0$, and gives $q_j\cdot n/(q_ip_r)$; otherwise the second gives $q_k\cdot n/q_i$. On halting, $n$ becomes $\prod_rp_r^{c_r}=3^{f(x)}$, which no fraction can multiply any more (every denominator contains a $q$). Thus, starting from $q_1\,2^x$, the program halts if and only if $f(x)$ is defined, and then on $3^{f(x)}$.</p>
+<p>Conversely, a function computed in this way by a FRACTRAN program is computable, since each step is an elementary arithmetic computation.</p>
+</tech>
+<techno><p>The one-fraction program $\left(\frac{3}{2}\right)$ computes addition: starting from $2^a3^b$, it halts on $3^{a+b}$.</p></techno>
+</res>
+
+<h2 id="automates-cellulaires">Cellular automata</h2>
+
+<res type="Definition" nom="Cellular automata, elementary automata" id="def-automate-cellulaire">
+<enonce>
+<p>A one-dimensional <strong>cellular automaton</strong> is given by a finite set of states $Q$, a radius $r\ge1$ and a <strong>local rule</strong> $f:Q^{2r+1}\to Q$. A configuration is a sequence $c\in Q^{\mathbb Z}$ (an infinite line of cells); in one step, all cells change at the same time, according to $c'_i=f(c_{i-r},\dots,c_{i+r})$. The <strong>elementary automata</strong> are those of radius $1$ on $Q=\{0,1\}$. Their rule is given by the eight values $f(1,1,1),f(1,1,0),\dots,f(0,0,0)$, read as the binary expansion of an integer between $0$ and $255$, the <em>Wolfram number</em> of the rule. Thus <strong>rule 110</strong>, $110=01101110$ in binary, is:</p>
+$$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow\\0&1&1&0&1&1&1&0\end{array}$$
+</enonce>
+<philo><p>This is the most “physical” model of computation in this chapter: no reading head, no central program, only a local rule applied everywhere at once, like the laws of physics. Von Neumann and Ulam invented it around 1950 to study machines capable of reproducing themselves. The history of a configuration is drawn line by line, time running downwards: it is a <em>space-time diagram</em>, exactly the one used for <a href="undecidable-mathematics.html#pavage-origine">tilings</a>, for the <a href="complexity.html#cook-levin">Cook-Levin theorem</a> and for the <a href="logic-and-types.html#binaire">decision problem</a>.</p></philo>
+<techno>
+<div class="ac-widget" data-regle="110" data-depart="droite" data-titre="Space-time diagram of an elementary automaton"></div>
+<p>The simulator above draws $100$ steps on a line of $160$ cells closed into a ring. A few rules to try: $110$ (localized structures that move and interact), $90$ (the Sierpinski triangle, see the <a href="#ex-am-regle90">exercise</a>), $30$ (random-looking behaviour), $184$ (a model of road traffic), $240$ (a simple shift).</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="A cellular automaton simulates a Turing machine in real time" id="ac-simule-mt">
+<enonce><p>For every Turing machine $Z$, there is a cellular automaton of radius $1$ each of whose steps performs one step of $Z$. Consequently, the question “starting from this finite configuration (surrounded by blank cells), will the automaton make such-and-such a state appear?” is undecidable for some automata. Conversely, the evolution of a cellular automaton from a finite configuration can be computed by a Turing machine.</p></enonce>
+<philo><p>The two models simulate each other: a cellular automaton is nothing but a Turing machine in which each cell would be its own processor. It computes no more functions, but it can be faster for some tasks, since all the cells work in parallel. The simulation below is the exact analogue, for a local rule repeated in time, of the set of Wang tiles used to prove the undecidability of <a href="undecidable-mathematics.html#pavage-origine">tiling with an origin tile</a>.</p></philo>
+<tech><p>Take as states of the automaton the symbols $s$ of $Z$ and the pairs $(q,s)$ (“the head, in state $q$, is on this cell, which contains $s$”). The initial configuration carries $(q_0,\text{blank})$ in one cell and blanks elsewhere. The local rule $f(g,c,d)$ is as follows. If $c=(q,s)$ and $Z$ has the transition “write $s'$, go to state $q'$, move”, then the new value is $s'$ (the head leaves); if $q$ is a halting state, the cell keeps the value $(q,s)$. If $c=s$ is a symbol and the left neighbour $g=(q,t)$ has a rightward transition with target state $q'$, the new value is $(q',s)$ (the head arrives); likewise with the right neighbour for a leftward transition. Otherwise $c$ does not change. Since there is only one head, these cases do not overlap, and the configuration at time $t$ is exactly that of $Z$ after $t$ steps. The state $(q_{\text{halt}},s)$ appears if and only if $Z$ halts: conclude by the <a href="undecidability.html#arret">undecidability of halting</a>. For the converse, a finite configuration stays finite (it grows by at most $r$ cells on each side at each step), and the rule is applied cell by cell.</p></tech>
+<techno><p>The program <a href="assets/code/automates.py">automates.py</a> builds this local rule for a 3-state Radó machine, and checks that the automaton and the machine have the same configuration after each of the first 20 steps; the machine halts at step 14 with six symbols $1$, the value of <a href="busy-beavers.html#valeurs-bb">Σ(3)</a>.</p></techno>
+</res>
+
+<res type="Theorem" nom="Rule 110 is universal (Cook, 2004)" id="regle-110">
+<enonce><p>The elementary automaton 110 is universal: for every Turing machine and every input, there is a configuration of rule 110, made of a finite pattern placed on a periodic background, whose evolution simulates the computation of the machine. (Result quoted for information, conjectured by Wolfram in 1985 and proved by Matthew Cook, whose proof was published in 2004.)</p></enonce>
+<philo>
+<p>Two states, three neighbours, eight cases: it is hard to imagine a simpler rule, and yet it computes everything computable. Rule 110 joins the list of universal systems with almost no structure: <a href="#compteurs">two-counter machines</a>, <a href="#fractran">FRACTRAN</a>, Diophantine equations, the <a href="undecidable-mathematics.html#groupes-topologie">Game of Life</a>. As with them, universality implies the undecidability of simple questions about the evolution of the rule from a given configuration.</p>
+<p>The proof does not go directly through Turing machines. In the diagram of rule 110, localized structures, “spaceships”, move at different speeds on a periodic background and collide. Cook showed that by arranging these spaceships suitably, their collisions simulate a <em>cyclic tag system</em>, a variant of <a href="languages.html#systemes-normaux">Post systems</a>, which is itself universal.</p>
+</philo>
+<tech><p>Two clarifications, quoted for information. First, the initial configuration is not finite in the sense of the <a href="#ac-simule-mt">previous theorem</a>: an infinite periodic background is needed, and even a periodic repetition of one pattern on the right and another on the left; it is a computable configuration, but not one with finite support. Second, Cook’s simulation was exponentially slow; Neary and Woods (2006) made it polynomial, which shows that predicting the evolution of rule 110 is a $\mathsf P$-complete problem. Rule 110 has also been used to build very small universal Turing machines.</p></tech>
+</res>
+
+<res type="Remark" nom="Wolfram’s classification and undecidability in automata" id="classification-wolfram">
+<enonce>
+<p>Results quoted for information.</p>
+<ul>
+<li><strong>Wolfram’s classification (1984).</strong> Wolfram classified automata, according to their observed behaviour from random configurations, into four classes: (I) evolution towards a homogeneous configuration; (II) stable or periodic structures; (III) chaotic, random-looking behaviour (rule 30); (IV) complex localized structures that interact (rule 110, Game of Life). He conjectured that class IV automata are capable of universal computation. This classification is empirical: once formalized, membership of an automaton in a class is undecidable (Culik and Yu, 1988). See the references of Wolfram and of Culik and Yu in the <a href="bibliography.html#automates-cellulaires-biblio">bibliography</a>.</li>
+<li><strong>Global properties.</strong> Whether a one-dimensional automaton is reversible (its global function is bijective) is decidable (Amoroso and Patt, 1972), but it is undecidable in dimension 2 (Kari, 1990). Whether every configuration eventually becomes uniform (nilpotency) is undecidable already in dimension 1 (Kari, 1992).</li>
+<li><strong>Gardens of Eden.</strong> A configuration is a <em>Garden of Eden</em> if it has no predecessor: it can only occur at the start. By the Moore-Myhill theorem (1962–1963), an automaton has Gardens of Eden if and only if there are two distinct configurations, differing on only finitely many cells, that have the same image. The Game of Life has Gardens of Eden. Their existence is decidable in dimension 1 and undecidable in dimension 2 (Kari).</li>
+</ul>
+</enonce>
+<philo><p>The frontier between dimension 1 and dimension 2 recalls the one in <a href="logic-and-types.html#binaire">logic</a> between unary and binary relations, and that of tilings: a line can be analysed by finite automata, a plane can contain a space-time diagram, hence a computation. For questions about behaviour from a given configuration, on the contrary, one dimension already suffices for undecidability, since time provides the second.</p></philo>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Adding with counters" id="ex-am-addition">
+<p>Write a <a href="#compteurs">counter machine</a> program that adds the contents of register 2 to register 1 (and empties register 2).</p>
+<corrige>
+<p>Instruction 0: $\mathrm{DEC}(2,1,2)$; instruction 1: $\mathrm{INC}(1,0)$. There is no instruction 2: going there halts the machine. As long as register 2 is nonzero, it is decremented and register 1 is incremented; when it is empty, $\mathrm{DEC}$ sends to instruction 2 and the machine halts with $r_1+r_2$ in register 1. The program takes $2r_2+1$ steps.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Multiplying with counters" id="ex-am-multiplication">
+<p>Write a program that puts $r_1\times r_2$ in register 3, starting from $r_3=r_4=0$. Register 4 may be used as auxiliary memory to restore $r_2$.</p>
+<corrige>
+$$\begin{aligned}
+&0:\ \mathrm{DEC}(1,1,9) &&1:\ \mathrm{DEC}(2,2,4) &&2:\ \mathrm{INC}(3,3)\\
+&3:\ \mathrm{INC}(4,1) &&4:\ \mathrm{DEC}(4,5,0) &&5:\ \mathrm{INC}(2,4)
+\end{aligned}$$
+<p>For each unit removed from $r_1$ (instruction 0), the loop 1-2-3 transfers $r_2$ into $r_4$ while adding as much to $r_3$; then the loop 4-5 puts $r_4$ back into $r_2$ and returns to 0. When $r_1$ is empty, instruction 0 sends to 9, which does not exist: halt, with $r_3=r_1r_2$ and $r_2$ intact. A simulation on $r_1,r_2\in\{0,\dots,3\}$ confirms it. The number of steps is of the order of $4r_1r_2$: counter machines compute everything, but slowly, since they only know unary.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="A FRACTRAN program for multiplication" id="ex-am-fractran">
+<p>Show that the FRACTRAN program $\frac{455}{33},\frac{11}{13},\frac1{11},\frac37,\frac{11}2,\frac13$, started on $2^a3^b$, halts on $5^{ab}$.</p>
+<corrige>
+<p>Read an integer $2^{r_2}3^{r_3}5^{r_5}7^{r_7}11^{r_{11}}13^{r_{13}}$ as a register state, the small primes $7$, $11$, $13$ playing the role of control states. Multiplying by $\frac{455}{33}=\frac{5\cdot7\cdot13}{3\cdot11}$ requires $r_3\ge1$ and $r_{11}\ge1$: it removes 1 from $r_3$, adds 1 to $r_5$ and $r_7$, and moves from state 11 to state 13. Then $\frac{11}{13}$ returns to state 11. As long as $r_{11}=1$ and $r_3>0$, these two fractions alternate: they transfer $r_3$ to $r_5$ (the product) and to $r_7$ (a copy). When $r_3=0$, $\frac1{11}$ leaves state 11; then $\frac37$ (the first applicable fraction) copies $r_7$ back into $r_3$. When $r_7=0$, $\frac{11}2$ removes 1 from $r_2$ and restarts state 11. Thus each unit of $r_2=a$ adds $r_3=b$ to $r_5$. When $r_2=0$, only $\frac13$ still applies and empties $r_3$. What remains is $5^{ab}$. The simulation on $a,b\le3$ does give $5^{ab}$. The order of the fractions is essential: it is what codes the tests.</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Running rule 110 by hand" id="ex-am-regle110">
+<p>Starting from a single black cell ($\cdots000\,1\,000\cdots$), compute the next three lines of <a href="#def-automate-cellulaire">rule 110</a>. In which direction does the pattern grow?</p>
+<corrige>
+<p>Only the cells whose neighbourhood contains the $1$ can change. The cell to the left of the $1$ sees $001\mapsto1$, the cell of the $1$ sees $010\mapsto1$, the one on the right sees $100\mapsto0$. Line 1: $11$ (the initial cell and its left neighbour). Line 2: $111$. Line 3: $1101$. The pattern grows to the left, one cell per step, and stays bounded on the right by the starting cell; the simulator in the text, started with “one cell on the right”, shows what follows. The program <a href="assets/code/automates.py">automates.py</a> prints the first eight lines.</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Wolfram numbers" id="ex-am-numeros">
+<p>What is the Wolfram number of the rule “each cell takes the value of its left neighbour”? And of the rule “each cell takes the exclusive or of its two neighbours”? How many elementary automata are there?</p>
+<corrige>
+<p>For the first, the new value is the first bit of the neighbourhood: $111,110,101,100\mapsto1$, the others $\mapsto0$, that is, $11110000$ in binary, $240$. The pattern shifts one cell to the right at each step. For the second, $f(g,c,d)=g\oplus d$ equals $1$ for $110,100,011,001$: $01011010$, that is, $90$. There are $2^8=256$ elementary automata, one for each function from $\{0,1\}^3$ to $\{0,1\}$.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Rule 90 and Pascal’s triangle" id="ex-am-regle90">
+<p>Show that, starting from a single black cell at position $0$, cell $j$ at time $t$ equals the binomial coefficient $\binom{t}{(t+j)/2}$ modulo $2$ if $t+j$ is even and $|j|\le t$, and $0$ otherwise. What figure is obtained?</p>
+<corrige>
+<p>By induction on $t$. At time $0$, only cell $0$ equals $1=\binom00$. Assume the formula holds at time $t$; rule 90 gives $c_{t+1}(j)=c_t(j-1)\oplus c_t(j+1)$. If $t+1+j$ is odd, so are $t+(j-1)$ and $t+(j+1)$, both terms are zero, and $c_{t+1}(j)=0$. Otherwise, set $k=(t+1+j)/2$: then $c_t(j-1)\equiv\binom t{k-1}$ and $c_t(j+1)\equiv\binom tk$ modulo $2$ (with the convention $\binom tk=0$ outside $0\le k\le t$), and the exclusive or is the sum modulo $2$. Pascal’s rule $\binom t{k-1}+\binom tk=\binom{t+1}k$ gives the result. One obtains Pascal’s triangle modulo $2$, that is, the Sierpinski triangle, a fractal figure. The program <a href="assets/code/automates.py">automates.py</a> checks it on 32 lines.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="Deciding whether a configuration dies out" id="ex-am-extinction">
+<p>Show that there is no algorithm which, given a one-dimensional cellular automaton with a “blank” state $b$ (with $f(b,b,b)=b$) and a finite configuration, decides whether the configuration eventually becomes entirely blank. One may modify the construction of the <a href="#ac-simule-mt">simulation theorem</a>.</p>
+<corrige>
+<p>Start from the automaton that simulates a machine $Z$ from the blank tape, and modify it in three ways. (1) The cells the head has already visited are <em>marked</em> (the states are doubled: $s$ and $\bar s$); the marked region is an interval, since the head moves one cell at a time, and it contains all the non-blank cells. The “blank” of the automaton is the unmarked blank $b$. (2) A cell $(q_{\text{halt}},s)$ becomes a state $\varepsilon$, which emits two erasing signals $\varepsilon_L$ and $\varepsilon_R$ into its two neighbours if they are marked, then becomes $b$. (3) A signal $\varepsilon_R$ becomes $b$ at the next step and passes to its right neighbour if that neighbour is marked; likewise for $\varepsilon_L$ to the left. The signals sweep the marked interval leaving blank behind them and vanish at its edges. As long as $Z$ has not halted, the configuration contains the head, so is not blank; if $Z$ halts, everything becomes blank in finitely many steps. The configuration therefore dies out if and only if $Z$ halts on the blank tape, which is undecidable. Result quoted for information: the stronger question “does <em>every</em> configuration eventually become blank?” (nilpotency) is also undecidable (Kari, 1992), but its proof is much harder, since all configurations must be controlled, including those that code no computation.</p>
+</corrige>
+</exo>

@@ -1,0 +1,367 @@
+<!--
+titre: Undecidability in formal language theory
+court: Languages and grammars
+chapo: Rewriting words according to fixed rules is what grammars, formal systems and compilers do. It is also a universal model of computation, and the source of many undecidable questions about languages.
+prerequis: bases.html#mots|Words and languages ; semi-decidability.html|Semi-decidability ; undecidability.html#reduction|Reductions
+-->
+
+<p>This chapter follows part C of Christian Boitet’s lecture notes (“Applications to language theory”, itself inspired by Bernard Vauquois’s course and by Post’s work). The results obtained for integers are transposed to <em>words</em>: a set of words is decidable, or semi-decidable, if the set of their Gödel numbers is (see <a href="recursive-functions.html#godel">Gödel coding</a>).</p>
+
+<h2 id="systemes">Rewriting systems</h2>
+
+<res type="Definition" nom="Productions and combinatorial systems" id="systemes-combinatoires">
+<enonce>
+<p>Let $A$ be a finite alphabet and $\alpha,\beta\in A^+$ two nonempty words.</p>
+<ul>
+<li>The <strong>semi-Thue production</strong> $\alpha\to\beta$ rewrites $X$ into $Y$, written $X\vdash Y$, when $X=\varphi\alpha\psi$ and $Y=\varphi\beta\psi$ for words $\varphi,\psi\in A^*$: an occurrence of $\alpha$ is replaced, <em>anywhere</em> in the word.</li>
+<li>The <strong>normal production</strong> $\alpha\varphi\to\varphi\beta$ rewrites $\alpha\varphi$ into $\varphi\beta$: $\alpha$ is erased <em>at the beginning</em> of the word and $\beta$ is written <em>at the end</em>. Its inverse $\varphi\beta\to\alpha\varphi$ is called <em>antinormal</em>.</li>
+<li>A <strong>combinatorial system</strong> is a triple $\Gamma=(A,S,P)$ made of an alphabet $A$, a word $S\in A^+$ called the <em>axiom</em>, and a finite set $P$ of productions. It is <em>semi-Thue</em> if its productions are semi-Thue, <em>Thue</em> if moreover the inverse $\beta\to\alpha$ of each production is in $P$, and <em>normal</em> if its productions are normal.</li>
+<li>A <strong>proof</strong> of $Y$ in $\Gamma$ is a sequence $S=X_1\vdash X_2\vdash\cdots\vdash X_n=Y$; we then write $S\vdash^*_\Gamma Y$. The <strong>language</strong> of $\Gamma$ is the set of its “theorems”: $L(\Gamma)=\{Y\in A^*: S\vdash^*_\Gamma Y\}$.</li>
+</ul>
+</enonce>
+<philo>
+<p>A combinatorial system is a game of patience on words: one starts from an initial word and applies replacement rules, in any order. The grammars of linguists, the formal systems of logicians (axioms and inference rules) and the rewriting rules of compilers are systems of this kind. The words “proof” and “theorem” are not a metaphor: a formalized mathematical proof is exactly a proof in a well-chosen combinatorial system.</p>
+<p>As early as 1914, Axel Thue studied whether two words are equivalent under a set of reversible rules; Emil Post, in the 1920s, saw in these systems the most general form of any formal procedure. This is one of the roots of the Church-Turing thesis.</p>
+</philo>
+<tech>
+<p>A semi-Thue production $\alpha\to\beta$ is a rule of a <em>phrase-structure grammar</em> (type 0 in the Chomsky hierarchy). If $\Gamma=(A,S,P)$ is semi-Thue and $A$ is split into terminals $T$ and nonterminals $N$, the grammar $G=(T,N,S',P\cup\{S'\to S\})$ generates $L(G)=L(\Gamma)\cap T^*$.</p>
+<p>One can also consider more general productions $\varphi\alpha\psi\beta\theta\to\varphi\bar\alpha\psi\bar\beta\theta$; they add nothing essential.</p>
+</tech>
+<techno>
+<p>The semi-Thue system with alphabet $\{a,b\}$, axiom $ab$ and single production $ab\to aabb$ has language $\{a^nb^n:n\ge1\}$: a proof of $aaabbb$ is $ab\vdash aabb\vdash aaabbb$ (the second step rewrites the central $ab$). The <em>normal</em> system with axiom $ab$ and production $a\varphi\to\varphi ba$ produces $ab\vdash bba$ and then stops (no word begins with $a$ any more).</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="The language of a combinatorial system is semi-decidable" id="langage-re">
+<enonce><p>For every combinatorial system $\Gamma$, the language $L(\Gamma)$ is semi-decidable (recursively enumerable).</p></enonce>
+<philo><p>One can always <em>enumerate</em> the theorems of a formal system: it suffices to try all proofs, by increasing length. This is what a patient automated prover would do. But this enumeration does not tell us that a word is <em>not</em> a theorem: we may wait forever. The “word problem” of a system, deciding whether $Y\in L(\Gamma)$, can therefore be undecidable; this is the case for formal arithmetic (<a href="incompleteness.html#entscheidung">Church-Turing theorem</a>).</p></philo>
+<tech>
+<p>With each production $R_i$ we associate the numerical predicate $r_i(x,y)$: “$x$ and $y$ are the Gödel numbers of two words $X,Y$ with $X\vdash Y$ by $R_i$”. It is primitive recursive: it suffices to search, with quantifiers bounded by $x$ and $y$, for the Gödel numbers of $\varphi$ and $\psi$, and to check $x=\varphi*\alpha*\psi$, $y=\varphi*\beta*\psi$, where $*$ is the concatenation of codes. Then, if $s=\mathrm{gn}(S)$,</p>
+$$x\in\mathrm{gn}(L(\Gamma))\iff\exists y\ \Big[\mathrm{GN}(y)\wedge \mathrm{Id}(1,y)=s\wedge \bigwedge_{n<|y|} r\big(\mathrm{Id}(n,y),\mathrm{Id}(n+1,y)\big)\wedge \mathrm{Id}(|y|,y)=x\Big],$$
+<p>where $y$ codes the proof and $r=r_1\vee\cdots\vee r_p$. This is the projection of a recursive predicate, hence a semi-decidable set (<a href="semi-decidability.html#projection">projection theorem</a>).</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Universality of semi-Thue systems (Post, 1947)" id="semi-thue-universel">
+<enonce><p>For every semi-decidable set $W\subseteq\N$, there is a semi-Thue system $\sigma$, over an alphabet containing $1$, such that $m\in W$ if and only if the word $hq_0\overline m h$ belongs to the language of $\sigma$. More generally, every semi-decidable language $R\subseteq A^*$ has the form $L(\Gamma)\cap A^*$ for a semi-Thue system $\Gamma$ over a larger alphabet: this is the theorem stating that type-0 grammars generate exactly the recursively enumerable languages.</p></enonce>
+<philo><p>This is the converse of the previous theorem: rewriting words is a model of computation as powerful as Turing machines. A machine configuration is a word, and a computation step replaces a small piece of this word. All of computability fits into rules of the form “replace this by that”.</p></philo>
+<tech>
+<p>Let $Z$ be a Turing machine that halts exactly on the codes of the words of $R$. Instantaneous descriptions are framed by a marker $h$, and each quadruple is translated into productions that perform the same step on the word $h\,\gamma\,q_i\,S_j\,\delta\,h$ (table opposite, technological level). When $Z$ halts, “cleanup” productions erase the tape and produce a fixed word $h\,q'\,h$. The system $\mathcal C_m(Z)$ with axiom $hq_0\overline m h$ then satisfies:</p>
+<ul>
+<li>every derived word is <em>standard</em>: of the form $hWh$ with a single state symbol in $W$;</li>
+<li>each standard word has at most one consequent (the system is <em>monogenic</em>: this is the determinism of $Z$);</li>
+<li>$m\in W_z\iff hq_0\overline mh\vdash^* hq'h$.</li>
+</ul>
+<p>Finally the system is “reversed”: $\sigma(Z)=(A,\ hq'h,\ P^{-1})$, where $P^{-1}$ contains the inverses of the productions. Then $hq_0\overline mh\in L(\sigma(Z))\iff m\in W_z$: the <em>domain</em> of a machine has been turned into a generated <em>language</em>, that is, into an image.</p>
+<p>For the general form, the machine works directly on the words of $A^*$ (its symbols include the letters of $A$), with axiom $hq_0wh$; the reversed system generates the words $hq_0wh$ for $w\in R$. Two control letters are then added, together with productions which, starting from $hq_0$, move across the word a marker that erases $h$, $q_0$ and the final $h$, the last production removing the marker on the last letter; the words of $A^*$ obtained are exactly those of $R$. (The productions of this chapter have nonempty right-hand sides, so erasing is done by merging the marker with a neighbouring letter, which forces the empty word to be treated separately.)</p>
+</tech>
+<techno>
+<p>Translation of a quadruple machine (the convention of this manual) into productions, for all letters $S_k$ of the machine’s alphabet:</p>
+<table>
+<tr><th>quadruple</th><th>productions</th></tr>
+<tr><td>$q_i\,S_j\,S_k\,q_l$</td><td>$q_iS_j\to q_lS_k$</td></tr>
+<tr><td>$q_i\,S_j\,R\,q_l$</td><td>$q_iS_jS_k\to S_jq_lS_k$ ; $\ q_iS_jh\to S_jq_lS_0h$</td></tr>
+<tr><td>$q_i\,S_j\,L\,q_l$</td><td>$S_kq_iS_j\to q_lS_kS_j$ ; $\ hq_iS_j\to hq_lS_0S_j$</td></tr>
+<tr><td>no quadruple $q_iS_j$</td><td>$q_iS_j\to qS_j$ (“trap” state $q$)</td></tr>
+<tr><td>cleanup</td><td>$qS_j\to q$ ; $\ qh\to q'h$ ; $\ S_jq'\to q'$</td></tr>
+</table>
+<p>The two productions for moves handle the case where the head leaves the written part: a blank $S_0$ is then added next to the marker.</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="Undecidable word problem (Post, Markov, 1947)" id="probleme-du-mot">
+<enonce>
+<ol>
+<li>There is a semi-Thue system, and even a Thue system, whose word problem (“$Y\in L(\Gamma)$?”) is undecidable.</li>
+<li>There is a monoid defined by finitely many generators and relations, and even by <em>two</em> generators, in which one cannot decide whether two words represent the same element.</li>
+</ol>
+</enonce>
+<philo>
+<p>This is the first undecidable problem coming from “ordinary” mathematics rather than from logic: a question of algebra (are two expressions equal given certain rules of calculation?) that no algorithm settles. It was posed by Thue in 1914 and solved negatively, independently, by Post and by Andrei Markov in 1947. The analogous problem for groups (Novikov 1955, Boone 1958) is one of the great theorems of the twentieth century; it is presented, with other examples (tilings, matrices, topology), in the chapter <a href="undecidable-mathematics.html">Undecidability in ordinary mathematics</a>.</p>
+<p>Computing with symbols according to rules of equality, as one does in high-school algebra, is therefore a game whose outcome cannot always be predicted.</p>
+</philo>
+<tech>
+<p>(1) Take $z_0$ such that $W_{z_0}=K$: the word problem of $\sigma(z_0)$ is undecidable. For a Thue system, add to $\sigma(z_0)$ the inverses of its productions, which gives the productions of $\mathcal C(z_0)$ and their inverses. The language does not change: in a proof <em>without repetition</em> that would use an added production, consider the first step $X_{j-1}\vdash X_j$ that does so (it is not the very first step, since the axiom $hq'h$ has no consequent in $\mathcal C(z_0)$); the previous step $X_{j-2}\vdash X_{j-1}$ uses a production of $\sigma$, so $X_{j-1}$ would have two different consequents in the monogenic system $\mathcal C(z_0)$, namely $X_{j-2}$ and $X_j$: contradiction.</p>
+<p>(2) A Thue system with relations $g_i\leftrightarrow g'_i$ defines a monoid $\Sigma(\Gamma)=A^*/\!\approx$, where $\approx$ is the smallest congruence containing the relations, and $S\vdash^*_\Gamma X\iff S\approx X$. For two generators $B$ and $1$, recode the letters $a_i$ by $a_i^*=B1^{i}B$, and each relation $g\leftrightarrow g'$ by $h(g)\leftrightarrow h(g')$, where $h$ codes a word letter by letter. In a coded word $h(w)$, an occurrence of $h(g)$ necessarily begins at the start of a code: it begins with $B1$, whereas the final $B$ of a code is followed by a $B$ or by nothing. It therefore covers whole codes, those of an occurrence of $g$ in $w$. The steps from $h(w)$ are thus exactly the images of the steps from $w$, and they lead to coded words: $h(u)\approx h(v)$ in the new monoid if and only if $u\approx v$ in the old one, and the word problem remains undecidable.</p>
+<p>Explicit examples: Tseitin (1958) gave a monoid with 5 generators and 7 relations whose word problem is undecidable.</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Normal systems and the two-letter alphabet" id="systemes-normaux">
+<enonce><p>Every semi-decidable set $R\subseteq A^*$ has the form $L(\Gamma)\cap A^*$ for a normal system $\Gamma$ over a larger alphabet. One can even choose $\Gamma$ over an alphabet of two symbols, up to a primitive recursive coding of the letters.</p></enonce>
+<philo><p>Normal productions are very poor: one reads only the <em>beginning</em> of the word and writes only at the <em>end</em>, like a queue. This still suffices to compute everything. This result of Post is a stepping stone towards the correspondence problem, which is nothing but a normal system “laid flat”.</p></philo>
+<tech>
+<p>Let $R\subseteq A^*$ be semi-decidable. By the <a href="#semi-thue-universel">previous theorem</a>, $R=L(\Gamma_1)\cap A^*$ for a semi-Thue system $\Gamma_1=(V,S,P)$ over an alphabet $V\supseteq A$, with productions $\alpha_i\to\beta_i$. We build a normal system $\Gamma_2$ such that $L(\Gamma_2)\cap V^*=L(\Gamma_1)$, hence $L(\Gamma_2)\cap A^*=R$.</p>
+<p><strong>Construction.</strong> Add a “primed” copy $a'$ of each letter $a\in V$, and write $w'$ for the word $w$ with all its letters primed. The axiom of $\Gamma_2$ is $S$, and its productions are, for $a\in V$ and each $i$:</p>
+$$a\theta\to\theta a'\ \ \text{(rotation)},\qquad \alpha_i\theta\to\theta\beta'_i\ \ \text{(application)},\qquad a'\theta\to\theta a\ \ \text{(unmarking)}.$$
+<p>The word is read as a circular tape: rotation moves a letter from the front to the back while marking it, and unmarking does the same while removing the mark.</p>
+<p><strong>Regular words.</strong> Call a word <em>regular</em> if it has the form $ZT'$ or $Z'T$ with $Z,T\in V^*$, and associate with it the word $TZ\in V^*$ (the two forms coincide when $Z$ or $T$ is empty, and then give the same associated word). We show that if $X$ is regular and $X\vdash_{\Gamma_2}Y$, then $Y$ is regular, and its associated word is equal to that of $X$ or follows from it by one step of $\Gamma_1$.</p>
+<ul>
+<li>$X=ZT'$ with $Z\neq\varepsilon$: $X$ begins with an unprimed letter, so only rotation and application apply, and the left-hand side $\alpha_i$ (unprimed) is necessarily a prefix of $Z$. Rotation of $Z=aZ_1$ gives $Z_1(Ta)'$, associated with $TaZ_1=TZ$. Application, with $Z=\alpha_iZ_1$, gives $Z_1(T\beta_i)'$, associated with $T\beta_iZ_1$; and $T\alpha_iZ_1\vdash_{\Gamma_1}T\beta_iZ_1$.</li>
+<li>$X=Z'T$ with $Z\neq\varepsilon$: only unmarking applies. With $Z=aZ_1$, it gives $Z_1'Ta$, associated with $TaZ_1=TZ$.</li>
+</ul>
+<p>The axiom $S$ is regular and associated with itself. By induction on the length of proofs, every word of $L(\Gamma_2)$ is regular and its associated word is in $L(\Gamma_1)$. A word $w\in V^*$ (unprimed) is regular of the form $ZT'$ with $Z=w$ and $T=\varepsilon$, associated with $w$: so $L(\Gamma_2)\cap V^*\subseteq L(\Gamma_1)$.</p>
+<p><strong>Converse.</strong> A step $\varphi\alpha_i\psi\vdash_{\Gamma_1}\varphi\beta_i\psi$ is simulated in $\Gamma_2$: rotate the letters of $\varphi$ one by one, which gives $\alpha_i\psi\varphi'$; apply the rule: $\psi\varphi'\beta'_i$; rotate $\psi$: $\varphi'\beta'_i\psi'$; then unmark all the letters, which gives $\varphi\beta_i\psi$. By induction, $L(\Gamma_1)\subseteq L(\Gamma_2)$. All these productions have nonempty left- and right-hand sides, as the definition requires.</p>
+<p><strong>Two letters.</strong> Number $c_1,\dots,c_r$ the letters of the alphabet of $\Gamma_2$ (letters of $V$ and primed letters), code $c_i$ by $c_i^*=B\,1^{i}B$, and a word letter by letter ($h(c_{i_1}\cdots c_{i_n})=c_{i_1}^*\cdots c_{i_n}^*$). The system $\Gamma_3$ with axiom $h(S)$ and productions $h(\alpha)\theta\to\theta h(\beta)$, for each production $\alpha\theta\to\theta\beta$ of $\Gamma_2$, is normal over the alphabet $\{B,1\}$. The codes $c_i^*$ form a <em>prefix</em> code (none is a prefix of another, since a code ends at the second $B$): a coded word decodes uniquely, and $h(\alpha)$ is a prefix of $h(w)$ if and only if $\alpha$ is a prefix of $w$ (compare the codes one by one). So the steps of $\Gamma_3$ from a word $h(w)$ are exactly the images of the steps of $\Gamma_2$ from $w$, and by induction $L(\Gamma_3)=h(L(\Gamma_2))$. Thus $w\in R$ if and only if $w\in A^*$ and $h(w)\in L(\Gamma_3)$: up to this coding, $R$ is generated by a normal system over two symbols. Since $h$ and its inverse are primitive recursive, (semi-)decidability of the word problem is preserved.</p>
+</tech>
+</res>
+
+<h2 id="post">Post’s correspondence problem</h2>
+
+<res type="Theorem" nom="Undecidability of Post’s problem (1946)" id="post-langages">
+<enonce>
+<p>Given two lists of nonempty words $(x)=(x_1,\dots,x_n)$ and $(y)=(y_1,\dots,y_n)$ over a two-letter alphabet $V$, one cannot decide in general whether there is a sequence of indices $i_1,\dots,i_r$ ($r\ge1$) such that</p>
+$$x_{i_1}x_{i_2}\cdots x_{i_r}=y_{i_1}y_{i_2}\cdots y_{i_r}.$$
+<p>This problem is semi-decidable. Over a one-letter alphabet, it is decidable.</p>
+</enonce>
+<philo>
+<p>Post’s problem plays for words the role that the halting problem plays for programs: it is the “reference” undecidable problem from which one starts to prove, by reduction, the undecidability of questions about grammars and languages. It is presented more briefly, in the form of dominoes, in the chapter <a href="other-models.html#pcp">Other models</a>.</p>
+<p>A solution, if one exists, can be very long: for the second example below, which has only four dominoes, the shortest solution found by the simulator has 66.</p>
+</philo>
+<tech>
+<p><strong>Semi-decidability.</strong> Try all sequences of indices by increasing length. If there is a solution, there are infinitely many (it can be repeated), but one never knows when to stop if there is none.</p>
+<p><strong>A single letter.</strong> If $x_i=a^{m_i}$ and $y_i=a^{n_i}$, a sequence of indices is a solution if and only if $\sum_k(m_{i_k}-n_{i_k})=0$: the order does not matter. So there is a solution if and only if $m_i=n_i$ for some $i$, or $m_i>n_i$ and $m_j<n_j$ for two indices $i,j$: in the latter case, $n_j-m_j$ copies of $i$ and $m_i-n_i$ copies of $j$ work; and if all the differences $m_i-n_i$ are nonzero and of the same sign, no nonempty sum is zero. This criterion can be checked directly.</p>
+<p><strong>Reduction.</strong> The word problem of a semi-Thue system is reduced to Post’s problem in two steps. The <em>modified Post problem</em> is the same problem, with a list of dominoes $(x_1,y_1),\dots,(x_n,y_n)$ for which the solution is required to begin with the first one.</p>
+<p><em>Step 1: from the word problem to the modified problem.</em> Let $\Gamma=(A,S,P)$ be a semi-Thue system whose word problem is undecidable (<a href="#probleme-du-mot">previous theorem</a>), with productions $\alpha_i\to\beta_i$ (nonempty words). For a word $Y\in A^+$, take two new letters $\#$ and $\natural$ and the dominoes (top / bottom):</p>
+<ul>
+<li>the starting domino $D_0=(\#\ /\ \#S\#)$;</li>
+<li>the copy dominoes $(a\ /\ a)$ for $a\in A$, and the separator $(\#\ /\ \#)$;</li>
+<li>the rule dominoes $(\alpha_i\ /\ \beta_i)$;</li>
+<li>the final domino $F=(Y\#\natural\ /\ \natural)$.</li>
+</ul>
+<p>If $S=w_0\vdash w_1\vdash\cdots\vdash w_n=Y$, we obtain a solution: lay $D_0$, then, for each $k<n$, write $w_k$ on top with copy dominoes and a rule domino placed where the rewriting happens, which writes $w_{k+1}$ at the bottom, followed by the separator; finish with $F$. The top reads $\#w_0\#w_1\#\cdots\#w_{n-1}\#\,Y\#\natural$ and the bottom $\#w_0\#w_1\#\cdots\#w_n\#\natural$: these are the same words.</p>
+<p>Conversely, take a solution beginning with $D_0$. The letter $\natural$ appears only in $F$, once on top and once at the bottom; at the first use of $F$, these two occurrences are at the same position of the common word, so the sequence truncated after this first $F$ is still a solution, and we may assume that $F$ is used only at the end. Let $T$ and $B$ be the top and bottom words before $F$: we have $T\,Y\#\natural=B\,\natural$, so $B=T\,Y\#$. Compare the numbers of $\#$: the dominoes other than $D_0$ and $F$ have as many on top as at the bottom, $D_0$ has one more at the bottom, and $Y$ contains none; so $D_0$ is used only once, at the beginning. The separators cut the sequence of dominoes into slices; the $j$-th slice writes a word $\tau_j\in A^*$ on top and a word $\sigma_j$ at the bottom, and $\tau_j\vdash^*\sigma_j$, since each rule domino rewrites a factor and the factors are disjoint. If $r$ separators were used,</p>
+$$\#S\#\sigma_1\#\sigma_2\#\cdots\#\sigma_{r+1}=B=T\,Y\#=\#\tau_1\#\tau_2\#\cdots\#\tau_{r+1}\,Y\#.$$
+<p>Both sides have $r+2$ letters $\#$, and the second ends with $\#$: so $\sigma_{r+1}$ is empty, hence so is $\tau_{r+1}$ (a domino writes nonempty words on top and at the bottom). Comparing the slices between successive $\#$: $S=\tau_1$, $\sigma_j=\tau_{j+1}$ for $j<r$, and $\sigma_r=Y$ (if $r=0$, we get $S=Y$ directly). So $S=\tau_1\vdash^*\sigma_1=\tau_2\vdash^*\cdots\vdash^*\sigma_r=Y$, and $Y\in L(\Gamma)$.</p>
+<p><em>Step 2: from the modified problem to Post’s problem.</em> For a word $w=a_1\cdots a_k$, write $\overleftarrow w=\star a_1\star a_2\cdots\star a_k$ and $\overrightarrow w=a_1\star a_2\star\cdots a_k\star$, with a new letter $\star$. With the list $(x_1,y_1),\dots,(x_n,y_n)$ we associate the dominoes $(\overleftarrow{x_1}\ /\ \star\overrightarrow{y_1})$, $(\overleftarrow{x_i}\ /\ \overrightarrow{y_i})$ for $1\le i\le n$, and $(\star\diamond\ /\ \diamond)$, where $\diamond$ is another new letter. A solution $1,i_2,\dots,i_r$ of the modified problem gives the solution “first domino, $i_2,\dots,i_r$, final domino”: the top and the bottom both read $\star c_1\star c_2\cdots\star c_N\star\diamond$, where $c_1\cdots c_N$ is the common word. Conversely, in a solution, the first domino used must begin with the same letter on top and at the bottom: so it is the first one of the list (the others begin with $\star$ on top and with a letter of the alphabet at the bottom). It cannot reappear later: it would place two consecutive $\star$ at the bottom, which never happens on top before the $\diamond$. Truncating after the first occurrence of $\diamond$, as above, then erasing the $\star$ and the $\diamond$, yields a solution of the modified problem.</p>
+<p><em>Two letters.</em> Code the $j$-th letter of the alphabet by $ab^j$. This coding $h$ is injective on words: in $h(w)$, each letter $a$ marks the beginning of the code of a letter of $w$, which allows $w$ to be read back. So $u=v$ if and only if $h(u)=h(v)$, and the coded instance has a solution if and only if the original instance has one.</p>
+<p>Since the word problem of $\Gamma$ is undecidable, so is Post’s problem, even over a two-letter alphabet. Post’s problem remains undecidable for 5 pairs (Neary, 2015). It is decidable for 2 pairs (Ehrenfeucht, Karhumäki and Rozenberg, 1982), and the cases of 3 and 4 pairs are open. The easy cases are treated in the <a href="#post-decidable">next proposition</a>.</p>
+</tech>
+<techno>
+<p>The simulator searches for the shortest solution by a breadth-first search over “overhangs” (the part of the top or bottom word that sticks out). Try the first example, then the other two.</p>
+<div class="pcp-widget" data-titre="A first example"><pre class="src">ba/bbaa
+babb/ba
+abb/ab
+aa/a
+bba/aba
+a/bab</pre></div>
+<div class="pcp-widget" data-titre="A very long solution" data-auto="non"><pre class="src">aab/a
+ab/abb
+ab/bab
+ba/aab</pre></div>
+<div class="pcp-widget" data-titre="An instance with no solution"><pre class="src">ab/aba
+bba/aa
+aba/bab</pre></div>
+<p>In the last case, the search stops because the set of reachable overhangs is finite: we have a <em>proof</em> that there is no solution. In general, this reasoning fails, since the set of overhangs may be infinite.</p>
+</techno>
+</res>
+
+<res type="Proposition" nom="Two decidable cases of Post’s problem" id="post-decidable">
+<enonce><p>Post’s problem is decidable for instances with a single pair, and for instances over a one-letter alphabet.</p></enonce>
+<tech>
+<p><strong>One pair $(x,y)$.</strong> A solution is a $k\ge1$ with $x^k=y^k$. Comparing lengths gives $|x|=|y|$. Then $x$ and $y$ are two prefixes of the same length of the same word, so $x=y$. Conversely, if $x=y$, $k=1$ works. It therefore suffices to test $x=y$.</p>
+<p><strong>One letter.</strong> Let $x_i=a^{p_i}$ and $y_i=a^{q_i}$. A nonempty sequence $i_1,\dots,i_r$ is a solution if and only if $\sum_j(p_{i_j}-q_{i_j})=0$. There is a solution if and only if $p_i=q_i$ for some $i$, or $p_i>q_i$ and $p_j<q_j$ for two indices $i$ and $j$. In the first case, the pair $i$ alone works. In the second, take $q_j-p_j$ times the pair $i$ and $p_i-q_i$ times the pair $j$. Conversely, if all the differences $p_i-q_i$ are nonzero and of the same sign, no nonempty sum is zero.</p>
+<p>These are the only easy cases. For two pairs, decidability is a difficult theorem (Ehrenfeucht, Karhumäki and Rozenberg, 1982, some thirty pages; since simplified by Halava, Harju and Hirvensalo, 2002). For five pairs, undecidability comes from a reduction of the halting of binary tag systems (Neary, 2015). These two results are quoted and not proved here.</p>
+</tech>
+</res>
+
+<h2 id="grammaires">Grammars and automata</h2>
+
+<p>We consider languages over an alphabet $A$ and their grammars, classified by Chomsky: regular, context-free (CF), context-sensitive (CS), and unrestricted (type 0, which generate exactly the semi-decidable languages by <a href="#semi-thue-universel">Post’s theorem</a> above). This section establishes the basic facts we need: finite automata, the pumping lemma, pushdown automata, and the decidable problems.</p>
+
+<res type="Definition" nom="Grammars" id="def-grammaires">
+<enonce>
+<p>A <strong>grammar</strong> $G=(T,N,S,P)$ consists of a terminal alphabet $T$, a disjoint nonterminal alphabet $N$, a start symbol $S\in N$ and a finite set $P$ of rules $\alpha\to\beta$, where $\alpha$ is a nonempty word over $T\cup N$ (in practice, it contains a nonterminal). Derivation is as in a semi-Thue system ($\varphi\alpha\psi\Rightarrow\varphi\beta\psi$), and $L(G)=\{w\in T^*:S\Rightarrow^*w\}$.</p>
+<ul>
+<li>Type 0: no restriction.</li>
+<li><strong>Context-sensitive</strong> (or monotone): $|\alpha|\le|\beta|$ for every rule, except possibly the rule $S\to\varepsilon$, allowed if $S$ appears in no right-hand side.</li>
+<li><strong>Context-free</strong>: each rule has the form $X\to\beta$ with $X\in N$ and $\beta$ arbitrary (possibly empty).</li>
+<li>The <strong>regular</strong> languages are those of the appendix <a href="bases.html#def-mots">Words and languages</a>: the smallest set of languages containing $\emptyset$, $\{\varepsilon\}$, the $\{a\}$, and closed under union, concatenation and star.</li>
+</ul>
+<p>For a context-free grammar, a derivation is represented by a <strong>tree</strong>: the root carries $S$, a node $X$ to which the rule $X\to x_1\cdots x_k$ is applied has children $x_1,\dots,x_k$ (a single child $\varepsilon$ if $k=0$), and the leaves read from left to right form the derived word.</p>
+</enonce>
+<philo><p>The “context-sensitive” form $\varphi X\psi\to\varphi\beta\psi$ ($\beta$ nonempty), from which the name comes, replaces only one symbol at a time, in a given context. It defines the same languages as monotone grammars (Kuroda, 1964); we use only the monotone form, which is more convenient.</p></philo>
+</res>
+
+<res type="Proposition" nom="Finite automata and regular languages (Kleene, 1956)" id="automates-finis">
+<enonce>
+<p>A <strong>finite automaton</strong> $\mathcal A=(E,A,\delta,e_0,F)$ has a finite set of states $E$, an initial state $e_0$, accepting states $F\subseteq E$ and transitions $\delta\subseteq E\times(A\cup\{\varepsilon\})\times E$; it accepts $w$ if there is a path from $e_0$ to a state of $F$ whose labels form $w$. It is <em>deterministic</em> if $\delta$ is a function $E\times A\to E$.</p>
+<ol>
+<li>A language is regular if and only if it is accepted by a finite automaton, and one passes effectively from one to the other; every finite automaton is equivalent to a deterministic automaton.</li>
+<li>Regular languages are closed under complement and intersection.</li>
+<li>For regular languages given by expressions, the questions $w\in L$, $L=\emptyset$, $L$ finite, $L=A^*$, $L_1=L_2$, $L_1\subseteq L_2$, $L_1\cap L_2=\emptyset$ are decidable.</li>
+</ol>
+</enonce>
+<philo><p>A finite automaton is a program with no memory other than its state: it reads the word only once, from left to right. Since it cannot count beyond a fixed bound, all its questions are settled by examining a finite graph.</p></philo>
+<tech>
+<p>(1) <em>From expressions to automata</em>, by induction: $\emptyset$, $\{\varepsilon\}$, $\{a\}$ have automata with one or two states; for union, add a new initial state linked by $\varepsilon$ to the two initial states; for concatenation $L_1L_2$, link by $\varepsilon$ the accepting states of the first automaton to the initial state of the second; for star, add a new accepting initial state, linked by $\varepsilon$ to the old one, and link by $\varepsilon$ the accepting states to the old initial state. <em>Determinization</em>: the states of the new automaton are the subsets of $E$; the initial state is the set of states reachable from $e_0$ by $\varepsilon$-transitions; the letter $a$ sends a subset $X$ to the set of states reachable from $X$ by an $a$-transition surrounded by $\varepsilon$-transitions; a subset is accepting if it meets $F$. By induction on $|w|$, the subset reached after reading $w$ is the set of states reachable by $w$ in the original automaton. <em>From automata to expressions</em>: number the states $1,\dots,m$ and write $L^k_{ij}$ for the set of words leading from $i$ to $j$ while passing, in between, only through states $\le k$. Then $L^0_{ij}$ is a finite set of letters (with $\varepsilon$ if $i=j$), and $L^{k}_{ij}=L^{k-1}_{ij}\cup L^{k-1}_{ik}\big(L^{k-1}_{kk}\big)^*L^{k-1}_{kj}$ (the path is cut at its visits to $k$). The language of the automaton is the union of the $L^m_{e_0f}$, $f\in F$: it is regular.</p>
+<p>(2) In a deterministic automaton, swapping accepting and non-accepting states gives the complement. For intersection, run two deterministic automata in parallel (pairs of states, accepting if both components are).</p>
+<p>(3) With a deterministic automaton: $w\in L$ is decided by reading $w$. $L=\emptyset$ if no accepting state is reachable (graph search). Keeping only the states reachable from $e_0$ and from which an accepting state is reachable, $L$ is infinite if and only if this graph has a cycle: a cycle can be traversed as many times as desired; without a cycle, paths have bounded length. Finally $L=A^*$ is equivalent to $\overline L=\emptyset$, $L_1\subseteq L_2$ to $L_1\cap\overline{L_2}=\emptyset$, and $L_1=L_2$ to the two inclusions; conclude with (2).</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="Inclusions between the classes" id="classes-chomsky">
+<enonce><p>Every regular language is context-free. Every context-free language is generated by a context-free grammar that is also context-sensitive, built effectively. Every context-sensitive language is of type 0.</p></enonce>
+<tech>
+<p><em>Regular.</em> By induction: $S\to\varepsilon$, $S\to a$, and for $\emptyset$ a grammar with no rule; for the union, concatenation and star of languages generated by grammars with start symbols $S_1,S_2$ (disjoint nonterminals), add $S\to S_1\mid S_2$, $S\to S_1S_2$, or $S\to S_1S\mid\varepsilon$.</p>
+<p><em>Context-free.</em> A nonterminal $X$ is <em>nullable</em> if $X\Rightarrow^*\varepsilon$; the set of nullable nonterminals is computed by saturation (start from the $X$ with $X\to\varepsilon$, and add $X$ as soon as a rule $X\to\beta$ has a right-hand side made of nullable symbols). Replace each rule $X\to\beta$ by all the rules $X\to\beta'$, where $\beta'$ is obtained by deleting from $\beta$ some occurrences of nullable symbols, with $\beta'\ne\varepsilon$; one obtains the same nonempty words (in a derivation tree, delete the subtrees that produce only $\varepsilon$, and conversely reinsert them). If $\varepsilon\in L(G)$, add a new start symbol $S'$ with $S'\to S\mid\varepsilon$. The rules obtained are monotone.</p>
+<p><em>Context-sensitive.</em> This is a special case.</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Pumping lemma for context-free languages (Bar-Hillel, Perles, Shamir, 1961)" id="lemme-etoile">
+<enonce><p>For every context-free grammar $G$, there is an integer $p$, computable from $G$, such that every word $w\in L(G)$ of length $|w|\ge p$ can be written $w=uvxyz$ with $|vxy|\le p$, $vy\ne\varepsilon$, and $uv^kxy^kz\in L(G)$ for every $k\ge0$. In particular $\{a^nb^nc^n:n\ge0\}$ is not context-free.</p></enonce>
+<philo><p>A context-free grammar has no memory beyond the tree structure: in a long enough word, the same nonterminal repeats along a branch, and one can “pump” the part it generates between its two occurrences. It can therefore count two things against each other ($a^nb^n$), but not three.</p></philo>
+<tech>
+<p>By the previous proposition, we may assume that the only rule with an empty right-hand side is $S\to\varepsilon$, with $S$ absent from right-hand sides; only nonempty words concern us, and their trees do not use this rule. Let $m\ge2$ be the greatest length of a right-hand side and $N$ the number of nonterminals; set $p=m^{N+1}$. A tree of height $h$ (number of edges of the longest path) has at most $m^h$ leaves.</p>
+<p>Let $w\in L(G)$ with $|w|\ge p$, and take a tree for $w$ with as few nodes as possible. Its height exceeds $N$. Take a path of maximal length from the root to a leaf: among its last $N+1$ nonterminal nodes, two carry the same nonterminal $X$; let $U$ be the higher and $D$ the lower. The subtree of $D$ produces a factor $x$, that of $U$ a factor $vxy$, and $w=uvxyz$. Since the path has maximal length, the subtree of $U$ has height at most $N+1$, so $|vxy|\le m^{N+1}=p$. If $vy$ were empty, replacing the subtree of $U$ by that of $D$ would give a smaller tree for $w$: this is excluded. Finally, replacing the subtree of $D$ by a copy of that of $U$, $k$ times in a row, gives a tree for $uv^{k+1}xy^{k+1}z$, and replacing the subtree of $U$ by that of $D$ gives a tree for $uxz$.</p>
+<p><em>Application.</em> If $\{a^nb^nc^n\}$ were context-free, with constant $p$, take $w=a^pb^pc^p$. Since $|vxy|\le p$, the factor $vxy$ does not meet both the $a$’s and the $c$’s. If $v$ or $y$ contains two different letters, $uv^2xy^2z$ is not of the form $a^*b^*c^*$. Otherwise, pumping increases the number of at most two of the three letters, and $uv^2xy^2z$ does not have as many $a$’s, $b$’s and $c$’s.</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="Decidable problems for grammars" id="decidables-grammaires">
+<enonce><p>Membership $w\in L(G)$ is decidable for context-sensitive grammars, hence for context-free grammars. For context-free grammars, the questions “$L(G)=\emptyset$?” and “is $L(G)$ finite?” are decidable.</p></enonce>
+<tech>
+<p><em>Membership.</em> In a monotone grammar, a derivation of $w\neq\varepsilon$ passes only through words of length at most $|w|$ (without the rule $S\to\varepsilon$). There are finitely many such words; build the graph “$\gamma\Rightarrow\gamma'$” on them and search for a path from $S$ to $w$. The case $w=\varepsilon$ is read off the presence of the rule $S\to\varepsilon$. For a context-free grammar, first pass to the equivalent monotone grammar (<a href="#classes-chomsky">proposition</a>).</p>
+<p><em>Emptiness.</em> A nonterminal is <em>productive</em> if it generates at least one terminal word. The set of productive nonterminals is computed by saturation: $X$ is productive as soon as a rule $X\to\beta$ has a right-hand side made of terminals and of nonterminals already recognized as productive. By induction on the height of derivation trees, one obtains exactly the productive nonterminals, and $L(G)\neq\emptyset$ if and only if $S$ is productive.</p>
+<p><em>Finiteness.</em> With the constant $p$ of the <a href="#lemme-etoile">pumping lemma</a>: $L(G)$ is infinite if and only if it contains a word $w$ with $p\le|w|<2p$. If such a word exists, the words $uv^kxy^kz$ are all distinct ($vy\ne\varepsilon$). Conversely, if $L(G)$ is infinite, let $w$ be a shortest word of length $\ge p$; if we had $|w|\ge2p$, the word $uxz$ would be in $L(G)$, of length $|w|-|vy|\ge|w|-p\ge p$ and shorter than $w$: contradiction. Finitely many words remain to be tested.</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="Pushdown automata and context-free grammars" id="automates-pile">
+<enonce>
+<p>A <strong>pushdown automaton</strong> has a finite set of states $E$, an initial state $e_0$, a stack alphabet $\Delta$ with an initial symbol $Z_0$, and transitions $(e,a,Z)\to(e',\gamma)$ where $a\in A\cup\{\varepsilon\}$, $Z\in\Delta$, $\gamma\in\Delta^*$: in state $e$, with $Z$ on top of the stack, it reads $a$, replaces $Z$ by $\gamma$ (the first symbol of $\gamma$ on top) and moves to state $e'$. It accepts $w$ if, starting from $e_0$ with stack $Z_0$, it can read all of $w$ and empty its stack. A language is context-free if and only if it is accepted by a pushdown automaton.</p>
+</enonce>
+<tech>
+<p><em>From grammars to automata.</em> A single state; the stack initially contains $S$; for each rule $X\to\beta$, a transition $(e,\varepsilon,X)\to(e,\beta)$, and for each letter $a$, $(e,a,a)\to(e,\varepsilon)$. By induction on the length of computations and derivations, the automaton, after reading $u$, has stack $\gamma$ if and only if there is a leftmost derivation $S\Rightarrow^*u\gamma$: the stack is the not-yet-read part of the derived form.</p>
+<p><em>From automata to grammars.</em> Take as nonterminals the triples $[e\,Z\,e']$, which must generate the words $w$ such that the automaton, starting from state $e$ with $Z$ on top, can read $w$ and arrive in state $e'$ having removed exactly $Z$ (without touching the rest of the stack). For each transition $(e,a,Z)\to(e_1,Y_1\cdots Y_k)$ and each choice of states $e_2,\dots,e_{k+1}$, add the rule $[e\,Z\,e_{k+1}]\to a\,[e_1Y_1e_2][e_2Y_2e_3]\cdots[e_kY_ke_{k+1}]$ (and $[e\,Z\,e_1]\to a$ if $k=0$), and $S\to[e_0Z_0e']$ for every $e'$. By induction on the length of the computation in one direction, and on that of the derivation in the other, $[e\,Z\,e']\Rightarrow^*w$ if and only if the automaton can read $w$ from $e$ to $e'$ removing exactly $Z$: the computation is cut at the moments when $Y_1$, then $Y_2$, …, are removed.</p>
+</tech>
+</res>
+
+<h3 id="reductions-depuis-le-probleme-de-post">Reductions from Post’s problem</h3>
+
+<res type="Proposition" nom="The languages Q(x) of a Post instance" id="langages-qx">
+<enonce>
+<p>Let $(x)=(x_1,\dots,x_n)$ be a list of nonempty words over $A$, and $A'=\{b_1,\dots,b_n\}$ an alphabet of $n$ new letters. Set</p>
+$$Q(x)=\{\,b_{i_r}\cdots b_{i_2}b_{i_1}\,x_{i_1}x_{i_2}\cdots x_{i_r}\ :\ r\ge1,\ 1\le i_j\le n\,\}.$$
+<p>$Q(x)$ is context-free, generated by the $2n$ rules $S\to b_ix_i\mid b_iSx_i$, and unambiguous. For two lists $(x),(y)$ of the same length, Post’s problem has a solution if and only if $Q(x)\cap Q(y)\neq\emptyset$.</p>
+</enonce>
+<philo><p>The letters $b_i$ serve as “labels”: they record, mirrored, the sequence of dominoes used. A word common to $Q(x)$ and $Q(y)$ is the same sequence of labels followed by the same word, that is, a solution of Post’s problem. The whole difficulty of Post’s problem thus reappears in an innocent-looking question about two very simple grammars.</p></philo>
+<tech><p>If $x_{i_1}\cdots x_{i_r}=y_{i_1}\cdots y_{i_r}$, the word $b_{i_r}\cdots b_{i_1}x_{i_1}\cdots x_{i_r}$ is in both languages. Conversely, a common word reads $b_{i_r}\cdots b_{i_1}x_{i_1}\cdots x_{i_r}=b_{j_s}\cdots b_{j_1}y_{j_1}\cdots y_{j_s}$; since the $b$’s are not in $A$, the prefixes over $A'$ coincide, whence $r=s$ and $i_k=j_k$, then $x_{i_1}\cdots x_{i_r}=y_{i_1}\cdots y_{i_r}$.</p></tech>
+</res>
+
+<res type="Theorem" nom="First group of undecidable problems" id="indecidables-1">
+<enonce>
+<p>The following problems are undecidable:</p>
+<ol>
+<li>given two context-free grammars $G_1,G_2$, is $L(G_1)\cap L(G_2)=\emptyset$?</li>
+<li>given a context-sensitive grammar $G$, is the language $L(G)$ empty?</li>
+<li>given a context-sensitive grammar $G$, is the language $L(G)$ infinite?</li>
+</ol>
+</enonce>
+<philo><p>For context-free grammars, used to describe the syntax of programming languages, one can decide whether a language is empty or infinite, and whether a given word belongs to it (this is what a parser does). But as soon as two grammars are combined, or one moves to context-sensitive grammars, very simple questions escape every algorithm.</p></philo>
+<tech>
+<p>(1) follows from the previous proposition, the two languages $Q(x)$ and $Q(y)$ being generated by context-free grammars.</p>
+<p>(2) and (3). We reduce halting. With a machine $Z$ (in quadruple format) and an integer $x$, associate the monotone grammar $G_{Z,x}$ whose only terminal is a letter $t$, and whose nonterminals are $S$, the marker $h$, and the states and symbols of $Z$. Its rules are:</p>
+<ul>
+<li>$S\to h\,q_0\,1^{x+1}\,h$ (the initial configuration);</li>
+<li>the productions of the <a href="#semi-thue-universel">translation of quadruples</a> (table of Post’s theorem), which are all monotone;</li>
+<li>the <em>padding</em> $hY\to hS_0Y$ and $Yh\to YS_0h$ for every symbol $Y\ne h$ (a blank cell is added at one end of the written part, which does not change the configuration represented);</li>
+<li>for each pair $(q_i,S_j)$ without a quadruple, $q_iS_j\to tt$; then $tY\to tt$ and $Yt\to tt$ for every nonterminal $Y\ne S$.</li>
+</ul>
+<p>As long as no $t$ has appeared, a derived form is a word $hWh$ with a single state symbol in $W$: each rule preserves this form, and it represents a configuration reached by $Z$ from the input $\overline x$ (the computation rules perform a step, padding changes nothing). A $t$ appears only through a rule $q_iS_j\to tt$, that is, in a halting configuration. So, if $Z$ does not halt on $\overline x$, $L(G_{Z,x})=\emptyset$. If $Z$ halts, follow the computation after $k$ paddings, for any $k$; then the halting rule and the propagation of the $t$’s turn the word into $t^{n_k}$, with lengths $n_k$ all different: $L(G_{Z,x})$ is infinite. Thus $L(G_{Z,x})$ is empty if $Z$ does not halt on $\overline x$ and infinite otherwise; an algorithm for (2) or for (3) would decide halting.</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="The languages Q(x,y), Q′ and R(x,y)" id="langages-r">
+<enonce>
+<p>Let $c$ be a new letter, $V=A\cup A'$, and $\tilde w$ the mirror image of the word $w$. Set</p>
+$$Q(x,y)=\{u\,c\,\tilde v: u\in Q(x),\ v\in Q(y)\},\qquad Q'=\{w\,c\,\tilde w: w\in V^*\},\qquad R(x,y)=\overline{Q'}\cup\overline{Q(x,y)}.$$
+<p>Then $Q(x,y)$, $Q'$ and $R(x,y)$ are context-free, and: Post’s problem has a solution $\iff Q(x,y)\cap Q'\ne\emptyset\iff R(x,y)\ne(V\cup\{c\})^*$.</p>
+</enonce>
+<tech>
+<p>We use the easy constructions: if $L_1,L_2$ are context-free, so are $L_1\cup L_2$, $L_1L_2$ and the mirror $\widetilde{L_1}$ (rules $S\to S_1\mid S_2$, $S\to S_1S_2$, and reversed right-hand sides), and regular languages are context-free (<a href="#classes-chomsky">proposition</a>).</p>
+<ul>
+<li>$Q(x,y)=Q(x)\,\{c\}\,\widetilde{Q(y)}$ is context-free, and $Q'$ is generated by $S\to aSa$ ($a\in V$) and $S\to c$.</li>
+<li><em>Complement of $Q'$</em> in $(V\cup\{c\})^*$. A word without $c$, or with at least two $c$’s, is not in $Q'$ (regular languages). A word $u\,c\,v$ with $u,v\in V^*$ is not in $Q'$ if and only if $|u|>|v|$, or $|u|<|v|$, or $|u|=|v|$ and $u_i\neq v_{|v|+1-i}$ for some $i$. The first case is generated by $S\to aSb\mid aP$, $P\to aP\mid c$ ($a,b\in V$), the second symmetrically, and the third by $S\to aSb\mid aMb$ ($a\ne b$ in the second rule), $M\to aMb\mid c$: the pairs of letters generated together are exactly the pairs of symmetric positions.</li>
+<li><em>Complement of $Q(x)$</em> in $V^*$. A word of $V^*$ that is not of the form $\beta z$ with $\beta\in A'^*$ and $z\in A^*$ contains a letter of $A$ followed later by a letter of $A'$: regular language $V^*AV^*A'V^*$. For $\beta=b_{i_r}\cdots b_{i_1}$, set $X(\beta)=x_{i_1}\cdots x_{i_r}$; then $\beta z\in Q(x)$ if and only if $\beta\ne\varepsilon$ and $z=X(\beta)$. What remains is the empty word and the language $K=\{\beta z:z\neq X(\beta)\}$. Write $N_i$ for the set of words of $A^*$ that do not end with $x_i$: it is the union of the words of length $<|x_i|$ and of $A^*F_i$, where $F_i$ is the finite set of words of length $|x_i|$ different from $x_i$, hence a regular language. Then $K$ is generated by $K\to b_iKx_i\mid b_iJ_i\mid P$, $J_i\to b_jJ_i\mid Z_i$, where $Z_i$ generates $N_i$ and $P$ generates $A^+$. Indeed, if $\beta=b_i\beta'$, either $z=z'x_i$, and then $\beta z\in K$ if and only if $\beta'z'\in K$ (since $X(\beta)=X(\beta')x_i$); or $z\in N_i$, and then $z\ne X(\beta)$ whatever $\beta'$ is. If $\beta=\varepsilon$, $z\neq\varepsilon$. An induction on $|\beta|$ concludes.</li>
+<li><em>Complement of $Q(x,y)$</em>: the words without $c$ or with at least two $c$’s, the words $u\,c\,v$ with $u\notin Q(x)$, and the words $u\,c\,v$ with $\tilde v\notin Q(y)$, that is, $v$ in the mirror of the complement of $Q(y)$. This is a union of context-free languages.</li>
+</ul>
+<p>So $R(x,y)$ is context-free. Finally, a word of $Q(x,y)\cap Q'$ has the form $b_{i_r}\cdots b_{i_1}x_{i_1}\cdots x_{i_r}\,c\,\widetilde{y_{j_1}\cdots y_{j_s}}\,b_{j_1}\cdots b_{j_s}$ and is its own mirror around $c$: $s=r$, $j_k=i_k$ and $x_{i_1}\cdots x_{i_r}=y_{i_1}\cdots y_{i_r}$, a solution of Post’s problem. Conversely, a solution gives such a word. And $R(x,y)=\overline{Q'\cap Q(x,y)}$ is all of $(V\cup\{c\})^*$ if and only if this intersection is empty.</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Second group of undecidable problems" id="indecidables-2">
+<enonce>
+<p>For context-free grammars $G,G_1,G_2$ and a regular language $E$, the following problems are undecidable:</p>
+<ol>
+<li>is $L(G_1)\cap L(G_2)$ context-free?</li>
+<li>is $G$ ambiguous?</li>
+<li>$L(G)=A^*$? (in other words, is the complement of $L(G)$ empty?)</li>
+<li>$L(G)=E$? $\ L(G)\supseteq E$?</li>
+<li>is the complement of $L(G)$ context-free?</li>
+<li>is $L(G)$ regular?</li>
+</ol>
+<p>It follows that equivalence of two context-free grammars ($L(G_1)=L(G_2)$?) and inclusion are undecidable.</p>
+</enonce>
+<philo>
+<p>These results have very concrete consequences for anyone who designs programming languages or text-analysis tools: no program can check in general that a grammar is unambiguous (that no sentence has two parses), or that two grammars describe the same language, or simplify a grammar into a finite automaton when this is possible. Parser generators get around the difficulty by restricting themselves to subclasses (LL, LR grammars) for which these checks become possible.</p>
+<p>A remarkable positive result shows that the frontier is subtle: equivalence of two <em>deterministic</em> pushdown automata is decidable (Sénizergues, 1997, Gödel Prize 2002).</p>
+</philo>
+<tech>
+<p>(1) We show that $I=Q(x,y)\cap Q'$, if nonempty, is not context-free; it is therefore context-free if and only if it is empty, that is, if Post’s problem has no solution. A word of $I$ reads $\beta\,X\,c\,\tilde X\,\tilde\beta$, with $\beta\in A'^+$, $X\in A^+$, $X=X(\beta)$ (notation of the previous proposition). If a sequence $s$ is a solution, the sequence $s$ repeated $n$ times is one too, and gives a word of $I$ whose part $X$ has length $\ge n$. Suppose $I$ is context-free, with constant $p$ (<a href="#lemme-etoile">pumping lemma</a>), and take such a word $w$ with $|X|\ge p$, written $uvxyz$. If $v$ or $y$ contains $c$, or two letters from different blocks, $uv^2xy^2z$ no longer has the form $A'^+A^+cA^+A'^+$. Otherwise: if $v$ and $y$ are on the same side of $c$, pumping lengthens one side and not the other, whereas both sides of a word of $I$ have the same length; if $v$ is to the left of $c$ and $y$ to the right, since $|vxy|\le p\le|X|$, $v$ lies in the block $X$ and $y$ in the block $\tilde X$, and $\beta$ is not modified: if $v\neq\varepsilon$, the new block $X$ is no longer equal to $X(\beta)$, and if $v=\varepsilon$, then $y\ne\varepsilon$ and the right side is no longer the mirror of the left side. In all cases $uv^2xy^2z\notin I$: contradiction. (2) The grammar $S\to X\mid Y$, $X\to b_ix_i\mid b_iXx_i$, $Y\to b_iy_i\mid b_iYy_i$ generates $Q(x)\cup Q(y)$; since $Q(x)$ and $Q(y)$ are unambiguous, it is ambiguous if and only if $Q(x)\cap Q(y)\neq\emptyset$. (3), (4) With a grammar for $R(x,y)$ and $E=(V\cup\{c\})^*$, each of these problems is equivalent to “Post’s problem has no solution”. (5) The complement of $R(x,y)$ is $I$, context-free if and only if it is empty, by (1). (6) Since regular languages are closed under complement (<a href="#automates-finis">proposition</a>), $R(x,y)$ is regular if and only if its complement $I$ is. If $I$ is empty, this is the case; otherwise $I$ is not context-free by (1), hence not regular, since every regular language is context-free.</p>
+</tech>
+<techno>
+<p>Summary (D: decidable, U: undecidable; for type-0 languages, membership is only semi-decidable). The D entries come from the propositions on <a href="#automates-finis">finite automata</a> and on <a href="#decidables-grammaires">grammars</a>. The U entries of the context-free column come from the two theorems above; they also hold for the following columns, since a context-free grammar is effectively transformed into an equivalent context-sensitive grammar (<a href="#classes-chomsky">inclusions</a>). For context-sensitive grammars, emptiness and finiteness are handled by the first group; membership for type-0 languages is undecidable by the <a href="#probleme-du-mot">word problem</a> (a semi-Thue system $(A,S,P)$ is the grammar $(A,\{S^{\prime}\},S^{\prime},P\cup\{S^{\prime}\to S\})$).</p>
+<table>
+<tr><th>question</th><th>regular</th><th>context-free</th><th>context-sensitive</th><th>type 0</th></tr>
+<tr><td>$w\in L$?</td><td>D</td><td>D</td><td>D</td><td>U</td></tr>
+<tr><td>$L=\emptyset$? $L$ finite?</td><td>D</td><td>D</td><td>U</td><td>U</td></tr>
+<tr><td>$L=A^*$?</td><td>D</td><td>U</td><td>U</td><td>U</td></tr>
+<tr><td>$L_1=L_2$? $L_1\subseteq L_2$?</td><td>D</td><td>U</td><td>U</td><td>U</td></tr>
+<tr><td>$L_1\cap L_2=\emptyset$?</td><td>D</td><td>U</td><td>U</td><td>U</td></tr>
+<tr><td>$L$ regular?</td><td>(always)</td><td>U</td><td>U</td><td>U</td></tr>
+</table>
+</techno>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Solving a Post instance" id="ex-lg-pcp">
+<p>Find a solution of the instance $(x)=(1,\ 10111,\ 10)$, $(y)=(111,\ 10,\ 0)$ of Post’s correspondence problem.</p>
+<corrige>
+<p>The sequence of indices $2,1,1,3$ works: $x_2x_1x_1x_3=10111\cdot1\cdot1\cdot10=101111110$ and $y_2y_1y_1y_3=10\cdot111\cdot111\cdot0=101111110$. Pair 3 cannot begin a solution ($10$ and $0$ differ at the first letter); starting from pair 2, the top word is three letters ahead ($111$); each pair 1 gives two letters back to the bottom word, which takes the lead by one letter after the second, and pair 3 restores equality. The breadth-first search over all sequences of indices is a semi-decision procedure: it finds a solution if one exists, and does not halt otherwise (<a href="#post-langages">theorem</a>).</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="A grammar and its language" id="ex-lg-anbn">
+<p>Let $G$ be the grammar with rules $S\to aSb$ and $S\to\varepsilon$. Show that $L(G)=\{a^nb^n:n\ge0\}$.</p>
+<corrige>
+<p>By induction on the length of the derivation, every word derived from $S$ has the form $a^nSb^n$ or $a^nb^n$: this holds for $S$ ($n=0$), and a rule applied to $a^nSb^n$ gives $a^{n+1}Sb^{n+1}$ or $a^nb^n$. The terminal words of $L(G)$ are therefore words $a^nb^n$. Conversely, $S\Rightarrow aSb\Rightarrow\cdots\Rightarrow a^nSb^n\Rightarrow a^nb^n$ ($n$ times the first rule, then the second). The grammar is context-free.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="aⁿbⁿ is not regular" id="ex-lg-non-regulier">
+<p>Show that no finite automaton accepts $\{a^nb^n:n\ge0\}$.</p>
+<corrige>
+<p>Suppose a deterministic finite automaton with $N$ states accepts it. The $N+1$ words $a^0,a^1,\dots,a^N$ lead the automaton into $N+1$ states, two of which coincide (pigeonhole principle): $a^i$ and $a^j$ lead to the same state, with $i<j$. Since $a^ib^i$ is accepted, reading $b^i$ from this state leads to an accepting state; so $a^jb^i$ is also accepted, although $i\ne j$. Contradiction. A finite automaton cannot count up to an arbitrary integer; a context-free grammar can (previous exercise), and so can a Turing machine.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="When the word problem becomes decidable" id="ex-lg-longueur">
+<p>(a) Show that the word problem ($X\vdash^\ast Y$?) is decidable for a semi-Thue system all of whose productions $\alpha\to\beta$ satisfy $|\beta|\le|\alpha|$. (b) Deduce that membership of a word in the language of a context-sensitive grammar is decidable.</p>
+<corrige>
+<p>(a) A rewriting never increases length. The words reachable from $X$ therefore have length at most $|X|$: there are finitely many of them (at most $\sum_{\ell\le|X|}|A|^\ell$). Compute them all by saturation (start from $\{X\}$ and add the rewritten words until the set no longer changes), then check whether $Y$ is among them.</p>
+<p>(b) In a context-sensitive grammar, $|\alpha|\le|\beta|$: derivations never shorten. To know whether $w\in L(G)$, apply (a) to the inverse system ($\beta\to\alpha$), which never lengthens: $S\Rightarrow^\ast w$ if and only if $w\vdash^\ast S$ in the inverse system, and only words of length at most $|w|$ are involved (the case $S\to\varepsilon$ is handled separately). This is why context-sensitive languages are decidable, unlike type-0 languages (<a href="#probleme-du-mot">word problem</a>).</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="Context-free languages are not closed under intersection" id="ex-lg-intersection">
+<p>Show that $L_1=\{a^nb^nc^m:n,m\ge0\}$ and $L_2=\{a^mb^nc^n:n,m\ge0\}$ are context-free, but that $L_1\cap L_2$ is not. Deduce that the class of context-free languages is not closed under complement. Show also, with the <a href="#lemme-etoile">pumping lemma</a>, that $\{a^{n^2}:n\ge0\}$ is not context-free.</p>
+<corrige>
+<p>$L_1$ is generated by $S\to TC$, $T\to aTb\mid\varepsilon$, $C\to cC\mid\varepsilon$, and $L_2$ symmetrically. Their intersection is $\{a^nb^nc^n\}$, which is not context-free (<a href="#lemme-etoile">pumping lemma</a>).</p>
+<p>The class is closed under union: if $S_1$ and $S_2$ are the start symbols of two grammars with disjoint nonterminals, add $S\to S_1\mid S_2$. If it were closed under complement, it would be closed under intersection, since $L_1\cap L_2=\overline{\overline{L_1}\cup\overline{L_2}}$: contradiction.</p>
+<p>For $\{a^{n^2}\}$: let $p$ be the integer of the lemma and $w=a^{p^2}$. A decomposition $w=uvxyz$ with $|vxy|\le p$ and $vy\ne\varepsilon$ gives, for $k=2$, the word $a^{p^2+m}$ where $m=|vy|$ satisfies $1\le m\le p$. Now $p^2<p^2+m\le p^2+p<(p+1)^2$: this is not a square, and the word is not in the language. Contradiction.</p>
+</corrige>
+</exo>

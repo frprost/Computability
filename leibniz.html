@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Leibniz and binary arithmetic · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html" aria-current="page">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Leibniz and binary arithmetic</h1>
+<p class="chapo">Two symbols are enough to write every number. Leibniz saw in it an image of Creation; we see the language of computers.</p>
+
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#le-memoire-de-1703">The memoir of 1703</a></li><li><a href="#le-binaire-comme-image-de-la-creation">Binary as an image of Creation</a></li><li><a href="#le-reve-dune-langue-de-calcul">The dream of a calculus of reasoning</a></li></ol></nav>
+
+
+<h2 id="le-memoire-de-1703">The memoir of 1703</h2>
+
+<p>In 1703, Gottfried Wilhelm Leibniz published in the <em>Mémoires de l’Académie royale des sciences</em> a text with a long title: <em>Explication de l’arithmétique binaire, qui se sert des seuls caractères 0 et 1, avec des remarques sur son utilité, et sur ce qu’elle donne le sens des anciennes figures chinoises de Fohy</em> (Explanation of binary arithmetic, which uses only the characters 0 and 1, with remarks on its usefulness and on the light it throws on the ancient Chinese figures of Fohy). He shows there that every number can be written with only two symbols, and that arithmetic operations become extremely simple: the multiplication table reduces to $1\times1=1$. The idea is so familiar to us that it has become the very symbol of computing.</p>
+
+<p>The 1703 paper was not Leibniz’s first statement of the idea: as early as 1679 he had written a manuscript, <em>De progressione dyadica</em>, in which he even describes a binary calculating machine using marbles falling through holes. Nor was he the first: Thomas Harriot used binary in his manuscripts around 1600, and Juan Caramuel y Lobkowitz published it in 1670. The 1703 publication was triggered by his correspondence with the Jesuit Joachim Bouvet, a missionary in China, who pointed out to him in 1701 that the hexagrams of the <em>I Ching</em>, attributed to Fuxi (“Fohy”), can be read as the numbers 0 to 63 written in binary.</p>
+
+<h2 id="le-binaire-comme-image-de-la-creation">Binary as an image of Creation</h2>
+
+<p>Leibniz gave his discovery a metaphysical meaning. In a letter to Duke Rudolph Augustus of Brunswick (2 January 1697), he proposed striking a medal bearing the inscription <em>Omnibus ex nihilo ducendis sufficit unum</em> (“to draw all things out of nothing, unity suffices”): 1 stands for God, 0 for nothingness, and the writing of all numbers from 0 and 1 is an image of creation <em>ex nihilo</em>. One recognizes the Pythagorean influence, for which numbers are the essence of things.</p>
+
+<p>This metaphysics connects with his reflection on evil. In the <em>Essays on Theodicy</em> (1710), Leibniz takes up the Augustinian tradition according to which evil is not a positive thing but a <em>privation</em>, a lack of perfection: creatures are limited because they are not God (a creation perfect in every respect would be God himself, hence not a creation). He concludes that God chose, among all possible worlds, the best one, a conclusion Voltaire caricatured in <em>Candide</em> (1759). The 0, absence, and the 1, presence, serve as an image of this conception.</p>
+
+<h2 id="le-reve-dune-langue-de-calcul">The dream of a calculus of reasoning</h2>
+
+<p>Binary is only one part of a much larger project of Leibniz: a <em>characteristica universalis</em>, a symbolic language in which all reasoning would become computation, and a <em>calculus ratiocinator</em> which would settle controversies by saying: “Let us calculate!”. The work of Gödel, Church and Turing showed both the fruitfulness of this dream (symbolic computation, the computer) and its precise limits: no computation decides all mathematical questions (<a href="incompleteness.html#entscheidung">decision problem</a>). With a little imagination, one can see in it the distant ancestor of the idea that a whole world could be described, and simulated, by sequences of 0s and 1s, an idea popularized by the cinema.</p>
+
+<nav class="nav-chap"><a href="bases.html"><small>← Previous</small>Basic notions</a><a href="bibliography.html" style="text-align:right"><small>Next →</small>Bibliography</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

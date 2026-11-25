@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Semi-decidability and recursively enumerable sets · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html" aria-current="page"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Semi-decidability and recursively enumerable sets</h1>
+<p class="chapo">Answering “yes” when the answer is yes, and perhaps never when it is no: the fundamental asymmetry between finding and not finding.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="undecidability.html">The halting problem</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#la-notion-de-semi-decidabilite">The notion of semi-decidability</a></li><li><a href="#complements">Enumerations, projections, indices</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<h2 id="la-notion-de-semi-decidabilite">The notion of semi-decidability</h2>
+
+<p>The halting problem has a peculiarity: it is not decidable, but if a program halts, we will eventually find out; it suffices to run it. If the program does not halt, we may wait for an eternity without ever being able to conclude. This asymmetry defines a central class of problems.</p>
+
+<div class="resultat definition" id="def-re"><div class="entete-res"><div class="type">Definition</div><div class="nom">Semi-decidable (recursively enumerable) set</div></div>
+<div class="enonce"><p>A set $A\subseteq\N$ is <strong>semi-decidable</strong> (or <strong>recursively enumerable</strong>, “r.e.”) if it is the domain of a computable function: $A=W_e=\{x:\varphi_e(x)\conv\}$ for some index $e$. In other words, some program halts on the elements of $A$ and does not halt on the others.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>Many questions of everyday life have this form. “Is this person guilty?”: a proof of guilt, if there is one, may eventually be found, but the absence of proof does not prove innocence; this is why the law makes innocence the <em>default</em> answer. “Is this scientific theory false?”: an experiment may refute it, but no series of experiments proves it definitively (this is Popper’s falsifiability criterion). “Is this mathematical statement provable?”: one can enumerate all proofs and recognize the right one if it exists, but the absence of a proof after a billion attempts says nothing.</p>
+<p>In all these cases, “yes” is observable and “no” is not. Semi-decidability is the mathematical form of this situation.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>When speaking of languages, these sets are also called <em>Turing-recognizable</em>. Every decidable set is semi-decidable (the program answers, then loops if the answer is “no”). $K=\{e:\varphi_e(e)\conv\}$ is semi-decidable ($K$ is the domain of $e\mapsto u(e,e)$) but not decidable: the class of semi-decidable sets is strictly larger.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="caracterisations-re"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Characterizations of semi-decidable sets</div></div>
+<div class="enonce">
+<p>For $A\subseteq\N$, the following are equivalent:</p>
+<ol>
+<li>$A$ is the domain of a computable function;</li>
+<li>$A$ is the range of a (partial) computable function;</li>
+<li>$A=\emptyset$ or $A$ is the range of a <em>total</em> computable function ($A$ can be enumerated, possibly with repetitions);</li>
+<li>there is a decidable predicate $R$ such that $x\in A\iff\exists y\ R(x,y)$ ($\Sigma_1$ form).</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>“Enumerable” takes on its full meaning: a semi-decidable set is a set whose <em>list can be drawn up</em> by a mechanical procedure, which runs forever and makes each element appear sooner or later. We do not know when a given element will appear, nor whether a missing element will eventually come: we only know that every element of $A$ will appear in the list.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1)⇒(4): $x\in W_e\iff\exists y\ T_1(e,x,y)$ (normal form). (4)⇒(1): $x\mapsto\mu y\,R(x,y)$ is computable with domain $A$. (4)⇒(3): if $A\ne\emptyset$, fix $a\in A$ and set $g(\langle x,y\rangle)=x$ if $R(x,y)$, $a$ otherwise: $g$ is total with range $A$. (3)⇒(2) is immediate. (2)⇒(4): if $A$ is the range of $\varphi_e$, then $x\in A\iff\exists\langle z,y\rangle\ \big(T_1(e,z,y)\wedge U(y)=x\big)$, and the two quantifiers are contracted into one using the pairing function.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>The implication (2)⇒(3) rests on a fundamental technique, <strong>dovetailing</strong>: one cannot run $\varphi_e(0)$ to the end and then $\varphi_e(1)$, since the first computation may never finish. The computations are therefore interleaved:</p>
+<pre><code>for t = 0, 1, 2, ... :                       // increasing time budget
+    for z = 0, ..., t :
+        run φ_e(z) for t steps
+        if the computation has halted with result x (for the first time) :
+            output x</code></pre>
+<p>Every computation that terminates eventually gets enough time, and no infinite computation blocks the others. Operating systems do exactly this when they share the processor among several programs.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="post-complement"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Post’s theorem (complement)</div></div>
+<div class="enonce"><p>A set $A$ is decidable if and only if $A$ and its complement $\overline A=\N\setminus A$ are both semi-decidable.</p></div>
+<div class="niveau" data-niveau="philo"><p>If one has both a “yes” detector and a “no” detector, one obtains a decider: it suffices to run them in parallel; one of the two will eventually answer. Undecidability arises exactly when one of the two sides is unobservable.</p></div>
+<div class="niveau" data-niveau="tech"><p>If $A$ is decidable, so is $\overline A$, and both are semi-decidable. Conversely, if $A=W_a$ and $\overline A=W_b$, to decide $x$ run $\varphi_a(x)$ and $\varphi_b(x)$ in parallel, one step of each in turn; exactly one of them halts, and we answer according to which.</p></div>
+</div>
+
+<div class="resultat theoreme" id="kbar"><div class="entete-res"><div class="type">Corollary</div><div class="nom">The complement of halting is not semi-decidable</div></div>
+<div class="enonce"><p>$\overline K=\{e:\varphi_e(e)\ind\}$ is not semi-decidable. Semi-decidable sets are therefore not closed under complement (they are closed under union and intersection).</p></div>
+<div class="niveau" data-niveau="philo"><p>“This program will never halt” is not even observable in the long run. One can observe a halt; one can never observe, by observation alone, an absence of halting.</p></div>
+<div class="niveau" data-niveau="tech"><p>$K$ is semi-decidable; if $\overline K$ were too, $K$ would be decidable by Post’s theorem. For union and intersection: run the two semi-deciders in parallel and halt as soon as one (resp. both) has halted.</p></div>
+</div>
+
+<div class="resultat theoreme" id="k-complet"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Completeness of the halting problem</div></div>
+<div class="enonce"><p>For every semi-decidable set $A$, $A\le_m K$. We say that $K$ is <strong>$\Sigma_1$-complete</strong> (or r.e.-complete).</p></div>
+<div class="niveau" data-niveau="tech"><p>Let $A=W_a$. By s-m-n, there is a total recursive $f$ such that $\varphi_{f(x)}(y)\simeq\varphi_a(x)$ for all $y$ (the program $f(x)$ ignores its input and runs $\varphi_a$ on $x$). Then $f(x)\in K\iff\varphi_{f(x)}(f(x))\conv\iff\varphi_a(x)\conv\iff x\in A$.</p></div>
+<div class="niveau" data-niveau="philo"><p>The halting problem is the hardest of the semi-decidable problems: knowing how to solve it would make it possible to solve all the others. It plays for computability the role that <a href="turing-machines.html#temps-p-np">NP-complete</a> problems play for complexity.</p></div>
+</div>
+
+<div class="resultat theoreme" id="graphe"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Graph of a computable function</div></div>
+<div class="enonce"><p>A partial function $f$ is computable if and only if its graph $\{\langle x,y\rangle: f(x)=y\}$ is semi-decidable. A total function is computable if and only if its graph is decidable.</p></div>
+<div class="niveau" data-niveau="tech"><p>If $f$ is computable, $\langle x,y\rangle$ is in the graph if and only if the computation of $f(x)$ terminates with $y$: semi-decidable. Conversely, if the graph is $\{\langle x,y\rangle:\exists t\,R(x,y,t)\}$ with $R$ decidable, then $f(x)\simeq\pi_1\big(\mu\langle y,t\rangle\,R(x,y,t)\big)$. For total $f$, if the graph is semi-decidable it is decidable: to test $f(x)=y$, compute $f(x)$ (which terminates) and compare.</p></div>
+</div>
+
+<h2 id="complements">Enumerations, projections, indices</h2>
+
+<p>The results of this section come from Ch. Boitet’s lecture notes (part B, chapter III), which follow H. Rogers (1967). They show that one can pass <em>effectively</em> from one presentation of a semi-decidable set to another, but not always from a presentation to a more informative one.</p>
+
+<div class="resultat theoreme" id="projection"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Projection theorem</div></div>
+<div class="enonce">
+<p>A relation $R\subseteq\N^k$ is called semi-decidable if $\{\langle x_1,\dots,x_k\rangle:(x_1,\dots,x_k)\in R\}$ is.</p>
+<ol>
+<li>Every semi-decidable relation $R\subseteq\N^k$ is the projection of a decidable (even primitive recursive) relation $S\subseteq\N^{k+1}$: $\vec x\in R\iff\exists y\ (\vec x,y)\in S$.</li>
+<li>The projection $\mathrm{Pr}_j(R)=\{(x_1,\dots,x_{j-1},x_{j+1},\dots,x_k):\exists x_j\ (x_1,\dots,x_k)\in R\}$ of a semi-decidable relation is semi-decidable.</li>
+<li>(Enumeration of relations) There is a recursive relation $R\subseteq\N^3$ such that, for every $z$, $W_z=\{x:\exists w\ R(z,x,w)\}$.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>A semi-decidable set is a set defined by “there exists a verifiable witness”. Adding further “there exists” does not take us out of the class: two searches for witnesses merge into one, by searching for pairs. It is this robustness that makes it such a natural notion, and the first step of the <a href="arithmetical-hierarchy.html">arithmetical hierarchy</a>.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1) If $\langle\vec x\rangle\in W_m$, take $S(\vec x,y)$: “$\varphi_m(\langle\vec x\rangle)$ halts in fewer than $y$ steps”, primitive recursive. (2) If $Q=\mathrm{Pr}_k(R)$ and $R(\vec x,x_k)\iff\exists x_{k+1}S(\vec x,x_k,x_{k+1})$, then $Q(\vec x)\iff\exists z\ S(\vec x,\pi_1(z),\pi_2(z))$: two quantifiers are contracted into one using the pairing function, and $Q$ is the domain of $\vec x\mapsto\mu z\,S(\vec x,\pi_1(z),\pi_2(z))$. (3) $R(z,x,w)$: “$\varphi_z(x)$ halts in fewer than $w$ steps”.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="enumerations-croissantes"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Increasing enumerations and decidable subsets</div></div>
+<div class="enonce">
+<ol>
+<li>A nonempty set is decidable if and only if it is the range of a nondecreasing total computable function ($x&lt;y\Rightarrow f(x)\le f(y)$).</li>
+<li>An infinite set is decidable if and only if it is the range of a strictly increasing total computable function.</li>
+<li>Every infinite semi-decidable set contains an infinite decidable subset.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>Enumerating a set <em>in order</em> is stronger information than enumerating it in any order: if the list is increasing and we have gone past $x$ without meeting it, we know that $x$ will never appear. This is the difference between a sorted directory and a pile of index cards.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1) and (2), forward direction: if $A$ is decidable and infinite, $f(0)=\mu y\,[\chi_A(y)=1]$, $f(k+1)=\mu y\,[\chi_A(y)=1\wedge y>f(k)]$; if it is finite and nonempty, repeat its largest element. Conversely, if $f$ is nondecreasing and $A=\mathrm{Im}\,f$ is infinite, to decide $x$ compute $f(0),f(1),\dots$ until the first $f(y)>x$, which happens since $A$ is infinite: $\chi_A(x)=\overline{\mathrm{sg}}\big(\prod_{y\le g(x)}|x-f(y)|\big)$ with $g(x)=\mu y\,[f(y)>x]$; if $A$ is finite, it is decidable anyway. (3) If $f$ enumerates $A$, set $g(0)=f(0)$ and $g(x+1)=f\big(\mu y\,[f(y)>g(x)]\big)$: $g$ is strictly increasing, with range contained in $A$, and this range is infinite hence decidable by (2).</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="domaines-images"><div class="entete-res"><div class="type">Corollary</div><div class="nom">Effective passage between domains and ranges</div></div>
+<div class="enonce">
+<ol>
+<li>There are primitive recursive functions $f,g$ such that, for every $x$, $\mathrm{Im}\,\varphi_{f(x)}=\mathrm{Dom}\,\varphi_x$ and $\mathrm{Dom}\,\varphi_{g(x)}=\mathrm{Im}\,\varphi_x$.</li>
+<li>One can moreover require $\varphi_{f(x)}$ to be injective with domain an initial segment of $\N$ (all of $\N$ or an interval $[0,n]$): every semi-decidable set can be enumerated <em>without repetition</em>, uniformly in its index.</li>
+<li>The inverse image of a semi-decidable set under a partial computable function is semi-decidable: if $A=W_m$, then $\psi^{-1}(A)$ is the domain of $\varphi_m\circ\psi$.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="tech"><p>(1) can be read off the proofs of the <a href="#caracterisations-re">characterization</a> theorem: each transformation is a program taking $x$ as a parameter, and the <a href="smn-recursion.html#smn">s-m-n</a> theorem makes it a primitive recursive function of the indices. For $g$: $\theta(x,y)\simeq y$ if $y$ appears in the range of $\varphi_x$ at some stage of the dovetailing, $\ind$ otherwise. (2) Modify the dovetailing so as to output only new elements.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="indices"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Three kinds of indices</div></div>
+<div class="enonce">
+<p>A set can be given by three kinds of indices:</p>
+<ul>
+<li>an <strong>r.e. index</strong> $x$ of a semi-decidable set $A$: $A=W_x=\mathrm{Dom}\,\varphi_x$;</li>
+<li>a <strong>characteristic index</strong> $x$ of a decidable set $A$: $\varphi_x$ is the characteristic function of $A$, and we write $A=C_x$;</li>
+<li>a <strong>canonical index</strong> $x$ of a finite set $A$: $x=\sum_{i\in A}2^i$, and we write $A=D_x$ (the binary expansion of $x$ gives the list of elements).</li>
+</ul>
+<p>One passes uniformly from canonical indices to characteristic indices, and from these to r.e. indices: there are total computable $f_1,f_2$ with $D_x=C_{f_1(x)}$ and $C_x=W_{f_2(x)}$. But not in the other direction: there is no partial computable function $\psi$ such that $\psi(x)\conv$ and $C_x=D_{\psi(x)}$ whenever $C_x$ is finite, nor any $\psi$ such that $\psi(x)\conv$ and $W_x=C_{\psi(x)}$ whenever $W_x$ is decidable.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>Knowing that a set is finite does not give its list; knowing that it is decidable does not give a decision algorithm. One may have a program answering “is $n$ in the set?” without being able to say how many elements the set has, even when that number is finite. The information “there exists” is weaker than the information “here it is”.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>Lemma: $x\mapsto|D_x|$ is computable (it is the number of 1s in the binary expansion of $x$), but no partial computable $\psi$ satisfies “if $\varphi_x=\chi_A$ with $A$ finite, then $\psi(x)=|A|$”. Indeed, let $\eta(x,z)=1$ if $\varphi_x(x)$ halts in exactly $z$ steps, $0$ otherwise; by s-m-n, $\lambda z.\eta(x,z)=\varphi_{g(x)}$ with $g$ total, and $\varphi_{g(x)}$ is the characteristic function of a one-element set if $x\in K$, of the empty set otherwise. Then $\psi\circ g$ would be total and characteristic of $K$.</p>
+<p>The first point of the theorem follows (otherwise $|D_{\psi(x)}|$ would give the cardinality). For the second, let $h_1$ be total with $\varphi_{h_1(x)}(y)\simeq0$ if $y=0$ and $x\in K$, $\ind$ otherwise: $W_{h_1(x)}$ is $\{0\}$ or $\emptyset$, always decidable; $\psi\circ h_1$ would be total and $x\mapsto\varphi_{\psi(h_1(x))}(0)$ would characterize $K$.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="selection"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Uniformization and selection</div></div>
+<div class="enonce">
+<p>A set $A\subseteq\N$ is <strong>single-valued</strong> if the set of pairs $\{(x,y):\langle x,y\rangle\in A\}$ is the graph of a (partial) function.</p>
+<ol>
+<li>(Uniformization) There is a total computable $f$ such that, for every $z$: $W_{f(z)}$ is single-valued, $W_{f(z)}\subseteq W_z$, $W_{f(z)}$ has the same domain as $W_z$, and $W_{f(z)}=W_z$ if $W_z$ is already single-valued.</li>
+<li>(Selection) There is a partial computable $\psi$ such that, for every $z$: $\psi(z)$ is defined if and only if $W_z$ contains an index $w$ with $W_w\ne\emptyset$, and in that case $\psi(z)$ is such an index.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>From a semi-decidable relation “$y$ is an acceptable answer for $x$”, one can mechanically extract a <em>function</em> that chooses an answer for each $x$ that has one: keep the first answer found by the dovetailing. This is an effective “axiom of choice”, valid because the sets involved are enumerable.</p></div>
+<div class="niveau" data-niveau="tech"><p>(1) Enumerate $W_z$ without repetition and keep a pair $\langle x,y\rangle$ only if no pair $\langle x,y'\rangle$ was enumerated before it; the resulting set is semi-decidable, uniformly in $z$. (2) $\{\langle z,w\rangle:w\in W_z\wedge\exists u\ u\in W_w\}$ is semi-decidable by projection; apply (1) to it and take for $\psi$ the function whose graph it is.</p></div>
+</div>
+
+<div class="resultat theoreme" id="univalents-non-re"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Single-valued indices do not form a semi-decidable set</div></div>
+<div class="enonce">
+<p>The set $U=\{z : W_z \text{ is single-valued}\}$ is not semi-decidable. Its complement, on the other hand, is semi-decidable; in particular $U$ is not decidable.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>The previous theorem can <em>produce</em> single-valued indices: from any $z$, $f(z)$ is one. But it is impossible to <em>recognize</em> them all. Being single-valued is an absence (“never two answers to the same question”), and an absence cannot be observed in finite time; the failure of single-valuedness, on the contrary, is visible as soon as two incompatible pairs have appeared.</p></div>
+<div class="niveau" data-niveau="tech">
+<p><em>The complement is semi-decidable.</em> $z\notin U$ if and only if $\exists x\,\exists y\,\exists y'\ (y\ne y'\wedge \langle x,y\rangle\in W_z\wedge\langle x,y'\rangle\in W_z)$: this is the projection of a semi-decidable set, hence a semi-decidable set (<a href="#projection">projection theorem</a>).</p>
+<p><em>$U$ is not semi-decidable.</em> We reduce the complement $\overline K$ of the halting problem to $U$. The partial function $\theta(x,t)=0$ if $t=\langle 0,0\rangle$, $\theta(x,t)=\Phi_x(x)\cdot 0$ if $t=\langle 0,1\rangle$, and $\theta(x,t)$ undefined otherwise, is computable. By the <a href="smn-recursion.html#smn">s-m-n theorem</a>, there is a total computable $g$ with $\Phi_{g(x)}(t)\simeq\theta(x,t)$, whence</p>
+$$W_{g(x)}=\begin{cases}\{\langle 0,0\rangle\} & \text{if } x\notin K,\\ \{\langle 0,0\rangle,\langle 0,1\rangle\} & \text{if } x\in K.\end{cases}$$
+<p>The first set is single-valued, the second is not (two values at $0$). Hence $x\in\overline K\iff g(x)\in U$. If $U$ were semi-decidable, so would be $\overline K=g^{-1}(U)$ (semi-decide $g(x)\in U$), which contradicts the <a href="#kbar">corollary</a>: $\overline K$ is not semi-decidable.</p>
+<p>Finally $U$ is not decidable, otherwise it would be semi-decidable. For undecidability alone one could also conclude by <a href="undecidability.html#rice-theoreme">Rice’s theorem</a>, since “being single-valued” is a non-trivial property of $W_z$; the reduction above gives more, namely non-semi-decidability.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>The reduction is uniform and entirely explicit: the machine with index $g(x)$ reads $t$, halts at once if $t=\langle 0,0\rangle=0$ (with Cantor’s pairing, $\langle 0,1\rangle=1$), simulates $\Phi_x(x)$ and then halts if $t=1$, and loops in all other cases. In pseudo-code:</p>
+<pre><code>def phi_g(x):            # the machine with index g(x), as a function of t
+    def m(t):
+        if t == 0: return 0                     # &lt;0,0&gt;
+        if t == 1: universal(x, x); return 0    # &lt;0,1&gt; : only if x ∈ K
+        while True: pass                        # undefined elsewhere
+    return m</code></pre>
+</div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-sd-union"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — Union and intersection</span></div><div class="corps-exo">
+<p>Show that the union and the intersection of two semi-decidable sets are semi-decidable. Why does the union require a little more care?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Let $A=\mathrm{dom}\,\varphi_a$ and $B=\mathrm{dom}\,\varphi_b$. For $A\cap B$, compute $\varphi_a(x)$, then $\varphi_b(x)$, and halt if both computations terminate. For $A\cup B$, one cannot do the same: if $\varphi_a(x)$ does not terminate, one would never reach $\varphi_b(x)$. The two computations are therefore run alternately, one step of each in turn, halting as soon as one of them halts. Formally, $x\in A\cup B\iff\exists y\,\big(T_1(\eta(a),x,y)\vee T_1(\eta(b),x,y)\big)$, the projection of a decidable predicate (<a href="#projection">projection theorem</a>).</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-sd-reduction"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 2 — Reductions carry semi-decidability</span></div><div class="corps-exo">
+<p>Show that if $A\le_mB$ and $B$ is semi-decidable, then $A$ is semi-decidable. Deduce that if $\overline K\le_mB$, then $B$ is not semi-decidable.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Let $f$ be total computable with $x\in A\iff f(x)\in B$, and $B=\mathrm{dom}\,\varphi_b$. Then $A=\mathrm{dom}(\varphi_b\circ f)$: compute $f(x)$ (which terminates), then $\varphi_b(f(x))$. If $\overline K\le_mB$ with $B$ semi-decidable, $\overline K$ would be semi-decidable, which is false (<a href="#kbar">corollary</a>).</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-sd-tot"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — Totality is neither semi-decidable nor co-semi-decidable</span></div><div class="corps-exo">
+<p>Let $\mathrm{Tot}=\{e:\varphi_e\text{ is total}\}$. Show that neither $\mathrm{Tot}$ nor its complement is semi-decidable.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p><em>Complement.</em> By s-m-n, there is a total computable $h$ with $\varphi_{h(e)}(x)\simeq\varphi_e(e)$ for all $x$. If $e\in K$, $\varphi_{h(e)}$ is total; otherwise it is nowhere defined. Hence $e\in\overline K\iff h(e)\in\overline{\mathrm{Tot}}$: $\overline K\le_m\overline{\mathrm{Tot}}$.</p>
+<p><em>$\mathrm{Tot}$ itself.</em> We need a function that is total exactly when $e\notin K$. By s-m-n, let $g$ be total computable with $\varphi_{g(e)}(x)=0$ if the computation of $\varphi_e(e)$ has not halted within $x$ steps, and $\varphi_{g(e)}(x)\ind$ otherwise (simulate $x$ steps, then loop if the computation has halted). If $e\notin K$, $\varphi_{g(e)}$ is the zero function, total. If $e\in K$, with a computation of $s$ steps, $\varphi_{g(e)}(x)\ind$ for $x\ge s$. Hence $\overline K\le_m\mathrm{Tot}$.</p>
+<p>By the previous exercise, neither is semi-decidable. We recover the fact that $\mathrm{Tot}$ lies beyond the first level of the <a href="arithmetical-hierarchy.html#fin-tot">arithmetical hierarchy</a>.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-sd-inseparables"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 4 — Two inseparable sets</span></div><div class="corps-exo">
+<p>Let $A=\{e:\varphi_e(e)=0\}$ and $B=\{e:\varphi_e(e)=1\}$. Show that they are semi-decidable and disjoint, but that there is no decidable set $C$ with $A\subseteq C$ and $B\cap C=\emptyset$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>$A$ and $B$ are semi-decidable: compute $\varphi_e(e)$ and compare the result with $0$ (resp. $1$). They are disjoint, since $\varphi_e(e)$ has at most one value.</p>
+<p>Suppose $C$ is decidable, $A\subseteq C$ and $B\cap C=\emptyset$. The function $g(e)=1$ if $e\in C$, $g(e)=0$ otherwise, is total computable; let $k$ be an index of $g$. If $k\in C$, then $\varphi_k(k)=1$, so $k\in B$, contradicting $B\cap C=\emptyset$. If $k\notin C$, then $\varphi_k(k)=0$, so $k\in A\subseteq C$: a contradiction. Such a pair is called <em>recursively inseparable</em>. Pairs of this kind are used to show that theories are undecidable, and the idea reappears in Rosser’s theorem (<a href="incompleteness.html#rosser">incompleteness</a>).</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="undecidability.html"><small>← Previous</small>Undecidable problems</a><a href="arithmetical-hierarchy.html" style="text-align:right"><small>Next →</small>The arithmetical hierarchy</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

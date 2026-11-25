@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Computability and artificial intelligence · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html" aria-current="page"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Computability and artificial intelligence</h1>
+<p class="chapo">An artificial intelligence is a program. Everything this manual proves about programs therefore applies to it: what it can never guarantee, what can never be guaranteed about it, and what it can do nonetheless.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="undecidability.html#rice-theoreme">Rice’s theorem</a> · <a href="arithmetical-hierarchy.html#fin-tot">Tot is Π₂-complete</a> · <a href="incompleteness.html#derivabilite">Derivability conditions</a> · <a href="kolmogorov-omega.html">Kolmogorov and Ω</a> · <a href="turing-machines.html#temps-p-np">P and NP</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#specifications">Programming from a specification</a></li><li><a href="#controle">Controlling an AI</a></li><li><a href="#tests-preuves">Testing, proving, checking</a></li><li><a href="#apprendre">Learning and predicting</a></li><li><a href="#reseaux">Neural networks as models of computation</a></li><li><a href="#soi">An AI that reasons about itself</a></li><li><a href="#bilan">What these results say, and what they do not</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<p>Today’s artificial intelligence systems (neural networks, large language models, automated provers) are programs run by computers. Like any software, they therefore fall under the <a href="church-turing-thesis.html">Church-Turing thesis</a>. This chapter translates the theorems of the manual into statements about what can be expected of them. A warning first: all the impossibility results that follow concern <em>guarantees</em> valid in <em>all</em> cases. They do not forbid a system from succeeding very often; they forbid it from always succeeding, and from our always knowing whether it has succeeded. They apply equally well to humans, if humans compute nothing more than a machine does.</p>
+
+<h2 id="specifications">Programming from a specification</h2>
+
+<div class="resultat definition" id="specification"><div class="entete-res"><div class="type">Definition</div><div class="nom">Functional specification</div></div>
+<div class="enonce">
+<p>A <strong>specification</strong> is a formula $\psi(x,y)$ of arithmetic (<a href="incompleteness.html#delta0">language of arithmetic</a>), read as “the answer $y$ is suitable for the input $x$”. A program with index $p$ <strong>satisfies</strong> $\psi$ if, for every $x$, $\varphi_p(x)$ is defined and $\psi(x,\varphi_p(x))$ is true. We write $\mathrm{Sat}(\psi)$ for the set of these indices.</p>
+<p>The specification is <strong>testable</strong> if the relation $\psi(x,y)$ is decidable: one can check mechanically that a given answer is suitable.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>A specification says <em>what</em> the program must do, not <em>how</em>. “Sort a list” is a testable specification: it is easy to check that a list is sorted and has the same elements. “Say whether this program halts” is a specification no one knows how to test: to check a “no” answer, one would have to wait forever. This is the kind of request one might address to an AI programmer.</p></div>
+<div class="niveau" data-niveau="tech"><p>Satisfying $\psi$ depends only on the function $\varphi_p$: if $\varphi_p=\varphi_q$, then $p\in\mathrm{Sat}(\psi)\iff q\in\mathrm{Sat}(\psi)$. This property is what allows <a href="undecidability.html#rice-theoreme">Rice’s theorem</a> to be applied. In practice a testable specification is given by a program computing the characteristic function of $\psi$; by the <a href="incompleteness.html#representabilite">definability proposition</a>, it is indeed a formula of arithmetic.</p></div>
+<div class="niveau" data-niveau="techno"><p>In software engineering practice, a testable specification corresponds to a <em>test oracle</em>: a function which, given an input and an output, says whether the output is correct. Unit test suites are approximations of it, which check $\psi$ only for a few values of $x$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="verification-spec"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Checking that a program meets its specification is undecidable</div></div>
+<div class="enonce">
+<ol>
+<li>If a specification $\psi$ is satisfied by at least one program, $\mathrm{Sat}(\psi)$ is not decidable.</li>
+<li>If moreover $\psi$ is testable, $\mathrm{Sat}(\psi)$ is $\Pi_2$-complete. In particular, neither $\mathrm{Sat}(\psi)$ nor its complement is semi-decidable.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>No AI, and no verification program, can read an arbitrary program and say for certain whether it does what is asked of it. The difficulty is not technical but logical: it is Rice’s theorem. Point (2) specifies that the failure is twofold: one can neither certify all correct programs, nor expose all incorrect ones.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1) $\mathrm{Sat}(\psi)=\{p:\varphi_p\in\mathcal F\}$, where $\mathcal F$ is the set of total computable functions $f$ such that $\psi(x,f(x))$ for every $x$. By hypothesis $\mathcal F\ne\varnothing$, and the nowhere-defined function is not in $\mathcal F$. Apply <a href="undecidability.html#rice-theoreme">Rice’s theorem</a>.</p>
+<p>(2) <em>Upper bound.</em> $p\in\mathrm{Sat}(\psi)\iff\forall x\,\exists s\,[\varphi_p(x)$ halts in $s$ steps with a result $y$ such that $\psi(x,y)]$. The relation in brackets is decidable, so $\mathrm{Sat}(\psi)\in\Pi_2$ (<a href="arithmetical-hierarchy.html#def-hierarchie">definition</a>). <em>Lower bound.</em> Since $\psi$ is satisfied by a program, for every $x$ there is a $y$ with $\psi(x,y)$, and $x\mapsto\mu y\,\psi(x,y)$ is computable. By the <a href="smn-recursion.html#smn">s-m-n theorem</a>, there is a total computable $g$ such that $\varphi_{g(e)}(x)$ first computes $\varphi_e(x)$, then, if this computation halts, returns $\mu y\,\psi(x,y)$. Then $g(e)\in\mathrm{Sat}(\psi)\iff\varphi_e$ is total: $\mathrm{Tot}\le_m\mathrm{Sat}(\psi)$, and $\mathrm{Tot}$ is $\Pi_2$-complete (<a href="arithmetical-hierarchy.html#fin-tot">proposition</a>). A $\Pi_2$-complete set is not $\Sigma_2$, since the <a href="arithmetical-hierarchy.html#hierarchie-stricte">hierarchy is strict</a>; so it is neither $\Sigma_1$ nor $\Pi_1$.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Real verification tools (static analysers, model checkers, proof assistants) get around this theorem in two ways. Either they may answer “I don’t know” or raise false alarms. Or they restrict the class of programs: on programs with bounded memory, for instance, everything becomes decidable, but at the price of a combinatorial explosion.</p></div>
+</div>
+
+<div class="resultat theoreme" id="synthese"><div class="entete-res"><div class="type">Theorem</div><div class="nom">No universal program synthesis</div></div>
+<div class="enonce">
+<ol>
+<li>If $\psi$ is testable and satisfied by at least one program, the program “search for the first $y$ such that $\psi(x,y)$” satisfies it, and its index can be computed from a program that tests $\psi$.</li>
+<li>There is no algorithm which, for every specification $\psi$ satisfied by at least one program, produces a program satisfying it. This holds even when restricted to Boolean combinations of $\Sigma_1$ formulas.</li>
+<li>If $\mathsf P\ne\mathsf{NP}$, there are testable specifications that no polynomial-time program satisfies, although blind search satisfies them.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>This is the answer to the question “will an AI be able to write any program from its description?”. The answer is no, and the frontier runs exactly along testability. When one can recognize a good answer, brute force suffices in principle (point 1); the problem then becomes one of <em>efficiency</em>, and the P = NP question marks its limit (point 3). When one cannot recognize a good answer, no method, clever or not, always finds a correct program, even when a very simple one exists (point 2).</p>
+<p>This theorem does not say that an AI cannot program. It says that the task “program from any specification” is not a task a program can carry out without error; an AI that programs well is an AI that often succeeds, on the specifications it is given in practice.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>(1) If $\psi$ is satisfied by a program, for every $x$ there is a $y$ such that $\psi(x,y)$; the search therefore always halts, on a suitable answer. Going from an index of the test to an index of the search program is given by the <a href="smn-recursion.html#smn">s-m-n theorem</a>.</p>
+<p>(2) Let $\theta(e)$ be the $\Sigma_1$ formula “$\exists s\,T_1(e,e,s)$”, which defines $K$ (<a href="incompleteness.html#representabilite">definability</a>), and</p>
+$$\psi_e(x,y)\;=\;\big(y=1\wedge\theta(e)\big)\vee\big(y=0\wedge\neg\theta(e)\big).$$
+<p>For each $e$, $\psi_e$ is satisfied by a constant function: the constant 1 if $e\in K$, the constant 0 otherwise. The code of $\psi_e$ is computable from $e$. If an algorithm $A$ assigned to every satisfiable specification a program satisfying it, the function $e\mapsto\varphi_{A(\psi_e)}(0)$ would be computable and total, and would equal $1$ if $e\in K$, $0$ otherwise: $K$ would be decidable, contrary to the <a href="undecidability.html#arret">halting theorem</a>.</p>
+<p>(3) Let $\psi_{\mathrm{SAT}}(x,y)$ be: “if $x$ codes a satisfiable propositional formula, then $y$ codes an assignment that makes it true”. This relation is decidable (try all assignments), and satisfied by blind search. If a program satisfied it in polynomial time, satisfiability would be decided in polynomial time: compute $y$, then check that $y$ makes $x$ true. But satisfiability is NP-complete (<a href="complexity.html#cook-levin">Cook-Levin theorem</a>); we would have $\mathsf P=\mathsf{NP}$.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>The file <a href="assets/code/ia_limites.py">ia_limites.py</a> contains the function <code>synthese</code> of point (1): from the test $y^2\le x<(y+1)^2$, it produces a correct integer square root program, which tries $y=0,1,2,\dots$ The synthesis is automatic and correct, but the resulting program makes on the order of $\sqrt x$ trials, a number exponential in the length of $x$, whereas Newton’s method makes a polynomial number. All the intelligence of programming lies in that gap.</p></div>
+</div>
+
+<h2 id="controle">Controlling an AI</h2>
+
+<div class="resultat theoreme" id="confinement"><div class="entete-res"><div class="type">Theorem</div><div class="nom">One cannot predict that an AI will behave badly (Alfonseca et al., 2021)</div></div>
+<div class="enonce">
+<p>Consider programs that have a special instruction $\mathsf{DANGER}$ (for example an output to the outside world). Let $D$ be the set of pairs $\langle p,x\rangle$ such that program $p$, on input $x$, eventually executes the instruction $\mathsf{DANGER}$. Then $D$ is semi-decidable, but not decidable. Its complement, the set of “safe” pairs, is not semi-decidable.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>A control program that would examine an AI and its environment to guarantee in advance that it will never do anything harmful does not exist, if nothing is imposed on the AI under examination. One can <em>observe</em> dangerous behaviour when it occurs, and even intercept it at the moment it is about to occur; one cannot <em>predict</em> it in general. Alfonseca, Cebrian, Fernández Anta, Coviello, Abeliuk and Rahwan concluded in 2021 that a superintelligence could not be “contained” by a monitoring program.</p>
+<p>The conclusion must be read with its condition: it holds for arbitrary programs. An AI designed within a restricted class (computations of bounded duration, actions filtered by a monitor) can be controlled, at the price of what it is forbidden to do.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>$\langle p,x\rangle\in D\iff\exists s$ [the computation of $p$ on $x$ executes $\mathsf{DANGER}$ in at most $s$ steps]: $D$ is semi-decidable. Given $e$, let $h(e)$ (computable by the <a href="smn-recursion.html#smn">s-m-n theorem</a>) be a program that simulates $\varphi_e(e)$ without ever using $\mathsf{DANGER}$, then executes $\mathsf{DANGER}$ if the simulation terminates. Then $e\in K\iff\langle h(e),0\rangle\in D$: $K\le_mD$, so $D$ is not decidable. If its complement were semi-decidable, $D$ would be decidable by <a href="semi-decidability.html#post-complement">Post’s theorem</a>.</p></div>
+<div class="niveau" data-niveau="techno"><p>The difference between predicting and intercepting is the one between static analysis and run-time monitoring. A monitor that runs the program step by step and stops it just before the $\mathsf{DANGER}$ instruction is trivial to write; it predicts nothing, it turns the program into another one, which never performs the action. Operating-system sandboxes and the action filters of AI agents follow this principle, and their effectiveness depends entirely on the list of actions that can be recognized as dangerous.</p></div>
+</div>
+
+<h2 id="tests-preuves">Testing, proving, checking</h2>
+
+<div class="resultat theoreme" id="tests"><div class="entete-res"><div class="type">Proposition</div><div class="nom">What tests and proofs can establish</div></div>
+<div class="enonce">
+<p>Let $\psi$ be a testable specification, satisfied by at least one program.</p>
+<ol>
+<li>The set of programs that give, on at least one input, an unsuitable answer is semi-decidable: by trying all inputs in parallel, one eventually finds such an error if it exists.</li>
+<li>No search procedure (no semi-decidable set) separates the correct programs exactly from the others.</li>
+<li>If $\mathsf T$ is a sound theory whose axioms form a decidable set, the set of $p$ for which $\mathsf T$ proves “$p$ satisfies $\psi$” is contained in $\mathrm{Sat}(\psi)$, and differs from it.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>“Program testing can be used to show the presence of bugs, but never to show their absence” (Dijkstra, 1969). The arithmetical hierarchy gives this sentence an exact content: a wrong answer is a $\Sigma_1$ fact, which a search eventually finds; correctness is a $\Pi_2$ fact, which no finite search establishes. Correctness proofs do better than tests, but no theory proves the correctness of all correct programs: a program can be correct without anyone being able to prove it.</p></div>
+<div class="niveau" data-niveau="tech"><p>(1) $p$ is in the set if and only if there exist $x$ and $s$ such that $\varphi_p(x)$ halts in $s$ steps with a result $y$ such that $\neg\psi(x,y)$: this is a $\Sigma_1$ relation. Programs that give no answer on some inputs are incorrect without being detected this way. (2) A semi-decidable set is $\Sigma_1$, whereas $\mathrm{Sat}(\psi)$ is $\Pi_2$-complete (<a href="#verification-spec">previous theorem</a>), hence not $\Sigma_2$, hence not $\Sigma_1$. (3) The theorems of $\mathsf T$ form a semi-decidable set, so the set described is semi-decidable; it is contained in $\mathrm{Sat}(\psi)$ because $\mathsf T$ is sound, and differs from it by (2).</p></div>
+<div class="niveau" data-niveau="techno"><p>Property-based testing (QuickCheck and its descendants) automatically generates thousands of inputs and checks $\psi$ on each: this is the search of point (1), stopped after a fixed time. An AI that writes code and tests it itself inherits the same limit: it can find its wrong answers, not certify the absence of error.</p></div>
+</div>
+
+<div class="resultat theoreme" id="proposer-verifier"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Checking a proof is decidable, finding one is not</div></div>
+<div class="enonce">
+<p>Let $\mathsf T$ be a theory whose axioms form a decidable set. The relation “$d$ is a proof of $\phi$ in $\mathsf T$” is decidable. The set of theorems of $\mathsf T$ is semi-decidable; for $\mathsf T=\mathsf{PA}$, it is not decidable.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>This asymmetry justifies a division of labour between an AI and a checker. The AI searches for proofs by any means, heuristic, statistical, fallible; a small checking program, whose correctness can be ascertained, checks each proposed proof. One need not trust the AI, only the checker. This is the same asymmetry as that of $\mathsf{NP}$: finding a certificate may be hard, checking it is easy.</p>
+<p>The determination of $S(5)$, with proofs checked in the Coq proof assistant (now renamed Rocq; <a href="busy-beavers.html#valeurs-bb">busy beavers</a>), and the AlphaProof system, which produces proofs checked by the Lean proof assistant (combined with AlphaGeometry 2, it reached silver-medal level at the 2024 International Mathematical Olympiad), follow this pattern.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>The proof relation is primitive recursive (<a href="incompleteness.html#def-peano">proof predicate</a>): one checks that each line is an axiom or follows from earlier ones by a rule. The theorems are the projection $\{\phi:\exists d\ \mathrm{Prf}_{\mathsf T}(d,\phi)\}$, semi-decidable. For $\mathsf{PA}$: if $e\in K$, the Σ statement “$\varphi_e(e)$ halts” is provable (<a href="incompleteness.html#sigma-complet">Σ-completeness</a>); if $e\notin K$, it is false, and $\mathsf{PA}$, which proves only true statements, does not prove it. So $K\le_m\mathrm{Th}(\mathsf{PA})$, which is not decidable.</p></div>
+<div class="niveau" data-niveau="techno"><p>The kernel of the Lean 4 proof assistant, like that of Coq, is a small part of the system, written to be reviewed. They, and not the tactics or the AIs that propose proofs, are what must be trusted. Several independent kernels (external checkers, written by other teams) can recheck the same proof, which further reduces the trust required.</p></div>
+</div>
+
+<h2 id="apprendre">Learning and predicting</h2>
+
+<div class="resultat theoreme" id="predicteur"><div class="entete-res"><div class="type">Theorem</div><div class="nom">No computable predictor succeeds on all computable sequences</div></div>
+<div class="enonce">
+<p>A <strong>predictor</strong> is a total computable function $P:\{0,1\}^\ast\to\{0,1\}$, which guesses the next bit of a sequence from the bits already seen. For every predictor $P$, the sequence $s$ defined by $s_n=1-P(s_0\cdots s_{n-1})$ is computable, and $P$ is wrong on every one of its terms. Moreover, there is a constant $c_P$ such that $\mathit{KP}(s_0\cdots s_{n-1})\le2\log_2(n+1)+c_P$ for every $n$.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>For every learning algorithm, there is a simple sequence, as simple as the algorithm itself, on which it fails completely. No prediction machine learns everything that is learnable. Solomonoff (1964) defined an ideal predictor, based on Kolmogorov complexity, which eventually predicts every computable sequence correctly; but, like complexity, it can only be approximated, not computed (<a href="kolmogorov-omega.html#c-non-calculable">chapter 18</a>). The slogan “learning is compression” has the same limit as compression: there is no computable optimal compressor.</p></div>
+<div class="niveau" data-niveau="tech"><p>$s_n$ is computed by computing $s_0,\dots,s_{n-1}$ then $P$: the sequence is computable, and by construction $P(s_0\cdots s_{n-1})\ne s_n$. For the complexity: the machine which, on input $\bar\nu$ (self-delimiting encoding of the word $\nu$ of the integer $n$), computes $s_0\cdots s_{n-1}$ is prefix-free; its inputs have length $2\lfloor\log_2(n+1)\rfloor+1$, and one concludes by the <a href="kolmogorov-omega.html#universelle-prefixe">invariance of prefix complexity</a>.</p></div>
+<div class="niveau" data-niveau="techno"><p>In <a href="assets/code/ia_limites.py">ia_limites.py</a>, two predictors are confronted with their diagonal sequence. The “majority” predictor is beaten by the sequence $1010\ldots$; a cleverer predictor, which looks for the longest pattern already seen and predicts what followed it, is beaten by an irregular-looking sequence ($110111001010001101011000\ldots$). Both are wrong on all 40 bits.</p></div>
+</div>
+
+<div class="resultat theoreme" id="gold"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Learning a language from examples (Gold, 1967)</div></div>
+<div class="enonce">
+<p>A <strong>learner</strong> receives, one by one, the words of a language $L$, each word of $L$ appearing at least once (a <strong>text</strong> for $L$). After each word, it proposes a language (for example by a grammar). It <strong>identifies $L$ in the limit</strong> if, on every text for $L$, its proposals eventually are always the same, equal to $L$. If a class of languages contains all finite languages and at least one infinite language, no learner identifies in the limit all the languages of the class. This is the case for the class of regular languages.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>From examples alone, without counterexamples, one cannot learn with certainty the grammar of a language, even in a class as simple as the regular languages: a cautious learner, who dares not generalize, fails on infinite languages; a bold learner, who generalizes, is wrong on some finite languages. This result has been much discussed in linguistics, in connection with language acquisition by children.</p>
+<p>Two recent results qualify the scope of this theorem for AI (quoted for information). Kleinberg and Mullainathan (2024) showed that <em>generating</em> new correct words of the language, without identifying it, is possible in the limit for every countable family of languages: producing correct sentences is easier than finding the grammar. Ben-David, Hrubeš, Moran, Shpilka and Yehudayoff (2019) exhibited a learning problem whose learnability is independent of ZFC.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>Let $M$ be a learner that identifies all finite languages, and $L=\{w_0,w_1,\dots\}$ an infinite language. A text is built in stages. Stage $k$: present the word $w_k$, repeatedly, until $M$ proposes $\{w_0,\dots,w_k\}$. This moment comes: the text built so far, extended by $w_k$ forever, is a text for the finite language $\{w_0,\dots,w_k\}$, which $M$ identifies. Each stage is finite, and the resulting text contains all the $w_k$: it is a text for $L$. On this text, $M$ proposes a different finite language at each stage, so it never stabilizes on $L$. The argument does not even use the computability of $M$. The finite languages and the infinite language $\{a\}^\ast$ are <a href="languages.html#automates-finis">regular</a>.</p></div>
+<div class="niveau" data-niveau="techno"><p>The function <code>texte_de_gold</code> in <a href="assets/code/ia_limites.py">ia_limites.py</a> builds this text against the learner that proposes the set of words already seen (it identifies all finite languages), for $L=\{a,aa,aaa,\dots\}$: at each stage it changes its mind once more.</p></div>
+</div>
+
+<h2 id="reseaux">Neural networks as models of computation</h2>
+
+<div class="resultat theoreme" id="automate-reseau"><div class="entete-res"><div class="type">Proposition</div><div class="nom">A finite-precision network with bounded memory is a finite automaton</div></div>
+<div class="enonce">
+<p>Consider a neural network (recurrent, or a transformer whose context has bounded length) all of whose numbers are represented with a fixed finite precision, which reads a word letter by letter and answers “yes” or “no” at the end. The set of accepted words is a regular language. In particular, such a network does not exactly recognize the language $\{a^nb^n:n\ge0\}$.</p>
+<p>On the other hand (results quoted): recurrent networks with rational weights and unbounded precision simulate Turing machines (Siegelmann and Sontag, 1995); so do transformers, with unbounded precision and arbitrarily long outputs (Pérez, Barceló and Marinković, 2021).</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>A neural network does not leave the computable: it is simulated by an ordinary program. What the proposition adds is more surprising: a network with fixed precision and memory, whatever its size, is a finite automaton, like a Turing machine whose <a href="turing-machines.html#restrictions">tape has been bounded</a>. Its universal computing power returns only if it has an unbounded external memory: a growing precision, or a text that it writes and rereads (the “chains of thought” of language models play this role of tape).</p>
+<p>With <em>arbitrary</em> real weights, a network computes non-computable functions: a single weight can contain an infinite amount of information, for example all the digits of the number <a href="kolmogorov-omega.html#def-omega">Ω</a>. This does not contradict the Church-Turing thesis: no one knows how to make, or measure, such a weight.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>The state of the network between two letters (activations, recurrent memory, context contents) is a sequence of a bounded number of numbers, each taken from a finite set of representable values: there are only finitely many possible states, and the next state is a function of the current state and the letter read. This is a deterministic finite automaton, whose language is regular (<a href="languages.html#automates-finis">Kleene’s theorem</a>). If an automaton with $N$ states accepted exactly the $a^nb^n$, two of the words $a^0,a^1,\dots,a^N$, say $a^i$ and $a^j$ with $i&lt;j$, would lead to the same state; then $a^ib^i$ and $a^jb^i$ would also lead to the same state, and would both be accepted or both rejected, whereas only the first is in the language.</p></div>
+<div class="niveau" data-niveau="techno"><p>Large language models compute in floating point (16 or 32 bits) with a context of fixed length: each is, in the sense of the proposition, a finite automaton, with an astronomical number of states. The bound has no practical effect on short inputs. It does, however, explain why the ability to recognize bracketings or to count degrades beyond the lengths seen during training, if the model cannot write intermediate results.</p></div>
+</div>
+
+<div class="resultat theoreme" id="reluplex"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Verifying a network: decidable, but hard</div></div>
+<div class="enonce">
+<p>Let $f:\mathbb Q^n\to\mathbb Q$ be a network with rational weights, composed of affine functions and the function $\mathrm{ReLU}(t)=\max(t,0)$. The problem “for every $x$ in the box $B=\prod[a_i,b_i]$, is $f(x)\le c$?” is decidable. It is NP-hard (Katz, Barrett, Dill, Julian and Kochenderfer, 2017), and training a three-neuron network optimally is already NP-complete (Blum and Rivest, 1992): results quoted.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>Unlike arbitrary programs, a fixed, trained neural network is a finite object with no loops: its properties are decidable. But decidable does not mean feasible. The number of cases to examine grows exponentially with the number of neurons, and the NP-hardness results indicate that one will probably not do much better in general. Network verification is an example where computability answers “yes” and complexity “yes, but”.</p></div>
+<div class="niveau" data-niveau="tech"><p>Let $N$ be the number of ReLU neurons. An <em>activation pattern</em> $\sigma\in\{0,1\}^N$ indicates for each neuron whether its input is positive or negative. For a fixed pattern, each neuron computes, layer after layer, an affine function of $x$ (it copies its input if $\sigma=1$, returns $0$ otherwise), and the pattern is realized exactly on a polyhedron $P_\sigma$ defined by $N$ linear inequalities in $x$. On $P_\sigma\cap B$, $f$ coincides with an affine function $\ell_\sigma$; its maximum is the value of a linear program with rational coefficients, computable exactly (by the simplex algorithm with an anti-cycling rule, for example). The property is true if and only if, for each of the $2^N$ patterns whose polyhedron meets $B$, this maximum is at most $c$.</p></div>
+<div class="niveau" data-niveau="techno"><p>The Reluplex tool, then its successor Marabou, follow this idea while avoiding the enumeration of the $2^N$ patterns: they split cases only for neurons whose sign is not already forced by the constraints. They have been used to verify safety properties of an airborne collision avoidance system (ACAS Xu), on networks of a few hundred neurons; today’s large models are out of reach of these exact methods.</p></div>
+</div>
+
+<h2 id="soi">An AI that reasons about itself</h2>
+
+<div class="resultat theoreme" id="lob"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Löb’s theorem (1955)</div></div>
+<div class="enonce">
+<p>Let $\mathsf T$ be a theory containing $\mathsf{PA}$ whose set of axioms is primitive recursive, and $\Box$ its provability predicate (<a href="incompleteness.html#def-peano">definition</a>). For every sentence $\phi$: if $\mathsf T\vdash\Box\phi\Rightarrow\phi$, then $\mathsf T\vdash\phi$.</p>
+<p>In particular, if $\mathsf T$ is consistent, it does not prove the schema “everything I prove is true” ($\Box\phi\Rightarrow\phi$ for every $\phi$): otherwise it would prove every sentence, including $0=1$.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>A system that reasons within a theory cannot fully trust itself: it cannot prove that its own proofs are reliable, except for the statements it already proves. This is a generalization of the <a href="incompleteness.html#godel2">second incompleteness theorem</a>, which is the case $\phi=(0=1)$.</p>
+<p>For an AI that designs its successor, or that modifies itself, this is a real obstacle, studied under the name “Löbian obstacle” (Yudkowsky and Herreshoff, 2013): if it accepts a successor only when it has proved that everything this successor will prove is true, it cannot accept a successor that reasons in the same theory as itself. Each generation would have to reason in a weaker theory than the previous one.</p>
+<p>The same phenomenon answers the argument of Lucas and Penrose (discussed in <a href="incompleteness.html#godel1">chapter 13</a>), according to which the human mind surpasses every machine because it “sees” the truth of Gödel sentences. For that, we would have to know our own reasoning to be consistent; if our reasoning is that of a theory, Löb’s theorem says precisely that we cannot prove it.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Assume $\mathsf T\vdash\Box\phi\Rightarrow\phi$. By the <a href="incompleteness.html#diagonal">diagonal lemma</a>, there is a sentence $G$ such that $\mathsf{PA}\vdash G\Leftrightarrow(\Box G\Rightarrow\phi)$. Write (D1), (D2), (D3) for the three <a href="incompleteness.html#derivabilite">derivability conditions</a>; everything $\mathsf{PA}$ proves, $\mathsf T$ proves.</p>
+<ol>
+<li>$\mathsf{PA}\vdash G\Rightarrow(\Box G\Rightarrow\phi)$, so, by (D1), $\mathsf{PA}\vdash\Box\big(G\Rightarrow(\Box G\Rightarrow\phi)\big)$.</li>
+<li>By (D2), twice: $\mathsf{PA}\vdash\Box G\Rightarrow(\Box\Box G\Rightarrow\Box\phi)$.</li>
+<li>By (D3), $\mathsf{PA}\vdash\Box G\Rightarrow\Box\Box G$. With 2: $\mathsf{PA}\vdash\Box G\Rightarrow\Box\phi$.</li>
+<li>With the hypothesis: $\mathsf T\vdash\Box G\Rightarrow\phi$. By the choice of $G$, $\mathsf T\vdash G$.</li>
+<li>By (D1), $\mathsf{PA}\vdash\Box G$, so $\mathsf T\vdash\Box G$, and with 4, $\mathsf T\vdash\phi$.</li>
+</ol>
+<p>For the second point: if $\mathsf T\vdash\Box(0=1)\Rightarrow0=1$, then $\mathsf T\vdash0=1$. A consistent theory therefore does not prove $\neg\Box(0=1)$, that is, $\mathrm{Con}(\mathsf T)$: we recover the second incompleteness theorem.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Proof assistants meet this theorem in a concrete form: the kernel of Lean or of Coq cannot prove its own correctness in its own logic. Kernel verification projects (for example MetaCoq for Coq) prove the correctness of a kernel in a stronger theory, by adding an axiom, exactly as the theorem predicts.</p></div>
+</div>
+
+<h2 id="bilan">What these results say, and what they do not</h2>
+
+<p>The theorems of this chapter are theorems about the worst case and about guarantees. They say that no AI will program without error from any specification, that no controller will certify every AI as harmless, that no test and no theory will certify all correct programs, that no learning algorithm will learn everything that is learnable, and that no formal system will fully trust itself. They say nothing about performance on the cases met in practice, which is a matter of experiment, not of theory. Finally, they suggest an architecture: fallible, inventive systems to search, small and reliable checkers to verify, and explicit restrictions wherever guarantees are required.</p>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-ia-predicteur"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — Beating a predictor</span></div><div class="corps-exo">
+<p>The predictor $P$ announces, as next bit, the majority bit among those already seen (and $0$ in case of a tie, in particular at the start). Write the first eight terms of the sequence $s$ of the <a href="#predicteur">theorem on predictors</a>, on which $P$ is always wrong.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>$s_n=1-P(s_0\cdots s_{n-1})$. At the start, a tie: $P$ announces 0, so $s_0=1$. Then the majority is 1, $P$ announces 1, $s_1=0$. Tie: $s_2=1$. Majority 1: $s_3=0$. And so on: $s=10101010\cdots$. The sequence that fools this predictor is very simple, which illustrates the second part of the theorem: the diagonal sequence has low complexity, of the order of the complexity of the predictor itself.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-ia-automate"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 2 — A network with finite memory</span></div><div class="corps-exo">
+<p>A recurrent network reads a word letter by letter; its internal state is a vector of 64 numbers each coded on 16 bits. Show that it behaves like a finite automaton, and bound its number of states. Can it recognize exactly $\{a^nb^n:n\ge0\}$?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>The internal state takes at most $2^{64\times16}=2^{1024}$ values, and the update is a deterministic function of the state and the letter read: it is a deterministic finite automaton with at most $2^{1024}$ states (<a href="#automate-reseau">proposition</a>). By the <a href="languages.html#ex-lg-non-regulier">exercise of the Languages chapter</a>, no finite automaton recognizes $\{a^nb^n\}$: the network is wrong on a word $a^ib^i$ or $a^jb^i$ with $i&lt;j\le2^{1024}$. The number of states is astronomical, and in practice the network may succeed on all lengths encountered; the argument only says that there is a length beyond which it fails.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-ia-gold"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 3 — Learning the finite languages in the limit</span></div><div class="corps-exo">
+<p>(a) Show that the class of all finite languages is identifiable in the limit. (b) Show that the class formed by the finite languages and the infinite language $\N$ (words being identified with integers) is not.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>(a) The learner proposes the set of words seen so far. On a text for a finite language $L$, all the words of $L$ eventually appear; from that moment on, the proposal equals $L$ and no longer changes.</p>
+<p>(b) Suppose a learner identifies this class. We build a text for $\N$ that defeats it. Give $0,0,0,\dots$ until it proposes $\{0\}$; this happens, otherwise it would fail on the text $0,0,0,\dots$ for the finite language $\{0\}$. Then give $1,1,\dots$ until it proposes $\{0,1\}$ (same reason, with the text for $\{0,1\}$ already begun), then $2,2,\dots$, and so on. The resulting text contains all the integers: it is a text for $\N$, on which the learner changes its mind infinitely often. It does not identify $\N$. This is the simplest case of <a href="#gold">Gold’s theorem</a>.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="busy-beavers.html"><small>← Previous</small>Busy beavers</a><a href="other-models.html" style="text-align:right"><small>Next →</small>Other models of computation</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

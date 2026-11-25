@@ -1,0 +1,142 @@
+<!--
+titre: The undecidable in ordinary mathematics
+court: Ordinary mathematics
+chapo: Undecidability does not only concern programs and logic. Questions posed by mathematicians who were not thinking of machines (arithmetic iterations, matrix products, tilings of the plane, zeros of functions, groups, manifolds) are undecidable, because they can all describe a computation.
+prerequis: undecidability.html#arret|The halting problem ; other-models.html#fractran|FRACTRAN ; other-models.html#pcp|Post’s problem ; diophantine-equations.html#mrdp|MRDP theorem
+-->
+
+<p>The halting problem is a question about programs. One might think that undecidability stays confined to computer science and logic, and that “ordinary” mathematics (arithmetic, algebra, geometry, analysis) is not affected by it. <a href="diophantine-equations.html">Hilbert’s tenth problem</a> has already shown the contrary. This chapter gathers other examples, chosen because they were posed independently of any idea of computation. Each time, the proof has the same shape: one shows that the question can <em>describe</em> the computation of a machine, and one reduces to halting. Three reductions are proved in full and checked by the program <a href="assets/code/maths_indecidables.py">maths_indecidables.py</a>; the other results are quoted for information.</p>
+
+<h2 id="iterations">Arithmetic iterations</h2>
+
+<res type="Theorem" nom="Generalized Collatz problems are undecidable (Conway, 1972)" id="collatz-generalise">
+<enonce><p>A <strong>generalized Collatz function</strong> is a function $g:\N\to\N$ defined by an integer $M\ge1$ and rationals $c_0,\dots,c_{M-1}$, by $g(n)=c_r\,n$ when $n\equiv r\pmod M$ (the $c_r$ are assumed chosen so that $g(n)$ is always an integer). There is no algorithm that, given $g$ and $n$, decides whether the sequence $n,g(n),g(g(n)),\dots$ reaches a fixed point.</p></enonce>
+<philo>
+<p>The Collatz (or Syracuse) conjecture concerns the function $n\mapsto n/2$ if $n$ is even, $3n+1$ if $n$ is odd: starting from any integer, does one always reach $1$? Despite its schoolchild statement, it has resisted since 1937. Conway’s theorem has nothing to say about that particular function, but it explains why the question is so hard: the functions of the same family, defined by a congruence and a multiplication, are computers. The Collatz function may be a computer, or may not; nobody knows.</p>
+<p>Result quoted for information: the question “does the sequence reach $1$ for <em>every</em> starting point?”, which is the form of the Collatz conjecture, is undecidable for generalized Collatz functions, and even $\Pi_2$-complete (Kurtz and Simon, 2007): it is on the same level as the <a href="arithmetical-hierarchy.html#fin-tot">totality of a program</a>.</p>
+</philo>
+<tech>
+<p>We reduce to <a href="other-models.html#fractran">FRACTRAN</a>. Let $f_1,\dots,f_k$ be a FRACTRAN program, written with fractions in lowest terms $f_i=a_i/b_i$, and $M$ the LCM of the $b_i$. For $n\in\N$, $nf_i$ is an integer if and only if $b_i$ divides $n$. Since $b_i$ divides $M$, this depends only on the remainder $r$ of $n$ modulo $M$: $b_i\mid n\iff b_i\mid r$. So set $c_r=f_i$ for the first $i$ such that $b_i\mid r$, and $c_r=1$ if there is none. Then $g(n)=c_r\,n$ is exactly one step of the FRACTRAN program, except when the program halts, where $g(n)=n$. Since $f_i\ne1$ (a fraction equal to $1$ would make the program loop, and can be removed), the sequence reaches a fixed point if and only if the FRACTRAN program halts on $n$. By the <a href="other-models.html#fractran">universality of FRACTRAN</a>, deciding this would decide the halting of counter machines, hence the <a href="undecidability.html#arret">halting of Turing machines</a>.</p>
+</tech>
+<techno><p>The program <a href="assets/code/maths_indecidables.py">maths_indecidables.py</a> transforms FRACTRAN programs in this way. The addition program $[3/2]$ becomes $g(n)=3n/2$ if $n$ is even, $g(n)=n$ otherwise. Conway’s PRIMEGAME program, fourteen fractions, becomes a Collatz function modulo $M=6{,}469{,}693{,}230$ (the product of the primes up to $29$), and its iterates pass through $2^2,2^3,2^5,2^7,2^{11},2^{13},\dots$: they enumerate the primes.</p></techno>
+</res>
+
+<h2 id="matrices">Matrix products</h2>
+
+<res type="Theorem" nom="An undecidable question about products of integer matrices" id="matrices-post">
+<enonce><p>There is no algorithm that, given a finite list of $3\times3$ integer matrices, decides whether some nonempty product of these matrices (repetitions allowed) has equal $(1,3)$ and $(2,3)$ entries.</p></enonce>
+<philo><p>Multiplying matrices is the most routine computation of linear algebra. Yet the question “can such a property be reached by multiplying matrices taken from a finite stock?” is undecidable: a product of matrices can keep two words in memory and lengthen them, and one recovers <a href="other-models.html#pcp">Post’s problem</a>. The phenomenon directly concerns dynamical systems and control: a system that, at each step, applies one of several linear transformations is a computer.</p></philo>
+<tech>
+<p>Let $A=\{a_1,\dots,a_k\}$ be an alphabet. To a word $w=a_{j_1}\cdots a_{j_\ell}$ associate the integer $\sigma(w)=\sum_{t=1}^{\ell}j_t\,(k+1)^{\ell-t}$: the expansion of $w$ in base $k+1$ with digits $1,\dots,k$. Since no digit is zero, $\sigma$ is injective, and $\sigma(uv)=\sigma(u)\,(k+1)^{|v|}+\sigma(v)$. For two words $u,v$, set</p>
+$$N(u,v)=\begin{pmatrix}(k+1)^{|u|}&0&\sigma(u)\\0&(k+1)^{|v|}&\sigma(v)\\0&0&1\end{pmatrix}.$$
+<p>A direct computation gives $N(u,v)\,N(u',v')=N(u'u,\,v'v)$: the $(1,3)$ entry of the product is $(k+1)^{|u|}\sigma(u')+\sigma(u)=\sigma(u'u)$, and likewise for the second row. By induction, $N(u_{i_m},v_{i_m})\cdots N(u_{i_1},v_{i_1})=N(u_{i_1}\cdots u_{i_m},\,v_{i_1}\cdots v_{i_m})$.</p>
+<p>To a Post instance $\frac{u_1}{v_1},\dots,\frac{u_p}{v_p}$, associate the matrices $N_i=N(u_i,v_i)$. A nonempty product $N_{i_m}\cdots N_{i_1}$ has equal $(1,3)$ and $(2,3)$ entries if and only if $\sigma(u_{i_1}\cdots u_{i_m})=\sigma(v_{i_1}\cdots v_{i_m})$, that is, by injectivity, if and only if $i_1,\dots,i_m$ is a solution. Every nonempty product can be written in this form (just read the indices from right to left); deciding the question on matrices would decide Post’s problem.</p>
+</tech>
+<techno>
+<p>With the instance $\frac{a}{baa},\frac{ab}{aa},\frac{bba}{bb}$ and its solution $3,2,3,1$ ($bba\cdot ab\cdot bba\cdot a=bb\cdot aa\cdot bb\cdot baa$), the program computes the product of the four matrices: its $(1,3)$ and $(2,3)$ entries are both $18{,}706$, the integer encoding the common word $bbaabbbaa$.</p>
+<p>Results quoted for information. The <strong>mortality problem</strong> (can a product of the given matrices be the zero matrix?) is undecidable for $3\times3$ integer matrices (Paterson, 1970), by a similar encoding. For $2\times2$ matrices, it is not known. The <strong>Skolem problem</strong> (does a linear recurrence sequence with integer coefficients, such as $u_{n+3}=2u_{n+2}-u_{n+1}+5u_n$, ever vanish?) amounts to asking whether an entry of $A^n$ vanishes, for a single matrix $A$: it is known to be decidable for recurrences of order at most $4$ (Mignotte, Shorey and Tijdeman; Vereshchagin, 1985), and the question is open beyond.</p>
+</techno>
+</res>
+
+<h2 id="pavages">Tilings of the plane</h2>
+
+<res type="Theorem" nom="The origin-constrained tiling problem is undecidable" id="pavage-origine">
+<enonce><p>A <strong>Wang tile</strong> is a unit square whose four sides carry colours. A (finite) tile set $T$ <strong>tiles</strong> a region of the square grid if one can place a copy of a tile of $T$ in each cell, without rotation, so that any two common sides have the same colour. There is no algorithm that, given $T$ and a tile $t_0\in T$, decides whether $T$ tiles the quarter-plane $\N\times\N$ with $t_0$ in cell $(0,0)$.</p></enonce>
+<philo>
+<p>Hao Wang raised the question in 1961 while studying logic: does a tile set that tiles the plane always tile it periodically? If so, tiling would be decidable (one would search in parallel for a periodic pattern and for a square that cannot be tiled). His student Robert Berger showed in 1966 that it does not: there are <em>aperiodic</em> sets, which tile the plane but never periodically, and the question “does this set tile the plane?”, without an origin tile, is undecidable (result quoted for information).</p>
+<p>The proof below, with an origin tile, contains the idea: each row of tiles is the tape of the machine at one instant, and the colours force the next row to be the next instant. Tiling the quarter-plane means running the machine forever. This is the space-time diagram already used for the <a href="logic-and-types.html#binaire">decision problem</a> and for the <a href="complexity.html#cook-levin">Cook-Levin theorem</a>.</p>
+</philo>
+<tech>
+<p>Let $Z$ be a Turing machine on a tape infinite to the right, which starts in state $q_0$ on square $0$ of a blank tape and never tries to leave on the left (one can always reduce to this case; if it tries, the construction below treats it as halting). Halting on a blank tape is undecidable: to a machine $Z'$ and an input $x$, one computably associates the machine that writes $x$ and then behaves like $Z'$, and it halts on a blank tape if and only if $Z'$ halts on $x$; one concludes by the <a href="undecidability.html#arret">undecidability of halting</a>.</p>
+<p>The vertical colours (top and bottom sides) are symbols $s$ or pairs $(q,s)$ (the head, in state $q$, reads $s$), plus a border colour $\ast$. The horizontal colours are “nothing” ($-$), messages $q\!\to$ and $\leftarrow\!q$ (the head arrives in state $q$), and two initialization colours $|$ and $i$. A tile is written (bottom, top, left, right). The set $T_Z$ consists of:</p>
+<ul>
+<li>for every symbol $s$: $(s,s,-,-)$ (the cell does not change);</li>
+<li>for all $s$ and $q$: $(s,(q,s),q\!\to,-)$ and $(s,(q,s),-,\leftarrow\!q)$ (the head arrives);</li>
+<li>for each transition “in state $q$, reading $s$, write $s'$, move right into state $q'$”: $((q,s),s',-,q'\!\to)$, and for a move to the left: $((q,s),s',\leftarrow\!q',-)$;</li>
+<li>the origin tile $t_0=(\ast,(q_0,\widehat{\mathrm{blank}}),|,i)$ and the tile $(\ast,\mathrm{blank},i,i)$;</li>
+<li>for square $0$ of the tape, <em>marked</em> copies: for every symbol $s$, write $\hat s$ for its marked version, and add $(\hat s,\hat s,|,-)$, $(\hat s,(q,\hat s),|,\leftarrow\!q)$, and $((q,\hat s),\hat s',|,q'\!\to)$ for each transition from $(q,s)$ to the right.</li>
+</ul>
+<p>The marked tiles all have left colour $|$, and no tile has right colour $|$: a marked tile can only lie in column $0$. Conversely, column $0$ contains only marked tiles, since $t_0$ has a marked top and marked tiles go from marked to marked. This marking prevents a head from “popping out” of the left edge, where no neighbour controls the left colour.</p>
+<p><em>Row $0$.</em> The right colour $i$ of $t_0$ forces its neighbour to have left colour $i$: only the tile $(\ast,\mathrm{blank},i,i)$ fits, and so on. The top of row $0$ is therefore the initial configuration. <em>Row $y+1$.</em> Suppose the top of row $y$ is a configuration $C$ of the machine. The cell under the head carries a colour $(q,s)$; the only tiles with bottom $(q,s)$ are those of the transition of $(q,s)$, and they send the message $q'\!\to$ (or $\leftarrow\!q'$) to the relevant neighbour. A tile with bottom $s$ receives the head if and only if a neighbour sends it the message, since only transition tiles emit messages: otherwise it copies $s$. The top of row $y+1$ is therefore exactly the next configuration. If state $q$ is a halting state, no tile has colour $(q,s)$ at the bottom, and the row cannot be laid; likewise if the machine wants to move left from square $0$, since no marked tile allows it.</p>
+<p>Thus: if $Z$ does not halt, the quarter-plane is tiled row by row; if $Z$ halts after $t$ steps, no row above row $t$ can be laid, and even the square of side $t+2$ cannot be tiled (the head does not go beyond square $t$). Deciding origin-constrained tiling would decide halting on a blank tape.</p>
+</tech>
+<techno>
+<p>The program <a href="assets/code/maths_indecidables.py">maths_indecidables.py</a> builds this tile set and searches for tilings of squares by backtracking, knowing nothing about the machine and with no boundary constraint. For a machine that halts in $3$ steps ($36$ tiles), the squares of side $1$ to $4$ can be tiled, and the one of side $5$ cannot; for a machine that moves right forever, all the squares tried can be tiled.</p>
+<p>Results quoted for information. Berger (1966) used more than 20,000 tiles; Robinson (1971) simplified the construction with 56 tiles; the smallest aperiodic Wang set has 11 tiles, and there is none with 10 or fewer (Jeandel and Rao, 2015). In 2023, Smith, Myers, Kaplan and Goodman-Strauss found a single tile (the “hat”, a polygon) that tiles the plane, but only non-periodically.</p>
+</techno>
+</res>
+
+<res type="Proposition" nom="Tiling the plane is co-semi-decidable" id="pavage-pi1">
+<enonce><p>The set of tile sets (with or without origin tile) that do <em>not</em> tile the quarter-plane is semi-decidable. A set tiles the quarter-plane if and only if it tiles all $n\times n$ squares (with the origin tile at the bottom left, if there is one).</p></enonce>
+<tech><p>The forward direction is clear. Conversely, suppose $T$ tiles every $n\times n$ square. Build a tree: the nodes at depth $n$ are the tilings of the $n\times n$ square, and the parent of a tiling is its restriction to the $(n-1)\times(n-1)$ square. Each level is finite and nonempty, so the tree is infinite and finitely branching: by <em>König’s lemma</em>, it has an infinite branch, a sequence of compatible tilings whose union tiles the quarter-plane. To semi-decide non-tiling, try $n=1,2,\dots$ and stop as soon as some square cannot be tiled (each attempt is a finite search). With the previous theorem, origin-constrained tiling is therefore $\Pi_1$-complete, like the complement of halting.</p></tech>
+</res>
+
+<h2 id="analyse">Analysis: zeros of functions</h2>
+
+<res type="Theorem" nom="Existence of a zero of a function involving sine" id="zeros-sinus">
+<enonce><p>There is no algorithm that, given an expression $F(x_1,\dots,x_n)$ built from variables, integers, $\pi$, addition, multiplication and the sine function, decides whether $F$ vanishes at some point of $\R^n$.</p></enonce>
+<philo><p>For polynomials alone, the question is decidable: this is <a href="decidable-theories.html#tarski">Tarski’s theorem</a>. Adding the sine is enough to tip everything over, because the sine “sees” the integers: $\sin(\pi x)=0$ if and only if $x$ is an integer. With the integers, one recovers Hilbert’s tenth problem. A question of elementary analysis (does this function have a zero?) is undecidable, and computer algebra systems cannot, in general, simplify an expression far enough to know whether it is zero.</p></philo>
+<tech>
+<p>By the <a href="diophantine-equations.html#mrdp">MRDP theorem</a>, one cannot decide whether a polynomial $P$ with integer coefficients has a zero in $\N^n$. By Lagrange’s four-square theorem, $P$ has a zero in $\N^n$ if and only if $Q(\vec y)=P(y_{1,1}^2+\cdots+y_{1,4}^2,\ \dots,\ y_{n,1}^2+\cdots+y_{n,4}^2)$ has a zero in $\mathbb Z^{4n}$. It therefore suffices to reduce integer zeros to real zeros. For a polynomial $Q(z_1,\dots,z_m)$, set</p>
+$$F(\vec z)=Q(\vec z)^2+\sin^2(\pi z_1)+\cdots+\sin^2(\pi z_m).$$
+<p>A sum of real squares is zero if and only if each term is. So $F(\vec z)=0$ if and only if $Q(\vec z)=0$ and each $z_j$ is an integer. Thus $F$ has a real zero if and only if $Q$ has an integer zero, and the expression $F$ is computed from $Q$.</p>
+</tech>
+<techno><p>Results quoted for information. Richardson (1968) pushed the argument down to a single variable: with $x$, $\pi$, $\ln 2$, the operations, sine, exponential and absolute value, one cannot decide whether an expression defines the identically zero function. For more advanced analysis, Pour-El and Richards (1981) gave a wave equation in dimension 3, with computable initial data, whose solution at time $1$ is not computable.</p></techno>
+</res>
+
+<h2 id="algebre">Groups and topology</h2>
+
+<res type="Remark" nom="Groups, manifolds, cellular automata" id="groupes-topologie">
+<enonce>
+<p>Results quoted for information.</p>
+<ul>
+<li><strong>Groups.</strong> There is a group defined by finitely many generators and relations in which one cannot decide whether a word in the generators equals the identity element (Novikov, 1955; Boone, 1958). This is the group version of Thue’s <a href="languages.html#probleme-du-mot">word problem</a>, posed by Dehn in 1911. Consequently, one cannot decide whether a finite presentation defines the trivial group, nor whether two presentations define isomorphic groups (Adian, 1955; Rabin, 1958).</li>
+<li><strong>Topology.</strong> Every finitely presented group is the fundamental group of a compact $4$-manifold, built from the presentation. Consequently, one cannot decide whether two $4$-manifolds (given by triangulations) are homeomorphic (Markov, 1958). Nor can one recognize the sphere of dimension $5$ or more (Novikov). In dimension $3$, on the contrary, the sphere can be recognized (Rubinstein, 1992; Thompson, 1994) and one can decide whether a knot is trivial (Haken, 1961).</li>
+<li><strong>Cellular automata</strong> (see the <a href="other-models.html#automates-cellulaires">section devoted to them</a>). Conway’s Game of Life (1970) is universal: a computer can be built in it with gliders and glider guns (Berlekamp, Conway and Guy, 1982; Rendell built an explicit Turing machine in 2000). One therefore cannot decide whether a finite configuration eventually dies out. The one-dimensional elementary automaton “rule 110” is universal as well (Cook, 2004).</li>
+<li><strong>Physics.</strong> Cubitt, Pérez-García and Wolf (2015) built a family of quantum physics models, on a two-dimensional lattice, for which the question “does the system have a spectral gap?” is undecidable. Their construction rests on Wang tilings.</li>
+</ul>
+</enonce>
+<philo>
+<p>These examples are not curiosities: the word and homeomorphism problems are central questions, posed well before computers. What they have in common is a form of freedom of construction. A group presentation, a triangulation, a tile set or an automaton configuration can be as complicated as one likes, and this power of description is enough for programs to be written in them.</p>
+<p>There is a positive counterpart. In each of these fields, undecidability applies only to the general question. It leaves room for whole classes of decidable cases (hyperbolic groups, $3$-manifolds, tile sets of a particular kind), and it steers research towards these classes. Knowing that a problem is undecidable in general is knowing that additional hypotheses must be sought.</p>
+</philo>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="A Collatz function that multiplies" id="ex-mi-collatz">
+<p>The FRACTRAN program $\left[\frac{455}{33},\frac{11}{13},\frac{1}{11},\frac{3}{7},\frac{11}{2},\frac{1}{3}\right]$ transforms $2^a3^b$ into $5^{ab}$ (take this for granted). What is the modulus $M$ of the Collatz function associated with it by <a href="#collatz-generalise">Conway’s proof</a>? What is $g(n)$ for $n=12$?</p>
+<corrige>
+<p>The denominators are $33,13,11,7,2,3$; their LCM is $M=2\cdot3\cdot7\cdot11\cdot13=6006$. For $n=12=2^2\cdot3$, look for the first fraction whose denominator divides $12$: not $33$, nor $13$, nor $11$, nor $7$; it is $2$. So $g(12)=12\cdot\frac{11}{2}=66$. This can be read off the remainder $12\bmod6006=12$ alone, as in the proof.</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Integers with sines" id="ex-mi-sinus">
+<p>Write a function $F(x,y)$ (polynomials and sines) that vanishes if and only if $(x,y)$ is an integer solution of Pell’s equation $x^2-2y^2=1$. Give a zero of $F$ other than $(\pm1,0)$.</p>
+<corrige>
+<p>$F(x,y)=(x^2-2y^2-1)^2+\sin^2(\pi x)+\sin^2(\pi y)$, as in the <a href="#zeros-sinus">proof</a>. For example $F(3,2)=0$, since $9-8=1$; then $(17,12)$, $(99,70)$, etc. Without the sines, $x^2-2y^2-1$ has infinitely many non-integer real zeros, for example $(\sqrt3,1)$: it is the sines that force integers.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="The matrices of a Post instance" id="ex-mi-matrices">
+<p>Over the alphabet $\{a,b\}$ ($k=2$, base $3$), write the matrices $N_1,N_2$ of the instance $\frac{ab}{a},\frac{b}{bb}$ and compute $N_2N_1$. Does the instance have a solution?</p>
+<corrige>
+<p>$\sigma(ab)=1\cdot3+2=5$, $\sigma(a)=1$, $\sigma(b)=2$, $\sigma(bb)=8$. So $N_1=\begin{pmatrix}9&0&5\\0&3&1\\0&0&1\end{pmatrix}$, $N_2=\begin{pmatrix}3&0&2\\0&9&8\\0&0&1\end{pmatrix}$, and $N_2N_1=\begin{pmatrix}27&0&17\\0&27&17\\0&0&1\end{pmatrix}=N(abb,abb)$, since $\sigma(abb)=17$. The $(1,3)$ and $(2,3)$ entries are equal: the sequence $1,2$ is a solution, $ab\cdot b=a\cdot bb$. This checks the formula $N(u,v)N(u',v')=N(u'u,v'v)$: here the product $N_2N_1$ does encode the words in the order $1,2$.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Why an origin tile?" id="ex-mi-origine">
+<p>Show that, without an imposed origin tile, the set $T_Z$ of the <a href="#pavage-origine">theorem</a> always tiles the quarter-plane, whatever the machine $Z$. What does this tell us about the difficulty of Berger’s theorem?</p>
+<corrige>
+<p>The tile $(s,s,-,-)$, for the blank symbol, matches itself in all four directions: placing it everywhere tiles the quarter-plane (and even the plane). This tiling represents a blank tape with no head, which computes nothing. Without an origin tile, nothing forces a tiling to contain a read head. All the difficulty of Berger’s theorem lies there: one must build sets that <em>force</em> computations to appear, at all scales, with no designated starting point. This is the role of the hierarchical structures of aperiodic sets, which leave room everywhere for larger and larger computation zones.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="A periodic tiling can be detected" id="ex-mi-periodique">
+<p>A tiling of the plane $\mathbb Z^2$ is <em>periodic</em> if it is invariant under two independent translations. (a) Show that if a tile set admits a periodic tiling, it admits a tiling invariant under the translations $(p,0)$ and $(0,p)$ for some $p\ge1$. (b) Deduce that, if every set that tiles the plane tiled it periodically, the tiling problem for the plane would be decidable. (Take for granted that, as for the quarter-plane, a set tiles the plane if and only if it tiles all squares.)</p>
+<corrige>
+<p>(a) Let $(a,b)$ and $(c,d)$ be two independent periods, and $D=ad-bc\ne0$. The integer combinations $d(a,b)-b(c,d)=(D,0)$ and $-c(a,b)+a(c,d)=(0,D)$ are also periods; take $p=|D|$.</p>
+<p>(b) A tiling invariant under $(p,0)$ and $(0,p)$ is determined by its restriction to the $p\times p$ square, which must match itself: the left edge of the square compatible with its right edge, the bottom with the top. One can enumerate the $p$ and test these “toroidal” squares, finitely many for each $p$. In parallel, test the ordinary $n\times n$ squares. If the set tiles the plane, it tiles it periodically (by hypothesis), and the first search succeeds; otherwise, some square cannot be tiled, and the second search succeeds. The procedure always terminates. This is Wang’s argument (1961); Berger’s theorem says, contrapositively, that aperiodic sets exist.</p>
+</corrige>
+</exo>

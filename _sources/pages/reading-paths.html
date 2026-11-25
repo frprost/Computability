@@ -1,0 +1,200 @@
+<!--
+titre: Reading paths
+court: Reading paths
+chapo: The manual can be read in order, but it need not be. Here are itineraries by audience and along the main threads running through the chapters, with, for each step, what one comes there to find.
+-->
+
+<p>Each path is an ordered list of steps. A step points to a chapter or to a specific result; it is not necessary to read the whole chapter before moving on to the next one. The recommended level is chosen with the selector at the top of the page (philosophical, technical, technological). The technical chapters end with solved exercises, rated from one to three stars.</p>
+
+<h2 id="par-public">Paths by audience</h2>
+
+<h3 id="decouverte">Discovery (two hours)</h3>
+<p><em>For whom:</em> any curious person, no prerequisites. <em>Recommended level:</em> philosophical.</p>
+<ol>
+<li><a href="motivations.html#non-calculables">Non-computable functions exist</a>: a counting argument, before any definition.</li>
+<li><a href="turing-machines.html#def-mt">Turing machines</a> (beginning): what a computation is, with the simulator.</li>
+<li><a href="undecidability.html#arret">The halting problem</a>: the first problem that no program solves.</li>
+<li><a href="busy-beavers.html#sigma-non-calculable">Busy beavers</a>: tiny machines about which we cannot know everything.</li>
+<li><a href="undecidable-mathematics.html#pavages">Tiling the plane</a>: the undecidable outside computer science.</li>
+<li><a href="incompleteness.html#godel1">The incompleteness theorem</a>: what it changes for mathematics.</li>
+</ol>
+
+<h3 id="licence">Undergraduate course (one semester)</h3>
+<p><em>For whom:</em> undergraduate students in computer science or mathematics. <em>Recommended level:</em> technical.</p>
+<ol>
+<li>Chapters 3 to 6 in order: <a href="turing-machines.html">Turing machines</a>, <a href="recursive-functions.html">recursive functions</a>, <a href="lambda-calculus.html">λ-calculus</a>, <a href="equivalence.html">equivalence of the models</a>.</li>
+<li><a href="church-turing-thesis.html#these">The Church-Turing thesis</a>, to know what has been proved and what is assumed.</li>
+<li><a href="universality.html">Universality</a>, then <a href="smn-recursion.html">s-m-n and recursion</a>.</li>
+<li><a href="undecidability.html">Undecidability</a> (reductions, <a href="undecidability.html#rice-theoreme">Rice’s theorem</a>) and <a href="semi-decidability.html">semi-decidability</a>.</li>
+<li><a href="languages.html#post">The Post correspondence problem</a> and its consequences for grammars.</li>
+<li>Alongside, the one- and two-star exercises of each of these chapters.</li>
+</ol>
+
+<h3 id="master">Graduate course</h3>
+<p><em>For whom:</em> the continuation of the previous path. <em>Recommended level:</em> technical.</p>
+<ol>
+<li><a href="arithmetical-hierarchy.html">The arithmetical hierarchy</a>: classifying undecidable problems among themselves.</li>
+<li><a href="incompleteness.html">Incompleteness</a>, up to the <a href="incompleteness.html#godel2">second theorem</a> and the <a href="incompleteness.html#entscheidung">decision problem</a>.</li>
+<li><a href="diophantine-equations.html#mrdp">The MRDP theorem</a>: the most elementary arithmetic is universal.</li>
+<li><a href="logic-and-types.html">Logic and types</a>, then <a href="decidable-theories.html">decidable theories</a>.</li>
+<li><a href="kolmogorov-omega.html">Kolmogorov complexity and the number Ω</a>.</li>
+<li><a href="complexity.html">Time and space complexity</a>, up to <a href="complexity.html#cook-levin">Cook and Levin</a> and <a href="complexity.html#baker-gill-solovay">Baker, Gill and Solovay</a>, then <a href="randomness-quantum.html">randomness, approximation and quantum computing</a>.</li>
+<li>The three-star exercises.</li>
+</ol>
+
+<h3 id="programmeurs">For programmers</h3>
+<p><em>For whom:</em> developers who want to know what the theory says about their job. <em>Recommended level:</em> technological.</p>
+<ol>
+<li><a href="three-approaches.html">Three approaches to computation</a>: imperative, functional, logical, and the <a href="three-approaches.html#cout-simulation">cost of simulations</a>.</li>
+<li><a href="lambda-calculus.html">The λ-calculus</a>, with the built-in reducer.</li>
+<li><a href="equivalence.html#compilateur">A compiler to Turing machines</a>.</li>
+<li><a href="smn-recursion.html#recursion">Quines and the recursion theorem</a>: a program that knows its own code.</li>
+<li><a href="undecidability.html#rice-theoreme">Rice’s theorem</a>: why no static analyser is perfect.</li>
+<li><a href="logic-and-types.html#totaux">Total languages</a> and <a href="logic-and-types.html#curry-howard">Curry-Howard</a>: types as specifications, programs as proofs; then <a href="logic-and-types.html#systeme-f">polymorphism (System F)</a> and <a href="logic-and-types.html#constructions">proof assistants</a>.</li>
+<li><a href="decidable-theories.html#presburger">Presburger arithmetic via automata</a>, the theory behind SMT solvers.</li>
+<li><a href="complexity.html#solveurs-sat">SAT solvers</a> and <a href="computability-ai.html#verification-spec">program verification</a>.</li>
+<li><a href="randomness-quantum.html#miller-rabin">Probabilistic algorithms</a> and <a href="randomness-quantum.html#deutsch">the first quantum algorithms</a>, with their simulations.</li>
+</ol>
+
+<h3 id="mathematiciens">For mathematicians</h3>
+<p><em>For whom:</em> readers comfortable with proofs, who want to see the undecidable in their own field. <em>Recommended level:</em> technical.</p>
+<ol>
+<li><a href="recursive-functions.html">Recursive functions</a>: computation defined without a machine, by equations.</li>
+<li><a href="undecidability.html#arret">Halting</a> and <a href="undecidability.html#reduction">reductions</a>: the method of all the proofs that follow.</li>
+<li><a href="diophantine-equations.html">Diophantine equations</a>: Pell’s equation, MRDP, the prime-representing polynomial.</li>
+<li><a href="decidable-theories.html">Decidable theories</a>: Presburger, Tarski, and what separates them from arithmetic.</li>
+<li><a href="undecidable-mathematics.html">The undecidable in ordinary mathematics</a>: matrices, tilings, zeros of functions, groups, manifolds.</li>
+<li><a href="undecidability.html#goldbach">Goldbach and halting</a>, then <a href="arithmetical-hierarchy.html#exemples-hierarchie">classifying problems</a>: halting, totality, finiteness of a domain, each on its own level.</li>
+<li><a href="busy-beavers.html#castors-zfc">Busy beavers and ZFC</a>: specific integers that set theory does not determine.</li>
+</ol>
+
+<h3 id="philosophie">Philosophy of science</h3>
+<p><em>For whom:</em> readers interested in the significance of the results more than in their proofs. <em>Recommended level:</em> philosophical.</p>
+<ol>
+<li><a href="motivations.html">Motivations</a>: why define computation.</li>
+<li><a href="church-turing-thesis.html">The Church-Turing thesis</a>, its <a href="church-turing-thesis.html#these-physique">physical version</a>, then <a href="church-turing-thesis.html#physique-vivant">physics as a text, and the living</a> and <a href="church-turing-thesis.html#conscience">consciousness</a>.</li>
+<li><a href="cantor.html#theorie-du-tout">Is a theory of everything possible?</a></li>
+<li><a href="incompleteness.html#godel1">Incompleteness</a> and its misinterpretations.</li>
+<li><a href="kolmogorov-omega.html#chaitin">Incompleteness according to Chaitin</a>: a theory proves no more information than it contains.</li>
+<li><a href="computability-ai.html#bilan">What computability says about AI, and what it does not</a>.</li>
+<li><a href="leibniz.html">Leibniz and binary</a>: the dream of a universal calculus, three centuries earlier.</li>
+</ol>
+
+<h3 id="intelligence-artificielle">Computation and artificial intelligence</h3>
+<p><em>For whom:</em> readers coming from machine learning. <em>Recommended level:</em> philosophical, then technical.</p>
+<ol>
+<li><a href="undecidability.html#rice-theoreme">Rice’s theorem</a>: what cannot be known about a program by reading it.</li>
+<li><a href="computability-ai.html#specifications">Programming from a specification</a> and <a href="computability-ai.html#controle">controlling an AI</a>.</li>
+<li><a href="kolmogorov-omega.html#c-non-calculable">Kolmogorov complexity is not computable</a>, then <a href="computability-ai.html#predicteur">no predictor learns everything</a>.</li>
+<li><a href="computability-ai.html#reseaux">Neural networks as models of computation</a>.</li>
+<li><a href="complexity.html#landauer">The physical price of exhaustive search</a> and <a href="complexity.html#solveurs-sat">SAT solvers</a>.</li>
+<li><a href="logic-and-types.html#curry-howard">Curry-Howard</a> and <a href="logic-and-types.html#preuves-ia">checking AI-produced proofs in Lean</a>.</li>
+<li><a href="computability-ai.html#lob">Löb’s theorem</a>: an AI reasoning about itself.</li>
+</ol>
+
+<h2 id="fils">Thematic threads</h2>
+<p>These paths follow one idea through the whole manual. They assume the first chapters are known (at least the <a href="#decouverte">discovery path</a>).</p>
+
+<h3 id="diagonale">The diagonal</h3>
+<p>A single argument, Cantor’s, proves most of the impossibility theorems in the manual. Here we see it change costume.</p>
+<ol>
+<li><a href="cantor.html#cantor-reels">Cantor</a>: there are more reals than integers.</li>
+<li><a href="motivations.html#diagonale-totale">No total language captures everything computable</a>.</li>
+<li><a href="universality.html#pas-universelle-totale">No total universal function</a>.</li>
+<li><a href="undecidability.html#arret">Halting</a>.</li>
+<li><a href="smn-recursion.html#kleene">The recursion theorem</a>: the diagonal becomes a fixed point.</li>
+<li><a href="incompleteness.html#diagonal">Gödel’s diagonal lemma</a>.</li>
+<li><a href="logic-and-types.html#pas-interpreteur">A total language does not contain its own interpreter</a>.</li>
+<li><a href="kolmogorov-omega.html#c-non-calculable">Berry’s paradox</a> and <a href="busy-beavers.html#sigma-non-calculable">busy beavers</a>.</li>
+<li><a href="arithmetical-hierarchy.html#hierarchie-stricte">The arithmetical hierarchy is strict</a>.</li>
+<li><a href="church-turing-thesis.html#physique-vivant">Every written theory of the world is countable</a>.</li>
+</ol>
+
+<h3 id="coder-un-calcul">Encoding a computation</h3>
+<p>To show that a question is undecidable, one shows that it can describe the history of a computation. This path follows the space-time diagram of a Turing machine across fields.</p>
+<ol>
+<li><a href="turing-machines.html#def-pas">Instantaneous descriptions</a>: a computation is a sequence of words.</li>
+<li><a href="equivalence.html#godel-mt">Gödel numbers of computations</a> and <a href="equivalence.html#forme-normale">Kleene normal form</a>.</li>
+<li><a href="complexity.html#cook-levin">Cook and Levin</a>: the computation becomes a propositional formula.</li>
+<li><a href="incompleteness.html#entscheidung">The decision problem</a> and <a href="logic-and-types.html#binaire">one binary relation suffices</a>: the computation becomes a logical statement.</li>
+<li><a href="undecidable-mathematics.html#pavage-origine">Wang tiles</a>: the computation becomes a tiling.</li>
+<li><a href="languages.html#probleme-du-mot">The word problem</a> and <a href="other-models.html#pcp">Post’s dominoes</a>: the computation becomes word rewriting.</li>
+<li><a href="undecidable-mathematics.html#matrices-post">Matrix products</a>: the computation becomes linear algebra.</li>
+<li><a href="other-models.html#ac-simule-mt">Cellular automata</a> and <a href="other-models.html#regle-110">rule 110</a>: the computation becomes a local rule, and the space-time diagram draws itself.</li>
+<li><a href="other-models.html#fractran">FRACTRAN</a> and <a href="undecidable-mathematics.html#collatz-generalise">generalized Collatz</a>: the computation becomes an arithmetic iteration.</li>
+<li><a href="diophantine-equations.html#mrdp">MRDP</a> and <a href="undecidable-mathematics.html#zeros-sinus">zeros of functions</a>: the computation becomes an equation.</li>
+</ol>
+
+<h3 id="logique-fondements">Logic and foundations</h3>
+<p>From Hilbert’s question (can mathematics be mechanized?) to its answers.</p>
+<ol>
+<li><a href="bases.html#def-logique">Formulas and truth</a>, for the notation.</li>
+<li><a href="incompleteness.html#completude">The completeness theorem</a>: logical truth is semi-decidable.</li>
+<li><a href="incompleteness.html#entscheidung">The decision problem</a>: it is not decidable.</li>
+<li><a href="logic-and-types.html#frontiere">The boundary in logic</a>: propositional, monadic, one binary relation.</li>
+<li><a href="incompleteness.html#godel1">The incompleteness theorems</a>, then <a href="incompleteness.html#rosser">Rosser</a>.</li>
+<li><a href="decidable-theories.html">Decidable theories</a>: the cases where Hilbert’s dream comes true.</li>
+<li><a href="logic-and-types.html#curry-howard">Curry-Howard</a> and <a href="logic-and-types.html#coherence-normalisation">consistency through computation</a>.</li>
+<li><a href="logic-and-types.html#systeme-f">System F</a>, <a href="logic-and-types.html#lambda-cube">the λ-cube</a> and <a href="logic-and-types.html#constructions">the calculus of constructions</a>, up to Lean and Rocq.</li>
+<li><a href="kolmogorov-omega.html#omega-theorie">A theory knows only finitely many digits of Ω</a>.</li>
+</ol>
+
+<h3 id="decidable-et-son-prix">The decidable and its price</h3>
+<p>Knowing that a problem is decidable is only the beginning: one still has to be able to pay for the computation.</p>
+<ol>
+<li><a href="languages.html#post-decidable">Two decidable cases of Post’s problem</a> and <a href="languages.html#decidables-grammaires">decidable problems on grammars</a>.</li>
+<li><a href="logic-and-types.html#propositionnel">Propositional calculus</a>: decidable and $\mathrm{co}\mathsf{NP}$-complete.</li>
+<li><a href="complexity.html#hierarchies">The hierarchy theorems</a>: there are decidable problems of arbitrary difficulty; and <a href="complexity.html#baker-gill-solovay">why diagonalization does not settle P versus NP</a>.</li>
+<li><a href="complexity.html#jeux-pspace">Games and polynomial space</a>.</li>
+<li><a href="randomness-quantum.html#miller-rabin">Randomness</a> (primality, polynomial identities) and <a href="randomness-quantum.html#approximation">approximation</a>: getting around the difficulty, or not.</li>
+<li><a href="decidable-theories.html#presburger">Presburger</a> (at least doubly exponential) and <a href="decidable-theories.html#tarski">Tarski</a>.</li>
+<li><a href="ackermann.html">The Ackermann function</a>: computable, but beyond all primitive recursion.</li>
+<li><a href="complexity.html#landauer">Landauer’s principle</a>: the physical limit of an enumeration.</li>
+<li><a href="computability-ai.html#reluplex">Verifying a neural network</a>: decidable, but hard.</li>
+<li><a href="randomness-quantum.html#paysage-quantique">What quantum computing changes, and what it does not</a>.</li>
+</ol>
+
+<h3 id="limites-physiques">Computation and the physical world</h3>
+<ol>
+<li><a href="church-turing-thesis.html#gandy">Gandy’s theorem</a>: discrete machines with local causality do not go beyond Turing.</li>
+<li><a href="other-models.html#automates-cellulaires">Cellular automata</a>: a toy physics, local and parallel, that computes everything (<a href="other-models.html#regle-110">rule 110</a>).</li>
+<li><a href="church-turing-thesis.html#these-physique">The physical thesis and the extended thesis</a>.</li>
+<li><a href="randomness-quantum.html#hasard-calculable">Randomness</a> and <a href="randomness-quantum.html#quantique-calculable">quantum computing</a> do not go beyond Turing; <a href="randomness-quantum.html#shor">Shor</a> and <a href="randomness-quantum.html#grover">Grover</a> change the cost.</li>
+<li><a href="complexity.html#physique">What an exhaustive search costs</a>, with Landauer.</li>
+<li><a href="busy-beavers.html#valeurs-bb">The known values of the busy beavers</a> and <a href="kolmogorov-omega.html#omega-castors">a toy Ω</a>: how far real computation can go.</li>
+<li><a href="computability-ai.html#automate-reseau">A machine with bounded memory is a finite automaton</a>.</li>
+<li><a href="undecidable-mathematics.html#groupes-topologie">The undecidable spectral gap</a>: the undecidable in a model of physics.</li>
+<li><a href="church-turing-thesis.html#physique-vivant">Physics is a text, the living is not a blueprint</a>.</li>
+</ol>
+
+<h3 id="histoire">A history in dates</h3>
+<p>The results in the order in which they appeared.</p>
+<ol>
+<li>1703: <a href="leibniz.html">Leibniz</a> publishes his binary arithmetic.</li>
+<li>1891: <a href="cantor.html#cantor-reels">Cantor’s diagonal argument</a>.</li>
+<li>1900: Hilbert poses his <a href="diophantine-equations.html">tenth problem</a>.</li>
+<li>1931: <a href="incompleteness.html#godel1">Gödel</a> proves incompleteness.</li>
+<li>1936: <a href="lambda-calculus.html">Church</a> and <a href="turing-machines.html">Turing</a> define computation and solve <a href="incompleteness.html#entscheidung">the decision problem</a>; this is the birth of the <a href="church-turing-thesis.html#these">Church-Turing thesis</a>.</li>
+<li>1946–1947: Post, with <a href="other-models.html#pcp">the dominoes</a>, then Post and Markov, with <a href="languages.html#probleme-du-mot">the word problem</a>, find the first “combinatorial” undecidable problems.</li>
+<li>1955–1958: <a href="undecidable-mathematics.html#groupes-topologie">the word problem for groups</a> (Novikov, Boone).</li>
+<li>1956–1957: <a href="undecidability.html#friedberg-muchnik">Friedberg and Muchnik</a> solve Post’s problem on degrees.</li>
+<li>1958: <a href="logic-and-types.html#systeme-t">Gödel’s System T</a>.</li>
+<li>1961–1966: <a href="undecidable-mathematics.html#pavage-origine">Wang and Berger</a> study tilings; in 1962, Radó defines <a href="busy-beavers.html">the busy beavers</a>.</li>
+<li>1965–1975: <a href="kolmogorov-omega.html">Kolmogorov, Solomonoff and Chaitin</a> found algorithmic information theory.</li>
+<li>1969–1980: <a href="logic-and-types.html#curry-howard">Howard</a> formulates the correspondence between proofs and programs.</li>
+<li>1970: <a href="diophantine-equations.html#mrdp">Matiyasevich</a> completes the negative solution of the tenth problem.</li>
+<li>1971: <a href="complexity.html#cook-levin">Cook</a> defines NP-completeness; in 1975, <a href="complexity.html#baker-gill-solovay">Baker, Gill and Solovay</a> show that oracles do not settle it.</li>
+<li>1972: <a href="logic-and-types.html#systeme-f">Girard</a> introduces System F; in 1988, Coquand and Huet define <a href="logic-and-types.html#lambda-cube">the calculus of constructions</a>.</li>
+<li>1976–1980: <a href="randomness-quantum.html#miller-rabin">the Miller-Rabin primality test</a>.</li>
+<li>1985: <a href="randomness-quantum.html#deutsch">Deutsch</a> defines the quantum Turing machine; in 1994, <a href="randomness-quantum.html#shor">Shor</a> factors in quantum polynomial time.</li>
+<li>2002: <a href="randomness-quantum.html#miller-rabin">primality is in P</a> (Agrawal, Kayal, Saxena).</li>
+</ol>
+
+<h2 id="s-entrainer">Practice</h2>
+<p>The exercises are placed at the end of each technical chapter. One star: direct application of the course. Two stars: an idea to find. Three stars: a complete argument, often a result from the literature. Solutions are hidden; click to open them.</p>
+<ul>
+<li>Models of computation: <a href="turing-machines.html#exercices">Turing machines</a>, <a href="recursive-functions.html#exercices">recursive functions</a>, <a href="lambda-calculus.html#exercices">λ-calculus</a>, <a href="equivalence.html#exercices">equivalence</a>.</li>
+<li>Fundamental theorems: <a href="universality.html#exercices">universality</a>, <a href="smn-recursion.html#exercices">s-m-n and recursion</a>.</li>
+<li>Limits of computation: <a href="undecidability.html#exercices">undecidability</a>, <a href="semi-decidability.html#exercices">semi-decidability</a>, <a href="arithmetical-hierarchy.html#exercices">arithmetical hierarchy</a>, <a href="incompleteness.html#exercices">incompleteness</a>, <a href="diophantine-equations.html#exercices">Diophantine equations</a>, <a href="logic-and-types.html#exercices">logic and types</a>, <a href="decidable-theories.html#exercices">decidable theories</a>, <a href="undecidable-mathematics.html#exercices">ordinary mathematics</a>, <a href="kolmogorov-omega.html#exercices">Kolmogorov and Ω</a>, <a href="languages.html#exercices">languages</a>.</li>
+<li>Complexity and case studies: <a href="complexity.html#exercices">complexity</a>, <a href="ackermann.html#exercices">Ackermann</a>, <a href="busy-beavers.html#exercices">busy beavers</a>, <a href="computability-ai.html#exercices">AI</a>, <a href="other-models.html#exercices">other models</a>.</li>
+</ul>

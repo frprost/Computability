@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Busy beavers · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html" aria-current="page"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Busy beavers</h1>
+<p class="chapo">What is the longest task an n-state machine can perform before halting? A concrete question, a function that grows faster than any computable function, and values known only up to n = 5.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="turing-machines.html">Turing machines</a> · <a href="undecidability.html">The halting problem</a> · <a href="incompleteness.html">Incompleteness</a> · <a href="bases.html#zfc">The theory ZFC</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#le-probleme">The problem</a></li><li><a href="#le-modele-de-rado">Radó’s model</a></li><li><a href="#incalculabilite">Non-computability</a></li><li><a href="#valeurs-connues">Known values</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<h2 id="le-probleme">The problem</h2>
+
+<p>The busy beaver problem, proposed by Tibor Radó in 1962, gives a very concrete non-computable function, which speaks not of machine indices but of actual machines: among all Turing machines with $n$ states that, started on a blank tape, eventually halt, which one writes the most symbols?</p>
+
+<p>At first sight the question seems solvable: there are finitely many $n$-state machines; it suffices to run them all and keep the best result. But some never halt, and one cannot know, in general, whether a machine that is still running will eventually halt with a better score. This is where non-computability comes from. The proof, however, is not a reduction to the halting problem: it shows directly that the function grows faster than any computable function.</p>
+
+<h2 id="le-modele-de-rado">Radó’s model</h2>
+
+<div class="resultat definition" id="def-rado"><div class="entete-res"><div class="type">Definition</div><div class="nom">Radó machines and the functions Σ and S</div></div>
+<div class="enonce">
+<p>A Radó machine with $n$ states uses the symbols $0$ (the blank) and $1$. Its states are the letters $A,B,C,\dots$ (the first $n$), plus a halting state $H$, with no transition. It has exactly one transition for each pair (state $\ne H$, symbol read), that is, $2n$ transitions. We write $A0\to1RB$ for the transition “in state $A$, reading $0$, write $1$, move one square to the right ($R$) and go to state $B$”; the direction is $R$ or $L$. This is a <em>quintuple</em> in the sense of <a href="turing-machines.html#quintuplets">chapter 3</a>, written $A\ 0\ 1\ R\ B$ in the simulators. The machine starts in state $A$ on a blank tape.</p>
+<ul>
+<li>$\Sigma(n)$ is the largest number of $1$s on the tape at halting time, among the $n$-state machines that halt;</li>
+<li>$S(n)$ is the largest number of steps performed before halting (the transition to $H$ counting as one step), among the $n$-state machines that halt.</li>
+</ul>
+<p>A machine achieving $\Sigma(n)$ is called a <strong>busy beaver</strong>.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Writing and moving at every step changes nothing from the point of view of computability (a step “in place” is simulated by a round trip), but it does change the precise values of $\Sigma$ and $S$, which always depend on the exact model. There are $(4(n+1))^{2n}$ machines with $n$ states: each of the $2n$ transitions chooses a symbol (2 choices), a direction (2) and a target state ($n+1$, counting $H$). For the enumerations of the technological level, <em>partial tables</em> are also used, in which some transitions are missing: a machine reaching a missing transition halts. A partial table represents all its completions that perform the same computation.</p>
+</div>
+</div>
+
+<div class="resultat definition" id="exemple-rado"><div class="entete-res"><div class="type">Example</div><div class="nom">A 3-state machine and the computation of Σ(3)</div></div>
+<div class="enonce"><p>The machine $A0\to1RB$, $A1\to1LC$, $B0\to1LA$, $B1\to1RB$, $C0\to1LB$, $C1\to1RH$ halts after 13 steps with six 1s on the tape. We have $\Sigma(3)=6$ and $S(3)=21$.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>The execution trace (the state, in brackets, is written before the symbol read; trace produced by the simulator):</p>
+<pre class="no-math">[A] 0 ⊢ 1 [B] 0 ⊢ [A] 1 1 ⊢ [C] 0 1 1 ⊢ [B] 0 1 1 1 ⊢ [A] 0 1 1 1 1 ⊢ 1 [B] 1 1 1 1
+  ⊢ 1 1 [B] 1 1 1 ⊢ 1 1 1 [B] 1 1 ⊢ 1 1 1 1 [B] 1 ⊢ 1 1 1 1 1 [B] 0 ⊢ 1 1 1 1 [A] 1 1
+  ⊢ 1 1 1 [C] 1 1 1 ⊢ 1 1 1 1 [H] 1 1</pre>
+<p>It shows $\Sigma(3)\ge6$ and $S(3)\ge13$. The exact values $\Sigma(3)=6$ and $S(3)=21$ were established by Lin and Radó (1965); the record of 21 steps is achieved by <em>another</em> machine (which writes only five 1s).</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>Run the machine:</p>
+<div class="rado-widget"><pre class="src">A 0 1 R B
+A 1 1 L C
+B 0 1 L A
+B 1 1 R B
+C 0 1 L B
+C 1 1 R H</pre></div>
+<p>For this manual, the values $\Sigma(2)=4$, $S(2)=6$, $\Sigma(3)=6$, $S(3)=21$ were <strong>rechecked by exhaustive enumeration</strong> of the $12^4=20{,}736$ two-state machines and the $16^6=16{,}777{,}216$ three-state machines, without using the known values. Each machine is simulated for 200 steps; for <em>each</em> of those that have not halted, the program exhibits a proof of non-halting. The 200-step limit is thus only used for sorting: it is not assumed to be sufficient, which would be circular. Each proof is a set of configurations that contains the initial configuration, is closed under one computation step and contains no halting configuration. For 3 states:</p>
+<ul>
+<li>7,571,840 machines halt, in at most 21 steps and with at most six 1s;</li>
+<li>2,985,984 have no halting transition;</li>
+<li>1,383,152 are settled by <em>backward reasoning</em>: every chain of configurations leading to halting, traced back step by step, becomes inconsistent in fewer than 30 steps;</li>
+<li>155,792 repeat a configuration exactly (cycle);</li>
+<li>4,679,088 repeat a configuration up to a translation, moving over a blank tape (translated cycle);</li>
+<li>1,152 are settled by a closed set of tape windows (n-grams);</li>
+<li>the last 208, which behave like binary counters, are settled by a <em>closed regular language</em>: the left half of the tape is summarized by a finite automaton with at most 3 states, the right half is kept as is, like a stack. This gives a pushdown system, whose set of reachable configurations is regular and is computed exactly by saturation (see <a href="languages.html#automates-pile">pushdown automata</a>); it contains no halting configuration. This criterion, tried on 3,000 machines that halt, declared none of them non-halting.</li>
+</ul>
+<p>The total is indeed $16^6$. For 2 states, the first five criteria suffice. Programs: <a href="assets/code/castors.c">castors.c</a> and <a href="assets/code/castors_far.py">castors_far.py</a>. Here is the machine achieving $S(3)=21$:</p>
+<div class="rado-widget"><pre class="src">A 0 1 R B
+A 1 1 L H
+B 0 1 L B
+B 1 0 R C
+C 0 1 L C
+C 1 1 L A</pre></div>
+</div>
+</div>
+
+<h2 id="incalculabilite">Non-computability</h2>
+
+<div class="resultat theoreme" id="sigma-non-calculable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Σ grows faster than any computable function (Radó, 1962)</div></div>
+<div class="enonce"><p>For every total computable function $f:\N\to\N$, $\Sigma(N)>f(N)$ for all sufficiently large $N$. In particular $\Sigma$ is not computable, and neither is $S$.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>It is not only that $\Sigma$ is hard to compute: it grows faster than anything a program can compute, faster than the exponential, than the Ackermann function, than any function that can be described by an algorithm. Yet each of its values is a well-determined integer.</p>
+<p>Knowing $\Sigma(n)$ or $S(n)$ would in fact be a superpower: knowing $S(n)$, one would decide the halting of all $n$-state machines (run them for $S(n)$ steps; those that have not halted will never halt). Since many mathematical conjectures (Goldbach, Riemann) can be expressed as the halting of a machine of modest size, knowing $S$ for a few dozen or a few hundred states would settle them all.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Let $f$ be total computable. Set $F(x)=\sum_{i=0}^{x}\big(f(i)+i^2\big)$. $F$ is computable, strictly increasing, and $F(x)\ge f(x)$, $F(x)\ge x^2$. Let $M_F$ be a Radó machine with $n$ states which, starting from $x$ consecutive strokes (head on the first one), halts leaving these $x$ strokes, a blank, then $F(x)$ strokes, head on the first stroke of the result, and which never visits the squares to the left of its input (this can always be required: a tape infinite in one direction computes the same functions).</p>
+<p>For every $x$, build a machine $M_x$: $x$ states write $x$ strokes moving right; two states bring the head back to the first one; then two copies of $M_F$ (states shifted) run one after the other. $M_x$ has $x+2+2n$ states, starts from a blank tape and halts with at least $x+F(x)+F(F(x))$ strokes. Hence
+$$\Sigma(x+2+2n)\ge F(F(x)).$$
+For $x$ large enough, $x^2>x+2+2n$, so $F(x)\ge x^2>x+2+2n$, and since $F$ is strictly increasing,
+$$\Sigma(x+2+2n)\ge F(F(x))>F(x+2+2n)\ge f(x+2+2n).$$
+Thus $\Sigma(N)>f(N)$ for all sufficiently large $N$. If $\Sigma$ were computable, we would in particular have $\Sigma(N)>\Sigma(N)$ for large $N$, which is absurd. Finally $S(n)\ge\Sigma(n)$ (at least one step is needed per 1 written), so $S$ also dominates every computable function.</p>
+</div>
+</div>
+
+<h2 id="valeurs-connues">Known values</h2>
+
+<div class="resultat theoreme" id="valeurs-bb"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Values of Σ and S known in 2026</div></div>
+<div class="enonce">
+<table>
+<tr><th>$n$</th><th>$\Sigma(n)$</th><th>$S(n)$</th><th>Established by</th></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>trivial</td></tr>
+<tr><td>2</td><td>4</td><td>6</td><td>Radó (1962); rechecked here</td></tr>
+<tr><td>3</td><td>6</td><td>21</td><td>Lin and Radó (1965); rechecked here</td></tr>
+<tr><td>4</td><td>13</td><td>107</td><td>Brady (1983); rechecked here</td></tr>
+<tr><td>5</td><td>4,098</td><td>47,176,870</td><td>Marxen and Buntrock (1989, candidates); complete proof by the collaborative project <em>bbchallenge</em> (2024), checked in the proof assistant Coq (now renamed Rocq); here, only the lower bound is rechecked</td></tr>
+<tr><td>6</td><td>$>10\uparrow\uparrow 15$</td><td>$>2\uparrow\uparrow\uparrow 5$</td><td>lower bounds (Kropitz, 2022, for $\Sigma$; mxdys, 2025, for $S$); value unknown</td></tr>
+</table>
+<p>($10\uparrow\uparrow15$ denotes a tower of fifteen 10s: $10^{10^{\cdot^{\cdot^{10}}}}$. $2\uparrow\uparrow\uparrow5=2\uparrow\uparrow(2\uparrow\uparrow65{,}536)$ is a tower of 2s whose height is itself a tower of 65,536 twos. “Rechecked here” refers to the exhaustive checks described at the technological level: in the <a href="#exemple-rado">3-state example</a> for $n\le3$, and below for $n=4$.)</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>It took sixty years and a computer-assisted international collaboration to determine $S(5)$. For $n=6$, machines are known that halt after a number of steps defying any notation, and there remain machines for which it is not known whether they halt; some simulate problems close to the Collatz conjecture. It is likely that $\Sigma(6)$ will never be known.</p>
+<p>Beyond that, logic itself steps in: there is a rank $n$ from which the values of $S$ and $\Sigma$ are no longer provable in the usual set theory ZFC (for $S$, this rank is known to be below 800) (<a href="#castors-zfc">theorem below</a>).</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><strong>What it takes to establish a value.</strong> Establishing $S(n)=k$ requires two things. The lower bound $S(n)\ge k$ is proved by exhibiting an $n$-state machine and simulating it until it halts at step $k$: a finite computation. The upper bound requires, for each of the $n$-state machines (there are $(4n+4)^{2n}$ of them, a finite number), either simulating it until it halts, which then happens within at most $k$ steps, or <em>proving</em> that it never halts. For $\Sigma(n)$, one also counts the 1 symbols on the tape of the machines that halt. For each $n$, the value is therefore reached by finitely many checks and proofs; but no algorithm provides these proofs for all $n$, otherwise $S$ would be computable, which <a href="#sigma-non-calculable">Radó’s theorem</a> rules out. The <a href="#castors-zfc">following theorem</a> goes further: from some rank on, some of these non-halting proofs do not even exist in ZFC.</p>
+<p><strong>Status of the rows of the table.</strong> The rows $n\le4$ are proved in this manual (exhaustive checks at the technological level, with three proofs by hand for $n=4$). The row $n=5$ is proved here for the lower bound, quoted for the upper bound. The row $n=6$ and the bound “below 800” of the philosophical part are quoted for information.</p></div>
+<div class="niveau" data-niveau="techno">
+<p><strong>Checking $\Sigma(4)=13$ and $S(4)=107$.</strong> For 4 states, the $20^8\approx2.6\cdot10^{10}$ tables can no longer be enumerated one by one. They are explored in <em>tree normal form</em>: a machine is defined only on the transitions it actually uses. It is simulated; when it reaches an undefined transition, the tree branches: either it halts there, or one chooses the symbol written, the move and the next state, among the states already used and a single new state. The first move is taken to the right, since the mirror machine makes the same number of steps and writes the same number of 1s. Every 4-state machine thus reduces, up to renumbering of states, to a leaf of the tree performing the same computation. There are 3,995,005 leaves:</p>
+<ul>
+<li>249,693 halt, in at most 107 steps and with at most thirteen 1s;</li>
+<li>3,136,096 have no possible halting transition left;</li>
+<li>315,648 are settled by backward reasoning, 27,556 by a cycle, 257,557 by a translated cycle, 6,386 by a closed set of $n$-grams;</li>
+<li>2,066 by the closed regular language described in the <a href="#exemple-rado">3-state example</a>, with automata of at most 6 states;</li>
+<li>the last 3 by proofs by hand, given below.</li>
+</ul>
+<p>For these leaves, an undefined transition counts as a possible halt: each non-halting proof is therefore valid for all ways of completing the table. The first criterion simulates 1,000 steps, which is only used for sorting: no value of $S$ is assumed. The automaton criterion was also tried on machines that halt, and declared none of them non-halting. Programs: <a href="assets/code/castors_tnf.c">castors_tnf.c</a> and <a href="assets/code/far.c">far.c</a>, a C rewrite of castors_far.py, which gives the same results on the 3-state machines.</p>
+<p><em>The last three machines.</em> We write $u\,[X]\,v$ for the configuration in which the tape holds $uv$, the rest being blank, and the head, in state $X$, reads the first letter of $v$. The three proofs follow the same pattern. One finds a family of configurations that transform into one another by “macro-steps”, each of a fixed number of steps, and one checks that the only undefined transition is never used. Each macro-step is checked by following its few transitions by hand, whatever the values of the parameters.</p>
+<ol>
+<li><strong>$A0\to1RB$, $A1\to1LD$, $B0\to1RC$, $B1\to0LC$, $C0\to1LA$, $C1\to1RA$, $D1\to0RB$</strong> ($D0$ undefined). For $a\ge2$, $1^a[A]11(01)^b$ leads in 4 steps to $1^{a-2}[A]11(01)^{b+1}$. For $a=1$, the same 4 steps lead to $[A](01)^{b+2}$. Next, $1^c[A]0101$ leads in 6 steps to $1^{c+4}[A]$, and $1^c[A]$ leads in 3 steps to $1^{c+1}[A]11$. Start from $1^a[A]11$ with $a\equiv1\pmod4$. One reaches $1[A]11(01)^{(a-1)/2}$, then $[A](01)^k$ with $k=(a+3)/2$, which is even. One finally reaches $1^{2k}[A]$, then $1^{a+4}[A]11$. The machine reaches $1^{25}[A]11$ at step 291.</li>
+<li><strong>$A0\to1RB$, $A1\to0RB$, $B0\to1LB$, $B1\to0LC$, $C0\to0LD$, $D0\to1RD$, $D1\to0RA$</strong> ($C1$ undefined). For $j\ge1$, $1^j0[A]001^m$ leads in 5 steps to $1^{j-1}0[A]001^{m+1}$. For $j=0$, $0[A]001^m$ leads in 8 steps to $1110[A]1^m$. Finally, for $m\ge3$, $1^k0[A]1^m$ leads in 7 steps to $1^{k+3}0[A]1^{m-3}$. Start from $1^k0[A]$ with $k\equiv0\pmod3$: one reaches $0[A]001^k$, then $1110[A]1^k$, then $1^{k+3}0[A]$. The machine reaches $1110[A]$ at step 8.</li>
+<li><strong>$A0\to1RB$, $A1\to1LB$, $B0\to1RC$, $B1\to0RD$, $C0\to1LD$, $C1\to1RB$, $D1\to0LA$</strong> ($D0$ undefined). For $j\ge1$, $1^j[A]101^m$ leads in 7 steps to $1^{j-1}[A]101^{m+1}$. For $m\ge3$, $[A]101^m$ leads in 7 steps to $1111[A]001^{m-3}$. For $r\ge3$, $1^c[A]001^r$ leads in 5 steps to $1^{c+3}[A]001^{r-3}$. Finally, $1^c[A]001$ leads in 6 steps to $1^{c+2}[A]101$. Start from $1^k[A]101$ with $k\equiv0\pmod3$ and $k\ge3$. One reaches $[A]101^{k+1}$, then $1111[A]001^{k-2}$. Since $k-2\equiv1\pmod3$, one reaches $1^{k+1}[A]001$, then $1^{k+3}[A]101$. The machine reaches $111[A]101$ at step 12.</li>
+</ol>
+<p>In all three cases, one returns to a configuration of the same family, with a larger parameter that keeps the same congruence. The machine therefore never halts. The macro-steps and the complete cycles were also checked by program for small values of the parameters (<a href="assets/code/castor4_dernieres.py">castor4_dernieres.py</a>). The proofs themselves hold for all values.</p>
+<p><strong>What is not redone here.</strong> For 5 states, the lower bound was checked by simulating the champion machine: it halts after 47,176,870 steps, with 4,098 symbols 1 on the tape. The upper bound requires proving the non-halting of all the other machines. The bbchallenge project did so in 2024 on about 180 million machines, with more elaborate criteria and a few individual proofs, all formalized in Coq. This work is quoted, and not reproduced here. For 6 states, the lower bounds in the table are quoted: the corresponding machines cannot be simulated step by step, and their analysis requires symbolic accelerations that are not reproduced here.</p>
+<p>The champions for $n=2$, $4$ and $5$. The last one makes 47,176,870 steps: the fast simulator of the page completes it in less than a second.</p>
+<div class="rado-widget" data-titre="Σ(2) = 4, S(2) = 6"><pre class="src">A 0 1 R B
+A 1 1 L B
+B 0 1 L A
+B 1 1 R H</pre></div>
+<div class="rado-widget" data-titre="Σ(4) = 13, S(4) = 107 (Brady)"><pre class="src">A 0 1 R B
+A 1 1 L B
+B 0 1 L A
+B 1 0 L C
+C 0 1 R H
+C 1 1 L D
+D 0 1 R D
+D 1 0 R A</pre></div>
+<div class="rado-widget" data-titre="Σ(5) = 4098, S(5) = 47,176,870 (Marxen and Buntrock)"><pre class="src">A 0 1 R B
+A 1 1 L C
+B 0 1 R C
+B 1 1 R B
+C 0 1 R D
+C 1 0 L E
+D 0 1 L A
+D 1 1 L D
+E 0 1 R H
+E 1 0 L A</pre></div>
+</div>
+</div>
+
+<div class="resultat theoreme" id="castors-zfc"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The values of S and Σ escape ZFC from some rank on</div></div>
+<div class="enonce"><p>Assume ZFC is consistent. There is an integer $N$ such that, for every $n\ge N$ and every integer $k$, ZFC does not prove the statement “$S(n)=k$”. The same holds for $\Sigma$, with another integer $N'$.</p></div>
+<div class="niveau" data-niveau="philo"><p>This is not merely a matter of values too large to be computed. Beyond a certain number of states, no proof, in the theory that serves as the foundation of mathematics, can establish the value. The reason is simple: knowing $S(n)$ means being able to decide the halting of all $n$-state machines, and one of them searches for a contradiction in ZFC. <a href="kolmogorov-omega.html#omega-arret">Chaitin’s number Ω</a> plays the same role in compressed form: its first $n$ digits decide the halting of all programs of length at most $n$.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>The axioms of <a href="bases.html#zfc">ZFC</a> form a decidable set. There is therefore a Radó machine $M$ that enumerates all formal proofs in ZFC, and halts as soon as it finds one of $0\ne0$. Let $N$ be its number of states. ZFC proves “$M$ does not halt $\iff$ ZFC is consistent”: this is the translation of the definition of $M$. For $n\ge N$, add unreachable states to $M$ to obtain an $n$-state machine that behaves like $M$.</p>
+<p>Suppose ZFC proves $S(n)=k$. By the definition of $S$, ZFC then proves that $M$, if it halts, halts within at most $k$ steps.</p>
+<ul>
+<li>If $M$ actually halts within at most $k$ steps, ZFC is inconsistent, contrary to the hypothesis.</li>
+<li>Otherwise, the statement “$M$ does not halt within $k$ steps” is a finite check, true, and ZFC proves it. Every true bounded statement is provable in PA (<a href="incompleteness.html#sigma-complet">Σ-completeness</a>), and ZFC proves all theorems of PA. ZFC therefore proves that $M$ does not halt, that is, that ZFC is consistent. This contradicts the <a href="incompleteness.html#godel2">second incompleteness theorem</a>. It applies to every theory containing PA whose axioms form a primitive recursive set. This is the case of ZFC, once arithmetic is translated into von Neumann integers (<a href="bases.html#zfc">points (1) and (2)</a>).</li>
+</ul>
+<p><strong>For $\Sigma$.</strong> Let $M'$ be a machine that runs step by step the same search as $M$ and that, after each simulated step, adds a 1 to a counting zone placed on the left, which it never erases. $M'$ halts if and only if $M$ halts. If it halts after $t$ simulated steps, at least $t$ squares contain a 1. Let $N'$ be its number of states. If ZFC proves $\Sigma(n)=k$ for some $n\ge N'$, ZFC proves that $M$, if it halts, does so within at most $k$ steps, and one concludes as above.</p>
+<p><strong>Explicit values.</strong> The proof gives no precise value of $N$: one would have to write the machine $M$. This is what Yedidia and Aaronson (2016) did, with a machine of 7,918 states, under a hypothesis slightly stronger than the consistency of ZFC. Others followed, going below 800 states for ZF (Riebel, 2023). This also holds for ZFC, since PA proves that ZF and ZFC are equiconsistent (Gödel, 1938). These results concern $S$; the machine $M'$ requires a few more states. These machines are produced by compilers and are not rechecked here.</p>
+</div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-bb-deux"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — The two-state champion</span></div><div class="corps-exo">
+<p>Simulate the Radó machine $A0\to1RB$, $A1\to1LB$, $B0\to1LA$, $B1\to1RH$ on a blank tape. How many steps does it make, and how many 1s does it leave?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Write the tape with the square being read in brackets. Start: $A$, $[0]$. Then: $A0\to1RB$ gives $1[0]$ in $B$; $B0\to1LA$ gives $[1]1$ in $A$; $A1\to1LB$ gives $[0]11$ in $B$; $B0\to1LA$ gives $[0]111$ in $A$; $A0\to1RB$ gives $1[1]11$ in $B$; $B1\to1RH$: halt on $11[1]1$. Six steps, four 1s. These are the values $S(2)=6$ and $\Sigma(2)=4$ (<a href="#valeurs-bb">known values</a>).</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-bb-nombre"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 2 — How many machines?</span></div><div class="corps-exo">
+<p>How many Radó machines with $n$ states are there (in the sense of the <a href="#def-rado">definition</a>)? Compute for $n=1,2,3,4$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>There are $2n$ transitions to fix (one per pair state, symbol read). Each chooses a symbol to write (2 choices), a direction (2 choices) and a next state among the $n$ states and $H$ ($n+1$ choices): $4(n+1)$ possibilities. Hence $(4n+4)^{2n}$ machines: $64$, $20{,}736$, $16{,}777{,}216$ and $25{,}600{,}000{,}000$ for $n=1,2,3,4$. In practice, this number is greatly reduced by symmetry (left-right exchange, renumbering of states) and by keeping only one transition to $H$; but the growth remains more than exponential, and each machine must be <em>proved</em> to halt or not.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-bb-croissance"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — One more state, one more 1</span></div><div class="corps-exo">
+<p>Show that $\Sigma(n+1)\ge\Sigma(n)+1$ and $S(n)\ge\Sigma(n)$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Let $M$ be an $n$-state machine that halts leaving $\Sigma(n)$ ones. In its transition to $H$, replace the state $H$ by a new state $N$, with $N1\to1RN$ and $N0\to1RH$. Once in $N$, the machine moves right over 1s; since the tape carries only finitely many 1s, it finds a 0, writes a 1 there and halts. It has $n+1$ states and leaves $\Sigma(n)+1$ ones, whence $\Sigma(n+1)\ge\Sigma(n)+1$.</p>
+<p>Each step writes at most one symbol, hence adds at most one 1; a machine that leaves $k$ ones on an initially blank tape makes at least $k$ steps: $S(n)\ge\Sigma(n)$.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-bb-arret"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 4 — Knowing S(n) means deciding halting</span></div><div class="corps-exo">
+<p>(a) Show that if $S(n)$ is known, one can decide, for each Radó machine with $n$ states, whether it halts on a blank tape. (b) Deduce, without going through $\Sigma$, that $S$ is bounded by no computable function.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>(a) Simulate the machine for $S(n)$ steps. If it has not halted, it will never halt, since every $n$-state machine that halts does so within at most $S(n)$ steps.</p>
+<p>(b) The same argument works with any upper bound: if $f$ is computable and $f(n)\ge S(n)$ for all $n$, simulating $f(n)$ steps decides halting on a blank tape for $n$-state machines. Yet this problem is undecidable: to every Turing machine $Z$ and every input $x$, one (computably) associates a Radó machine that first writes $x$ on the blank tape, then simulates $Z$; it halts if and only if $Z$ halts on $x$. A decider for halting on a blank tape would therefore decide $K$. This is Radó’s argument, and the reason why each new value of $S$ requires solving mathematical problems, such as variants of the Collatz conjecture (<a href="#valeurs-bb">known values</a>).</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="ackermann.html"><small>← Previous</small>The Ackermann function</a><a href="computability-ai.html" style="text-align:right"><small>Next →</small>Computability and artificial intelligence</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

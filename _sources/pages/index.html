@@ -1,0 +1,157 @@
+<!--
+titre: Computability
+court: Home
+chapo: What a machine can compute, what no machine will ever compute, and why this concerns all of us. A self-contained monograph that can be read at three levels.
+-->
+
+<p class="auteurs"><strong>Frédéric Prost and Claude</strong></p>
+
+<h2 id="avant-propos">Foreword</h2>
+
+<p>This manual was first written in LaTeX. The format of the printed page imposed a single reading order, whereas the subject lends itself poorly to one: computability interests the programmer who wants to <em>see</em> a Turing machine compute, the mathematician who wants a correct proof, and the curious reader who wants to understand what it means, in everyday life, for a problem to be “undecidable”. The HTML format makes it possible to superimpose these readings instead of juxtaposing them.</p>
+
+<p>The text is <strong>self-contained</strong>: everything used is defined, either in the chapter or in the <a href="bases.html">appendices</a>. It assumes no knowledge of programming, though it provides a good deal of it, and it assumes nothing more in mathematics than proof by induction.</p>
+
+<p>This English edition is a translation of the French original, <em>Calculabilité, un manuel à trois niveaux</em>; the mathematical notation is the same in both.</p>
+
+<h2 id="mode-demploi-trois-niveaux-de-lecture">How to use this manual: three reading levels</h2>
+
+<p>Each result (definition, theorem, proposition) is presented in a box. Its statement is always visible; below it, three tabs give three ways of understanding it:</p>
+
+<div class="niveaux-intro">
+  <div class="philo"><h4>Philosophical</h4>What does the result mean? Why is it surprising, and what does it imply concretely: for computer science, for science, for everyday life? No formula is indispensable there.</div>
+  <div class="tech"><h4>Technical</h4>Mathematical proofs that are correct and complete in their structure, which take for granted only constructions whose realization is routine (“one builds a machine that…”).</div>
+  <div class="techno"><h4>Technological</h4>The constructions carried through to the end: complete Turing machine programs, explicit encodings, λ-calculus terms. Most of them run in the page, and their results have been tested automatically.</div>
+</div>
+
+<p>The selector at the top of each page chooses the level displayed everywhere; the tab of a box changes only that box. The “All” choice displays the three levels one below the other (this is also what gets printed). The choice is remembered by the browser.</p>
+
+<div class="encadre">
+<p><strong>The simulators.</strong> Four tools are built into the manual and work offline: a Turing machine simulator (in the quadruple format of <a href="turing-machines.html">chapter 3</a>), a <a href="equivalence.html#compilateur">compiler</a> that turns a recursive function into a complete Turing machine (often several thousand instructions) and then runs it, a <a href="busy-beavers.html">fast busy beaver simulator</a> and a <a href="lambda-calculus.html">λ-term reducer</a>.</p>
+
+
+</div>
+
+<h2 id="parcours">Suggested reading paths</h2>
+
+<p>The manual can be read in order, but this is not compulsory. The page <a href="reading-paths.html">Reading paths</a> details each itinerary step by step, together with a training plan based on the exercises.</p>
+
+<h3 id="selon-le-public">By audience</h3>
+<div class="cartes">
+  <div class="carte"><h4><a href="reading-paths.html#decouverte">Discovery</a></h4><p style="margin:0">Two hours, no prerequisites: from halting to incompleteness.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#licence">Undergraduate course</a></h4><p style="margin:0">Models, universality, undecidability, with exercises.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#master">Graduate course</a></h4><p style="margin:0">Hierarchy, incompleteness, MRDP, logic, Kolmogorov, complexity.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#programmeurs">For programmers</a></h4><p style="margin:0">Rice, quines, total languages, Curry-Howard, SAT and SMT.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#mathematiciens">For mathematicians</a></h4><p style="margin:0">Diophantus, Presburger, Tarski, tilings, groups, ZFC.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#philosophie">Philosophy of science</a></h4><p style="margin:0">Church-Turing thesis, physics and life, incompleteness.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#intelligence-artificielle">Computation and AI</a></h4><p style="margin:0">What computability says about learning and control.</p></div>
+</div>
+
+<h3 id="fils-thematiques">Thematic threads</h3>
+<div class="cartes">
+  <div class="carte"><h4><a href="reading-paths.html#diagonale">The diagonal</a></h4><p style="margin:0">One argument, ten impossibility theorems.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#coder-un-calcul">Encoding a computation</a></h4><p style="margin:0">From the space-time diagram to tilings, matrices and equations.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#logique-fondements">Logic and foundations</a></h4><p style="margin:0">From Hilbert’s question to Curry-Howard.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#decidable-et-son-prix">The decidable and its price</a></h4><p style="margin:0">Decidable does not mean feasible.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#limites-physiques">Computation and the physical world</a></h4><p style="margin:0">Gandy, Landauer, beavers, spectral gap.</p></div>
+  <div class="carte"><h4><a href="reading-paths.html#histoire">A history in dates</a></h4><p style="margin:0">From Leibniz (1703) to primality in P (2002).</p></div>
+</div>
+
+<h2 id="chapitres-par-theme">Chapters by theme</h2>
+<!--THEMES-->
+
+<h2 id="index-alphabetique-des-resultats">Alphabetical index of results</h2>
+<!--INDEX-ALPHA-->
+
+<h2 id="conventions">General notational conventions</h2>
+
+<p>This list gathers the notations used in several chapters, with a link to the place where each one is defined. Notations specific to a single proof are introduced on the spot.</p>
+
+<h3 id="entiers-fonctions-ensembles">Integers, functions, sets</h3>
+<ul>
+  <li>$\N=\{0,1,2,\dots\}$; the variables $x,y,z,n,m,a,e$ denote natural numbers unless otherwise stated, and $\vec x$ abbreviates $x_1,\dots,x_n$.</li>
+  <li>“Function” means by default <em>partial function</em> from $\N^n$ to $\N$ (<a href="bases.html#def-fonctions">definition</a>). We write $f(x)\conv$ if $f$ is defined at $x$, $f(x)\ind$ otherwise; $\mathrm{dom}\,f$ is the domain of definition.</li>
+  <li>$e_1\simeq e_2$ (Kleene equality): one of the expressions is defined if and only if the other is, and they then have the same value.</li>
+  <li>$x\monus y$ is <em>proper subtraction</em> (monus): $x-y$ if $x\ge y$, $0$ otherwise.</li>
+  <li>$\chi_A$ (sometimes $c_A$) is the characteristic function of $A\subseteq\N$: $1$ on $A$, $0$ elsewhere. $\overline A=\N\setminus A$ is the complement.</li>
+  <li>$x\mapsto e$, or $\lambda x.e$, denotes the function mapping $x$ to $e$ (<a href="bases.html#def-fonctions">anonymous notation</a>).</li>
+  <li>$p_1=2,p_2=3,p_3=5,\dots$ are the prime numbers (<a href="bases.html#premiers">definition</a>).</li>
+</ul>
+
+<h3 id="machines-de-turing">Turing machines</h3>
+<ul>
+  <li>States $q_0,q_1,\dots$, symbols $S_0,S_1,\dots$, with $B=S_0$ (blank) and $1=S_1$ (stroke). A machine $Z$ is a finite consistent set of <strong>quadruples</strong> $q_i\,S_j\,S_k\,q_l$, $q_i\,S_j\,R\,q_l$, $q_i\,S_j\,L\,q_l$ (<a href="turing-machines.html#def-mt">definition</a>); <a href="turing-machines.html#quintuplets">quintuples</a> write and move in a single step.</li>
+  <li>An instantaneous description is a word $\alpha=\gamma\,q_i\,S_j\,\delta$: the tape holds $\gamma S_j\delta$ and the head reads $S_j$; $\alpha\vdash_Z\beta$ is a computation step, $\mathrm{Res}_Z(\alpha)$ the final description if the computation halts (<a href="turing-machines.html#def-pas">definition</a>).</li>
+  <li>$\overline x=1^{x+1}$ represents the integer $x$; an $n$-tuple is written $\overline{x_1}B\cdots B\overline{x_n}$; $\langle\alpha\rangle$ is the number of strokes in the word $\alpha$ (<a href="turing-machines.html#codage-entrees">convention</a>).</li>
+  <li>$\Psi^{(n)}_Z$ is the $n$-argument function computed by $Z$, $\mathcal T$ the class of Turing-computable functions (<a href="turing-machines.html#def-psi">definition</a>); with an oracle $A$: $Z^A$, $\Psi^{(n)}_{Z^A}$, $\mathcal T^A$ (<a href="turing-machines.html#def-oracle">definition</a>).</li>
+  <li>Radó machines (busy beavers): states $A,B,C,\dots$ and halting state $H$, symbols $0$ (blank) and $1$; $A0\to1RB$ reads “in $A$, reading $0$, write $1$, move right, go to $B$”. $\Sigma(n)$ and $S(n)$ are the largest number of $1$s and the largest number of steps of the halting $n$-state machines (<a href="busy-beavers.html#def-rado">definition</a>).</li>
+</ul>
+
+<h3 id="fonctions-recursives-et-codages">Recursive functions and encodings</h3>
+<ul>
+  <li>Basic functions: constants $m^{(k)}$, successor $S$, projections $A^{(k)}_i$. Schemes: substitution $\sigma[g,h_1,\dots,h_k]$, primitive recursion $\rho[g,h]$, with $\rho[g,h](y+1,\vec x)=h\big(y,\rho[g,h](y,\vec x),\vec x\big)$ (recursion on the <em>first</em> argument); $\RP$ is the class of primitive recursive functions (<a href="recursive-functions.html#def-rp">definition</a>).</li>
+  <li>Minimization: $\mu[g]$, or $\mu y\,[g(\vec x,y)=0]$, the least $y$ at which $g$ vanishes, the previous values being defined; $\mu y\,R(\vec x,y)$ for a predicate $R$; $\mu y<b$ for bounded minimization. $\PR$ is the class of partial recursive functions (<a href="recursive-functions.html#def-mu">definition</a>).</li>
+  <li>$\langle x,y\rangle=\frac{(x+y)(x+y+1)}2+x$ is Cantor’s pairing function, with inverses $\pi_1,\pi_2$; $\langle x_1,\dots,x_n\rangle=\langle x_1,\langle x_2,\dots,x_n\rangle\rangle$ (<a href="recursive-functions.html#cantor-couple">proposition</a>). Context distinguishes this coding from $\langle\alpha\rangle$ (number of strokes in a word).</li>
+  <li>Gödel numbers: $\gamma$ encodes each symbol by an odd integer, $\mathrm{gn}(a_1\cdots a_n)=\prod_kp_k^{\gamma(a_k)}$ encodes a word, and a sequence of words $M_1,\dots,M_n$ is encoded by $\prod_kp_k^{\mathrm{gn}(M_k)}$ (<a href="recursive-functions.html#godel">definition</a>). For machines, $\gamma(R)=3$, $\gamma(L)=5$, $\gamma(S_i)=4i+9$, $\gamma(q_i)=4i+7$ (<a href="equivalence.html#godel-mt">definition</a>).</li>
+  <li>$T_n(z,\vec x,y)$ is Kleene’s predicate and $U(y)$ the result function: $\Psi^{(n)}_Z(\vec x)\simeq U(\mu y\,T_n(z,\vec x,y))$ (<a href="equivalence.html#forme-normale">normal form</a>); $T^A_n$ with an oracle.</li>
+</ul>
+
+<h3 id="indices-et-ensembles-classiques">Indices and classical sets</h3>
+<ul>
+  <li>$\eta(e)$ is the $e$-th Gödel number of a machine in increasing order; $\varphi^{(k)}_e$ is the $k$-argument function computed by the machine encoded by $\eta(e)$, $\varphi_e=\varphi^{(1)}_e$, and $W_e=\mathrm{dom}\,\varphi_e$ (<a href="universality.html#phi">notation</a>); $\varphi^A_e$, $W^A_e$ with an oracle ($\eta^\ast$ then plays the role of $\eta$). The integer $e$ is an <em>index</em> or <em>program</em>.</li>
+  <li>$s^m_n$ denotes the functions of the <a href="smn-recursion.html#smn">s-m-n theorem</a>.</li>
+  <li>$K=\{e:\varphi_e(e)\conv\}$ (diagonal halting), $H=K_0=\{\langle e,x\rangle:\varphi_e(x)\conv\}$ (<a href="undecidability.html#arret">theorem</a>).</li>
+  <li>$\mathrm{Tot}$, $\mathrm{Fin}$, $\mathrm{Inf}$, $\mathrm{Cof}$, $\mathrm{Rec}$, $\mathrm{Comp}$: sets of indices $e$ such that $\varphi_e$ is total, $W_e$ is finite, infinite, cofinite, decidable, Turing-equivalent to $K$ (<a href="arithmetical-hierarchy.html#exemples-hierarchie">classified examples</a>).</li>
+</ul>
+
+<h3 id="reductions-degres-hierarchie">Reductions, degrees, hierarchy</h3>
+<ul>
+  <li>$A\le_mB$ (<a href="undecidability.html#reduction">many-one</a>), $A\le_1B$ (<a href="arithmetical-hierarchy.html#un-complet">one-one</a>), $A\le_TB$ (<a href="arithmetical-hierarchy.html#def-turing">Turing</a>); $\equiv_m$, $\equiv_1$, $\equiv_T$ the associated equivalences, $\deg_T(A)$ the Turing degree.</li>
+  <li>$A'=\{e:\varphi^A_e(e)\conv\}$ is the jump of $A$, $A^{(n)}$ the $n$-th jump; $\emptyset'$, the jump of the empty set, is $K$ itself (machines with oracle $\emptyset$ compute like machines without an oracle) (<a href="arithmetical-hierarchy.html#saut-complet">proposition</a>).</li>
+  <li>$\Sigma_n$, $\Pi_n$, $\Delta_n$: classes of the arithmetical hierarchy (<a href="arithmetical-hierarchy.html#def-hierarchie">definition</a>); $\Delta^1_1$: hyperarithmetical sets. Not to be confused with $\Sigma$ (an alphabet) or with $\Sigma(n)$ (busy beaver).</li>
+</ul>
+
+<h3 id="calcul">λ-calculus</h3>
+<ul>
+  <li>$\mathrm{VL}(M)$: free variables; $M[x:=N]$: substitution; $=_\alpha$: α-equivalence; $\to_\beta$: one step of β-reduction, $\twoheadrightarrow_\beta$: its reflexive and transitive closure, $=_\beta$: β-equivalence (<a href="lambda-calculus.html#def-beta">definition</a>). Application associates to the left ($MNP=(MN)P$).</li>
+  <li>$\mathbf n=\lambda f.\lambda x.f^n x$ is the Church numeral (<a href="lambda-calculus.html#church">definition</a>).</li>
+  <li>Simple types $A\to B$ (the arrow associates to the right), context $\Gamma$, typing judgement $\Gamma\vdash M:A$ (<a href="logic-and-types.html#lambda-type">definition</a>); $\mathbf N$, $\mathsf S$ and the recursor $\mathsf R$ of System T (<a href="logic-and-types.html#systeme-t">definition</a>). The same sign $\vdash$ is used for provability: this is the <a href="logic-and-types.html#curry-howard-thm">Curry-Howard correspondence</a>.</li>
+  <li>System F: $\forall\alpha.A$ (polymorphic type), $\Lambda\alpha.M$ (type abstraction), $\mathrm{Nat}=\forall\alpha.(\alpha\to\alpha)\to\alpha\to\alpha$, whose inhabitants are still written $\mathbf n$ (<a href="logic-and-types.html#systeme-f">definition</a>). Do not confuse $\mathrm{Nat}$ (a type of F) with $\mathbf N$ (the base type of System T).</li>
+  <li>The λ-calculus and the halting set share two letters: $\mathsf K=\lambda x.\lambda y.x$ and $\mathsf S$ are combinators, $K$ is the halting set; $\Omega=(\lambda x.xx)(\lambda x.xx)$ is the term with no normal form, $\Omega$ (with no further qualification, from chapter 18 on) is Chaitin’s constant. The successor $\mathsf S$ of System T and the basic function $S$ of the recursive functions are the same idea.</li>
+</ul>
+
+<h3 id="logique-et-incompletude">Logic and incompleteness</h3>
+<ul>
+  <li>$\mathsf{PA}$: Peano arithmetic; $\mathsf T\vdash\phi$: $\phi$ is provable in $T$; $\ulcorner\phi\urcorner$: Gödel number of the formula $\phi$; $\underline n$: the term $(\cdots(0+1)\cdots)+1$ representing $n$; $\mathrm{Prf}_{\mathsf T}$, $\mathrm{Prov}_{\mathsf T}$, $\mathrm{Con}(\mathsf T)$: proof predicate, provability predicate and consistency statement, $\Box\phi$ abbreviating $\mathrm{Prov}_{\mathsf T}(\underline{\ulcorner\phi\urcorner})$ (<a href="incompleteness.html#def-peano">definitions</a>, <a href="incompleteness.html#derivabilite">derivability conditions</a>).</li>
+  <li>Bounded formulas ($\Delta_0$) and $\Sigma_1$ formulas (<a href="incompleteness.html#delta0">definition</a>).</li>
+  <li>$\mathrm{Th}(\mathcal M)$: set of sentences true in the structure $\mathcal M$; $\mathrm{Th}(\N,+)$: Presburger arithmetic (<a href="decidable-theories.html#def-theorie">definition</a>).</li>
+</ul>
+
+<h3 id="complexite-de-kolmogorov-et">Kolmogorov complexity and Ω</h3>
+<ul>
+  <li>$\{0,1\}^\ast$: binary words; $|w|$: length; $\varepsilon$: empty word; the integer $n$ is identified with the word obtained by writing $n+1$ in binary without its leading digit (length-lexicographic order); $\bar w=1^{|w|}0\,w$: self-delimiting code (<a href="kolmogorov-omega.html#mots-entiers">convention</a>).</li>
+  <li>$C(x)$: Kolmogorov complexity, $\mathit{KP}(x)$: prefix complexity, $\Omega$: halting probability of the universal prefix machine (<a href="kolmogorov-omega.html#def-c">definition</a>, <a href="kolmogorov-omega.html#def-omega">Ω</a>).</li>
+</ul>
+
+<h3 id="complexite">Complexity</h3>
+<ul>
+  <li>$\mathrm{DTIME}(t)$, $\mathrm{NTIME}(t)$, $\mathrm{DSPACE}(s)$, $\mathrm{NSPACE}(s)$; classes $\mathsf L$, $\mathsf{NL}$, $\mathsf P$, $\mathsf{NP}$, $\mathsf{PSPACE}$, $\mathsf{EXP}$; $\mathrm{co}\mathcal C$: complements (<a href="complexity.html#classes-usuelles">definition</a>). $A\le_pB$: polynomial-time reduction (<a href="complexity.html#reduction-polynomiale">definition</a>).</li>
+  <li>Probabilistic classes $\mathsf{RP}$, $\mathrm{co}\mathsf{RP}$, $\mathsf{BPP}$ (<a href="randomness-quantum.html#def-probabiliste">definition</a>) and the quantum class $\mathsf{BQP}$ (<a href="randomness-quantum.html#def-quantique">definition</a>); $|i\rangle$ (Dirac notation) denotes the basis state indexed by the word $i\in\{0,1\}^n$, and $\mathbb C$ the complex numbers.</li>
+  <li>$O$, $o$: Landau notation; $\log_2$: base-2 logarithm.</li>
+</ul>
+
+<h3 id="equations-diophantiennes">Diophantine equations</h3>
+<ul>
+  <li>In $D(\vec a,\vec x)=0$, the $\vec a$ are the <em>parameters</em> and the $\vec x$ the <em>unknowns</em>; the unknowns range over $\N$ unless otherwise stated (<a href="diophantine-equations.html#def-diophantien">definition</a>).</li>
+</ul>
+
+<h3 id="automates-cellulaires">Cellular automata</h3>
+<ul>
+  <li>An elementary automaton has two states $0,1$ and the neighbourhood $(x_{i-1},x_i,x_{i+1})$; its <em>Wolfram number</em> $\sum f(a,b,c)\,2^{4a+2b+c}$ identifies it among the $256$ rules, hence “rule 110” (<a href="other-models.html#def-automate-cellulaire">definition</a>, <a href="other-models.html#classification-wolfram">Wolfram classes</a>).</li>
+</ul>
+
+<h3 id="mots-et-vocabulaire">Words and vocabulary</h3>
+<ul>
+  <li>The words “computable”, “recursive”, “Turing-computable”, “λ-definable” denote, once the <a href="equivalence.html">equivalence of the models</a> is established, the same class of functions; “decidable” and “recursive” are synonyms for sets, as are “semi-decidable” and “recursively enumerable”.</li>
+  <li>The letter $U$ has several uses, always specified: result function of the normal form, <a href="universality.html#universelle">universal function</a>, universal machine of Kolmogorov complexity, <a href="diophantine-equations.html#equation-universelle">universal equation</a>, black box $U_f$ and unitary operators of <a href="randomness-quantum.html#def-quantique">quantum computing</a>.</li>
+</ul>

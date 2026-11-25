@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Decidable theories · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html" aria-current="page"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Decidable theories</h1>
+<p class="chapo">The arithmetic of the integers with addition and multiplication is undecidable. But addition alone is decidable, and so is the theory of the real numbers, multiplication included. This chapter explains these results and what distinguishes them: a theory becomes undecidable when it can describe a computation.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="incompleteness.html#godel1">Incompleteness</a> · <a href="logic-and-types.html#binaire">One binary relation suffices</a> · <a href="languages.html#automates-finis">Finite automata</a> · <a href="diophantine-equations.html#mrdp">MRDP theorem</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#methodes">Theories and methods</a></li><li><a href="#presburger-section">Presburger arithmetic</a></li><li><a href="#reels">The real numbers and geometry</a></li><li><a href="#paysage">The landscape</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<p>The <a href="incompleteness.html">incompleteness theorem</a> and the <a href="logic-and-types.html#binaire">decision problem</a> give the impression that logic is undecidable as soon as it becomes interesting. This is not so. Rich mathematical theories are decidable: a machine can settle any of their statements. This chapter presents the most important ones, with two methods of proof (quantifier elimination and automata), then the dividing line between decidable and undecidable theories.</p>
+
+<h2 id="methodes">Theories and methods</h2>
+
+<div class="resultat definition" id="def-theorie"><div class="entete-res"><div class="type">Definition</div><div class="nom">Theory of a structure, decidable theory</div></div>
+<div class="enonce">
+<p>Fix a first-order language (constant, function and relation symbols). The <strong>theory</strong> of a structure $\mathcal M$ is the set $\mathrm{Th}(\mathcal M)$ of sentences true in $\mathcal M$. More generally, the theory generated by a set of axioms $\Gamma$ is the set of sentences provable from $\Gamma$, that is (by <a href="incompleteness.html#completude">completeness</a>) true in all models of $\Gamma$. A theory is <strong>decidable</strong> if the set of codes of its sentences is decidable, <strong>complete</strong> if it contains, for every sentence $\phi$, $\phi$ or $\neg\phi$.</p>
+<p>Notation: $\mathrm{Th}(\N,+,\times)$ is true arithmetic, $\mathrm{Th}(\N,+)$ (with $0$, $1$ and $<$) is <strong>Presburger arithmetic</strong>, $\mathrm{Th}(\R,+,\times)$ (with $0$, $1$ and $<$) is the theory of the real numbers.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>$\mathrm{Th}(\mathcal M)$ is always complete: a sentence is true or false in $\mathcal M$. For such a theory, being decidable means having a mechanical oracle for truth in $\mathcal M$. The incompleteness theorem says this is impossible for $(\N,+,\times)$: one cannot even axiomatize $\mathrm{Th}(\N,+,\times)$ by a decidable set of axioms, since a complete theory so axiomatized is decidable (<a href="incompleteness.html#ex-inc-complete">exercise</a>).</p></div>
+</div>
+
+<div class="resultat theoreme" id="arithmetique-indecidable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">True arithmetic is undecidable</div></div>
+<div class="enonce"><p>$\mathrm{Th}(\N,+,\times)$ is not decidable; it is not even semi-decidable.</p></div>
+<div class="niveau" data-niveau="tech"><p>By the <a href="diophantine-equations.html#mrdp">MRDP theorem</a>, there is a polynomial $P$ such that $e\in K\iff\exists\vec y\ P(e,\vec y)=0$. The sentence $\exists\vec y\ (P^+(\underline e,\vec y)=P^-(\underline e,\vec y))$, where $P^+$ and $P^-$ collect the monomials with positive and negative coefficients, is computed from $e$ and is true in $\N$ if and only if $e\in K$. A decision procedure for $\mathrm{Th}(\N,+,\times)$ would therefore decide $K$. Likewise for the complement of $K$, with the negation of this sentence: $\mathrm{Th}(\N,+,\times)$ is not semi-decidable, since $\overline K$ is not.</p></div>
+</div>
+
+<div class="resultat theoreme" id="elimination"><div class="entete-res"><div class="type">Proposition</div><div class="nom">The method of quantifier elimination</div></div>
+<div class="enonce"><p>A theory $\mathsf T$ <strong>eliminates quantifiers</strong> if every formula is equivalent, in $\mathsf T$, to a quantifier-free formula with the same free variables. If this formula is computed from the first one, and if the quantifier-free sentences of $\mathsf T$ can be decided, then $\mathsf T$ is decidable. To eliminate quantifiers, it suffices to eliminate $\exists x$ in front of a conjunction of atomic formulas and negations of atomic formulas.</p></div>
+<div class="niveau" data-niveau="philo"><p>This is the high-school method for solving systems: unknowns are eliminated one by one. “There is $x$ such that $ax+b=0$” is replaced by a condition on $a$ and $b$ alone. If the quantified variable can always be made to disappear, a sentence reduces to a combination of variable-free facts, checked by a computation.</p></div>
+<div class="niveau" data-niveau="tech"><p>Quantifiers are eliminated from the inside out, replacing $\forall x$ by $\neg\exists x\neg$. In front of a quantifier-free formula, put it in disjunctive normal form $\bigvee_i C_i$ (each $C_i$ a conjunction of literals), use $\exists x\bigvee_iC_i\equiv\bigvee_i\exists x\,C_i$, and eliminate $\exists x$ in front of each $C_i$, first pulling out the literals in which $x$ does not occur. For a sentence, one obtains a quantifier-free, hence variable-free, sentence, which is decided by hypothesis.</p></div>
+</div>
+
+<div class="resultat theoreme" id="ordres-denses"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Dense orders without endpoints</div></div>
+<div class="enonce"><p>The theory $\mathsf{DLO}$ of dense total orders with neither least nor greatest element eliminates quantifiers; it is complete and decidable. In particular, $(\mathbb Q,<)$ and $(\R,<)$ satisfy the same sentences.</p></div>
+<div class="niveau" data-niveau="philo"><p>An instructive example: logic with one binary relation is <a href="logic-and-types.html#binaire">undecidable</a>, but if the axioms of $\mathsf{DLO}$ are added, it becomes decidable. Adding axioms can make a theory decidable: the axioms constrain what the relation can do, and a dense order is too homogeneous to draw a computation. What matters is not the language alone, but what the models allow one to describe.</p></div>
+<div class="niveau" data-niveau="tech"><p>The axioms: $<$ is a strict total order; $\forall x\forall y\,(x&lt;y\Rightarrow\exists z\,(x&lt;z\wedge z&lt;y))$; $\forall x\exists y\,(y&lt;x)$ and $\forall x\exists y\,(x&lt;y)$. Negative literals are replaced: $\neg(x&lt;a)\equiv(x=a\vee a&lt;x)$, $\neg(x=a)\equiv(x&lt;a\vee a&lt;x)$, then one redistributes. It remains to eliminate $\exists x$ in front of a conjunction of formulas $x=a$, $x&lt;u$, $l&lt;x$ (replace $x&lt;x$ by false, $x=x$ by true). If there is some $x=a$, replace $x$ by $a$ everywhere. Otherwise, $\exists x\,(\bigwedge_i l_i&lt;x\wedge\bigwedge_j x&lt;u_j)$ is equivalent to $\bigwedge_{i,j}l_i&lt;u_j$: if each $l_i$ is smaller than each $u_j$, then $\max_il_i<\min_ju_j$ and density gives an $x$ in between; if one of the two families is empty, the absence of endpoints gives $x$, and the empty conjunction is true. The language has no constant: a quantifier-free sentence is a Boolean combination of “true” and “false”. Every sentence is therefore equivalent, in $\mathsf{DLO}$, to true or to false: the theory is complete, and the computation is a decision procedure.</p></div>
+</div>
+
+<h2 id="presburger-section">Presburger arithmetic</h2>
+
+<div class="resultat theoreme" id="presburger"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Addition of integers is decidable (Presburger, 1929)</div></div>
+<div class="enonce"><p>The theory $\mathrm{Th}(\N,0,1,+,<)$ is decidable.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>With addition alone, many things can be said: “every integer is even or odd”, “every amount of at least 8 euros can be paid with coins of 3 and 5”, “$x\equiv y \pmod 7$”, and everything concerning systems of linear inequalities over the integers. But two variables cannot be multiplied. And it is multiplication that makes it possible to encode finite sequences (by the <a href="incompleteness.html#beta">β lemma</a>), hence computations. Without it, arithmetic is no longer rich enough to talk about itself.</p>
+<p>Presburger proved this theorem in 1929 by quantifier elimination, in a language enriched with the congruences $x\equiv y\pmod m$. We give here a proof by automata, due to Büchi (1960), closer to computer science: a number is a binary word, and addition proceeds from right to left with a carry, which a finite automaton can do.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><em>Encoding.</em> An $n$-tuple $(x_1,\dots,x_n)$ is written as a word over the alphabet $\{0,1\}^n$: the $k$-th letter consists of the $k$-th bits of the $x_i$, least significant bits first. An $n$-tuple has infinitely many encodings, which differ by zero letters $(0,\dots,0)$ appended at the end. One shows, by induction on $\phi(x_1,\dots,x_n)$, that there is a deterministic finite automaton $\mathcal A_\phi$ accepting exactly the encodings of the $n$-tuples satisfying $\phi$ (all of them or none, for each $n$-tuple), and that it is computed from $\phi$.</p>
+<p><em>Atoms.</em> Every atomic formula reduces to $\sum_ia_ix_i=c$ or $\sum_ia_ix_i\le c$, with $a_i,c\in\mathbb Z$ (move everything to one side, and $s&lt;t$ is equivalent to $s+1\le t$). Write $x_i=b_i+2x_i'$, where $b_i$ is the least significant bit. Then $\sum a_ix_i=c$ is equivalent to “$c-\sum a_ib_i$ is even and $\sum a_ix'_i=(c-\sum a_ib_i)/2$”, and $\sum a_ix_i\le c$ is equivalent to $\sum a_ix'_i\le\lfloor(c-\sum a_ib_i)/2\rfloor$. The automaton therefore has integers as states: starting from $c$, it reads the letter $(b_1,\dots,b_n)$ and moves to $(q-\sum a_ib_i)/2$ (or to a sink state if this number is not an integer, for equality), or to $\lfloor(q-\sum a_ib_i)/2\rfloor$ for inequality. At the end of the word, what remains is $\sum a_ix_i=q$ (resp. $\le q$) with all $x_i$ zero: accept if $q=0$ (resp. $q\ge0$). The states remain bounded in absolute value by $M=\max(|c|,\sum|a_i|)$, since $|q|\le M$ implies $|q-\sum a_ib_i|\le2M$: the automaton is finite.</p>
+<p><em>Connectives.</em> For $\neg\phi$, swap accepting and non-accepting states; for $\phi\wedge\psi$ and $\phi\vee\psi$, take the product automaton (after putting the two automata on the same variables, an extra track being ignored). The property “all encodings or none” is preserved.</p>
+<p><em>Quantifier.</em> For $\exists x_n\,\phi$, erase the track of $x_n$: one obtains a nondeterministic automaton that guesses the bits of $x_n$, which is then <a href="languages.html#automates-finis">determinized</a>. One difficulty: the witness $x_n$ may have more bits than $x_1,\dots,x_{n-1}$. So every state from which a sequence of zero letters leads to an accepting state is declared accepting. The resulting automaton accepts an encoding of $(x_1,\dots,x_{n-1})$ if and only if there is $x_n$ such that $\phi(x_1,\dots,x_n)$, and it then accepts all its encodings.</p>
+<p><em>Conclusion.</em> For a sentence ($n=0$), the alphabet has a single letter, the empty $0$-tuple, and the sentence is true if and only if the initial state of $\mathcal A_\phi$ is accepting.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>The program <a href="assets/code/presburger.py">presburger.py</a> carries out this proof in fewer than 170 lines. It first checks its automata against a direct computation, then decides the sentences: “every integer is even or odd” (true), “every $n\ge8$ can be written $3a+5b$” (true), the same for $n\ge7$ (false, because of $7$), “there is $x$ with $2x=5$” (false). The procedure is very costly in the worst case: each alternation of quantifiers can make the number of states explode. Result quoted for information: this is unavoidable, since every decision procedure for Presburger arithmetic requires, for some sentences of length $n$, at least $2^{2^{cn}}$ steps (Fischer and Rabin, 1974). It is nevertheless used every day: SMT solvers (such as Z3) decide the formulas of linear integer arithmetic that arise in program verification and compilation (array indices, loop bounds).</p></div>
+</div>
+
+<div class="resultat theoreme" id="multiplication-non-definissable"><div class="entete-res"><div class="type">Corollary</div><div class="nom">Multiplication is not definable from addition</div></div>
+<div class="enonce"><p>There is no formula $\mu(x,y,z)$ of the language $\{0,1,+,<\}$ such that, for all $x,y,z\in\N$, $(\N,+)\models\mu(x,y,z)\iff z=xy$.</p></div>
+<div class="niveau" data-niveau="philo"><p>Presburger’s theorem and the undecidability of arithmetic, taken together, show an expressiveness property: addition does not make it possible to define multiplication. A decision procedure serves here as a measuring instrument.</p></div>
+<div class="niveau" data-niveau="tech"><p>If such a formula existed, every sentence of the language $\{0,1,+,\times,<\}$ could be translated into a sentence of the language $\{0,1,+,<\}$ true in $\N$ if and only if the first one is: replace each product by a new variable, existentially quantified and constrained by $\mu$ (for example $P(s\times t)$ becomes $\exists z\,(\mu(s,t,z)\wedge P(z))$, starting with the innermost products). One would decide $\mathrm{Th}(\N,+,\times)$, which is <a href="#arithmetique-indecidable">impossible</a>. Result quoted for information: the sets of integers definable in $(\N,+)$ are exactly the <em>eventually periodic</em> sets (Ginsburg and Spanier, 1966, for the multivariable version: the semilinear sets), which shows directly that the set of squares is not definable.</p></div>
+</div>
+
+<h2 id="reels">The real numbers and geometry</h2>
+
+<div class="resultat theoreme" id="tarski"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The real numbers are decidable (Tarski, 1948)</div></div>
+<div class="enonce"><p>The theory $\mathrm{Th}(\R,0,1,+,\times,<)$ eliminates quantifiers and is decidable. (Result quoted for information, the general proof being long; a case and a consequence are proved below.)</p></div>
+<div class="niveau" data-niveau="philo">
+<p>The contrast is striking. Over the integers, addition and multiplication make the theory undecidable; over the reals, with the same operations, every sentence is settled by a computation. Elementary Euclidean geometry inherits this, since it can be translated into coordinates: a statement about points, lines and circles is decided mechanically. This is what Tarski wanted to prove.</p>
+<p>The deep reason is that the reals are too “continuous” to contain the integers as a definable part: one cannot say “$x$ is an integer” with $+$, $\times$ and $<$ on $\R$. Without the integers, no finite sequences, no computations. It suffices to add the sine function, which vanishes exactly at the multiples of $\pi$, for the integers to become definable and the theory to become <a href="undecidable-mathematics.html#zeros-sinus">undecidable</a>. Over the rationals, on the contrary, $\mathbb Z$ can be defined (Julia Robinson, 1949, quoted for information), and $\mathrm{Th}(\mathbb Q,+,\times)$ is undecidable.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><em>An example of elimination.</em> For all reals $a,b,c$:</p>
+$$\exists x\ (ax^2+bx+c=0)\iff(a\ne0\wedge b^2-4ac\ge0)\vee(a=0\wedge b\ne0)\vee(a=0\wedge b=0\wedge c=0).$$
+<p>If $a\ne0$, this is the solution of quadratic equations; if $a=0$ and $b\ne0$, $x=-c/b$ works; if $a=b=0$, the equation is $c=0$. The right-hand side no longer contains $x$. The general method (Tarski) extends this computation to any system of polynomial equations and inequalities, thanks to generalizations of Sturm’s theorem, which count the real roots of a polynomial in an interval.</p>
+<p><em>Consequence: $\N$ is not definable in $\R$.</em> A quantifier-free formula with one free variable $x$ (and no parameter) is a Boolean combination of conditions $p(x)=0$ and $p(x)>0$, with $p$ a polynomial. Each one defines a finite union of points and intervals (a nonzero polynomial has finitely many roots, between which it keeps a constant sign), and these finite unions are closed under Boolean operations. By quantifier elimination, every definable subset of $\R$ is therefore a finite union of points and intervals. $\N$ is not: it is infinite and contains no interval other than single points.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Results quoted for information. The best general methods (cylindrical algebraic decomposition, Collins, 1975) have a cost doubly exponential in the number of variables, and it is known that quantifier elimination cannot do much better (Davenport and Heintz, 1988). They are implemented in computer algebra systems (Mathematica, QEPCAD, Redlog) and are used in robotics (motion planning) and in the verification of hybrid systems. Open question: is the theory of the reals with, in addition, the exponential function decidable? Macintyre and Wilkie (1996) proved that it is, if a conjecture of number theory (Schanuel’s conjecture) is true.</p></div>
+</div>
+
+<h2 id="paysage">The landscape</h2>
+
+<div class="resultat theoreme" id="paysage-theories"><div class="entete-res"><div class="type">Remark</div><div class="nom">Decidable and undecidable theories</div></div>
+<div class="enonce">
+<p>Results quoted for information, except those of this chapter.</p>
+<table>
+<tr><th>Decidable</th><th>Undecidable</th></tr>
+<tr><td>propositional calculus; <a href="logic-and-types.html#monadique">monadic logic</a></td><td><a href="logic-and-types.html#binaire">logic with one binary relation</a></td></tr>
+<tr><td><a href="#ordres-denses">dense orders</a>; $\mathrm{Th}(\N,<)$; $\mathrm{Th}(\mathbb Z,<)$</td><td>theory of partial orders; theory of graphs</td></tr>
+<tr><td><a href="#presburger">$\mathrm{Th}(\N,+)$</a> (Presburger); $\mathrm{Th}(\N,\times)$ (Skolem, 1930)</td><td><a href="#arithmetique-indecidable">$\mathrm{Th}(\N,+,\times)$</a>; $\mathrm{Th}(\mathbb Z,+,\times)$; $\mathrm{Th}(\mathbb Q,+,\times)$ (J. Robinson)</td></tr>
+<tr><td>abelian groups (Szmielew, 1955)</td><td>groups (Tarski, 1953)</td></tr>
+<tr><td><a href="#tarski">$\mathrm{Th}(\R,+,\times)$</a> (Tarski); $\mathrm{Th}(\mathbb C,+,\times)$; elementary geometry</td><td>rings; fields</td></tr>
+<tr><td>Boolean algebras (Tarski, 1949)</td><td>set theory $\mathsf{ZFC}$ (if consistent)</td></tr>
+<tr><td>monadic second-order logic of $(\N,S)$ (Büchi, 1962) and of the infinite binary tree (Rabin, 1969)</td><td>monadic second-order logic of the grid $\N\times\N$</td></tr>
+</table>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>The right-hand column has a common feature: each time, one can <em>encode a computation</em>, generally by defining (or interpreting) the integers with addition and multiplication, or a grid. Monadic second-order logic, for example, is decidable on a line ($\N$ with successor) or on a tree, but not on a grid, where one finds again the tilings and space-time diagrams of Turing machines. The left-hand column contains structures too poor (dense orders, integers without multiplication) or too homogeneous (the reals, the complex numbers) for that. Tarski, Mostowski and Robinson made this idea into a method: a theory that makes it possible to interpret a small part of arithmetic is undecidable, and so is every consistent extension of that theory.</p>
+<p>The dividing line therefore does not separate fields of mathematics, but powers of expression: as soon as a theory can describe what a computer does, a computer can no longer decide it.</p>
+</div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-td-dlo"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — Eliminating a quantifier in a dense order</span></div><div class="corps-exo">
+<p>In $\mathsf{DLO}$, find a quantifier-free formula equivalent to $\exists x\,(a&lt;x\wedge c&lt;x\wedge x&lt;b)$, then to $\exists x\,(a&lt;x\wedge\neg(x&lt;b))$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>By the <a href="#ordres-denses">method of the text</a>: the first is equivalent to $a&lt;b\wedge c&lt;b$. For the second, $\neg(x&lt;b)\equiv x=b\vee b&lt;x$, whence $\exists x\,(a&lt;x\wedge x=b)\vee\exists x\,(a&lt;x\wedge b&lt;x)$, i.e. $a&lt;b\vee\top$, that is, true: there is always an element above $a$ and $b$, since there is no greatest element.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-td-ecrire"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 2 — Writing in Presburger</span></div><div class="corps-exo">
+<p>Write in the language $\{0,1,+,<\}$: (a) “$x$ is even”; (b) “$x\equiv y\pmod 3$”; (c) “$z=\max(x,y)$”; (d) “$x$ is divisible by 4 and $x\le 100$”.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<ul>
+<li>(a) $\exists y\,(x=y+y)$.</li>
+<li>(b) $\exists z\,(x=y+z+z+z)\vee\exists z\,(y=x+z+z+z)$.</li>
+<li>(c) $(x&lt;y\wedge z=y)\vee(\neg(x&lt;y)\wedge z=x)$.</li>
+<li>(d) $\exists y\,(x=y+y+y+y)\wedge x<\underline{101}$, where $\underline{101}$ abbreviates $1+1+\cdots+1$.</li>
+</ul>
+<p>Multiplication by a constant is repeated addition: it is allowed. It is the multiplication of two variables that is <a href="#multiplication-non-definissable">out of reach</a>.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-td-automate"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — The automaton for “x = 2y”</span></div><div class="corps-exo">
+<p>Following the <a href="#presburger">proof of Presburger’s theorem</a> (least significant bits first), build the automaton recognizing the pairs $(x,y)$ such that $x=2y$. How many states does it have? Also describe it directly.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>The atom is $x-2y=0$: $a=(1,-2)$, $c=0$. From state $q$, the letter $(b_x,b_y)$ gives $s=q-b_x+2b_y$, and one moves to $s/2$ if $s$ is even, to the sink otherwise. From $0$: $(0,0)\mapsto0$, $(0,1)\mapsto1$, $(1,\cdot)\mapsto$ sink. From $1$: $(1,0)\mapsto0$, $(1,1)\mapsto1$, $(0,\cdot)\mapsto$ sink. The accepting state is $0$. Three states: $0$, $1$ and the sink.</p>
+<p>Direct reading: multiplying by 2 means shifting the bits by one position. The state remembers the bit of $y$ read at the previous step (initially $0$), and the bit of $x$ must equal it. At the end, the last bit of $y$ must have been copied: accept if the state is $0$. The program <a href="assets/code/presburger.py">presburger.py</a> builds the same automaton with <code>automate(('eq', {'x': 1, 'y': -2}, 0))</code>.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-td-monnaie"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 4 — The coin problem</span></div><div class="corps-exo">
+<p>Show that every integer $n\ge8$ can be written $3a+5b$ with $a,b\in\N$, and that $7$ cannot. More generally, for coprime $p,q$, the statement “every $n\ge s$ can be written $pa+qb$” is a Presburger sentence: what can be deduced about computing the least value of $s$ that works?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>$8=3+5$, $9=3\cdot3$, $10=5\cdot2$, and if $n$ can be written so, so can $n+3$: every $n\ge8$ can be written. $7$ cannot: $b=0$ gives $7=3a$, $b=1$ gives $2=3a$, both impossible. For given $p,q$ and $s$, the sentence is decided by the <a href="#presburger">Presburger procedure</a>; the least $s$ is found by trying $s=0,1,2,\dots$, which terminates since such an $s$ exists (it is in fact known to be $pq-p-q+1$, a result of Sylvester, 1884; here $15-3-5+1=8$). The program <a href="assets/code/presburger.py">presburger.py</a> confirms both statements for $3$ and $5$.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-td-z"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 5 — The integers ℤ are undecidable</span></div><div class="corps-exo">
+<p>Show that $\mathrm{Th}(\mathbb Z,0,1,+,\times)$ is undecidable. You may assume Lagrange’s theorem: every natural number is a sum of four squares.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>By Lagrange, $\N$ is definable in $\mathbb Z$ by $\nu(x)=\exists a\,\exists b\,\exists c\,\exists d\ (x=a\times a+b\times b+c\times c+d\times d)$. To every sentence $\phi$ of arithmetic associate the sentence $\phi^\nu$ obtained by <em>relativizing</em> the quantifiers: $\exists x\,\psi$ becomes $\exists x\,(\nu(x)\wedge\psi^\nu)$, $\forall x\,\psi$ becomes $\forall x\,(\nu(x)\Rightarrow\psi^\nu)$. By induction on $\phi$, $\phi$ is true in $\N$ if and only if $\phi^\nu$ is true in $\mathbb Z$ (the operations of $\mathbb Z$ extend those of $\N$, and $0,1\in\N$). The translation is computable, so a decision procedure for $\mathrm{Th}(\mathbb Z,+,\times)$ would yield one for $\mathrm{Th}(\N,+,\times)$, which does not exist (<a href="#arithmetique-indecidable">theorem</a>). For $\R$, this method fails: $\N$ is not definable there (<a href="#tarski">Tarski’s theorem</a>). For $\mathbb Q$, it succeeds, but the definition of $\mathbb Z$ in $\mathbb Q$ (Julia Robinson) is much harder.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="logic-and-types.html"><small>← Previous</small>Logic and computation: decidability, types and proofs</a><a href="undecidable-mathematics.html" style="text-align:right"><small>Next →</small>The undecidable in ordinary mathematics</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

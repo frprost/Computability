@@ -1,0 +1,274 @@
+<!--
+titre: Logic and computation: decidability, types and proofs
+court: Logic and types
+chapo: Where does the frontier between decidable and undecidable logics run? A single two-place relation is enough to draw the tape of a Turing machine. And, in the other direction, languages in which every program terminates are exactly proof systems: this is the Curry-Howard correspondence. From System F to the calculus of constructions, these languages are the core of the proof assistants Lean and Rocq, which today check proofs produced by humans and by AIs alike.
+prerequis: incompleteness.html#entscheidung|Decision problem ; lambda-calculus.html|λ-calculus ; universality.html#pas-universelle-totale|No total interpreter ; complexity.html#cook-levin|NP-completeness
+-->
+
+<p>Computability was born of logic: Turing invented his machines to answer a question of logic, the decision problem. This chapter follows both directions of this link. In the first, we ask which logics can be decided: propositional calculus can, so can predicate calculus with one-place relations, but a single two-place relation is enough to tip everything over, because a binary relation can describe a grid, and hence the complete history of a computation (time on one axis, the tape on the other). In the second direction, we start from computation and arrive at logic: by forbidding programs that do not terminate, we obtain languages whose programs are, literally, proofs.</p>
+
+<h2 id="frontiere">The frontier of the decidable in logic</h2>
+
+<res type="Theorem" nom="Propositional calculus is decidable" id="propositionnel">
+<enonce><p>One can decide whether a propositional formula (built from variables with $\neg,\wedge,\vee,\Rightarrow$) is a tautology. The problem is $\mathrm{co}\mathsf{NP}$-complete, and satisfiability is $\mathsf{NP}$-complete.</p></enonce>
+<philo><p>A propositional formula speaks only of finitely many elementary propositions, each true or false: one can try them all. The question is therefore not whether one can decide, but at what price, and that is a question of complexity, not of computability. The tipping point lies elsewhere: as soon as logic speaks of <em>objects</em> (a domain, possibly infinite) and of <em>relations</em> between them.</p></philo>
+<tech><p>A formula with $n$ variables has $2^n$ assignments; evaluate the formula on each (truth table), in time $O(2^n\cdot|\phi|)$. A formula is a tautology if and only if its negation is not satisfiable; satisfiability is $\mathsf{NP}$-complete (<a href="complexity.html#cook-levin">Cook and Levin</a>), so the tautologies form a $\mathrm{co}\mathsf{NP}$-complete problem (passing to the complement, with the reduction $\phi\mapsto\neg\phi$).</p></tech>
+</res>
+
+<res type="Theorem" nom="Monadic logic is decidable (Löwenheim, 1915)" id="monadique">
+<enonce><p>Consider the sentences of predicate calculus without equality whose only symbols are <em>unary</em> relations $P_1,\dots,P_k$ (no function, no constant, no two-place relation). If such a sentence has a model, it has a model with at most $2^k$ elements. Consequently, validity of these sentences is decidable.</p></enonce>
+<philo><p>With one-place properties, one can only sort objects into boxes: “is $P_1$ or not”, “is $P_2$ or not”, etc. Two objects in the same box are indistinguishable by the language, and there are only $2^k$ boxes. The language cannot express structure between objects (an order, a neighbourhood, a succession): it cannot describe a computation. This is the logic of Aristotle’s syllogisms (“all $P$ are $Q$, all $Q$ are $R$, so all $P$ are $R$”), and that is why it is decidable.</p></philo>
+<tech>
+<p>Let $\mathcal M$ be a model with domain $D$. The <em>type</em> of an element $a$ is $\tau(a)=(\chi_{P_1}(a),\dots,\chi_{P_k}(a))\in\{0,1\}^k$. Let $\mathcal M'$ be the structure whose domain is the set $D'=\tau(D)$ of realized types (at most $2^k$ elements, and at least one, since $D\ne\emptyset$), where $P_i$ is true of a type $t$ if and only if $t_i=1$.</p>
+<p><em>Lemma.</em> For every formula $\phi(x_1,\dots,x_n)$ and all $a_1,\dots,a_n\in D$: $\mathcal M\models\phi(\vec a)\iff\mathcal M'\models\phi(\tau(a_1),\dots,\tau(a_n))$. By induction on $\phi$. For an atom $P_i(x_j)$, this is the definition of $\mathcal M'$. The connectives go through without difficulty. For $\exists y\,\phi$: $\mathcal M\models\exists y\,\phi(y,\vec a)$ if and only if there is $b\in D$ with $\mathcal M\models\phi(b,\vec a)$, if and only if (induction hypothesis) there is $b$ with $\mathcal M'\models\phi(\tau(b),\tau(\vec a))$, if and only if there is $t\in D'$ with $\mathcal M'\models\phi(t,\tau(\vec a))$, since $D'$ is exactly the set of the $\tau(b)$. The case $\forall$ follows by $\forall=\neg\exists\neg$.</p>
+<p>Applied to a sentence, the lemma gives the announced model. To decide whether $\phi$ is valid, check whether $\neg\phi$ has a model: it suffices to try the structures with domain $\{1,\dots,m\}$ for $m\le2^k$, finitely many ($2^{km}$ interpretations for each $m$), and to evaluate $\neg\phi$ in each, which is a finite computation on a finite domain.</p>
+</tech>
+<techno><p>The program <a href="assets/code/logique.py">logique.py</a> applies this procedure. It confirms that the syllogism above is valid, and it finds a two-element countermodel for the false sentence “if there is a $P$ and a $Q$, there is an object that is both $P$ and $Q$”. The procedure is doubly exponential; one does much better in practice, but the problem remains at least as hard as SAT, which is a special case of it.</p></techno>
+</res>
+
+<res type="Theorem" nom="One binary relation suffices to make logic undecidable" id="binaire">
+<enonce><p>Validity of sentences of predicate calculus is undecidable as soon as the language contains two-place relations. More precisely, the <a href="incompleteness.html#entscheidung">Church-Turing theorem</a> associates with every machine $Z$ and every input $x$ a sentence, valid if and only if $Z$ halts on $x$, which uses only binary relations, one constant and two unary functions. Result quoted for information: a single binary relation, with no other symbol, already suffices (Kalmár, 1936).</p></enonce>
+<philo>
+<p>Here is the frontier, sharply drawn: with one-place relations, everything is decidable; with a single two-place relation, nothing is in general. The reason is geometric. The computation of a Turing machine is a two-dimensional array: one row per instant, one column per tape cell. A binary relation suffices to speak of pairs (instant, cell): “at instant $t$, cell $u$ contains such-and-such a symbol”, “at instant $t$, the head is at $h$”. And axioms that look only at neighbouring cells suffice to say that each row follows from the previous one according to the program. Deciding the logic would amount to deciding whether this array has a last row, that is, halting.</p>
+<p>The same idea recurs throughout this manual: tiling problems, Post’s correspondence problem, Diophantine equations, the proof of the Cook-Levin theorem. Whenever a formalism can describe a locally constrained grid, it can simulate a computation.</p>
+</philo>
+<tech>
+<p>The reduction of the <a href="incompleteness.html#entscheidung">Church-Turing theorem</a> uses exactly this coding: the binary relations $Q_i(t,h)$ (“at instant $t$, state $q_i$, head at $h$”) and $C_j(t,u)$ (“at instant $t$, cell $u$ contains $S_j$”), plus $E$ and $L$ for equality and the order of cells, a constant $o$ and the functions $s,p$ (successor, predecessor). The function symbols are not indispensable: they can be replaced by their graphs, binary relations, adding axioms saying that these relations are functional and total; this is a classical transformation, not detailed here.</p>
+<p>Comparison with the <a href="#monadique">monadic case</a>: the reduction needs to speak of pairs (instant, cell), which unary predicates do not allow. It is also known (results quoted) that monadic logic remains decidable with equality, and that classes of sentences defined by the shape of their quantifier prefix are decidable (prefix $\exists^\ast\forall^\ast$, Bernays and Schönfinkel, 1928) or undecidable (prefix $\forall\exists\forall$, Kahr, Moore and Wang, 1962).</p>
+</tech>
+</res>
+
+<res type="Remark" nom="Validity, finite validity, decidable theories" id="paysage-logique">
+<enonce><p>Results quoted for information, except the first point.</p>
+<ul>
+<li>The valid first-order sentences form a semi-decidable set (<a href="incompleteness.html#completude">completeness</a>), not decidable: they are $\Sigma_1$-complete.</li>
+<li>The sentences true in all <em>finite</em> structures do not even form a semi-decidable set (Trakhtenbrot, 1950): by restricting to the finite, one loses the completeness theorem.</li>
+<li>Some theories are decidable: the arithmetic of addition alone (Presburger, 1929), the theory of the real numbers with addition and multiplication (Tarski, 1948), elementary geometry. Adding multiplication to the integers tips everything over (<a href="incompleteness.html">incompleteness</a>): with $+$ and $\times$ on $\N$, one can speak of finite sequences, hence of computations. The <a href="decidable-theories.html">next chapter</a> is devoted to these decidable theories.</li>
+</ul>
+</enonce>
+</res>
+
+<h2 id="totaux">Languages in which every program terminates</h2>
+
+<p>The halting problem says that programs that terminate cannot be sorted out automatically. But one can <em>design</em> a language all of whose programs terminate, by restricting what one is allowed to write: the primitive recursive functions are an example. The question is what is lost. The answer, always the same, comes from the diagonal: a total language cannot contain its own interpreter.</p>
+
+<res type="Definition" nom="Simply typed λ-calculus" id="lambda-type">
+<enonce>
+<p><strong>Types</strong> are built from atomic types $o,p,q,\dots$ with the arrow: $A,B::=o\mid p\mid\cdots\mid A\to B$ (the arrow associates to the right). A <strong>context</strong> $\Gamma$ is a list $x_1:A_1,\dots,x_n:A_n$ of typed variables. The judgment $\Gamma\vdash M:A$ (“in context $\Gamma$, the term $M$ has type $A$”) is defined by three rules:</p>
+$$\frac{}{\Gamma,x:A\vdash x:A}\qquad\frac{\Gamma,x:A\vdash M:B}{\Gamma\vdash\lambda x.M:A\to B}\qquad\frac{\Gamma\vdash M:A\to B\quad\Gamma\vdash N:A}{\Gamma\vdash M\,N:B}$$
+<p>A term is <strong>typable</strong> if it has a type in some context.</p>
+</enonce>
+<philo><p>A type is a promise about what a term does: $A\to B$ promises to turn an object of type $A$ into an object of type $B$. The term $\lambda x.\,x\,x$, which applies itself to itself, can keep no promise of this kind: the type of $x$ would have to be both $A$ and $A\to B$. Types forbid self-reference, and with it infinite computations such as $\Omega=(\lambda x.\,x\,x)(\lambda x.\,x\,x)$.</p></philo>
+<tech><p>$\lambda x.\,x\,x$ is not typable: the application rule would force the type $A$ of $x$ to be of the form $A\to B$, impossible since a type is a finite tree, strictly larger than its subtypes. On the other hand, $\lambda x.x:A\to A$ for every $A$, $\mathsf K=\lambda x.\lambda y.\,x:A\to B\to A$, and the Church numerals $\mathbf n=\lambda f.\lambda x.\,f^n\,x$ all have type $(o\to o)\to o\to o$. Typing is preserved by β-reduction (<em>subject reduction</em>): if $\Gamma\vdash M:A$ and $M\to_\beta M'$, then $\Gamma\vdash M':A$. This is proved by a substitution lemma: if $\Gamma,x:A\vdash M:B$ and $\Gamma\vdash N:A$, then $\Gamma\vdash M[x:=N]:B$ (induction on $M$).</p></tech>
+</res>
+
+<res type="Theorem" nom="Normalization of simply typed λ-calculus (Turing, Tait)" id="normalisation-typee">
+<enonce><p>Every typable term has a normal form. (Better, a result of Tait, 1967, quoted here for information: every sequence of β-reductions starting from a typable term is finite.)</p></enonce>
+<philo><p>A typed language is therefore a <em>total</em> language: no program loops. One cannot decide halting of an arbitrary program, but one can decide whether a program is typable (a simple algorithm does it), and typability guarantees halting. An undecidable problem has been exchanged for a decidable restriction, at the price of a loss of expressiveness.</p></philo>
+<tech>
+<p>Define the <em>height</em> of a type: $h(o)=0$, $h(A\to B)=1+\max(h(A),h(B))$. The <em>degree</em> of a redex $(\lambda x.M)\,N$, where $\lambda x.M:A\to B$, is $h(A\to B)$. To a term associate the pair $(d,n)$ formed by the maximal degree $d$ of its redexes and the number $n$ of redexes of that degree (and $(0,0)$ if it is normal). Order these pairs lexicographically; this is a well-order.</p>
+<p>Let $R=(\lambda x.M)\,N$ be a redex of maximal degree $d$ containing no other redex of degree $d$ (take one minimal for inclusion). Contract it to $M[x:=N]$. The redexes of degree $d$ outside $R$ are neither duplicated nor changed in degree. The copies of $N$ contain only redexes of degree $<d$. There remain the redexes <em>created</em> by the contraction, of three kinds: (1) if $M$ is an abstraction $\lambda y.P$ and $R$ was applied to a term $Q$, the new redex $(\lambda y.P[x:=N])\,Q$ has as degree the height of the type $B$ of $M$; (2) if $M=x$ and $R$ was applied to $Q$, the new redex $N\,Q$ has degree $h(A)$; (3) if $M$ contains an application $x\,P$ and $N$ is an abstraction, the new redex $N\,P[x:=N]$ has degree $h(A)$. In all cases the degree is $<h(A\to B)=d$. Thus the number of redexes of degree $d$ decreases by 1, without creating others of degree $\ge d$: the pair $(d,n)$ strictly decreases. A strictly decreasing sequence for a well-order is finite: this strategy reaches a normal form. The argument is due to Turing (manuscript from the 1940s, published by Gandy in 1980).</p>
+</tech>
+</res>
+
+<res type="Definition" nom="Gödel’s System T (1958)" id="systeme-t">
+<enonce>
+<p>Add to the simple types a type $\mathbf N$ of integers, and to the terms the constants $0:\mathbf N$, $\mathsf S:\mathbf N\to\mathbf N$, and for each type $A$ a <strong>recursor</strong> $\mathsf R_A:A\to(\mathbf N\to A\to A)\to\mathbf N\to A$, with the computation rules</p>
+$$\mathsf R\,a\,g\,0\to a,\qquad \mathsf R\,a\,g\,(\mathsf S\,n)\to g\,n\,(\mathsf R\,a\,g\,n).$$
+<p>Results quoted for information: every term of System T normalizes (Tait, 1967), and the functions $\N\to\N$ definable in T are exactly the recursive functions whose totality is provable in Peano arithmetic (Gödel, 1958; Kreisel).</p>
+</enonce>
+<philo><p>The recursor is primitive recursion, but allowed at all types: one can define by recursion not only integers, but functions, functions of functions, etc. This simple change takes us beyond the primitive recursive functions: the Ackermann function becomes definable. System T is nevertheless total, and therefore contains infinitely many computable functions, but not all of them.</p></philo>
+<tech>
+<p><em>Ackermann in T.</em> Set $\mathsf{it}=\lambda n.\lambda f.\lambda a.\ \mathsf R_{\mathbf N}\,a\,(\lambda k.f)\,n$, which computes $f^n(a)$. For <a href="ackermann.html#def-ackermann">Péter’s function</a>, we have $A(m+1,n)=A(m,\cdot)^{\,n+1}(1)$: indeed $A(m+1,0)=A(m,1)$, and $A(m+1,n+1)=A(m,A(m+1,n))$. So define, by a recursion at type $\mathbf N\to\mathbf N$:</p>
+$$\mathsf{ack}=\lambda m.\ \mathsf R_{\mathbf N\to\mathbf N}\ \mathsf S\ \big(\lambda k.\lambda f.\lambda n.\ \mathsf{it}\,(\mathsf S\,n)\,f\,(\mathsf S\,0)\big)\ m,$$
+<p>so that $\mathsf{ack}\,0=\mathsf S$ and $\mathsf{ack}\,(m+1)=\lambda n.\,(\mathsf{ack}\,m)^{n+1}(1)$. By induction on $m$, $\mathsf{ack}\,m\,n$ reduces to $A(m,n)$.</p>
+</tech>
+<techno><p>The program <a href="assets/code/logique.py">logique.py</a> translates this term literally into Python (the recursor becomes a loop) and checks that it agrees with Péter’s definition for $m<4$, $n<5$; for example $\mathsf{ack}\,3\,3=61$. The proof assistants Coq (Rocq), Lean and Agda rest on total languages of this kind, much richer; they reject a recursive definition if they cannot check that it terminates.</p></techno>
+</res>
+
+<res type="Theorem" nom="A total language does not contain its interpreter" id="pas-interpreteur">
+<enonce><p>Let $\mathcal L$ be a language of programs, each defining a total function $\N\to\N$, with a coding $p\mapsto\ulcorner p\urcorner$ of programs by integers, and such that the functions definable in $\mathcal L$ are closed under composition with the successor and under diagonalization ($n\mapsto f(n,n)$). Then the evaluation function $(\ulcorner p\urcorner,n)\mapsto p(n)$ is not definable in $\mathcal L$. This is the case for the primitive recursive functions, simply typed λ-calculus, System T, and all the total languages of the <a href="#au-dela">next section</a> (System F, calculus of constructions).</p></enonce>
+<philo><p>This is the price of totality. A universal language (Turing machines, pure λ-calculus, Python) contains its own interpreter, but one cannot know whether its programs halt. A total language guarantees halting, but it lacks at least one total computable function: its own. One can always add this function, and one obtains a stronger language, still total, which lacks its new interpreter, and so on, without ever reaching all total computable functions.</p></philo>
+<tech><p>If $E$ defined evaluation, $d(n)=E(n,n)+1$ would be definable, so $d$ would be computed by a program $p$. Then $d(\ulcorner p\urcorner)=p(\ulcorner p\urcorner)=E(\ulcorner p\urcorner,\ulcorner p\urcorner)$, and also $d(\ulcorner p\urcorner)=E(\ulcorner p\urcorner,\ulcorner p\urcorner)+1$: contradiction. This is the argument of the <a href="universality.html#pas-universelle-totale">theorem on total functions</a>, applied inside a language. For the primitive recursive functions, see also the <a href="universality.html#ex-un-rp">corresponding exercise</a>.</p></tech>
+</res>
+
+<h2 id="curry-howard">The Curry-Howard correspondence</h2>
+
+<res type="Theorem" nom="Types are statements, programs are proofs" id="curry-howard-thm">
+<enonce>
+<p>Read the type $A\to B$ as the implication “$A$ implies $B$”, and the atomic types $o,p,q,\dots$ as atomic propositions. Then a type $A$ is the type of a closed term if and only if $A$ is provable in <strong>minimal implicational logic</strong>, that is, in natural deduction with only the rules</p>
+$$\frac{}{\Gamma,A\vdash A}\ (\text{hyp})\qquad\frac{\Gamma,A\vdash B}{\Gamma\vdash A\Rightarrow B}\ ({\Rightarrow}\text{I})\qquad\frac{\Gamma\vdash A\Rightarrow B\quad\Gamma\vdash A}{\Gamma\vdash B}\ ({\Rightarrow}\text{E}).$$
+<p>Moreover, β-reduction of a term corresponds to the elimination of detours in the corresponding proof.</p>
+</enonce>
+<philo>
+<p>The typing rules and the deduction rules are <em>the same</em>, up to names. A hypothesis is a variable. Proving “$A$ implies $B$” is providing a method that turns every proof of $A$ into a proof of $B$: it is a function, $\lambda x.M$. Using an implication (modus ponens) is applying this function to a proof of $A$. The table reads both ways:</p>
+<table>
+<tr><th>Logic</th><th>Programming</th></tr>
+<tr><td>statement</td><td>type</td></tr>
+<tr><td>proof</td><td>program (term)</td></tr>
+<tr><td>hypothesis</td><td>variable</td></tr>
+<tr><td>implication, modus ponens</td><td>function, application</td></tr>
+<tr><td>conjunction, disjunction</td><td>pair, tagged union</td></tr>
+<tr><td>quantifiers</td><td>dependent types</td></tr>
+<tr><td>cut elimination</td><td>execution (β-reduction)</td></tr>
+<tr><td>consistency</td><td>termination</td></tr>
+</table>
+<p>Observed by Curry (1934, for combinators) then by Howard (1969, published in 1980), this correspondence is at the heart of proof assistants: checking a proof is checking the type of a program, which is decidable, whereas finding a proof is not in general.</p>
+</philo>
+<tech>
+<p><em>From terms to proofs.</em> By induction on a derivation of $\Gamma\vdash M:A$, erase the terms: the variable rule becomes (hyp), abstraction becomes (${\Rightarrow}$I), application (${\Rightarrow}$E). One gets a proof of $A$ under the hypotheses of $\Gamma$; if $M$ is closed, with no hypothesis. <em>From proofs to terms.</em> Conversely, annotate a proof by giving a variable name to each hypothesis; each rule builds the corresponding term. Examples: $\lambda x.\lambda y.\,x:A\to B\to A$ proves $A\Rightarrow(B\Rightarrow A)$; $\lambda x.\lambda y.\lambda z.\,x\,z\,(y\,z):(A\to B\to C)\to(A\to B)\to A\to C$ proves the second axiom of Hilbert systems. These are the combinators $\mathsf K$ and $\mathsf S$ (this $\mathsf S$ of combinatory logic has nothing to do with the successor $\mathsf S$ of System T), and modus ponens is application: Hilbert-style logic is combinatory logic.</p>
+<p><em>Detours and reduction.</em> A detour is an introduction (${\Rightarrow}$I) immediately followed by an elimination (${\Rightarrow}$E) of the same implication: one proves $A\Rightarrow B$ only to apply it at once to a proof of $A$. This is exactly a redex $(\lambda x.M)\,N$, and eliminating it (replacing each use of hypothesis $A$ by the proof of $A$) is exactly $M[x:=N]$.</p>
+</tech>
+</res>
+
+<res type="Corollary" nom="Normalization implies consistency" id="coherence-normalisation">
+<enonce><p>No closed term has an atomic type, such as $o$. In other words, minimal implicational logic does not prove an atomic proposition without hypotheses: it is consistent. More generally, a provable formula has a proof without detours.</p></enonce>
+<philo><p>This is a consistency proof by computation: since every typed program terminates, every proof simplifies to a proof without detours, and a detour-free proof of an atomic statement, without hypotheses, does not exist. Gentzen proved in 1936 the consistency of Peano arithmetic by a method of this kind (cut elimination), using an induction on an ordinal larger than those arithmetic can handle: this is compatible with the <a href="incompleteness.html#godel2">second incompleteness theorem</a>, which forbids only a proof <em>within</em> arithmetic.</p></philo>
+<tech><p>A normal term can be written $\lambda x_1\cdots\lambda x_n.\,y\,M_1\cdots M_k$, where $y$ is a variable (by induction on the term: a normal term that is not an abstraction is a variable applied to arguments, otherwise it would contain a redex). Suppose $\vdash M:o$ with $M$ closed. By <a href="#normalisation-typee">normalization</a> and subject reduction, $M$ has a closed normal form $M'$ of type $o$. Since $o$ is not an arrow, $n=0$, and $M'=y\,M_1\cdots M_k$ with $y$ free: contradiction with $M'$ being closed. For the second claim, the normal form of a term is a detour-free proof of the same statement.</p></tech>
+<techno><p>Results quoted for information: Peirce’s law $((A\Rightarrow B)\Rightarrow A)\Rightarrow A$, true in classical logic (truth table), has no inhabitant; control operators (like <code>call/cc</code> in Scheme) must be added to extend the correspondence to classical logic (Griffin, 1990). Deciding whether a simple type has an inhabitant is $\mathsf{PSPACE}$-complete (Statman, 1979), whereas checking that a given term has a given type takes polynomial time. System F and its extensions are presented <a href="#au-dela">further on</a>.</p></techno>
+</res>
+
+<h2 id="au-dela">Beyond simple types: from System F to the calculus of constructions</h2>
+
+<p>Simply typed λ-calculus is total, but poor: its functions on Church numerals are barely extended polynomials. It can be enriched without losing termination, by allowing types to vary. Each enrichment gives a more expressive total language and, through Curry-Howard, a stronger logic. The summit of this construction, the calculus of constructions, is the theoretical core of today’s proof assistants.</p>
+
+<res type="Definition" nom="System F (Girard, 1972; Reynolds, 1974)" id="systeme-f">
+<enonce>
+<p>The types of <strong>System F</strong> add to the simple types type variables $\alpha,\beta,\dots$ and quantification over types: $A,B::=\alpha\mid A\to B\mid\forall\alpha.A$. The terms add type abstraction $\Lambda\alpha.M$ and application to a type $M\,B$, with two rules:</p>
+$$\frac{\Gamma\vdash M:A\quad(\alpha\text{ not free in }\Gamma)}{\Gamma\vdash\Lambda\alpha.M:\forall\alpha.A}\qquad\frac{\Gamma\vdash M:\forall\alpha.A}{\Gamma\vdash M\,B:A[\alpha:=B]}$$
+<p>and the computation rule $(\Lambda\alpha.M)\,B\to M[\alpha:=B]$. Results quoted for information: every term of System F is strongly normalizing (Girard, 1972, by the method of <em>reducibility candidates</em>), and the functions $\N\to\N$ representable in F are exactly the recursive functions whose totality is provable in <strong>second-order arithmetic</strong> (Girard, 1972).</p>
+</enonce>
+<philo>
+<p>System F is the language of <em>polymorphism</em>: the identity function $\Lambda\alpha.\lambda x{:}\alpha.\,x$, of type $\forall\alpha.\alpha\to\alpha$, serves for all types at once, like Java “generics” or the polymorphic functions of OCaml and Haskell. Data no longer need to be primitive: integers, Booleans, pairs, lists are written as terms, and each datum carries with it its own way of being traversed.</p>
+<p>An important clarification: System F does not represent <em>all</em> total computable functions. No total language can, since it <a href="#pas-interpreteur">does not contain its own interpreter</a>. It represents exactly those that second-order arithmetic proves total, which is enormous: the Ackermann function, all the functions of System T, and far beyond. But the evaluation function for terms of F, which is computable and total (since F normalizes), is excluded. By Girard’s theorem, this means that second-order arithmetic does not prove that this function is total, that is, does not prove the normalization of F: Girard’s proof uses a stronger principle.</p>
+</philo>
+<tech>
+<p><em>Integers.</em> Set $\mathrm{Nat}=\forall\alpha.(\alpha\to\alpha)\to\alpha\to\alpha$, and, as for the <a href="lambda-calculus.html#church">Church numerals</a>, $\mathbf n=\Lambda\alpha.\lambda f{:}\alpha\to\alpha.\lambda x{:}\alpha.\,f^n\,x$. The successor is $\mathsf S=\lambda n{:}\mathrm{Nat}.\Lambda\alpha.\lambda f.\lambda x.\,f\,(n\,\alpha\,f\,x)$. An integer <em>is</em> an iterator, usable at any type: $\mathbf n\,B\,g\,b=g^n(b)$ for every type $B$. In simply typed λ-calculus, by contrast, a Church numeral has a single type, fixed once and for all, and one can iterate only at that type.</p>
+<p><em>Ackermann.</em> Iterate at type $\mathrm{Nat}\to\mathrm{Nat}$, as in <a href="#systeme-t">System T</a>, but without a primitive recursor:</p>
+$$H=\lambda f{:}\mathrm{Nat}\to\mathrm{Nat}.\,\lambda n{:}\mathrm{Nat}.\ (\mathsf S\,n)\,\mathrm{Nat}\,f\,\mathbf 1,\qquad \mathsf{ack}=\lambda m{:}\mathrm{Nat}.\ m\,(\mathrm{Nat}\to\mathrm{Nat})\,H\,\mathsf S.$$
+<p>We have $H:(\mathrm{Nat}\to\mathrm{Nat})\to\mathrm{Nat}\to\mathrm{Nat}$ and $H\,f\,n=f^{n+1}(1)$, so $\mathsf{ack}\,\mathbf 0=\mathsf S$ and $\mathsf{ack}\,\mathbf{m+1}=H(\mathsf{ack}\,\mathbf m)$, which is the relation $A(m+1,n)=A(m,\cdot)^{n+1}(1)$ of <a href="ackermann.html#def-ackermann">Péter’s function</a>. The term $\mathsf{ack}$ has type $\mathrm{Nat}\to\mathrm{Nat}\to\mathrm{Nat}$: it is the application of $m$ to the type $\mathrm{Nat}\to\mathrm{Nat}$, impossible with simple types, that takes us beyond the primitive recursive functions.</p>
+<p><em>Logic.</em> Through Curry-Howard, F corresponds to second-order propositional logic, where one can quantify over propositions. The other connectives are defined in it: $\bot=\forall\alpha.\alpha$, $A\wedge B=\forall\alpha.(A\to B\to\alpha)\to\alpha$, $A\vee B=\forall\alpha.(A\to\alpha)\to(B\to\alpha)\to\alpha$. Normalization implies that no closed term has type $\bot$: the logic is consistent.</p>
+</tech>
+<techno><p>The program <a href="assets/code/logique.py">logique.py</a> writes these terms in Python, erasing the types (Python does not check them), and checks that $\mathsf{ack}\,\mathbf m\,\mathbf n$ agrees with Péter’s definition for $m,n<4$; for example $\mathsf{ack}\,\mathbf 3\,\mathbf 3=\mathbf{61}$. Result quoted for information: recovering the erased types, that is, deciding whether a pure λ-term is typable in F, is undecidable (Wells, 1994). This is why languages based on polymorphism, such as OCaml and Haskell, restrict themselves to fragments where type inference is decidable (the Hindley-Milner system), or require annotations.</p></techno>
+</res>
+
+<res type="Definition" nom="Barendregt’s λ-cube (1991)" id="lambda-cube">
+<enonce>
+<p>In simply typed λ-calculus, terms depend on terms: $\lambda x{:}A.\,M$. Three other kinds of dependency can be added, independently of one another:</p>
+<ul>
+<li><strong>terms depending on types</strong> (polymorphism: $\Lambda\alpha.M$);</li>
+<li><strong>types depending on types</strong> (type operators: $\lambda\alpha.\,\alpha\to\alpha$, a function from types to types);</li>
+<li><strong>types depending on terms</strong> (dependent types: $\mathrm{Vec}\,n$, the type of lists of length $n$).</li>
+</ul>
+<p>The $2^3=8$ combinations form the vertices of a cube. The origin is $\lambda{\to}$ (simple types), polymorphism alone gives $\lambda2$ (System F), operators alone $\lambda\underline\omega$, dependent types alone $\lambda P$ (the language LF); the vertex opposite the origin, with all three dependencies, is the <strong>calculus of constructions</strong> $\lambda C$ (Coquand and Huet, 1988). Result quoted for information: the eight systems are strongly normalizing, hence total and, through Curry-Howard, consistent.</p>
+</enonce>
+<philo>
+<svg viewBox="0 0 440 290" width="440" style="max-width:100%;height:auto;display:block;margin:10px auto" role="img" aria-label="The λ-cube: eight type systems at the vertices of a cube">
+<g stroke="currentColor" stroke-width="1.4" fill="none" opacity="0.55">
+<path d="M70 240 H270 V110 H70 Z"/><path d="M160 50 H360 V180"/>
+<path d="M270 240 L360 180 M270 110 L360 50 M70 110 L160 50"/>
+<path d="M160 180 H360 M160 180 V50 M160 180 L70 240" stroke-dasharray="4 3"/>
+</g>
+<g fill="currentColor" font-family="sans-serif" font-size="15" text-anchor="middle">
+<text x="70" y="262">λ→</text><text x="270" y="262">λP</text>
+<text x="48" y="104">λ2 (F)</text><text x="296" y="128">λP2</text>
+<text x="160" y="200">λω̲</text><text x="378" y="198">λPω̲</text>
+<text x="160" y="38">λω (Fω)</text><text x="372" y="38">λC</text>
+</g>
+<g fill="currentColor" font-family="sans-serif" font-size="11.5" opacity="0.8">
+<text x="8" y="180">polymorphism ↑</text><text x="150" y="282">dependent types →</text>
+<text x="300" y="268" text-anchor="start">type operators ↗</text>
+</g>
+</svg>
+<p>The cube arranges typed languages according to what they allow one to abstract. Going up is gaining genericity (one function for all types); going right is being able to speak of values in types (“a list of length $n$”, “a prime integer”); going into depth is computing on types themselves. Barendregt showed that a single framework, <em>pure type systems</em>, describes all eight vertices, changing only the list of allowed dependencies.</p>
+<p>The cube is also a cube of logics: $\lambda{\to}$ corresponds to minimal propositional logic, $\lambda2$ to second-order propositional logic, $\lambda\omega$ to higher-order propositional logic, $\lambda P$ to first-order predicate logic, and $\lambda C$ to higher-order predicate logic. The higher one goes in the cube, the more statements one can write as types, and the more total functions one can program.</p>
+</philo>
+<tech><p>In Barendregt’s presentation, there are two <em>sorts</em>: $\ast$ (the type of types, where propositions live) and $\square$ (where $\ast$ itself lives). The dependent product $\Pi x{:}A.\,B$ generalizes both the arrow ($A\to B$ when $x$ does not occur in $B$) and the quantifier ($\forall\alpha.B$ when $A=\ast$). A rule $(s_1,s_2)$ allows $\Pi x{:}A.B:s_2$ when $A:s_1$ and $B:s_2$. Simply typed λ-calculus has only the rule $(\ast,\ast)$; one gets $\lambda2$ by adding $(\square,\ast)$, $\lambda\underline\omega$ by adding $(\square,\square)$, $\lambda P$ by adding $(\ast,\square)$, and $\lambda C$ with all four rules.</p></tech>
+</res>
+
+<res type="Remark" nom="The calculus of constructions and proof assistants" id="constructions">
+<enonce>
+<p>In the calculus of constructions, a statement such as “for every integer $n$, $n+0=n$” is a type $\Pi n{:}\mathrm{Nat}.\ n+0=n$, and a proof is a function that associates with each $n$ a proof of $n+0=n$. Checking a proof is checking the type of a term, which is decidable. Today’s proof assistants rest on extensions of this calculus (results and facts quoted for information):</p>
+<ul>
+<li><strong>Rocq</strong> (called Coq until 2025) rests on the calculus of inductive constructions (Coquand and Paulin-Mohring, late 1980s), which adds inductive types (integers, lists, trees defined by their constructors) and a hierarchy of universes. Website: <a href="https://rocq-prover.org">rocq-prover.org</a>; to get started, the online course <em>Software Foundations</em>.</li>
+<li><strong>Lean</strong> (Leonardo de Moura, since 2013; Lean 4 since 2021) rests on a closely related dependent type theory, with inductive types and universes. Its community library <em>Mathlib</em> covers a large part of undergraduate mathematics and some graduate mathematics. Website: <a href="https://lean-lang.org">lean-lang.org</a>; to get started, <em>Theorem Proving in Lean 4</em> and the <em>Natural Number Game</em>.</li>
+<li><strong>Agda</strong> rests on Martin-Löf type theory (1972), another dependent type theory, predicative.</li>
+</ul>
+<p>Some achievements: the four colour theorem (Gonthier, 2005) and the Feit-Thompson theorem (Gonthier et al., 2012) in Coq; the verified C compiler CompCert (Leroy, in Coq); the <em>Liquid Tensor Experiment</em> (2022), which verified in Lean a hard theorem of Clausen and Scholze; the determination of the value of the <a href="busy-beavers.html#valeurs-bb">5-state busy beaver</a> (2024), in Coq.</p>
+</enonce>
+<philo>
+<p>The calculus of constructions is total, like the whole cube: a program it accepts terminates. This is precisely what makes it a consistent logic, and the reason why Rocq and Lean reject recursive definitions whose termination they cannot establish. The price is that of all total languages: one cannot program everything in them directly, and one sometimes has to prove that a function terminates before one can write it.</p>
+<p>These systems are constructive: a proof of “there exists $n$ such that $P(n)$” contains a computation of $n$. Classical axioms (excluded middle, the axiom of choice) can be added, as Mathlib does; proofs remain checkable, but they lose their computational content.</p>
+</philo>
+</res>
+
+<res type="Remark" nom="Checking proofs produced by AIs" id="preuves-ia">
+<enonce>
+<p>Facts quoted for information. Artificial intelligence systems now produce formal proofs, written in Lean, which Lean’s kernel checks. In 2024, AlphaProof (Google DeepMind) solved several problems of the International Mathematical Olympiad this way; in 2025, several systems announced Lean-formalized solutions to problems from that year’s competition. The same pattern is used in research: collaborative projects, such as the one Terence Tao launched in 2024 on the equational theories of magmas, combine human contributions, automated provers and verification in Lean.</p>
+</enonce>
+<philo>
+<p>The Curry-Howard correspondence gives the key to these projects. A formal proof is a typed program, and checking a proof is checking a type: a decidable operation, carried out by a small kernel, written to be reviewed, whereas <em>finding</em> a proof is only semi-decidable (<a href="computability-ai.html#proposer-verifier">checking a proof is decidable, finding one is not</a>). One can therefore let an AI search by fallible, statistical, opaque means, and trust only the checker. A proof produced by an AI that “hallucinates” is simply rejected.</p>
+<p>Three limits remain. First, the kernel checks that the proof proves the <em>formal</em> statement; it does not check that the formal statement says what one meant, and this translation remains human work (this is the problem of <a href="computability-ai.html#specification">specification</a>). Next, one must trust the kernel and the consistency of the underlying theory, which the theory cannot prove itself (<a href="incompleteness.html#godel2">second incompleteness theorem</a>); this risk is reduced by having proofs rechecked by independent checkers. Finally, a checked proof may be unreadable: knowing that a statement is true is not yet understanding why.</p>
+</philo>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Typing terms" id="ex-lt-typer">
+<p>Give a type to each of the following terms, or explain why it has none: (a) $\lambda x.\lambda y.\,y\,x$; (b) $\lambda f.\lambda g.\lambda x.\,g\,(f\,x)$; (c) $\lambda x.\,x\,x$; (d) $\lambda f.\lambda x.\,f\,(f\,x)$. Which logical formula does each prove?</p>
+<corrige>
+<ul>
+<li>(a) $A\to(A\to B)\to B$: from $A$ and $A\Rightarrow B$, deduce $B$ (modus ponens, as a statement).</li>
+<li>(b) $(A\to B)\to(B\to C)\to A\to C$: transitivity of implication; the term is function composition.</li>
+<li>(c) has no type (see the <a href="#lambda-type">definition</a>): the type of $x$ would have to be both $A$ and $A\to B$.</li>
+<li>(d) $(A\to A)\to A\to A$: this is the Church numeral $\mathbf 2$. The formula $(A\Rightarrow A)\Rightarrow(A\Rightarrow A)$ has infinitely many detour-free proofs, one per integer: the proofs of a single formula are not interchangeable, they have computational content.</li>
+</ul>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="A syllogism decided mechanically" id="ex-lt-monadique">
+<p>Is the sentence “if every $P$ is $Q$ and some $P$ is $R$, then some $Q$ is $R$” valid? And “if some $P$ is $Q$ and some $Q$ is $R$, then some $P$ is $R$”? For the second, give a countermodel and say at most how many elements need to be tried.</p>
+<corrige>
+<p>The first is valid: if $a$ is $P$ and $R$, it is $Q$ (since every $P$ is $Q$), so $a$ is $Q$ and $R$. The second is not: domain $\{1,2\}$, $P=\{1\}$, $Q=\{1,2\}$, $R=\{2\}$. There are three predicates, so by <a href="#monadique">Löwenheim’s theorem</a> it suffices to try domains with at most $2^3=8$ elements; here two suffice. The program <a href="assets/code/logique.py">logique.py</a> finds a countermodel of the same kind for the neighbouring sentence of the text.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Inhabitants and non-inhabitants" id="ex-lt-habitants">
+<p>(a) Find a closed term of type $(A\to B\to C)\to B\to A\to C$. (b) Show that no closed term has type $(A\to B)\to A$, where $A$ and $B$ are distinct atomic types.</p>
+<corrige>
+<p>(a) $\lambda f.\lambda b.\lambda a.\,f\,a\,b$: swap the order of the hypotheses.</p>
+<p>(b) By <a href="#coherence-normalisation">normalization</a>, it would suffice to consider a closed normal term $M$ of this type. A normal term has the form $\lambda x_1\cdots\lambda x_n.\,y\,M_1\cdots M_k$. The type $(A\to B)\to A$ has a single arrow “at the head”: $M=\lambda f.\,N$ with $f:A\to B$ and $N:A$ normal (if $n\ge2$, the type would need two arrows at the head; and $n=0$ is impossible for a closed term). Since $A$ is atomic, $N=y\,M_1\cdots M_k$ with $y$ free in $N$, so $y=f$. But $f\,M_1\cdots M_k$ has type $B$ if $k=1$ and type $A\to B$ if $k=0$, never $A$ (and $k\ge2$ is impossible, since $B$ is not an arrow). Contradiction. Logically: $(A\Rightarrow B)\Rightarrow A$ is not provable, which can also be seen from the truth table ($A$ false, $B$ false makes the formula false).</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Addition and multiplication in System T" id="ex-lt-t">
+<p>Write in <a href="#systeme-t">System T</a> terms $\mathsf{add},\mathsf{mul}:\mathbf N\to\mathbf N\to\mathbf N$, then the function $\mathsf{exp}\,m\,n=2^n$, using only the recursor at type $\mathbf N$. Why does Ackermann need the recursor at a higher type?</p>
+<corrige>
+<p>$\mathsf{add}=\lambda m.\lambda n.\ \mathsf R_{\mathbf N}\,m\,(\lambda k.\lambda r.\,\mathsf S\,r)\,n$; $\mathsf{mul}=\lambda m.\lambda n.\ \mathsf R_{\mathbf N}\,0\,(\lambda k.\lambda r.\,\mathsf{add}\,r\,m)\,n$; $\mathsf{exp}=\lambda n.\ \mathsf R_{\mathbf N}\,(\mathsf S\,0)\,(\lambda k.\lambda r.\,\mathsf{add}\,r\,r)\,n$. Every primitive recursive function is defined this way, with the recursor $\mathsf R_{\mathbf N}$ alone; conversely, and this is a result quoted for information, this fragment of System T defines only primitive recursive functions; but the <a href="ackermann.html#ack-non-rp">Ackermann function is not primitive recursive</a>. In the definition of the text, the recursion on $m$ builds not an integer but a <em>function</em> $\mathsf{ack}\,m:\mathbf N\to\mathbf N$: it is a recursion at type $\mathbf N\to\mathbf N$.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="Why a total language has no fixed point" id="ex-lt-y">
+<p>(a) Show that the fixed-point combinator $\mathsf Y$ of <a href="lambda-calculus.html#programmes-lambda">λ-calculus</a> is not typable. (b) Add to simply typed λ-calculus a constant $\mathsf{fix}_A:(A\to A)\to A$ with the rule $\mathsf{fix}\,f\to f\,(\mathsf{fix}\,f)$. Show that every type becomes inhabited, and deduce that the corresponding logic is inconsistent.</p>
+<corrige>
+<p>(a) $\mathsf Y=\lambda f.(\lambda x.f(x\,x))(\lambda x.f(x\,x))$ contains the subterm $x\,x$, which is not typable (same argument as for $\lambda x.\,x\,x$); but every subterm of a typable term is typable. Another argument: $\mathsf Y\,(\lambda x.x)$ has no normal form, which <a href="#normalisation-typee">normalization</a> forbids for a typable term.</p>
+<p>(b) $\mathsf{fix}_A\,(\lambda x.x)$ is a closed term of type $A$, for every $A$, in particular for an atomic type $o$. Through the Curry-Howard correspondence, $\mathsf{fix}$ is the “axiom” $(A\Rightarrow A)\Rightarrow A$, which proves anything: the logic is inconsistent. This is the exact price of universality. Ordinary programming languages have a $\mathsf{fix}$ (general recursion), so their types are not reliable statements; proof assistants forbid it, and accept only recursions whose termination they check.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Booleans and pairs in System F" id="ex-lt-f-donnees">
+<p>In <a href="#systeme-f">System F</a>, set $\mathrm{Bool}=\forall\alpha.\alpha\to\alpha\to\alpha$. (a) Write two closed terms $\mathsf{true},\mathsf{false}:\mathrm{Bool}$ and a term $\mathsf{and}:\mathrm{Bool}\to\mathrm{Bool}\to\mathrm{Bool}$. (b) Write the type $A\times B$ of pairs, a constructor $\mathsf{pair}:A\to B\to A\times B$ and the first projection.</p>
+<corrige>
+<p>(a) $\mathsf{true}=\Lambda\alpha.\lambda x{:}\alpha.\lambda y{:}\alpha.\,x$, $\mathsf{false}=\Lambda\alpha.\lambda x{:}\alpha.\lambda y{:}\alpha.\,y$. A Boolean is an “if then else”: $b\,C\,u\,v$ equals $u$ if $b=\mathsf{true}$, $v$ if $b=\mathsf{false}$. Hence $\mathsf{and}=\lambda a{:}\mathrm{Bool}.\lambda b{:}\mathrm{Bool}.\ a\,\mathrm{Bool}\,b\,\mathsf{false}$: if $a$ is true, the result is $b$, otherwise false.</p>
+<p>(b) $A\times B=\forall\alpha.(A\to B\to\alpha)\to\alpha$: a pair is what supplies its two components to any function of two arguments. $\mathsf{pair}=\lambda a{:}A.\lambda b{:}B.\Lambda\alpha.\lambda k{:}A\to B\to\alpha.\,k\,a\,b$, and $\pi_1=\lambda p{:}A\times B.\ p\,A\,(\lambda a{:}A.\lambda b{:}B.\,a)$. One recognizes the definition of $A\wedge B$ given in the text: through Curry-Howard, a proof of $A\wedge B$ is a pair of proofs.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="What System F does not compute" id="ex-lt-f-limite">
+<p>Show that there is a total computable function $\N\to\N$ that is not representable in System F, without using Girard’s theorem. Deduce, using that theorem, that second-order arithmetic does not prove the normalization of System F.</p>
+<corrige>
+<p>Number the closed terms of type $\mathrm{Nat}\to\mathrm{Nat}$: $t_0,t_1,\dots$ (enumerate the terms and keep those having this type, which is decidable since terms carry their type annotations). Let $d(n)$ be the integer whose Church numeral is the normal form of $t_n\,\mathbf n$, plus $1$. Since F normalizes, and a closed normal form of type $\mathrm{Nat}$ is a Church numeral (result quoted for information, analogous to the shape of normal terms in the <a href="#coherence-normalisation">corollary</a>), $d$ is computable and total: reduce $t_n\,\mathbf n$ to its normal form. If $d$ were represented by $t_k$, we would have $d(k)=d(k)+1$. This is the argument of the <a href="#pas-interpreteur">theorem on total languages</a>.</p>
+<p>By Girard’s theorem, a function whose totality second-order arithmetic proves is representable in F. So second-order arithmetic does not prove that $d$ is total. But the normalization of F implies, in this arithmetic, the totality of $d$: so it cannot prove the normalization of F. Girard’s proof (by reducibility candidates) uses a comprehension that goes beyond formalized second-order arithmetic.</p>
+</corrige>
+</exo>

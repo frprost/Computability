@@ -1,0 +1,110 @@
+<!--
+titre: Universal functions and enumeration
+court: Universality
+chapo: A single machine can simulate all the others, provided it is given their description. This is the mathematical version of the computer.
+prerequis: equivalence.html#forme-normale|Kleene normal form
+-->
+
+<h2 id="lidee-de-fonction-universelle">The idea of a universal function</h2>
+
+<p>Three forms of universality can be distinguished. <em>External</em> universality: reasonably changing the machine model does not change what it computes (see <a href="turing-machines.html#variantes">Variants of the model</a>). <em>Internal</em> universality, the subject of this chapter: a single machine can simulate all the others, if it is given their description. Universality <em>in terms of models of computation</em>: all reasonable models compute the same functions (<a href="church-turing-thesis.html">Church-Turing thesis</a>).</p>
+
+<p>It is no exaggeration to say that the computer was born from this idea. Before it, all calculating machines, from the abacus to Charles Babbage’s difference engine (1822), required a physical modification to change the function computed. With his <em>analytical engine</em> (from 1834 on), Babbage had designed a machine driven by punched cards, borrowed from Jacquard’s looms; in 1843 Ada Lovelace wrote for it the first published program, to compute the Bernoulli numbers. The machine was never completed. Here again, it was the comparison of two different machines, a loom and a calculating machine, that gave birth to the idea.</p>
+
+<p>In computability, the notion appears naturally in the proof of the <a href="equivalence.html#forme-normale">normal form</a>: to show that a Turing-computable function is recursive, the machine is encoded by an integer $z$, and the resulting formula depends on the machine only through $z$. By making $z$ an argument, one obtains a function that simulates all machines.</p>
+
+<res type="Definition" nom="Universal function for a class" id="def-universelle">
+<enonce>
+<p>Let $\mathcal C$ be a class of functions from $\N$ to $\N$. A function $u:\N^2\to\N$ is <strong>universal</strong> for $\mathcal C$ if:</p>
+<ol>
+<li>for every $g\in\mathcal C$, there is $e\in\N$ such that $g=(x\mapsto u(e,x))$;</li>
+<li>for every $e$, the function $x\mapsto u(e,x)$ is in $\mathcal C$.</li>
+</ol>
+<p>We say that $u$ <strong>enumerates</strong> $\mathcal C$, and that an $e$ as in (1) is an <strong>index</strong> of $g$.</p>
+</enonce>
+<tech><p>The restriction to arity 1 is inessential, thanks to the <a href="recursive-functions.html#cantor-couple">coding of $n$-tuples</a>. The two conditions say that the “sections” $u(e,\cdot)$ are exactly the elements of $\mathcal C$.</p></tech>
+</res>
+
+<res type="Theorem" nom="Total computable functions have no computable universal function" id="pas-universelle-totale">
+<enonce><p>There is no <em>total</em> computable function $u:\N^2\to\N$ universal for the class $\mathcal R$ of total computable functions.</p></enonce>
+<philo><p>A “computer” that could only run programs that always halt, and that could run all of them, cannot exist. If we want a universal machine, it must be able, on some programs, never to halt. Universality and the certainty of termination are incompatible.</p></philo>
+<tech><p>If $u$ were such a function, $g(x)=u(x,x)+1$ would be computable and total, hence equal to $u(e,\cdot)$ for some $e$; then $u(e,e)=g(e)=u(e,e)+1$, a contradiction. This is the argument from the <a href="motivations.html#diagonale-totale">motivations</a>, now stated precisely.</p></tech>
+</res>
+
+<res type="Theorem" nom="Universal function for the computable functions" id="universelle">
+<enonce><p>The partial function $u(z,x)\simeq U\big(\mu y\ T_1(z,x,y)\big)$ is computable and universal for the class of (partial) computable functions of one variable. Hence there is a Turing machine $\mathcal U$ such that, for every machine $Z$ with Gödel number $z$ and every $x$: $\Psi^{(2)}_{\mathcal U}(z,x)\simeq\Psi^{(1)}_Z(x)$.</p></enonce>
+<philo>
+<p>A single machine, called <em>universal</em>, suffices: it is given as input the description of a machine and a datum, and it behaves like the machine described. The program has become a piece of data like any other. There is no longer any need to build one machine per function: a universal machine and a text are enough. This is exactly what a computer is: a fixed device to which programs are supplied.</p>
+<p>Among register machine models one distinguishes the RAM model, in which the program is outside the memory, and the RASP model (<em>random access stored program</em>), in which it is stored in memory like the data. Real computers follow the latter, the so-called “von Neumann architecture” (1945), although the idea is already entirely present in Turing in 1936.</p>
+</philo>
+<tech>
+<p>The normal form theorem gives, for every machine $Z$ with code $z$, $\Psi^{(1)}_Z(x)\simeq U(\mu y\,T_1(z,x,y))=u(z,x)$, whence condition (1). Condition (2) follows from the fact that $u$ is recursive, hence so is each $u(z,\cdot)$; if $z$ does not encode a machine, $T_1(z,x,y)$ is always false and $u(z,\cdot)$ is the nowhere-defined function, which is computable. Finally $u$ is recursive, hence Turing-computable: some machine $\mathcal U$ computes it.</p>
+</tech>
+<techno>
+<p>The Turing machine simulator of this manual <em>is</em> a universal function: it receives the text of a machine and an input, and reproduces its behaviour. It is written in JavaScript, but the theory guarantees that it could be written as a Turing machine.</p>
+<p>Small explicit universal machines have been built: Marvin Minsky (1962) gave one with 7 states and 4 symbols; Yurii Rogozhin (1996) built several, among them one with 4 states and 6 symbols. They do not simulate machines directly, but intermediate systems (“tag” systems) that are themselves universal, which makes their operation very indirect and slow.</p>
+</techno>
+</res>
+
+<h2 id="numerotation-standard-des-fonctions-calculables">Standard numbering of the computable functions</h2>
+
+<p>Gödel coding leaves many integers meaningless (not all of them encode a machine). It is more convenient for <em>every</em> integer to be a program.</p>
+
+<res type="Notation" nom="Indices: the notation $\varphi_e$" id="phi">
+<enonce>
+<p>Let $\eta(0)=\mu z\,\mathrm{TM}(z)$ and $\eta(n+1)=\mu z\,[\mathrm{TM}(z)\wedge z>\eta(n)]$: $\eta(n)$ is the $n$<sup>th</sup> Gödel number of a machine, in increasing order. We write</p>
+$$\varphi^{(k)}_e=\Psi^{(k)}_{Z}\quad\text{where } Z \text{ is the machine encoded by }\eta(e),$$
+<p>and $\varphi_e=\varphi^{(1)}_e$. For an oracle $A$, we similarly write $\varphi^{A,(k)}_e$. The integer $e$ is an <strong>index</strong> (or a <em>program</em>) of $\varphi^{(k)}_e$. We write $W_e=\{x:\varphi_e(x)\conv\}$ for the domain of $\varphi_e$.</p>
+</enonce>
+<philo><p>From now on “program number $e$” has a precise meaning, for every integer $e$. One can speak of “the set of programs that halt”, of “two equivalent programs”, and ask mathematical questions about programs.</p></philo>
+<tech>
+<ul>
+<li>$\eta$ is recursive, strictly increasing, and so is its inverse (on its image): going from a Gödel code to an index is effective in both directions. It is even primitive recursive, since the search can be explicitly bounded (between two consecutive machine codes the gap is bounded by a primitive recursive function of $\eta(n)$).</li>
+<li>Every computable function has <strong>infinitely many indices</strong> (the “padding” lemma): one can add to a machine quadruples involving a state that is never reached, without changing the function computed, just as one would add lines <code>x := x</code> to a program.</li>
+<li>The same index denotes a function for each arity and for each oracle.</li>
+<li>To show that $\eta$ is primitive recursive, the search can be bounded as follows: from a machine with code $z$, one obtains another, with a strictly larger code, by shifting the indices of all its states by one; the code of this shifted machine, a primitive recursive function of $z$, serves as a bound. The smallest machine is $q_0\,B\,R\,q_0$, with Gödel number $\eta(0)=2^{2^7 3^9 5^3 7^7}$.</li>
+</ul>
+
+</tech>
+</res>
+
+<res type="Theorem" nom="Enumeration theorem" id="enumeration">
+<enonce>
+<p>For every $n\ge1$ (and every oracle $A$), there is an index $z_n$ such that, for all $e,x_1,\dots,x_n$:</p>
+$$\varphi^{(n+1)}_{z_n}(e,x_1,\dots,x_n)\simeq\varphi^{(n)}_e(x_1,\dots,x_n).$$
+</enonce>
+<philo><p>The universal machine itself has a number, and it appears in the list of all machines. It is this self-reference, a list that contains the program able to read the list, that makes possible both computers and the paradoxes of the chapter <a href="undecidability.html">Undecidability</a>.</p></philo>
+<tech><p>$\Phi(e,\vec x)\simeq U(\mu y\,T_n(\eta(e),\vec x,y))$ is recursive (a composition of recursive functions and a minimization), hence Turing-computable, hence equal to $\varphi^{(n+1)}_{z_n}$ for some index $z_n$. With an oracle, the same proof works by adding to Kleene’s predicate the case of oracle quadruples, which consults $\chi_A$.</p></tech>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Infinitely many programs for each function" id="ex-un-indices">
+<p>Show that every computable function $f$ of one variable has infinitely many indices: there are infinitely many $e$ such that $\varphi_e=f$.</p>
+<corrige>
+<p>Let $Z$ be a machine computing $f$, and $q_m$ a state that does not occur in $Z$. For every $k$, the machine $Z_k=Z\cup\{q_{m+j}\,B\,B\,q_{m+j}:0\le j\le k\}$ still computes $f$: the added states are never reached, since no quadruple of $Z$ leads to them. The machines $Z_k$ are pairwise distinct, hence so are their Gödel numbers, and each one is an $\eta(e)$ for a different $e$. This is <em>padding</em>: adding dead code does not change the function computed.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="No total extension of the diagonal" id="ex-un-diagonale">
+<p>Show that there is no total computable function $f$ such that $f(e)=\varphi_e(e)$ for every $e$ with $\varphi_e(e)\conv$.</p>
+<corrige>
+<p>Suppose such an $f$ exists. The function $d(e)=f(e)+1$ is total computable, hence $d=\varphi_k$ for some index $k$. Then $\varphi_k(k)=d(k)$ is defined, so $f(k)=\varphi_k(k)=d(k)=f(k)+1$: a contradiction. The universal function $(e,x)\mapsto\varphi_e(x)$ is therefore essentially partial: it cannot be completed into a total computable function, even on the diagonal alone (see also <a href="undecidability.html#sans-prolongement">functions with no computable extension</a>).</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="An interpreter for the primitive recursive functions" id="ex-un-rp">
+<p>Show that there is a total computable function $u(e,x)$ universal for the class $\RP$ of primitive recursive functions of one variable, and that $u$ is not primitive recursive.</p>
+<corrige>
+<p>Enumerate the terms of $\RP$ of arity 1, $f_0,f_1,\dots$, and set $u(e,x)=f_e(x)$, computed by evaluating term number $e$ (see the <a href="equivalence.html#ex-eq-domine">exercise in chapter 6</a>). It is total, since all functions of $\RP$ are, and universal by construction. If $u$ were primitive recursive, so would be $d(x)=u(x,x)+1$, hence $d=f_k$ for some $k$, and $f_k(k)=u(k,k)+1=f_k(k)+1$: a contradiction.</p>
+<p>Compare with the <a href="#pas-universelle-totale">theorem</a>: for $\RP$, the interpreter exists but leaves the class; for the total computable functions, there is not even a total computable interpreter; for the partial computable functions, the interpreter exists and stays within the class.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="A nonempty domain can be detected" id="ex-un-non-vide">
+<p>Show that the set $\{e:W_e\ne\emptyset\}$ is semi-decidable, by describing a procedure explicitly.</p>
+<corrige>
+<p>One cannot test $\varphi_e(0)$, then $\varphi_e(1)$, etc., since the first computation may not terminate. The computations are interleaved: for $s=0,1,2,\dots$, run $s$ steps of the computation of $\varphi_e(x)$ for each $x\le s$. If one of them halts, halt. Formally, $W_e\ne\emptyset\iff\exists\langle x,y\rangle\ T_1(\eta(e),x,y)$, and the procedure searches for the least pair $\langle x,y\rangle$ satisfying this primitive recursive predicate. If $W_e$ contains some $x$, whose computation has code $y$, the search reaches $\langle x,y\rangle$ and halts; otherwise it does not halt. This interleaving (<em>dovetailing</em>) is the basic technique of the chapter <a href="semi-decidability.html#projection">Semi-decidability</a>. The set is not decidable (<a href="undecidability.html#rice-theoreme">Rice’s theorem</a>).</p>
+</corrige>
+</exo>

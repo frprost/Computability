@@ -1,0 +1,267 @@
+<!--
+titre: Undecidable problems
+court: Undecidability
+chapo: No program can decide whether an arbitrary program halts. From this single fact follows a host of very concrete impossibilities, summed up by Rice’s theorem.
+prerequis: universality.html|Universality ; smn-recursion.html|The s-m-n theorem
+-->
+
+<h2 id="le-probleme-de-larret">The halting problem</h2>
+
+<p>The <a href="motivations.html#non-calculables">first argument</a> for non-computability was a size argument: there are more functions than programs. It is correct but non-constructive. Which functions, concretely, are not computable? The most natural candidate is linked to partiality: the only way for a computation not to answer is not to halt. Can one predict, from outside, whether a computation will halt?</p>
+
+<res type="Theorem" nom="Undecidability of the halting problem (Turing, 1936)" id="arret">
+<enonce>
+<p>The set $K=\{e\in\N:\varphi_e(e)\conv\}$ is not decidable. Consequently the set $H=\{\langle e,x\rangle:\varphi_e(x)\conv\}$ (often written $K_0$) is not decidable either: no program takes as input a program $e$ and a datum $x$, always halts, and answers correctly whether $e$ halts on $x$.</p>
+</enonce>
+<philo>
+<p>There is not, and there will never be, any software that examines an arbitrary program and says with certainty whether it will eventually halt or loop forever. This is not a question of computing power or of artificial intelligence: it is a logical impossibility, of the same kind as the impossibility of constructing, with straightedge and compass, a square with the same area as a circle.</p>
+<p>The argument is that of the liar. If a “halting oracle” existed, one could write a contrarian program that queries the oracle about itself and does the opposite of what it predicts: if it is predicted to halt, it loops; if it is predicted to loop, it halts. The oracle is necessarily wrong about that program.</p>
+<p>This does not mean that nothing can be known: for many particular programs one proves that they terminate, and tools do so automatically. It means that <em>no single method</em> works for all of them.</p>
+</philo>
+<tech>
+<p>Suppose $\chi_K$ is computable. The function</p>
+$$p(e)\simeq\begin{cases}0&\text{if }\chi_K(e)=0,\\ \ind&\text{if }\chi_K(e)=1\end{cases}$$
+<p>is then computable (compute $\chi_K(e)$; if it is 0, return 0, otherwise enter an infinite loop). Let $q$ be an index of $p$. If $\varphi_q(q)\conv$, then by definition $p(q)\ind$, that is $\varphi_q(q)\ind$; and if $\varphi_q(q)\ind$, then $p(q)=0$, so $\varphi_q(q)\conv$. Both cases are contradictory: $\chi_K$ is not computable.</p>
+<p>For $H$: if $\chi_H$ were computable, so would be $\chi_K(e)=\chi_H(\langle e,e\rangle)$.</p>
+</tech>
+<techno>
+<p>The paradox, written as a program that uses its own text (which the <a href="smn-recursion.html#kleene-parametres">recursion theorem</a> allows):</p>
+<pre><code>contrarian() :
+    me := text of this program            // recursion theorem
+    if halts(me, empty_input) :
+        loop forever
+    else :
+        halt</code></pre>
+<p>Whatever function <code>halts</code> is proposed, provided it always terminates, it is wrong about <code>contrarian</code>. The argument even gives a counterexample <em>computable</em> from the text of <code>halts</code>: the impossibility is constructive.</p>
+<p>The simulators of this manual stop after a fixed maximal number of steps: they do not decide halting, they <em>observe</em> it, when it happens before the limit. This is all a program can do in general.</p>
+</techno>
+</res>
+
+<h2 id="reductions">Reductions</h2>
+
+<p>The halting problem seems very special. It is not: many problems reduce to it, by the technique of <strong>reduction</strong>. To show that a problem $B$ is undecidable, one shows that if $B$ were decidable, halting would be too.</p>
+
+<res type="Definition" nom="Many-one reduction" id="reduction">
+<enonce><p>$A\le_m B$ if there is a total computable function $f$ such that, for every $x$, $x\in A\iff f(x)\in B$. If $A\le_m B$ and $B$ is decidable, then so is $A$: $\chi_A=\chi_B\circ f$. Hence if $A$ is undecidable and $A\le_m B$, $B$ is undecidable.</p></enonce>
+<philo><p>Reducing $A$ to $B$ means turning every question about $A$ into a question about $B$. If we knew how to answer questions about $B$, we would know how to answer those about $A$. A reduction carries the difficulty along, as a translator carries the meaning.</p></philo>
+</res>
+
+<res type="Proposition" nom="Some undecidable problems about programs" id="exemples-indecidables">
+<enonce>
+<p>The following problems are undecidable:</p>
+<ol>
+<li>(Use of a variable) Given a program $P$ without input and a variable $v$, does the execution of $P$ use $v$?</li>
+<li>(Dead code) Will a given instruction of a program be executed?</li>
+<li>(Value at a point) Given a program $P$, is $P(12)=7$?</li>
+<li>(Totality) Does the program $P$ halt on all its inputs?</li>
+<li>(Equivalence) Do two programs compute the same function?</li>
+</ol>
+</enonce>
+<philo>
+<p>These are the questions that development tools ask every day: detect an unused variable, remove dead code, check that a function returns the right value, that a program never hangs, that an optimization does not change behaviour. No tool can answer them perfectly for all programs.</p>
+<p>Real tools therefore make compromises: they answer “I don’t know” in some cases (“sound” static analysis, which may raise false alarms), or they handle only part of the languages, or they ask a human for help (proof assistants). Dead code is of real industrial importance: software evolves over decades, often rewritten automatically, and whole parts become useless without it always being possible to detect.</p>
+</philo>
+<tech>
+<p>(1) From $P$ (without input), choose a variable $v$ absent from $P$ and form $P'=P;\ v:=v+1$. Then $P'$ uses $v$ if and only if $P$ halts. The map $P\mapsto(P',v)$ is computable: it is a reduction of halting on empty input (undecidable, by an immediate reduction from $H$) to problem (1). (2) is similar: the instruction $v:=v+1$ is reached if and only if $P$ halts.</p>
+<p>(3) From a program $Q$ and a datum $w$, form the program $P_{Q,w}$ which, on every input $x$, runs $Q$ on $w$ and then returns 7. Then $P_{Q,w}(12)=7$ if and only if $Q$ halts on $w$, and $(Q,w)\mapsto P_{Q,w}$ is computable (s-m-n). (4) With the same $P_{Q,w}$: it is total if and only if $Q$ halts on $w$. (5) If equivalence were decidable, so would totality be (compare $P_{Q,w}$ with the constant program 7).</p>
+</tech>
+<techno>
+<p>The program of reduction (3), in pseudo-code. It is obtained from $Q$ and $w$ by mere text manipulation, without running $Q$:</p>
+<pre><code>P_{Q,w}(x) :
+    run Q on w              // may never finish
+    return 7</code></pre>
+<p>At the level of Turing machines, this is the construction of the <a href="smn-recursion.html#smn">s-m-n theorem</a>: erase the input, write $\overline w$, run $Q$ (states renamed), then erase the tape and write 7 strokes.</p>
+</techno>
+</res>
+
+<res type="Proposition" nom="Undecidable problems, proofs by reduction from K" id="exemples-reductions">
+<enonce>
+<p>The following index sets are undecidable:</p>
+<ol>
+<li>$\mathrm{Cst}=\{x:\varphi_x$ is a total constant function$\}$;</li>
+<li>$B=\{x:\varphi_x(4)=12\}$, and more generally $\{x:\varphi_x(a)=b\}$ for all $a,b$;</li>
+<li>$C=\{x:\varphi_x(23)\ind\}$;</li>
+<li>$\{\langle x,y,z\rangle:\varphi_x(y)=z\}$: even when the expected value is specified, halting remains undecidable;</li>
+<li>$\{\langle x,y\rangle:\varphi_x=\varphi_y\}$ (program equivalence);</li>
+<li>$\{x:\mathrm{Im}\,\varphi_x\text{ is infinite}\}$ and $\{x:y_0\in\mathrm{Im}\,\varphi_x\}$ for every fixed $y_0$;</li>
+<li>$\mathrm{Tot}=\{x:\varphi_x\text{ is total}\}$.</li>
+</ol>
+<p>On the other hand, for a <em>fixed</em> index $x_0$, the set $\mathrm{Im}\,\varphi_{x_0}$ may or may not be decidable depending on $x_0$.</p>
+</enonce>
+<philo>
+<p>All these proofs follow the same scenario: for each $x$, one builds a program $h(x)$ that starts by simulating $\varphi_x(x)$ and does the “right thing” only if this simulation halts. Knowing what $h(x)$ does then amounts to knowing whether $\varphi_x(x)$ halts. A single undecidable question, halting, thus contaminates almost all questions about the behaviour of programs: this is what <a href="#rice-theoreme">Rice’s theorem</a> makes systematic.</p>
+<p>The last remark warns against a hasty intuition: it is the questions asked about an <em>arbitrary</em> program that are undecidable. For a fixed program, the question may be easy (if $\varphi_{x_0}$ is the identity, $\mathrm{Im}\,\varphi_{x_0}=\N$) or not (if $\varphi_{x_0}(x)=x$ for $x\in K$ and diverges otherwise, $\mathrm{Im}\,\varphi_{x_0}=K$).</p>
+</philo>
+<tech>
+<p>Let $g(x,y)\simeq 12$ if $\varphi_x(x)\conv$, and $g(x,y)\ind$ otherwise. The function $g$ is computable (simulate $\varphi_x(x)$; if the simulation halts, return 12). Let $n$ be an index of $g$; by the <a href="smn-recursion.html#smn">s-m-n</a> theorem, $h(x)=s^1_1(n,x)$ is total computable and $\varphi_{h(x)}(y)=g(x,y)$. Thus:</p>
+<ul>
+<li>if $x\in K$, $\varphi_{h(x)}$ is the constant 12; if $x\notin K$, $\varphi_{h(x)}$ is nowhere defined. Hence $x\in K\iff h(x)\in\mathrm{Cst}\iff h(x)\in B\iff \langle h(x),4,12\rangle\in\{\langle x,y,z\rangle:\varphi_x(y)=z\}\iff h(x)\in\mathrm{Tot}$: $K$ reduces to (1), (2), (4) and (7);</li>
+<li>$x\notin K\iff h(x)\in C$: it is the complement $\overline K$ that reduces to $C$, which suffices, since $\overline K$ is undecidable as soon as $K$ is;</li>
+<li>if $y_0$ is an index of the everywhere-defined zero function, $x\in K\iff\langle h'(x),y_0\rangle$ is in the set (5), where $h'$ is built in the same way with the value 0;</li>
+<li>for (6), take $\varphi_{h_2(x)}(y)\simeq y$ if $x\in K$, $\ind$ otherwise: the range is $\N$ (infinite, contains $y_0$) or empty.</li>
+</ul>
+<p>For $\mathrm{Tot}$, a direct proof by diagonalization can also be given: if $f$ computed the characteristic function of $\mathrm{Tot}$, the function $g(0)=\mu y[f(y)=1]$, $g(x+1)=\mu y[f(y)=1\wedge y>g(x)]$ would enumerate the indices of total functions, and $d(x)=\varphi_{g(x)}(x)+1$ would be total computable without being any of the $\varphi_{g(x)}$ (it differs from $\varphi_{g(x_0)}$ at $x_0$). In fact $\mathrm{Tot}$ is not even semi-decidable, nor co-semi-decidable: it is a $\Pi_2$-complete set (<a href="arithmetical-hierarchy.html">Arithmetical hierarchy</a>).</p>
+</tech>
+</res>
+
+<h2 id="rice">Rice’s theorem</h2>
+
+<res type="Theorem" nom="Rice’s theorem (1953)" id="rice-theoreme">
+<enonce>
+<p>Let $\mathcal F$ be a set of computable functions of one variable which is <em>non-trivial</em> ($\mathcal F\neq\emptyset$ and $\mathcal F$ does not contain all computable functions). Then the set $\{e:\varphi_e\in\mathcal F\}$ of indices of the functions in $\mathcal F$ is not decidable.</p>
+</enonce>
+<philo>
+<p>Every property <em>of the behaviour</em> of a program (of the function it computes, not of its text) is undecidable, as soon as it is neither always true nor always false. “Does this program always return an even number?”, “does it ever print ‘hello’?”, “does it compute the sorting function?”, “is it a virus?” (in the sense of a given behaviour): none of these questions admits a general decision procedure.</p>
+<p>One must read precisely what the theorem forbids: a <em>single, automatic, always correct and always answering</em> method, valid for <em>all</em> programs. It does not forbid proving that a particular program is correct: that is the work of formal verification, which has produced for example a fully proved C compiler (CompCert) or a proved operating system kernel (seL4). Nor does it forbid approximate analyses, which sometimes answer “I don’t know”.</p>
+<p>Antivirus software knows this well: it recognizes known signatures and suspicious behaviours, but none can guarantee to detect all malicious programs without ever accusing a healthy one.</p>
+<p>The chapter <a href="computability-ai.html#synthese">Computability and artificial intelligence</a> draws the consequences for an AI that would program from a specification, or that one would want to control.</p>
+</philo>
+<tech>
+<p>Let $\Theta$ be the nowhere-defined function. Replacing $\mathcal F$ by its complement if necessary (which does not change decidability), we may assume $\Theta\notin\mathcal F$. Since $\mathcal F\ne\emptyset$, choose $\psi\in\mathcal F$. By s-m-n, there is a total recursive $f$ such that</p>
+$$\varphi_{f(e)}(x)\simeq\begin{cases}\psi(x)&\text{if }\varphi_e(e)\conv,\\ \ind&\text{otherwise}\end{cases}$$
+<p>(compute $\varphi_e(e)$, then, if it halts, $\psi(x)$). Then $\varphi_{f(e)}=\psi\in\mathcal F$ if $e\in K$, and $\varphi_{f(e)}=\Theta\notin\mathcal F$ if $e\notin K$. Hence $K\le_m\{e:\varphi_e\in\mathcal F\}$ via $f$, and the latter set is undecidable.</p>
+</tech>
+<techno>
+<p>The reduction, in pseudo-code: given $e$, build (without running it) the program</p>
+<pre><code>F_e(x) :
+    run program e on input e        // may never finish
+    return psi(x)                   // psi : an example having the property</code></pre>
+<p>It has the property if and only if $e\in K$. A decider for the property therefore decides $K$.</p>
+<p>The theorem speaks only of <em>semantic</em> properties. <em>Syntactic</em> properties are often decidable: “does the program contain a <code>while</code> loop?”, “does it have fewer than 100 lines?”, “is it well typed?” (in many languages). This is why type systems are so useful: they replace an undecidable semantic question by a decidable syntactic one, at the price of rejecting some correct programs.</p>
+</techno>
+</res>
+
+<h2 id="liens-avec-la-logique">Links with logic</h2>
+
+<res type="Proposition" nom="A halting decider would settle Goldbach’s conjecture" id="goldbach">
+<enonce><p>Goldbach’s conjecture (every even integer $\ge4$ is a sum of two primes) is true if and only if a certain program without input, which searches for a counterexample, does not halt.</p></enonce>
+<philo>
+<p>A halting oracle would solve at a stroke a host of open problems: Goldbach, the Riemann hypothesis (which can also be expressed as the halting of a program), and in fact every statement of the form “there is no verifiable counterexample”. The undecidability of halting is therefore not a programmer’s curiosity: it is intimately linked to the difficulty of mathematics itself.</p>
+</philo>
+<tech>
+<p>The program tests successively $x=4,6,8,\dots$ and halts as soon as it finds an $x$ that is <em>not</em> a sum of two primes. Each test is a bounded search (try all $p\le x$). The program halts if and only if the conjecture is false. More generally, every statement of the form $\forall x\,R(x)$ with $R$ decidable (a $\Pi_1$ statement, see <a href="arithmetical-hierarchy.html">Arithmetical hierarchy</a>) is equivalent to the non-halting of a program.</p>
+</tech>
+<techno>
+<pre><code>x := 4
+while true :
+    decomposable := false
+    for p from 2 to x - 2 :
+        if prime(p) and prime(x - p) : decomposable := true
+    if not decomposable :
+        print x ; halt                  // counterexample found
+    x := x + 2</code></pre>
+<p>The conjecture has been checked by computer up to $4\times10^{18}$ (Oliveira e Silva, Herzog and Pardi, 2014): this program has not yet found a counterexample, which proves nothing.</p>
+</techno>
+</res>
+
+<h2 id="degres">Degrees of undecidability</h2>
+
+<p>The decidable/undecidable distinction is finer than it seems: some problems are “more undecidable” than others. The halting problem is <em>complete for the semi-decidable problems</em>: every semi-decidable problem reduces to it (see <a href="semi-decidability.html">Semi-decidability</a>). But there are strictly harder problems, such as the totality of a program, which even a halting oracle does not decide. The <a href="arithmetical-hierarchy.html">arithmetical hierarchy</a> classifies these degrees according to the logical form of statements.</p>
+
+<res type="Definition" nom="Hierarchy of reducibilities" id="reductibilites">
+<enonce>
+<p>For $A,B\subseteq\N$, we define, from strongest to weakest:</p>
+<ul>
+<li>$A\le_1 B$ (<em>one-one</em>) if there is a total computable <em>injective</em> $f$ such that $x\in A\iff f(x)\in B$;</li>
+<li>$A\le_m B$ (<em>many-one</em>): the same without requiring injectivity (this is the <a href="#reduction">reduction</a> used in this chapter);</li>
+<li>$A\le_{tt} B$ (<em>truth-table</em>): to decide $x\in A$, compute a finite list of questions $y_1,\dots,y_p$ and a Boolean formula, then evaluate the formula on the answers “$y_j\in B$?”;</li>
+<li>$A\le_T B$ (<em>Turing</em>): $A$ is decidable by a machine equipped with an oracle for $B$ (<a href="turing-machines.html#def-oracle">oracle machine</a>), which may ask its questions adaptively and in unbounded number.</li>
+</ul>
+<p>We have $A\le_1B\Rightarrow A\le_mB\Rightarrow A\le_{tt}B\Rightarrow A\le_TB$, and none of the converses holds in general. For example $\overline K\le_T K$ (invert the oracle’s answer), but $\overline K\not\le_m K$ (otherwise $\overline K$ would be semi-decidable). Two one-one equivalent sets are even recursively isomorphic (<a href="arithmetical-hierarchy.html#myhill">Myhill’s theorem</a>), and the level of a problem in the <a href="arithmetical-hierarchy.html#post">arithmetical hierarchy</a> is measured by these reductions.</p>
+</enonce>
+<philo>
+<p>“$A$ reduces to $B$” means “$A$ is no harder than $B$”: knowing how to solve $B$ suffices to solve $A$. The different reducibilities specify <em>how</em> one is allowed to use $B$: a single question asked blindly, several questions fixed in advance, or a free dialogue. The stricter the rule, the finer the hierarchy of difficulties.</p>
+<p>Post asked in 1944 whether there are semi-decidable problems strictly between “decidable” and “as hard as halting”. Friedberg and Muchnik showed independently (1956-1957) that there are (<a href="#friedberg-muchnik">theorem below</a>), and even that there are two, $A$ and $B$, that are incomparable: neither $A\le_TB$ nor $B\le_TA$. The difficulty of problems is not a linear scale.</p>
+</philo>
+</res>
+
+<res type="Theorem" nom="Friedberg (1957), Muchnik (1956): there are incomparable semi-decidable degrees" id="friedberg-muchnik">
+<enonce><p>There are two semi-decidable sets $A$ and $B$ such that $A\not\le_TB$ and $B\not\le_TA$. In particular, $A$ and $B$ are neither decidable nor $T$-complete: their degree lies strictly between that of $\emptyset$ and that of $K$, which answers Post’s problem negatively.</p></enonce>
+<philo><p>The proof invents the <em>priority method</em>, which has dominated degree theory ever since. $A$ and $B$ are built step by step, satisfying an infinite list of conflicting requirements: making $A$ differ from what program $e$ computes with $B$ as oracle forces one to freeze a piece of $B$, while the other requirements want to add elements to $B$. They are ranked in order of priority: a requirement may destroy the work of lower-priority ones, which start over, and one shows that each is disturbed only finitely often.</p></philo>
+<tech>
+<p><strong>Notation.</strong> For a set $X$, $\varphi^X_e$ is the $e$-th function computable relative to $X$ (<a href="equivalence.html#enumeration-relative">relative enumeration</a>), and $X\le_TY$ if and only if $c_X=\varphi^Y_e$ for some $e$. We write $\varphi^X_{e,s}(x)=v$ if there is $y<s$ with $T^X_1(\eta^\ast(e),x,y)$ and $U(y)=v$; this $y$ (the code of the computation) is called the <em>use</em>. By the <a href="equivalence.html#relatif">use principle</a>, if $X$ and $Y$ have the same elements below $y$, then $T^X_1(\eta^\ast(e),x,y)\iff T^Y_1(\eta^\ast(e),x,y)$: the computation depends only on $X\cap[0,y[$.</p>
+<p><strong>Requirements.</strong> We build $A=\bigcup_sA_s$ and $B=\bigcup_sB_s$, where $A_s,B_s$ are finite sets computed at stage $s$, so as to satisfy, for every $e$:</p>
+$$R_{2e}:\ c_A\ne\varphi^B_e,\qquad R_{2e+1}:\ c_B\ne\varphi^A_e.$$
+<p>$R_i$ has higher priority than $R_j$ if $i<j$. Each $R_i$ has at every moment a <em>witness</em> $x_i$, a <em>restraint</em> $r_i$ and a status “satisfied” or not. <em>Initializing</em> $R_i$ means giving it as witness a fresh number (larger than all numbers that have appeared so far in the construction: elements, witnesses, restraints, stage number), restraint $0$, and status not satisfied. For definiteness, we describe $R_{2e}$; $R_{2e+1}$ is obtained by exchanging $A$ and $B$.</p>
+<p><strong>Construction.</strong> At stage $0$, $A_0=B_0=\emptyset$ and $R_0$ is initialized. At stage $s+1$, initialize $R_{s+1}$; then say that $R_{2e}$, $2e\le s$, <em>requires attention</em> if it is not satisfied and $\varphi^{B_s}_{e,s}(x_{2e})=0$. If no requirement requires attention, $A_{s+1}=A_s$ and $B_{s+1}=B_s$. Otherwise, let $R_i$ be the highest-priority one that does, say $i=2e$: set $A_{s+1}=A_s\cup\{x_i\}$, $B_{s+1}=B_s$, the restraint $r_i$ becomes the use of the computation, $R_i$ becomes satisfied, and all $R_j$, $i<j\le s+1$, are initialized.</p>
+<p>The construction is effective, so $A$ and $B$ are semi-decidable (they are enumerated stage by stage). A number enters $A$ or $B$ only as the witness of the requirement that acts, and the witnesses are all distinct.</p>
+<p><strong>Lemma.</strong> Each $R_i$ acts only finitely often, and it is satisfied in the sense that $c_A\ne\varphi^B_e$ (for $i=2e$).</p>
+<p>By induction on $i$. Let $s_0\ge i$ be a stage after which no $R_j$, $j<i$, acts any more (it exists by the induction hypothesis). Only these actions initialize $R_i$ (apart from its creation at stage $i$): let $t_0\le s_0$ be its last initialization. After $t_0$, its witness $x=x_i$ no longer changes.</p>
+<ul>
+<li><em>If $R_i$ acts at some stage $s+1>t_0$.</em> Then $x\in A$, and $\varphi^{B_s}_{e,s}(x)=0$ with use $y=r_i$. At the same stage, all lower-priority $R_j$ are initialized and receive witnesses larger than $y$, and every later initialization will give them larger ones still: they will only put numbers $\ge y$ into $B$. Higher-priority requirements no longer act after $s_0$; if $s<s_0$, none acts between $s+1$ and $s_0$ either, since $R_i$ is no longer initialized. And $R_i$, now satisfied, no longer acts. Hence $B\cap[0,y[\;=B_s\cap[0,y[$, and by the use principle $\varphi^B_e(x)=0\neq1=c_A(x)$. $R_i$ has acted only once after $t_0$.</li>
+<li><em>If $R_i$ never acts after $t_0$.</em> It remains unsatisfied, and $x\notin A$, since only $R_i$ can put its witness there. Suppose $\varphi^B_e(x)=0$, with a computation of code $y$. Since $B$ is the increasing union of the $B_s$, there is $s_1>\max(s_0,y)$ such that $B_{s}\cap[0,y[\;=B\cap[0,y[$ for $s\ge s_1$, and then $\varphi^{B_{s_1}}_{e,s_1}(x)=0$: $R_i$ requires attention at stage $s_1+1$. No higher-priority requirement requires attention after $s_0$ (the highest-priority one requiring attention acts), so $R_i$ acts: a contradiction. Thus $\varphi^B_e(x)$ is undefined or differs from $0=c_A(x)$.</li>
+</ul>
+<p>In both cases $c_A\ne\varphi^B_e$, and $R_i$ no longer acts after some stage: the induction proceeds. All requirements being satisfied, $A\not\le_TB$ and $B\not\le_TA$. If $A$ were decidable, we would have $A\le_TB$; if $A$ were $T$-complete, we would have $B\le_TK\le_TA$, since $B$ is semi-decidable. Likewise for $B$.</p>
+<p><strong>Relativization.</strong> The same construction, in which all machines additionally receive a fixed oracle $C$ (requirements $c_A\ne\varphi^{B\oplus C}_e$ and $c_B\ne\varphi^{A\oplus C}_e$, with $X\oplus C=\{2x:x\in X\}\cup\{2x+1:x\in C\}$, and $A,B$ enumerated with the help of $C$), gives $A,B$ semi-decidable relative to $C$ with $A\not\le_TB\oplus C$ and $B\not\le_TA\oplus C$. For $C=\emptyset^{(n)}$, $A$ is $\Sigma_{n+1}$ (<a href="arithmetical-hierarchy.html#post">Post’s theorem</a>); it is neither $\Sigma_n$ nor $\Pi_n$, otherwise $A\le_T\emptyset^{(n)}\le_TB\oplus C$; and it is not of the degree of $\emptyset^{(n+1)}$, otherwise $B\oplus C\le_T\emptyset^{(n+1)}\le_TA\le_TA\oplus C$.</p>
+</tech>
+</res>
+
+
+<h2 id="impossibilites">Three impossibilities</h2>
+
+<p>Boitet’s lecture notes end the study of unsolvable problems with three results that close doors one might want to open.</p>
+
+<res type="Theorem" nom="Some partial functions have no computable extension" id="sans-prolongement">
+<enonce><p>There is a partial computable function $\psi$ such that no total computable function $f$ extends it (that is, satisfies $f(x)=\psi(x)$ whenever $\psi(x)\conv$).</p></enonce>
+<philo><p>One might hope to “repair” a program that sometimes loops by making it return a default value in the cases where it does not halt. This is impossible in general: for some programs, every version that always halts necessarily gives a wrong answer somewhere the original did answer. Partiality is not a presentation defect that a good programmer could always remove.</p></philo>
+<tech><p>Let $\psi(x)\simeq\varphi_x(x)+1$. It is computable (universal function). If a total computable $f$ extended it, we would have $f=\varphi_{x_0}$ for some $x_0$; since $f$ is total, $\varphi_{x_0}(x_0)\conv$, so $\psi(x_0)\conv$ and $\varphi_{x_0}(x_0)=f(x_0)=\psi(x_0)=\varphi_{x_0}(x_0)+1$: a contradiction.</p></tech>
+</res>
+
+<res type="Theorem" nom="Minimality of the normal form" id="forme-normale-minimale">
+<enonce><p>In the <a href="equivalence.html#forme-normale">Kleene normal form</a> $\varphi_e(x)\simeq U(\mu y\,T(e,x,y))$, the output function $U$ cannot be removed: there is a partial computable function $\psi$ that cannot be written $\psi(x)\simeq\mu y\,[f(x,y)=1]$ with $f$ total computable.</p></enonce>
+<philo><p>An unbounded search produces the <em>first witness</em> found; in general, a further computation is still needed to extract the answer from it. A single “while” loop suffices for every program, but not a “while” loop that would directly return its counter.</p></philo>
+<tech><p>Let $\psi(x)\simeq x$ if $x\in K$, and $\ind$ otherwise; it is computable. If $\psi(x)\simeq\mu y[f(x,y)=1]$, then for $x\in K$ we have $\psi(x)=x$, so $f(x,x)=1$; for $x\notin K$, $\psi(x)\ind$, so $f(x,y)\ne1$ for all $y$, in particular $f(x,x)\neq1$. Thus $x\in K\iff f(x,x)=1$, and $K$ would be decidable.</p></tech>
+</res>
+
+<res type="Theorem" nom="The duration of computations cannot be bounded" id="pas-de-delai">
+<enonce><p>There is no total computable function $f(x,y)$ such that, for all $x,y$: if $\varphi_x(y)\conv$, then the computation halts in fewer than $f(x,y)$ steps.</p></enonce>
+<philo><p>Computer systems use <em>timeouts</em>: after a certain time, a program is considered no longer to be answering. This theorem says that no timeout computed from the program and its data is safe in general: for some programs, one will always abandon a computation that would have succeeded a little later. <a href="busy-beavers.html">Busy beavers</a> show how large these durations can be.</p></philo>
+<tech><p>The predicate $m(x,y,w)$: “$\varphi_x(y)$ halts in fewer than $w$ steps” is primitive recursive (simulate $w$ steps; this is a consequence of the construction of Kleene’s predicate). If $f$ existed, $\chi(x,y)=m(x,y,f(x,y))$ would be total computable and would equal 1 if and only if $\varphi_x(y)\conv$: it would decide halting.</p></tech>
+<techno><p>This is exactly the situation of the simulators of this manual: the “max steps” field is a timeout. The machine of the example <a href="busy-beavers.html#valeurs-bb">Σ(5)</a> halts after 47,176,870 steps; with a timeout of 47 million steps, one would wrongly conclude that it loops.</p></techno>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Rice or not Rice?" id="ex-ind-rice">
+<p>Which of the following sets are decidable? (a) $\{e:e\text{ is even}\}$; (b) $\{e:\varphi_e(3)=5\}$; (c) the set of $e$ such that the machine encoded by $\eta(e)$ has fewer than 10 states; (d) the set of $e$ such that $\varphi_e$ is the zero function; (e) the set of $e$ such that the computation of $\varphi_e(0)$ halts in fewer than 100 steps.</p>
+<corrige>
+<p>(a), (c) and (e) are decidable; (b) and (d) are not.</p>
+<ul>
+<li>(a): a parity test. It is not a property of the function $\varphi_e$: two indices of the same function may be one even and one odd. Rice’s theorem does not apply.</li>
+<li>(c): decode $\eta(e)$ and count the states; this is a property of the text of the program, not of the function computed.</li>
+<li>(e): run at most 100 steps, which always terminates. The property depends on the program (a slower program computes the same function).</li>
+<li>(b) and (d) are index sets $\{e:\varphi_e\in\mathcal F\}$ with $\mathcal F$ non-trivial: the functions with value 5 at 3, the zero function alone. <a href="#rice-theoreme">Rice’s theorem</a> applies.</li>
+</ul>
+<p>The lesson: Rice forbids deciding <em>semantic</em> properties (of the function computed), not <em>syntactic</em> properties nor properties of bounded execution.</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Halting on 0" id="ex-ind-zero">
+<p>Show directly, by a reduction from $K$, that $\{e:\varphi_e(0)\conv\}$ is not decidable.</p>
+<corrige>
+<p>The function $\psi(e,x)\simeq\varphi_e(e)$ (which ignores $x$) is computable. By s-m-n, there is a primitive recursive $f$ with $\varphi_{f(e)}(x)\simeq\varphi_e(e)$ for all $x$. Then $e\in K\iff\varphi_e(e)\conv\iff\varphi_{f(e)}(0)\conv$. Hence $K\le_m\{e:\varphi_e(0)\conv\}$, which is undecidable since $K$ is (<a href="#reduction">reduction</a>).</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Infinite domain" id="ex-ind-infini">
+<p>Show that $K\le_m\{e:W_e\text{ is infinite}\}$ and $K\le_m\{e:\varphi_e\text{ is total}\}$.</p>
+<corrige>
+<p>With the same $f$ as in the previous exercise, $W_{f(e)}=\N$ if $e\in K$, and $W_{f(e)}=\emptyset$ otherwise. Hence $e\in K\iff W_{f(e)}$ infinite $\iff\varphi_{f(e)}$ total: the same function realizes both reductions. These sets are in fact strictly harder than $K$ (<a href="arithmetical-hierarchy.html#fin-tot">they are $\Pi_2$-complete</a>).</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Program equivalence" id="ex-ind-equivalence">
+<p>Show that $\{\langle a,b\rangle:\varphi_a=\varphi_b\}$ is not decidable.</p>
+<corrige>
+<p>Fix an index $z$ of the zero function. The map $a\mapsto\langle a,z\rangle$ is computable and $\varphi_a=\varphi_z\iff\langle a,z\rangle\in\{\langle a,b\rangle:\varphi_a=\varphi_b\}$. It therefore reduces $\{a:\varphi_a\text{ is the zero function}\}$, undecidable by <a href="#rice-theoreme">Rice</a> (exercise 1, (d)), to equivalence. Thus no tool can decide, in general, whether a program optimization preserves its behaviour: compilers only apply transformations whose correctness has been proved once and for all.</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="The largest output of a small program" id="ex-ind-sigma">
+<p>Let $\sigma(n)=\max\{\varphi_e(0):e\le n,\ \varphi_e(0)\conv\}$ (with $\max\emptyset=0$). Show that no total computable function $f$ satisfies $f(n)\ge\sigma(n)$ for all $n$. You may use the recursion theorem.</p>
+<corrige>
+<p>Let $f$ be total computable. The function $\psi(e,x)=f(e)+1$ is computable; by the <a href="smn-recursion.html#kleene-parametres">recursion theorem with parameters</a>, there is $e$ such that $\varphi_e(x)=f(e)+1$ for all $x$. In particular $\varphi_e(0)\conv$ and $e\le e$, so $\sigma(e)\ge\varphi_e(0)=f(e)+1>f(e)$: $f$ does not bound $\sigma$ at the point $e$.</p>
+<p>This is a version, for indices, of the <a href="busy-beavers.html#sigma-non-calculable">busy beaver</a> function. The proof by recursion is remarkably short: program $e$ “knows” its own index, computes the alleged bound, and exceeds it by one.</p>
+</corrige>
+</exo>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Randomness, approximation and quantum computing · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html" aria-current="page"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Randomness, approximation and quantum computing</h1>
+<p class="chapo">Tossing coins, settling for an approximate solution, exploiting quantum mechanics: three ways to compute faster. None of them computes a function that a Turing machine cannot compute. They change the price of computation, not its limits.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="complexity.html#classes-usuelles">Complexity classes</a> · <a href="complexity.html#cook-levin">NP-completeness</a> · <a href="church-turing-thesis.html#these-physique">Physical thesis</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#hasard">Randomness</a></li><li><a href="#approximation">Approximation</a></li><li><a href="#quantique">Quantum computing</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<p>The Church-Turing thesis says what is computable; it says nothing about cost. The “extended” thesis, which claims that every reasonable model can be simulated by a Turing machine with polynomial overhead (<a href="church-turing-thesis.html#these-physique">physical thesis and extended thesis</a>), is much more fragile. This chapter presents three ways to go faster: randomness, which does not seem to change complexity classes; approximation, which sometimes gets around NP-hardness and sometimes does not; and quantum computing, which probably changes the classes, without changing anything about what is computable.</p>
+
+<h2 id="hasard">Randomness</h2>
+
+<div class="resultat definition" id="def-probabiliste"><div class="entete-res"><div class="type">Definition</div><div class="nom">Probabilistic machines, the classes BPP and RP</div></div>
+<div class="enonce">
+<p>A <strong>probabilistic machine</strong> is a Turing machine with an extra read-only tape filled with independent, uniform random bits. It works in time $t(n)$ if all its computations halt in at most $t(n)$ steps. A language $L$ is in:</p>
+<ul>
+<li>$\mathsf{BPP}$ if there is a polynomial-time probabilistic machine which, on every input $x$, gives the correct answer (“$x\in L$” or “$x\notin L$”) with probability at least $2/3$;</li>
+<li>$\mathsf{RP}$ if such a machine always rejects the $x\notin L$ and accepts the $x\in L$ with probability at least $1/2$ (one-sided error).</li>
+</ul>
+</div>
+<div class="niveau" data-niveau="philo"><p>A probabilistic machine can be wrong, but the probability of error is under control, and it can be made as small as desired by starting over: for $\mathsf{RP}$, $k$ independent trials reduce the error to $2^{-k}$, and a hundred trials give a probability of error smaller than that of a hardware failure during the computation. For $\mathsf{BPP}$, one repeats and takes the majority answer; the error also decreases exponentially (by Hoeffding’s inequality, quoted here for information, it is at most $e^{-k/18}$ after $k$ trials).</p></div>
+<div class="niveau" data-niveau="tech"><p>For $\mathsf{RP}$: if $x\notin L$, no trial accepts; if $x\in L$, the $k$ trials all reject with probability at most $(1/2)^k$. Accept as soon as one trial accepts. The time is multiplied by $k$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="hasard-calculable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Randomness computes nothing more (de Leeuw, Moore, Shannon, Shapiro, 1956)</div></div>
+<div class="enonce"><p>Let $M$ be a probabilistic machine, with no time bound, and $f:\N\to\N$ a function such that, for every $x$, $M$ halts on $x$ with output $f(x)$ with probability strictly greater than $1/2$. Then $f$ is computable (by a deterministic machine).</p></div>
+<div class="niveau" data-niveau="philo"><p>Coins do not make it possible to solve the halting problem: a machine that solved it “with good probability” would turn into a deterministic machine that always solves it. Randomness can speed up computation; it does not push back the frontier of the computable. This is the first of this chapter’s two answers to the question “can another, physical, model of computation go beyond Turing?”. The second concerns <a href="#quantique-calculable">quantum computing</a>.</p></div>
+<div class="niveau" data-niveau="tech"><p>Fix $x$. For $k\ge1$ and every output $y$, let $p_k(y)$ be the proportion of words $\rho\in\{0,1\}^k$ such that $M$, with $\rho$ at the start of its random tape, halts in at most $k$ steps with output $y$ (in $k$ steps it reads no more than $k$ random bits, so the rest of the tape does not matter). If $\rho$ is counted at rank $k$, its two extensions $\rho0$ and $\rho1$ are counted at rank $k+1$: the sequence $p_k(y)$ is nondecreasing, and it tends to the probability that $M$ halts with output $y$. By hypothesis this limit exceeds $1/2$ for $y=f(x)$, so $p_k(f(x))>1/2$ for $k$ large enough. Since $\sum_yp_k(y)\le1$, no other output can exceed $1/2$. The deterministic algorithm computes $p_1,p_2,\dots$ (for each $k$, it simulates $M$ for $k$ steps on the $2^k$ words $\rho$) and halts as soon as some output $y$ satisfies $p_k(y)>1/2$: it always halts, and returns $f(x)$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="inclusions-probabilistes"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Inclusions between probabilistic classes</div></div>
+<div class="enonce"><p>$\mathsf P\subseteq\mathsf{RP}\subseteq\mathsf{BPP}\subseteq\mathsf{PSPACE}$, and $\mathsf{RP}\subseteq\mathsf{NP}$. Results quoted for information: $\mathsf{BPP}$ is contained in the second level of the <a href="arithmetical-hierarchy.html#hierarchie-polynomiale">polynomial hierarchy</a> (Sipser, Gács, Lautemann, 1983), and $\mathsf P=\mathsf{BPP}$ if some exponential-time problems require circuits of exponential size (Impagliazzo and Wigderson, 1997).</p></div>
+<div class="niveau" data-niveau="philo"><p>Most specialists believe that $\mathsf P=\mathsf{BPP}$: randomness would be a convenience, not a power. It simplifies and speeds up many algorithms, but it can probably always be replaced by “pseudo-random” bits computed deterministically. The story of primality, below, points that way: a probabilistic algorithm in 1976–1980, a deterministic one in 2002.</p></div>
+<div class="niveau" data-niveau="tech"><p>$\mathsf P\subseteq\mathsf{RP}$: a deterministic machine is a probabilistic machine that ignores its random bits. $\mathsf{RP}\subseteq\mathsf{BPP}$: make two trials and accept if one accepts, which brings the error down to $1/4\le1/3$. $\mathsf{RP}\subseteq\mathsf{NP}$: a random word that leads to acceptance is a certificate. $\mathsf{BPP}\subseteq\mathsf{PSPACE}$: in time $t(n)$ the machine reads at most $t(n)$ random bits; enumerate the $2^{t(n)}$ possible words reusing the same space, simulate the machine on each and count acceptances, with a counter of $t(n)+1$ bits. Accept if more than half the words lead to acceptance.</p></div>
+</div>
+
+<div class="resultat theoreme" id="miller-rabin"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The Miller-Rabin primality test (1976, 1980)</div></div>
+<div class="enonce"><p>Let $n>2$ be odd, and $n-1=2^sd$ with $d$ odd. If $n$ is prime, then every integer $a$ with $1\le a\le n-1$ satisfies: $a^d\equiv1\pmod n$, or $a^{2^rd}\equiv-1\pmod n$ for some $r&lt;s$. If $n$ is composite, at most a quarter of the $a$ satisfy this condition (Rabin, 1980; Monier, 1980; result quoted). Testing random $a$ gives a $\mathrm{co}\mathsf{RP}$ algorithm for primality. Result quoted for information: primality is in $\mathsf P$ (Agrawal, Kayal, Saxena, 2002).</p></div>
+<div class="niveau" data-niveau="philo"><p>An $a$ that fails the condition is a <em>witness</em>: it proves that $n$ is composite, without giving a factor. The test answers “composite” with certainty, and “prime” with probability of error at most $4^{-k}$ after $k$ draws. For twenty-five years this is how the large primes of cryptography were manufactured; the deterministic algorithm of 2002 confirmed that randomness can be dispensed with, but it is slower, and the probabilistic test is still the one used.</p></div>
+<div class="niveau" data-niveau="tech"><p>If $n=p$ is prime, $\mathbb Z/p\mathbb Z$ is a field, and Fermat’s little theorem gives $a^{2^sd}=a^{p-1}\equiv1$. In a field, $x^2=1$ implies $x=\pm1$. Consider the sequence $a^d,a^{2d},\dots,a^{2^sd}$, where each term is the square of the previous one and the last equals $1$. Either its first term is $1$, or the term preceding the first $1$ is a square root of $1$ different from $1$, hence equals $-1$. This is the stated condition. Fermat’s test alone ($a^{n-1}\equiv1$) is not enough: $561=3\cdot11\cdot17$ satisfies $a^{560}\equiv1\pmod{561}$ for every $a$ coprime to $561$ (it is a <em>Carmichael number</em>), but $a=2$ is a Miller-Rabin witness (<a href="#ex-hq-561">exercise</a>).</p></div>
+<div class="niveau" data-niveau="techno"><p>The program <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a> counts, for each odd composite $n<5000$, the proportion of $a$ that are not witnesses: the worst is $0.237$ (for $n=1891=31\cdot61$), below the bound $1/4$. With twenty draws, the test is wrong on no $n<20{,}000$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="schwartz-zippel"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The Schwartz-Zippel lemma (1979–1980)</div></div>
+<div class="enonce"><p>Let $P$ be a nonzero polynomial in $n$ variables, of total degree $d$, with coefficients in a field, and $S$ a finite subset of this field. If $r_1,\dots,r_n$ are drawn uniformly and independently from $S$, then the probability that $P(r_1,\dots,r_n)=0$ is at most $d/|S|$.</p></div>
+<div class="niveau" data-niveau="philo"><p>To find out whether two algebraic expressions are equal, it suffices to evaluate them at a random point: a nonzero polynomial rarely vanishes. There is no need to expand, which can produce an exponential number of terms. This identity test is in $\mathrm{co}\mathsf{RP}$ (for polynomials given by arithmetic circuits), and no one knows how to do it in deterministic polynomial time: it is one of the most studied problems of derandomization (Kabanets and Impagliazzo, 2004, showed, result quoted, that succeeding would yield circuit lower bounds).</p></div>
+<div class="niveau" data-niveau="tech"><p>By induction on $n$. For $n=1$, a nonzero polynomial of degree $d$ has at most $d$ roots. For $n>1$, write $P=\sum_{i=0}^kx_1^i\,P_i(x_2,\dots,x_n)$ with $P_k\ne0$, of degree at most $d-k$. By induction, $P_k(r_2,\dots,r_n)=0$ with probability at most $(d-k)/|S|$. Otherwise $P(x_1,r_2,\dots,r_n)$ is a nonzero polynomial of degree $k$ in $x_1$, which vanishes at $r_1$ with probability at most $k/|S|$. In total, the probability is at most $(d-k)/|S|+k/|S|=d/|S|$.</p></div>
+<div class="niveau" data-niveau="techno"><p>In <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a>, the function <code>identite_probable</code> compares $(x+y)^5$ with its expansion at random points of $\{0,\dots,10^6-1\}^2$: it confirms the exact identity and detects an error in a single coefficient. For a polynomial of degree $5$, each trial is wrong with probability at most $5\cdot10^{-6}$.</p></div>
+</div>
+
+<h2 id="approximation">Approximation</h2>
+
+<div class="resultat theoreme" id="approximation-thm"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Approximating an NP-hard problem, or not</div></div>
+<div class="enonce">
+<p>For a minimization problem, an algorithm is a <strong>$c$-approximation</strong> if it always returns a solution of cost at most $c$ times the optimum.</p>
+<ol>
+<li><strong>Vertex cover</strong> (choosing as few vertices of a graph as possible so that every edge has a chosen endpoint) is NP-hard, but it has a polynomial-time $2$-approximation.</li>
+<li>If $\mathsf P\ne\mathsf{NP}$, the general <strong>travelling salesman problem</strong> (find the shortest tour through $n$ cities, the distances being arbitrary integers) has no polynomial-time $c$-approximation for any constant $c$.</li>
+<li>For <strong>MAX-3SAT</strong> (satisfy as many clauses as possible of a formula each of whose clauses has three distinct variables), a random assignment satisfies $7/8$ of the clauses on average. Result quoted for information: if $\mathsf P\ne\mathsf{NP}$, no polynomial algorithm guarantees a fraction $7/8+\varepsilon$ of the optimum, for any $\varepsilon>0$ (Håstad, 2001).</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>Being NP-hard is not a flat refusal: one can often settle for an almost optimal solution. But NP-hard problems respond very differently to this request. Some can be approximated within a factor 2, others as closely as desired, others not at all. The most striking result is the third: the most naive algorithm, guessing at random, is exactly the best possible.</p>
+<p>These negative results rest on the <strong>PCP theorem</strong> (Arora, Lund, Motwani, Sudan, Szegedy; Arora and Safra, 1992–1998, result quoted): every proof of an $\mathsf{NP}$ statement can be rewritten so that a probabilistic verifier, reading only a <em>constant</em> number of randomly chosen bits of it, always accepts a correct proof and rejects a false one with probability at least $1/2$. Checking a proof is decidable and easy (<a href="computability-ai.html#proposer-verifier">checking versus finding</a>); the PCP theorem says it can even be done at a glance.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>(1) Take a <em>maximal matching</em> $C$: a set of edges with no common endpoint, to which no edge can be added (it is built greedily). The set of the $2|C|$ endpoints is a cover: an uncovered edge could be added to $C$. Every cover contains an endpoint of each edge of $C$, and these endpoints are distinct, so the optimum is at least $|C|$. The ratio is at most $2$.</p>
+<p>(2) The <em>Hamiltonian cycle</em> problem (does a graph have a cycle passing once through each vertex?) is NP-complete (Karp, 1972, result quoted). To a graph $G$ with $n$ vertices, associate distance $1$ between neighbours in $G$, and $cn+1$ between the others. If $G$ has a Hamiltonian cycle, the optimal tour costs $n$. Otherwise every tour uses a non-adjacent pair and costs more than $cn$. A $c$-approximation would return a tour of cost at most $cn$ in the first case, and more than $cn$ in the second: it would decide Hamiltonian cycle in polynomial time. Result quoted for information: when the distances satisfy the triangle inequality, Christofides’ algorithm (1976) is a $3/2$-approximation.</p>
+<p>(3) A clause with three literals on distinct variables is false for only one of the eight values of its variables: it is satisfied with probability $7/8$. By linearity of expectation, the average number of satisfied clauses is $7m/8$ for $m$ clauses. So there is always an assignment satisfying at least $7/8$ of them, and it can be found deterministically by fixing the variables one by one, each time in the direction that does not decrease the conditional expectation.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>In <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a>, two hundred random assignments for a formula with 2,000 clauses on 100 variables satisfy on average $87.53\,\%$ of the clauses, against $7/8=87.5\,\%$.</p></div>
+</div>
+
+<h2 id="quantique">Quantum computing</h2>
+
+<div class="resultat definition" id="def-quantique"><div class="entete-res"><div class="type">Definition</div><div class="nom">Quantum circuits, the class BQP</div></div>
+<div class="enonce">
+<p>The state of $n$ <strong>qubits</strong> is a unit vector of $\mathbb C^{2^n}$: a combination $\sum_{i\in\{0,1\}^n}\alpha_i\,|i\rangle$ of the $2^n$ basis states, with $\sum_i|\alpha_i|^2=1$. A <strong>gate</strong> acts on one, two or three qubits by a unitary transformation; for example the Hadamard gate $H$ sends $|0\rangle$ to $(|0\rangle+|1\rangle)/\sqrt2$ and $|1\rangle$ to $(|0\rangle-|1\rangle)/\sqrt2$, and the Toffoli gate swaps $|a,b,c\rangle$ and $|a,b,c\oplus(a\wedge b)\rangle$. <strong>Measurement</strong> gives basis state $i$ with probability $|\alpha_i|^2$. A language is in $\mathsf{BQP}$ if it is decided, with probability of error at most $1/3$, by a family of polynomial-size quantum circuits generated by a polynomial-time Turing machine, the answer being read by a measurement at the end. Result quoted: the gates $H$ and Toffoli suffice to define $\mathsf{BQP}$ (Shi, 2003; Aharonov, 2003).</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>A probabilistic machine follows a single path, chosen at random; its state can be described by nonnegative probabilities on configurations. A quantum computer is described by <em>amplitudes</em>, which can be negative or complex: two computation paths leading to the same result can cancel out (destructive interference) or reinforce each other. A quantum algorithm is the art of arranging these interferences so that the wrong answers cancel and the right one is reinforced. It is not “trying all solutions in parallel”: measurement gives only one result, and the $2^n$ amplitudes cannot be read.</p></div>
+</div>
+
+<div class="resultat theoreme" id="quantique-calculable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Quantum computing does not go beyond Turing; BPP ⊆ BQP ⊆ PSPACE</div></div>
+<div class="enonce"><p>With gates whose coefficients are computable (for example $H$ and Toffoli), every function computed by a uniform family of quantum circuits, with probability of success greater than $1/2$, is computable by a Turing machine. Moreover, $\mathsf{BPP}\subseteq\mathsf{BQP}\subseteq\mathsf{PSPACE}$ (Bernstein and Vazirani, 1993).</p></div>
+<div class="niveau" data-niveau="philo">
+<p>This is the answer to the paragraph on the <a href="church-turing-thesis.html#these-physique">physical thesis</a>. Deutsch defined the quantum Turing machine in 1985 precisely to formulate a physical version of the Church-Turing thesis; it computes the same functions as the Turing machine. Quantum mechanics therefore does not make it possible to solve the halting problem. What it calls into question is the <em>extended</em> thesis: if factoring is not in $\mathsf{BPP}$, as is believed, then <a href="#shor">Shor’s algorithm</a> shows that a quantum computer does in polynomial time what no classical machine does.</p>
+<p>The inclusion $\mathsf{BQP}\subseteq\mathsf{PSPACE}$ also says that it will not be easy to prove that quantum computers are more powerful: a proof of $\mathsf{BPP}\ne\mathsf{BQP}$ would prove $\mathsf P\ne\mathsf{PSPACE}$, an open problem of the same family as $\mathsf P$ versus $\mathsf{NP}$.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><em>$\mathsf{BQP}\subseteq\mathsf{PSPACE}$, and hence computability.</em> Take a circuit of $g$ gates $H$ or Toffoli on $m$ qubits, applied to a basis state. A Toffoli gate sends a basis state to a basis state; an $H$ gate sends a basis state to a sum of two basis states, with coefficients $\pm1/\sqrt2$. Expanding, the final amplitude of a basis state $y$ is a sum over “paths”: a sequence of choices, one bit for each $H$ gate, which determines a basis state after each gate. If the circuit has $h$ gates $H$, the amplitude is $2^{-h/2}\sum_\pi\varepsilon_\pi$, where the sum ranges over the $2^h$ paths ending at $y$ and $\varepsilon_\pi=\pm1$ is the product of the signs. This integer sum is computed by enumerating the paths one by one, each simulated gate by gate in space $O(m+g)$, with a counter of $h+1$ bits. The probability of accepting is $2^{-h}\sum_y(\sum_\pi\varepsilon_\pi)^2$, the sum ranging over the final states $y$ whose answer bit is $1$; it is obtained by enumerating the $y$ in the same way. Everything is exact integer computation, in polynomial space (in exponential time). For an arbitrary function, with no size bound, the same simulation shows that it is computable.</p>
+<p><em>$\mathsf{BPP}\subseteq\mathsf{BQP}$.</em> The Toffoli gate, with an auxiliary qubit initialized to $1$, computes $\neg(a\wedge b)$; it can therefore simulate any Boolean circuit, reversibly. Random bits are obtained by applying $H$ to qubits $|0\rangle$, which gives $0$ or $1$ with probability $1/2$ on measurement.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="deutsch"><div class="entete-res"><div class="type">Theorem</div><div class="nom">A first advantage: Deutsch’s algorithm (1985)</div></div>
+<div class="enonce"><p>Let $f:\{0,1\}\to\{0,1\}$, accessible only through a reversible “black box” $U_f:|x,y\rangle\mapsto|x,y\oplus f(x)\rangle$. A quantum circuit decides whether $f$ is constant ($f(0)=f(1)$) or not with a single call to $U_f$, with certainty. Every classical algorithm, deterministic or probabilistic, that is never wrong needs two calls.</p></div>
+<div class="niveau" data-niveau="philo"><p>The gain is tiny (one call instead of two), but it contains the whole principle: the algorithm learns neither $f(0)$ nor $f(1)$, only a <em>global</em> property of $f$, obtained by interference. Generalized to $n$ bits (Deutsch and Jozsa, 1992), then to period problems (Simon, 1994), the same principle leads to Shor’s algorithm.</p></div>
+<div class="niveau" data-niveau="tech"><p>Start from $|0\rangle|1\rangle$ and apply $H$ to both qubits: $\frac12(|0\rangle+|1\rangle)(|0\rangle-|1\rangle)$. For fixed $x$, $U_f$ sends $|x\rangle(|0\rangle-|1\rangle)$ to $|x\rangle(|f(x)\rangle-|1\oplus f(x)\rangle)=(-1)^{f(x)}|x\rangle(|0\rangle-|1\rangle)$. After the single call, the first qubit is therefore $\frac1{\sqrt2}\big((-1)^{f(0)}|0\rangle+(-1)^{f(1)}|1\rangle\big)$. If $f$ is constant, this is $\pm\frac1{\sqrt2}(|0\rangle+|1\rangle)$, which $H$ sends to $\pm|0\rangle$; otherwise it is $\pm\frac1{\sqrt2}(|0\rangle-|1\rangle)$, which $H$ sends to $\pm|1\rangle$. Measuring the first qubit gives the answer. Classically, one call reveals only one value, compatible with both cases.</p></div>
+<div class="niveau" data-niveau="techno"><p>The program <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a> simulates this circuit on the vector of four amplitudes and correctly classifies the four functions from $\{0,1\}$ to $\{0,1\}$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="grover"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Black-box search: Grover (1996)</div></div>
+<div class="enonce"><p>Among $N$ elements, only one of which is marked and which can only be tested by calling a black box, a quantum algorithm finds the marked element with probability at least $1-1/N$ in about $\frac\pi4\sqrt N$ calls. A classical algorithm needs on the order of $N$. Result quoted for information: one cannot do better than $\sqrt N$ calls, up to a constant (Bennett, Bernstein, Brassard, Vazirani, 1997).</p></div>
+<div class="niveau" data-niveau="philo"><p>The gain is quadratic, not exponential. For exhaustive search over the $2^n$ assignments of a formula, one goes from $2^n$ to $2^{n/2}$ trials: that is considerable, but NP-complete problems remain exponential by this method, and the bound of Bennett and his coauthors says that a method that sees the formula only as a black box cannot do better. In view of the <a href="complexity.html#landauer">physical limits of an enumeration</a>, Grover doubles the size of the spaces that can be searched; it does not make them unlimited. No polynomial quantum algorithm is known for an NP-complete problem, and it is believed that none exists.</p></div>
+<div class="niveau" data-niveau="tech"><p>Start from the uniform superposition $|s\rangle$ of the $N$ basis states. Write $|w\rangle$ for the marked element, and $\theta$ for the angle such that $\sin\theta=1/\sqrt N$, so that $|s\rangle=\sin\theta\,|w\rangle+\cos\theta\,|w^\perp\rangle$, where $|w^\perp\rangle$ is the uniform superposition of the other elements. One iteration consists of calling the black box, which changes the sign of the amplitude of $|w\rangle$ (a reflection about $|w^\perp\rangle$), then applying the “inversion about the mean” $a_i\mapsto2\bar a-a_i$ (a reflection about $|s\rangle$, which can be built from $H$ gates). The composition of two reflections is a rotation by angle $2\theta$ in the plane of $|w\rangle$ and $|w^\perp\rangle$. After $k$ iterations, the state makes the angle $(2k+1)\theta$ with $|w^\perp\rangle$; choose $k\approx\frac\pi{4\theta}\approx\frac\pi4\sqrt N$ so that this angle is close to $\pi/2$, and measurement gives $|w\rangle$ with probability $\sin^2((2k+1)\theta)$, close to $1$.</p></div>
+<div class="niveau" data-niveau="techno"><p>The simulation in <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a> gives a probability of success of $0.961$ for $N=16$ (3 calls), and $0.9999$ for $N=256$ (12 calls) and $N=4096$ (50 calls), instead of several thousand classical calls in the last case.</p></div>
+</div>
+
+<div class="resultat theoreme" id="shor"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Factoring in polynomial time: Shor (1994)</div></div>
+<div class="enonce"><p>Integer factoring and the discrete logarithm are in $\mathsf{BQP}$. It is not known whether they are in $\mathsf{BPP}$; the best known classical algorithm for factoring an $n$-digit integer runs in time on the order of $e^{c\,n^{1/3}(\log n)^{2/3}}$ (number field sieve, result quoted).</p></div>
+<div class="niveau" data-niveau="philo">
+<p>The quantum heart of the algorithm is period finding: given $a$ coprime to $N$, find the smallest $r>0$ such that $a^r\equiv1\pmod N$ (the <em>order</em> of $a$). A quantum Fourier transform makes the values of $x\mapsto a^x\bmod N$ interfere so that measurement gives, with good probability, a number close to a multiple of $Q/r$, from which $r$ is extracted by continued fractions. The rest is classical arithmetic, proved below.</p>
+<p>Factoring is probably not NP-complete: it is in $\mathsf{NP}\cap\mathrm{co}\mathsf{NP}$ (a factor, or a decomposition into certified primes, can be checked quickly). Shor’s algorithm therefore says nothing about NP-complete problems. It matters mostly because the security of the most widespread public-key cryptosystems rests on the difficulty of factoring and of the discrete logarithm.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p><em>From the order to a factor.</em> Let $N$ be odd, not a prime power, and $a$ coprime to $N$, of order $r$. Assume $r$ is even and $a^{r/2}\not\equiv-1\pmod N$. Then $N$ divides $a^r-1=(a^{r/2}-1)(a^{r/2}+1)$, but divides neither $a^{r/2}-1$ (otherwise the order would be at most $r/2$) nor $a^{r/2}+1$ (by hypothesis). Each prime factor of $N$ divides one of the two factors, and they are not all on the same side: $\gcd(a^{r/2}-1,N)$ is a nontrivial divisor of $N$, computed by Euclid’s algorithm. Result quoted: for random $a$, both hypotheses hold with probability at least $1/2$. The quantum part, finding the order in polynomial time, is quoted for information.</p></div>
+<div class="niveau" data-niveau="techno">
+<p>The program <a href="assets/code/hasard_quantique.py">hasard_quantique.py</a> computes exactly the distribution of the measurement in period finding, for a register of $Q=2^t\ge N^2$ states. For $N=15$ and $a=7$ ($Q=256$), the only possible measurements are $0,64,128,192$, multiples of $Q/r$ with $r=4$; then $7^2=49\equiv4$, and $\gcd(3,15)=3$, $\gcd(5,15)=5$. For $N=21$ and $a=2$ ($Q=512$), the measurements concentrate near the multiples of $512/6$, continued fractions give $r=6$, and one finds $21=3\cdot7$. A classical simulation of this kind costs time exponential in the number of qubits: that is exactly what the quantum computer would avoid.</p>
+<p>Facts quoted for information. Current quantum machines are small and noisy; the largest numbers factored by an honest run of Shor’s algorithm remain of the order of a few tens. Quantum error correction, which requires many physical qubits per logical qubit, is the main technical difficulty; in 2024 Google announced operation below the threshold beyond which adding qubits reduces the error.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="paysage-quantique"><div class="entete-res"><div class="type">Remark</div><div class="nom">What quantum computing changes, and what it does not</div></div>
+<div class="enonce">
+<table>
+<tr><th>Does not change</th><th>Changes (probably)</th></tr>
+<tr><td>Computable functions, decidable sets, the undecidability of halting</td><td>The cost of some problems: factoring, discrete logarithm, simulation of quantum systems</td></tr>
+<tr><td>The Church-Turing thesis</td><td>The extended thesis (every reasonable model can be simulated with polynomial overhead)</td></tr>
+<tr><td>$\mathsf{BQP}\subseteq\mathsf{PSPACE}$: nothing that needs more than polynomial space</td><td>$\mathsf{BPP}\subsetneq\mathsf{BQP}$? (conjecture)</td></tr>
+<tr><td>NP-complete problems remain, as far as anyone knows, exponential</td><td>Exhaustive search gains a quadratic factor (Grover)</td></tr>
+</table>
+<p>Results quoted for information, relative to oracles (like the <a href="complexity.html#baker-gill-solovay">Baker-Gill-Solovay theorem</a>): there is an oracle relative to which $\mathsf{BQP}\not\subseteq\mathsf{BPP}$ (Bernstein and Vazirani, 1993; Simon, 1994), an oracle relative to which $\mathsf{NP}\not\subseteq\mathsf{BQP}$ (Bennett, Bernstein, Brassard, Vazirani, 1997), and an oracle relative to which $\mathsf{BQP}$ is not even contained in the polynomial hierarchy (Raz and Tal, 2018, published in 2019).</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>Randomness, approximation and quantum mechanics enlarge what can <em>effectively</em> be computed, that is, computed with reasonable resources. None of them touches what can be computed in principle. The frontier drawn by Turing in 1936 has stayed in place; it is the frontiers of complexity, much finer, that move, and they are still poorly understood.</p></div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-hq-essais"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — How many trials?</span></div><div class="corps-exo">
+<p>An $\mathsf{RP}$ algorithm is wrong with probability at most $1/2$ on the $x\in L$. How many independent repetitions are needed for the probability of error to be below $10^{-9}$?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>After $k$ repetitions the error is at most $2^{-k}$ (<a href="#def-probabiliste">definition</a>). Since $2^{30}=1{,}073{,}741{,}824>10^9$, thirty repetitions suffice. The cost is multiplied by 30: randomness makes the error negligible at a modest price.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-hq-561"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 2 — The Carmichael number 561</span></div><div class="corps-exo">
+<p>We have $560=2^4\cdot35$. Compute $2^{35}\bmod561$, then the successive squares, and show that $2$ is a Miller-Rabin witness for $561$. Deduce a factor of $561$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>$2^{35}\equiv263$, then $263^2\equiv166$, $166^2\equiv67$, $67^2\equiv1\pmod{561}$. The sequence $263,166,67,1$ does not start with $1$, and the term preceding the first $1$ is $67\ne-1=560$: $2$ is a witness, and $561$ is composite (<a href="#miller-rabin">Miller-Rabin test</a>). Fermat’s test, on the other hand, is fooled: $2^{560}\equiv1$. Moreover, $67$ is a square root of $1$ other than $\pm1$: $561$ divides $(67-1)(67+1)$ without dividing either factor, so $\gcd(66,561)=33$ and $\gcd(68,561)=17$ are nontrivial divisors. This is the same argument as in <a href="#shor">Shor’s algorithm</a>.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-hq-freivalds"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — Checking a matrix product (Freivalds, 1977)</span></div><div class="corps-exo">
+<p>We are given three $n\times n$ matrices $A,B,C$ and want to check that $AB=C$ without computing $AB$, which costs on the order of $n^3$ operations by the usual method. Draw $r\in\{0,1\}^n$ at random and compare $A(Br)$ and $Cr$. Show that if $AB\ne C$, the equality $A(Br)=Cr$ holds with probability at most $1/2$. What is the cost?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Let $D=AB-C\ne0$, and $d$ a nonzero row of $D$, with $d_j\ne0$. The equality $A(Br)=Cr$ implies $d\cdot r=0$, that is, $d_jr_j=-\sum_{i\ne j}d_ir_i$. Fix the $r_i$ for $i\ne j$: at most one of the two values of $r_j$ satisfies this equality. The probability is therefore at most $1/2$; this is the <a href="#schwartz-zippel">Schwartz-Zippel lemma</a> for the degree-$1$ polynomial $d\cdot r$, with $|S|=2$. The cost is three matrix-vector products, that is, on the order of $n^2$ operations; $k$ repetitions bring the error down to $2^{-k}$.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-hq-couverture"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 4 — The 2-approximation is the best of its kind</span></div><div class="corps-exo">
+<p>Show that the maximal-matching algorithm for vertex cover (<a href="#approximation-thm">theorem</a>) can return a cover twice as large as the optimum, on a family of arbitrarily large graphs.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>In the complete bipartite graph $K_{n,n}$ (two groups of $n$ vertices, all edges between the groups), a perfect matching of $n$ edges is maximal; the algorithm returns its $2n$ endpoints, that is, all the vertices. Yet one of the two groups, $n$ vertices, covers all the edges. The ratio $2$ is attained. Result quoted for information: no polynomial algorithm with ratio $2-\varepsilon$ is known, and it would be impossible if a conjecture of Khot (the unique games conjecture) is true.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-hq-arret"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 5 — Randomness does not decide halting</span></div><div class="corps-exo">
+<p>Show that there is no probabilistic machine which, on input $e$, always halts and answers the question “is $\varphi_e(e)$ defined?” correctly with probability at least $2/3$. What happens for a quantum machine?</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Such a machine would compute the characteristic function of $K$ with probability $2/3>1/2$. By the <a href="#hasard-calculable">theorem of de Leeuw, Moore, Shannon and Shapiro</a>, this function would be computable, which contradicts the <a href="undecidability.html#arret">undecidability of halting</a>. For a quantum machine with computable gates, the <a href="#quantique-calculable">path-sum simulation</a> gives the same result: neither randomness nor quantum mechanics decides halting.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-hq-tchebychev"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 6 — Amplifying BPP with Chebyshev’s inequality</span></div><div class="corps-exo">
+<p>An algorithm answers correctly with probability $p\ge2/3$. Run it $k$ times independently and return the majority answer. Show, using only Chebyshev’s inequality, that the error is at most $9/k$. How many trials suffice for an error of at most $1/100$? Compare with Hoeffding’s bound $e^{-k/18}$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Let $X$ be the number of correct answers, a binomial variable with parameters $k$ and $p$: $E[X]=kp\ge2k/3$ and $\mathrm{Var}(X)=kp(1-p)\le k/4$. The majority is wrong only if $X\le k/2$, which implies $E[X]-X\ge k/6$. By Chebyshev, $P(|X-E[X]|\ge k/6)\le\mathrm{Var}(X)/(k/6)^2\le(k/4)\cdot36/k^2=9/k$. For an error of at most $1/100$, $k=900$ trials suffice. Hoeffding’s bound gives $e^{-k/18}\le1/100$ as soon as $k\ge18\ln100\approx83$: the exponential decrease is much better, but the elementary bound is already enough to show that the constant $2/3$ in the definition of $\mathsf{BPP}$ does not matter.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="complexity.html"><small>← Previous</small>Complexity: time and space of computation</a><a href="ackermann.html" style="text-align:right"><small>Next →</small>The Ackermann function</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

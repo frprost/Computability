@@ -1,0 +1,280 @@
+<!--
+titre: Diophantine equations and Hilbert’s tenth problem
+court: Diophantine equations
+chapo: Does a polynomial equation with integer coefficients have an integer solution? Hilbert asked for a method; there is none, because Diophantine equations are a universal programming language. In return, computability yields unexpected results about numbers.
+prerequis: semi-decidability.html|Semi-decidability ; incompleteness.html#representabilite|Arithmetical definability ; undecidability.html#arret|Halting problem ; bases.html#premiers|Prime numbers
+-->
+
+<p>At the International Congress in Paris in 1900, David Hilbert posed this problem, the tenth on his list: “given a Diophantine equation with any number of unknowns and with integer coefficients, to devise a process according to which it can be determined in a finite number of operations whether the equation is solvable in integers”. The statement is as simple as can be, and so is the answer: <em>no</em> (Matiyasevich, 1970). As often, it is less the answer that surprises than the road to it. It goes through an equivalence between programs and equations: every program translates into an equation that has a solution exactly when the program halts. Read one way, the equivalence reduces an undecidable problem of computability to Diophantine equations; read the other way, it carries computability results over into number theory, and draws astonishing arithmetical statements from them. Two fields that everything seemed to separate, including two thousand years of history, turn out to be very close.</p>
+
+<h2 id="equations">Diophantine equations and sets</h2>
+
+<res type="Definition" nom="Diophantine equations, families and sets" id="def-diophantien">
+<enonce>
+<p>A <strong>Diophantine equation</strong> is an equation $D(x_1,\dots,x_n)=0$ where $D$ is a polynomial with integer coefficients; one looks for its integer solutions. Unless otherwise stated, the unknowns range over $\N$.</p>
+<p>A <strong>family</strong> of equations is a polynomial $D(a_1,\dots,a_m,x_1,\dots,x_n)$ in which <em>parameters</em> $a_i$ and <em>unknowns</em> $x_j$ are distinguished. It defines the set</p>
+$$E=\{(a_1,\dots,a_m)\in\N^m:\exists x_1,\dots,x_n\in\N\ \ D(\vec a,\vec x)=0\}.$$
+<p>A set (a relation) of this form is called <strong>Diophantine</strong>, and $D$ is a <em>Diophantine representation</em> of it. A function is Diophantine if its graph is. Examples:</p>
+<ul>
+<li>the squares: $a-x^2=0$;</li>
+<li>the composite numbers: $a-(x_1+2)(x_2+2)=0$;</li>
+<li>the numbers that are not squares: $(a-z^2-x-1)^2+\big((z+1)^2-a-y-1\big)^2=0$.</li>
+</ul>
+</enonce>
+<philo><p>A family of equations is an <em>implicit definition</em> of a set: $a$ belongs to it if there are unknowns that “bear witness” for it. The third example shows that the definition can be indirect: a number is not a square if it lies strictly between two consecutive squares, which is expressed by the existence of $z$, $x$ and $y$. The questions that come naturally: are the primes, the powers of 2 Diophantine? Is the complement of a Diophantine set Diophantine? The central theorem of this chapter answers them all at once.</p></philo>
+<tech><p>For the third example: a sum of two squares is zero if and only if both are, that is, $a=z^2+x+1$ and $(z+1)^2=a+y+1$, i.e. $z^2<a<(z+1)^2$ for some $z$. This says exactly that $a$ is not a square. For the second, a number is composite if it is a product of two integers each at least 2.</p></tech>
+<techno><p>Diophantine sets are semi-decidable: to find out whether $a\in E$, try the $n$-tuples of unknowns one after another (for example by increasing sum), and stop if one of them makes $D$ vanish. The program halts if $a\in E$, and runs forever otherwise. The whole question of the chapter is whether one can do better.</p></techno>
+</res>
+
+<res type="Proposition" nom="Three rewritings of an equation" id="reecritures">
+<enonce>
+<ol>
+<li><strong>Systems.</strong> The system $D_1=0,\dots,D_k=0$ has the same solutions as the single equation $D_1^2+\cdots+D_k^2=0$. An equation can also be written $D_g=D_d$ with two polynomials with nonnegative coefficients.</li>
+<li><strong>Degree 4.</strong> For every equation $D(\vec x)=0$, one can compute an equation $D'(\vec x,\vec y)=0$ of degree at most 4 that has a solution if and only if $D=0$ has one (and whose solutions extend those of $D$).</li>
+<li><strong>Integers or natural numbers.</strong> Deciding the existence of solutions in $\N$ and deciding the existence of solutions in $\mathbb Z$ are two equivalent problems: each reduces to the other by a computable transformation of equations.</li>
+</ol>
+</enonce>
+<philo>
+<p>The first round trip (an equation becomes a system of small equations, then the system becomes an equation again) has a striking consequence: Hilbert’s tenth problem reduces to equations of degree at most 4. The complexity of an equation can always be transferred from the degree to the number of unknowns.</p>
+<p>The choice between integer solutions and nonnegative solutions does not change the general question, but it changes each particular equation: $(x+1)^3+(y+1)^3=(z+1)^3$ has no solution in $\N$ (this is Fermat’s theorem for exponent 3, proved by Euler), whereas it has some in $\mathbb Z$, for example $x=-1$, $y=z$.</p>
+</philo>
+<tech>
+<p>(1) A sum of squares of integers is zero if and only if each is zero. For $D_g=D_d$, move the monomials with negative coefficient to the other side.</p>
+<p>(2) Write $D=0$ in the form $D_g=D_d$, then introduce a new unknown for each intermediate result in the computation of the two sides, so that each equation of the system has one of the forms $u=v\,w$, $u=v+w$, $u=c$ (constant): for example, $5x^3y^2+9=7z+6w^2x$ becomes $p_1=5x$, $p_2=p_1x$, $p_3=p_2x$, $p_4=p_3y$, $p_5=p_4y$, $q_1=7z$, $r_1=6w$, $r_2=r_1w$, $r_3=r_2x$, $t_1=p_5+9$, $t_2=q_1+r_3$, $t_1=t_2$. Each equation has degree at most 2, and the new unknowns are determined by the old ones: the system has a solution if and only if $D=0$ has one. By (1), the system is equivalent to a single equation, a sum of squares of polynomials of degree at most 2, hence of degree at most 4.</p>
+<p>(3) <em>From $\mathbb Z$ to $\N$</em>: replace each unknown $x$ by $p-q$, with $p,q\in\N$; every integer is such a difference. <em>From $\N$ to $\mathbb Z$</em>: replace each unknown $x$ by $a^2+b^2+c^2+d^2$, with $a,b,c,d\in\mathbb Z$. By Lagrange’s four-square theorem (1770), proved below, the natural numbers are exactly the sums of four squares of integers; the new equation therefore has a solution in $\mathbb Z$ if and only if the old one has a solution in $\N$.</p>
+<p><em>Four-square theorem.</em> (i) Euler’s identity $(a^2+b^2+c^2+d^2)(w^2+x^2+y^2+z^2)=(aw+bx+cy+dz)^2+(ax-bw+cz-dy)^2+(ay-bz-cw+dx)^2+(az+by-cx-dw)^2$ shows that a product of sums of four squares is one; since $0$, $1$ and $2=1+1$ are, it suffices to treat the odd primes $p$ (<a href="bases.html#decomposition">prime factorization</a>). (ii) The $(p+1)/2$ numbers $x^2$, $0\le x\le(p-1)/2$, are distinct modulo $p$ (if $x^2\equiv x'^2$, $p$ divides $(x-x')(x+x')$, with $0<x+x'<p$ if $x\ne x'$), as are the $(p+1)/2$ numbers $-1-y^2$; so there are $x,y$ with $x^2+y^2+1\equiv0\pmod p$, whence $mp=x^2+y^2+1^2+0^2$ with $0<m<p$. (iii) Let $m_0\ge1$ be minimal such that $m_0p=\sum x_i^2$, and suppose $m_0>1$. If $m_0$ is even, the number of odd $x_i$ is even; grouping them by equal parities, $\big(\frac{x_1+x_2}2\big)^2+\big(\frac{x_1-x_2}2\big)^2+\big(\frac{x_3+x_4}2\big)^2+\big(\frac{x_3-x_4}2\big)^2=\frac{m_0}2p$: contradiction. If $m_0$ is odd, take $y_i\equiv x_i\pmod{m_0}$ with $|y_i|\le(m_0-1)/2$: $\sum y_i^2=rm_0$ with $r<m_0$, and $r>0$ (otherwise $m_0$ would divide all the $x_i$, so $m_0^2\mid m_0p$ and $m_0\mid p$). Euler’s identity writes $m_0p\cdot rm_0$ as a sum of four squares $\sum z_i^2$, and each $z_i$ is divisible by $m_0$ (replacing $y_i$ by $x_i$, the four expressions become modulo $m_0$: $\sum x_i^2\equiv0$, then $x_1x_2-x_2x_1+x_3x_4-x_4x_3=0$, etc.). So $rp=\sum(z_i/m_0)^2$ with $0<r<m_0$: contradiction. Hence $m_0=1$.</p>
+</tech>
+<techno><p>The function <code>systeme_degre_2</code> in <a href="assets/code/diophante.py">diophante.py</a> computes the system of the example, and checks on the $8^4=4{,}096$ quadruples of $[0,8[^4$ that it has exactly the solutions of the original equation. The reduction costs only unknowns: here nine more, to go from degree 6 to degree 4.</p></techno>
+</res>
+
+<h2 id="mrdp-section">Programs and equations: the MRDP theorem</h2>
+
+
+<p>The next five results prepare the hard direction of the <a href="#mrdp">Matiyasevich-Robinson-Davis-Putnam theorem</a>, stated and proved afterwards; we follow Martin Davis’s exposition (“Hilbert’s tenth problem is unsolvable”, 1973). Variables denote natural numbers, and “Diophantine” has the meaning of the <a href="#def-diophantien">definition</a> above. The easy direction of MRDP has already been seen: a Diophantine set is semi-decidable. All the work concerns the converse, and the key point is to show that exponentiation, which grows too fast for a polynomial, is nevertheless Diophantine.</p>
+
+<res type="Lemma" nom="First Diophantine relations" id="dioph-clotures">
+<enonce><p>Diophantine relations are closed under $\wedge$, $\vee$, $\exists$ and substitution of Diophantine functions. The relations $a\le b$, $a<b$, $a\ne b$, $a\mid b$, “$A\equiv B\pmod M$” (for polynomials $A,B,M$), “$r$ is the remainder of $a$ modulo $m$” and “$q=\lfloor a/b\rfloor$” are Diophantine.</p></enonce>
+<tech>
+<p>$P=0\wedge Q=0\iff P^2+Q^2=0$; $P=0\vee Q=0\iff PQ=0$ (renaming the unknowns so that they are distinct); $\exists x\,\exists\vec y\,P=0$ is already of the right form; $R(f(\vec a))\iff\exists z\,(z=f(\vec a)\wedge R(z))$. Then $a\le b\iff\exists z\,a+z=b$; $a<b\iff a+1\le b$; $a\ne b\iff a<b\vee b<a$; $a\mid b\iff\exists z\,b=az$; $A\equiv B\pmod M\iff\exists w\,(A-B-Mw)(A-B+Mw)=0$ (a multiple of $M$, of either sign); $r=a\bmod m\iff r<m\wedge a\equiv r\pmod m$; $q=\lfloor a/b\rfloor\iff\exists r\,(a=qb+r\wedge r<b)$.</p>
+</tech>
+</res>
+
+<res type="Lemma" nom="Pell’s equation" id="pell">
+<enonce><p>Let $a\ge2$, $d=a^2-1$, and $x_n,y_n$ the integers defined by $x_n+y_n\sqrt d=(a+\sqrt d)^n$ ($n\ge0$). Then:</p>
+<ol>
+<li>the solutions $(x,y)\in\N^2$ of $x^2-dy^2=1$ are exactly the $(x_n,y_n)$;</li>
+<li>$x_{m\pm n}=x_mx_n\pm d\,y_my_n$, $y_{m\pm n}=x_ny_m\pm x_my_n$ (for $m\ge n$ in the $-$ case), and $x_{n+1}=2ax_n-x_{n-1}$, $y_{n+1}=2ay_n-y_{n-1}$, with $x_0=1,x_1=a,y_0=0,y_1=1$;</li>
+<li>$y_n(a)\equiv y_n(b)$ and $x_n(a)\equiv x_n(b)\pmod{a-b}$; $y_n\equiv n\pmod{a-1}$; $x_n-y_n(a-k)\equiv k^n\pmod{2ak-k^2-1}$ for every $k$;</li>
+<li>$(x_n)$ and $(y_n)$ are strictly increasing, $y_n\ge n$, $y_{n+1}\ge(2a-1)^n$, and $x_n(b)\ge x_n(a)$ if $b\ge a$;</li>
+<li>$y_n\mid y_t\iff n\mid t$, and $y_n^2\mid y_t\iff ny_n\mid t$ (for $n\ge1$);</li>
+<li>if $0<i\le n$ and $x_j\equiv x_i\pmod{x_n}$, then $j\equiv\pm i\pmod{4n}$.</li>
+</ol></enonce>
+<tech>
+<p>Write $\varepsilon=a+\sqrt d$; since $d$ is not a square ($(a-1)^2<d<a^2$), the expression $x+y\sqrt d$ with $x,y$ integers is unique, and the conjugation $x+y\sqrt d\mapsto x-y\sqrt d$ is multiplicative. We have $\varepsilon\,\bar\varepsilon=a^2-d=1$, so $x_n-y_n\sqrt d=\varepsilon^{-n}$ and $x_n^2-dy_n^2=1$.</p>
+<p>(1) Let $x^2-dy^2=1$, $\alpha=x+y\sqrt d\ge1$, and $n$ such that $\varepsilon^n\le\alpha<\varepsilon^{n+1}$. Then $\beta=\alpha\varepsilon^{-n}=x'+y'\sqrt d$ with $x',y'$ integers, $x'^2-dy'^2=1$, $1\le\beta<\varepsilon$, and $\beta^{-1}=x'-y'\sqrt d$. So $x'=(\beta+\beta^{-1})/2>0$ and $y'\sqrt d=(\beta-\beta^{-1})/2\ge0$. If $y'\ge1$, then $x'^2=1+dy'^2\ge a^2$, and $\beta\ge a+\sqrt d=\varepsilon$: impossible. So $y'=0$, $x'=1$, $\alpha=\varepsilon^n$.</p>
+<p>(2) Expand $\varepsilon^{m+n}=\varepsilon^m\varepsilon^n$ and $\varepsilon^{m-n}=\varepsilon^m\bar\varepsilon^{\,n}$; and $\varepsilon+\varepsilon^{-1}=2a$ gives $\varepsilon^{n+1}+\varepsilon^{n-1}=2a\varepsilon^n$.</p>
+<p>(3) The sequences defined by $z_{n+1}=2bz_n-z_{n-1}$ are, for $a$ and $b$, congruent modulo $a-b$ term by term, by induction (same initial values $0,1$ for $y$; $1,a$ and $1,b$ for $x$, congruent). For $b=1$, the recurrence gives $y_n=n$: whence $y_n\equiv n\pmod{a-1}$. Finally $z_n=x_n-y_n(a-k)$ satisfies the same recurrence, with $z_0=1$, $z_1=k$; and $k^n$ satisfies it modulo $2ak-k^2-1$, since $k^2\equiv2ak-1$.</p>
+<p>(4) $x_{n+1}=ax_n+dy_n$ and $y_{n+1}=x_n+ay_n$ (case $m=1$ of (2)): the sequences are strictly increasing, and $y_n\ge n$. From $y_{n+1}=2ay_n-y_{n-1}\ge(2a-1)y_n$ and $y_1=1$ comes $y_{n+1}\ge(2a-1)^n$. Monotonicity in $a$ is seen on $x_{n+1}=ax_n+(a^2-1)y_n$, $y_{n+1}=x_n+ay_n$, all of whose terms increase with $a$.</p>
+<p>(5) $\gcd(x_n,y_n)=1$ since $x_n^2-dy_n^2=1$. By (2), $y_{n(k+1)}=x_ny_{nk}+x_{nk}y_n$, so $y_n\mid y_{nk}$. Conversely, if $y_n\mid y_t$, write $t=nq+r$ with $r<n$: $y_t=x_ry_{nq}+x_{nq}y_r$, so $y_n\mid x_{nq}y_r$; but $x_{nq}$ is coprime to $y_{nq}$, hence to $y_n$; thus $y_n\mid y_r<y_n$, whence $y_r=0$ and $r=0$. For squares: by the binomial formula, $y_{nk}=\sum_{j\text{ odd}}\binom kjx_n^{k-j}y_n^jd^{(j-1)/2}\equiv kx_n^{k-1}y_n\pmod{y_n^3}$. If $y_n^2\mid y_t$, then $t=nk$, and $y_n^2\mid kx_n^{k-1}y_n$, so $y_n\mid k$ (since $x_n$ is coprime to $y_n$) and $ny_n\mid t$. If $t=ny_nq$, the same congruence gives $y_{t}\equiv y_nqx_n^{k-1}y_n\equiv0\pmod{y_n^2}$.</p>
+<p>(6) By (2), $y_{n\pm j}=x_jy_n\pm x_ny_j\equiv x_jy_n\pmod{x_n}$, so $x_{2n\pm j}=x_nx_{n\pm j}+dy_ny_{n\pm j}\equiv dy_n^2x_j=(x_n^2-1)x_j\equiv-x_j\pmod{x_n}$ ($j\le n$ in the $-$ case). Applying this relation twice, $x_{4n\pm j}\equiv x_j$: the remainder of $x_j$ modulo $x_n$ depends only on $j$ modulo $4n$, and does not change if $j$ is replaced by $4n-j$. We may therefore assume $0\le j\le2n$. The remainders of $x_0,\dots,x_{2n}$ are $x_0,\dots,x_{n-1},0,x_n-x_{n-1},\dots,x_n-x_0$, with $0<x_0<\dots<x_{n-1}<x_n$. A remainder $x_i$ with $0<i<n$ can equal some $x_n-x_l$ ($l<n$) only if $x_i+x_l=x_n$; but $x_i+x_l\le2x_{n-1}<ax_{n-1}+dy_{n-1}=x_n$ (here $n\ge2$, so $y_{n-1}\ge1$). The remainder $0$ is reached only at $j=n$. So $x_j\equiv x_i$ with $0<i\le n$ and $0\le j\le2n$ forces $j=i$, which indeed gives $j\equiv\pm i\pmod{4n}$ for the original $j$.</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="Pell solutions are Diophantine (Davis, after Matiyasevich)" id="pell-diophantien">
+<enonce><p>The relation “$a\ge2$, $k\ge1$ and $y=y_k(a)$” is Diophantine. More precisely, for $a\ge2$ and $k\ge1$, we have $x=x_k(a)$ and $y=y_k(a)$ if and only if there exist $u,v,s,t,b,r,p,q,c,d',e$ such that:</p>
+$$\begin{array}{ll}
+\text{(I)}\ x^2-(a^2-1)y^2=1 & \text{(V)}\ b=1+4py=a+qu\\
+\text{(II)}\ u^2-(a^2-1)v^2=1 & \text{(VI)}\ s=x+cu\\
+\text{(III)}\ s^2-(b^2-1)t^2=1 & \text{(VII)}\ t=k+4(d'-1)y\\
+\text{(IV)}\ v=(r+1)y^2 & \text{(VIII)}\ y=k+e-1
+\end{array}$$</enonce>
+<philo><p>This is the heart of the theorem, found by Matiyasevich in 1970: a relation growing exponentially ($y_k(a)$ is of the order of $(2a)^k$) defined by polynomial equations. The auxiliary unknowns serve as a “certificate”: through congruences, they force the index $k$ and the hidden index of $y$ to coincide.</p></philo>
+<tech>
+<p><em>Necessary condition.</em> Let $x=x_k$, $y=y_k$ (so $y\ge k\ge1$). Set $m=2ky$, $u=x_m$, $v=y_m$. By <a href="#pell">lemma</a> (5), $y^2\mid v$ since $ky\mid m$, and $v>0$: $v=(r+1)y^2$. Since $m$ is even, $v=y_m=2x_{m/2}y_{m/2}$ is even, so $u$ is odd ($u^2=1+dv^2$); and $u$ is coprime to $v$, hence to $y$. Thus $u$ and $4y$ are coprime, and by the Chinese remainder theorem there is $b$ as large as desired with $b\equiv1\pmod{4y}$ and $b\equiv a\pmod u$: (V) with $p,q\ge0$, and $b>a$. Set $s=x_k(b)$, $t=y_k(b)$: (III). By lemma (3), $s\equiv x_k(a)=x\pmod{b-a}$, hence modulo $u$, and $s\ge x$ by (4): (VI). Likewise $t\equiv k\pmod{b-1}$, hence modulo $4y$, and $t\ge k$: (VII) with $d'\ge1$. Finally $e=y-k+1\ge1$: (VIII).</p>
+<p><em>Sufficient condition.</em> Suppose the system is satisfied. By (I) and lemma (1), $x=x_i(a)$, $y=y_i(a)$ for some $i$. By (V), $b\ge a\ge2$, and $y\ne0$ (otherwise $b=1$): so $i\ge1$. By (II), $u=x_n(a)$, $v=y_n(a)$, and $n\ge1$ since $v\ge y^2>0$. By (III), $s=x_j(b)$, $t=y_j(b)$ for some $j$. By (IV), $y_i^2\mid y_n$, so $iy_i\mid n$ (lemma (5)): in particular $y\mid n$ and $i\le y\le n$.</p>
+<ul>
+<li>By (V) and lemma (3), $x_j(b)\equiv x_j(a)\pmod u$; by (VI), $x_j(b)\equiv x\pmod u$. So $x_j(a)\equiv x_i(a)\pmod{x_n(a)}$ with $0<i\le n$, and lemma (6) gives $j\equiv\pm i\pmod{4n}$, hence modulo $4y$.</li>
+<li>By (V), $4y\mid b-1$, and by lemma (3), $t=y_j(b)\equiv j\pmod{b-1}$; by (VII), $t\equiv k\pmod{4y}$. So $k\equiv j\equiv\pm i\pmod{4y}$.</li>
+</ul>
+<p>Now $1\le i\le y$ and, by (VIII), $0\le k\le y+1$. If $k\equiv i$, $|k-i|\le y<4y$ forces $k=i$; if $k\equiv-i$, $0<k+i\le2y+1<4y$ is impossible. So $k=i$: $x=x_k(a)$ and $y=y_k(a)$. The conditions $a\ge2$ and $k\ge1$ are written $a=a'+2$, $k=k'+1$.</p>
+</tech>
+</res>
+
+<res type="Proposition" nom="Exponentiation, binomial coefficients and factorial are Diophantine" id="exp-diophantienne">
+<enonce><p>The relations $m=n^k$, $z=\binom nk$ and $m=n!$ are Diophantine.</p></enonce>
+<tech>
+<p><em>Exponentiation.</em> If $k=0$, $m=1$; if $n=0$ and $k\ge1$, $m=0$. Let $n,k\ge1$. Set $z=y_{k+1}(n+1)$; by <a href="#pell">lemma</a> (4), $z\ge(2n+1)^k>n^k$. Take $a>n+z$ and $M=2an-n^2-1$; then $M\ge2a-n-1\ge a>z>n^k$ (since $n\ge1$). By lemma (3), $n^k\equiv x_k(a)-y_k(a)(a-n)\pmod M$. So $m=n^k$ if and only if there exist $z,a,x,y$ with: $z=y_{k+1}(n+1)$, $a>n+z$, $y=y_k(a)$, $x^2-(a^2-1)y^2=1$ (which forces $x=x_k(a)$), $m<2an-n^2-1$ and $m\equiv x-y(a-n)\pmod{2an-n^2-1}$. All this is Diophantine by the <a href="#pell-diophantien">previous proposition</a> and the <a href="#dioph-clotures">closure lemma</a>.</p>
+<p><em>Binomial coefficients.</em> If $u>2^n$, then $(u+1)^n=\sum_i\binom niu^i$ with $\binom ni\le2^n<u$: these are the digits of $(u+1)^n$ in base $u$. So $\binom nk$ is the remainder modulo $u$ of $\lfloor(u+1)^n/u^k\rfloor$, and $z=\binom nk\iff\exists u,v,w\ \big(u=2^n+1\wedge v=(u+1)^n\wedge w=\lfloor v/u^k\rfloor\wedge z=w\bmod u\big)$.</p>
+<p><em>Factorial.</em> For $n\ge1$ and $r>(2n)^{n+1}$, we have $n!=\lfloor r^n/\binom rn\rfloor$. Indeed $r^n/\binom rn=n!\prod_{j<n}(1-j/r)^{-1}$ is at least $n!$ and at most $n!\,(1-n/r)^{-n}$. With $x=n/r\le1/2$, $(1-x)^{-1}\le1+2x$, and $(1+2x)^n=\sum_i\binom ni(2x)^i\le1+2x\cdot2^n$ (since $2x\le1$). So $r^n/\binom rn\le n!+n!\,2^{n+1}n/r<n!+1$, since $n!\,2^{n+1}n\le2(2n)^nn\le(2n)^{n+1}<r$. Thus $m=n!\iff(n=0\wedge m=1)\vee\exists r\,\big(r=(2n)^{n+1}+1\wedge m=\lfloor r^n/\binom rn\rfloor\big)$, a Diophantine relation.</p>
+</tech>
+</res>
+
+<res type="Lemma" nom="The bounded universal quantifier (Davis, Putnam, Robinson, 1961)" id="quantificateur-borne">
+<enonce><p>If $P(y,k,\vec x,\vec v)$ is a polynomial, the relation $R(y,\vec v)\iff\forall k\ (1\le k\le y\Rightarrow\exists\vec x\ P(y,k,\vec x,\vec v)=0)$ is Diophantine.</p></enonce>
+<philo><p>This is the point where equations seem furthest from programs: a program has loops, an equation speaks only of a fixed number of unknowns. The lemma replaces a loop “for $k$ from $1$ to $y$” by a single integer $c$ which, modulo well-chosen primes, successively “equals” $1,2,\dots,y$.</p></philo>
+<tech>
+<p>Write $\vec x=(x_1,\dots,x_m)$. First, $R(y,\vec v)$ is equivalent to the existence of a $u$ such that the witnesses can be chosen $\le u$ for all $k\le y$. Let $Q(y,u,\vec v)$ be a polynomial such that $Q\ge2$, $Q>y$ and $Q>|P(y,k,\vec x,\vec v)|$ for $k\le y$ and $\vec x\le u$ (for example $y+2$ plus the sum of the absolute values of the coefficients of $P$ multiplied by $(y+u+|\vec v|+1)^{\deg P}$). Set $t=Q!$ and $M=\prod_{k=1}^{y}(1+kt)$. We show that $R(y,\vec v)$ is equivalent to the existence of $u,c,a_1,\dots,a_m$ such that</p>
+$$1+ct=M,\qquad M\ \Big|\ \prod_{j=0}^{u}(a_i-j)\ \ (i=1,\dots,m),\qquad M\mid P(y,c,a_1,\dots,a_m,\vec v).$$
+<p>Since $M\equiv1\pmod t$, $c=(M-1)/t$ is a natural number. Two remarks. (i) Every prime factor $p$ of $1+kt$ is $>Q$: otherwise $p\mid Q!=t$, and $p\mid1$. (ii) The $1+kt$, $1\le k\le y$, are pairwise coprime: a prime dividing $1+kt$ and $1+lt$ divides $l(1+kt)-k(1+lt)=l-k$, of absolute value $<y<Q$, contradicting (i). Finally, $1+kt\mid M=1+ct$ and $1+kt$ is coprime to $t$, so from $(c-k)t=(1+ct)-(1+kt)$ we get $c\equiv k\pmod{1+kt}$.</p>
+<ul>
+<li><em>If the conditions are satisfied</em>, let $k\le y$ and $p$ a prime factor of $1+kt$. Then $p\mid\prod_{j\le u}(a_i-j)$, so $a_i\equiv x_i\pmod p$ for some $x_i\le u$. Since $c\equiv k$, $P(y,k,\vec x,\vec v)\equiv P(y,c,\vec a,\vec v)\equiv0\pmod p$, and $|P(y,k,\vec x,\vec v)|<Q<p$: so $P(y,k,\vec x,\vec v)=0$.</li>
+<li><em>Conversely</em>, if for each $k\le y$ there are witnesses $x^{(k)}_i\le u$, the Chinese remainder theorem (remark (ii)) gives $a_i$ with $a_i\equiv x^{(k)}_i\pmod{1+kt}$ for all $k$. Then $1+kt$ divides $a_i-x^{(k)}_i$, which is a factor of $\prod_{j\le u}(a_i-j)$, and divides $P(y,c,\vec a,\vec v)\equiv P(y,k,\vec x^{(k)},\vec v)=0$. The $1+kt$ being pairwise coprime, their product $M$ divides these two numbers.</li>
+</ul>
+<p>It remains to see that the conditions are Diophantine. $t=Q!$ is, by the <a href="#exp-diophantienne">previous proposition</a>; $\prod_{j=0}^u(a-j)=(u+1)!\binom a{u+1}$ (both sides are zero if $a\le u$); and for $M$: if $qt\equiv1\pmod N$ with $N=qt-1$, then $q(1+kt)\equiv q+k$, so $t^y\,y!\binom{q+y}y=t^y\prod_{k=1}^y(q+k)\equiv(qt)^yM\equiv M\pmod{qt-1}$. With $q=(1+yt)^y+1$, we have $qt-1>(1+yt)^y\ge M$ (since $t\ge2$), so $M$ is the remainder of $t^yy!\binom{q+y}y$ modulo $qt-1$. Divisibilities between polynomials are Diophantine by the closure lemma.</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Matiyasevich-Robinson-Davis-Putnam theorem (1970)" id="mrdp">
+<enonce><p>A set $A\subseteq\N$ is semi-decidable if and only if it is <strong>Diophantine</strong>: there is a polynomial $P(x,y_1,\dots,y_k)$ with integer coefficients such that $x\in A\iff\exists y_1,\dots,y_k\in\N\ P(x,\vec y)=0$. Consequently, <strong>Hilbert’s tenth problem</strong> (find a method that decides whether a polynomial equation with integer coefficients has an integer solution) has no solution.</p></enonce>
+<philo>
+<p>Polynomial equations in integers, studied since Diophantus of Alexandria, are a universal programming language. The consequences of this fact in arithmetic are the subject of the <a href="#relecture">next section</a>.</p>
+<p>This is the negative answer to the tenth problem posed by Hilbert in 1900, the outcome of twenty years of work by Martin Davis, Hilary Putnam and Julia Robinson, completed by Yuri Matiyasevich at the age of 22.</p>
+</philo>
+<tech>
+<p><strong>Easy direction.</strong> If $x\in A\iff\exists\vec y\ P(x,\vec y)=0$, enumerate the $\vec y$ and stop when a solution is found: $A$ is semi-decidable.</p>
+<p><strong>Hard direction.</strong> By the <a href="incompleteness.html#representabilite">definability proposition</a>, a semi-decidable set is defined by a formula $\exists y\,\theta(x,y)$ with $\theta$ bounded. Since Diophantine relations are closed under $\exists$, it suffices to show that every relation defined by a bounded formula is Diophantine. First push negations down to the equalities (De Morgan’s laws, $\neg\forall x<t\,\phi\leftrightarrow\exists x<t\,\neg\phi$ and the reverse): the formula is built from $t_1=t_2$ and $t_1\neq t_2$ by $\wedge$, $\vee$, $\exists x<t$ and $\forall x<t$. By induction on this construction:</p>
+<ul>
+<li>$t_1=t_2$ is a polynomial equation, and $t_1\ne t_2$ is Diophantine (<a href="#dioph-clotures">closure lemma</a>), as are $\wedge$, $\vee$, and $\exists x<t\,\phi\iff\exists x\,(x<t\wedge\phi)$;</li>
+<li>if $\phi(x,\vec w)\iff\exists\vec z\ P(x,\vec z,\vec w)=0$, then $\forall x<t\ \phi\iff\exists y\,\big(y=t(\vec w)\wedge\forall k\,(1\le k\le y\Rightarrow\exists\vec z\ P(k-1,\vec z,\vec w)=0)\big)$, which is Diophantine by the <a href="#quantificateur-borne">bounded quantifier lemma</a> (proved above).</li>
+</ul>
+<p>This lemma rests on the Diophantine character of the factorial and of binomial coefficients, which itself rests on that of exponentiation, obtained through <a href="#pell-diophantien">Pell’s equation</a>: this was the missing piece, supplied by Matiyasevich (with the Fibonacci sequence; the presentation through Pell’s equation is due to Davis, following Robinson and Matiyasevich).</p>
+<p><strong>Tenth problem.</strong> Let $P_K(e,\vec y)$ be a polynomial such that $e\in K\iff\exists\vec y\in\N\ P_K(e,\vec y)=0$. An algorithm deciding whether a Diophantine equation has a solution in $\N$ would decide $K$, by applying it to the equations $P_K(e,\vec y)=0$. For solutions in $\mathbb Z$, use the <a href="#reecritures">third rewriting</a> (four-square theorem).</p>
+</tech>
+</res>
+
+<h2 id="relecture">Rereading computability in arithmetic</h2>
+
+<p>The MRDP theorem identifies two classes defined independently, two thousand years apart: Diophantine sets and semi-decidable sets. Everything known about the latter carries over to the former. The results that follow are, for the most part, computability theorems already established in this manual, reread in arithmetic; they give statements about numbers that no number theorist would have thought of conjecturing.</p>
+
+<res type="Corollary" nom="What the Diophantine sets are" id="clotures-mrdp">
+<enonce>
+<ol>
+<li>The set of primes, the set of powers of 2, and more generally every decidable set, are Diophantine.</li>
+<li>The class of Diophantine sets is closed under union, intersection and projection, but <strong>not under complement</strong>: the halting set $K$ is Diophantine, and its complement is not.</li>
+<li>A set is decidable if and only if it and its complement are Diophantine.</li>
+</ol>
+</enonce>
+<philo><p>The questions left open at the <a href="#def-diophantien">definition</a> all find their answer, without having to look for a single equation: it is enough to know how to write a program. Writing by hand an equation whose solutions describe the primes is another matter; some are known (see <a href="#polynome-premiers">below</a>), and they are frightening. The asymmetry of point 2 is remarkable: saying that a number “has witnesses” is Diophantine, saying that it “has none” is not always.</p></philo>
+<tech>
+<p>(1) A decidable set is semi-decidable, hence Diophantine by the <a href="#mrdp">MRDP theorem</a>. For powers of 2, one can also invoke directly the <a href="#exp-diophantienne">Diophantine character of exponentiation</a>: $a\in\{2^n\}\iff\exists n\ a=2^n$.</p>
+<p>(2) Union, intersection and projection are handled by the <a href="#dioph-clotures">closure lemma</a>. The set $K$ is semi-decidable, hence Diophantine; its complement is not semi-decidable (<a href="semi-decidability.html#kbar">corollary</a>), hence not Diophantine, by the easy direction of MRDP.</p>
+<p>(3) This is <a href="semi-decidability.html#post-complement">Post’s theorem</a>, reread through MRDP.</p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Universal Diophantine equation" id="equation-universelle">
+<enonce><p>There is a polynomial $U(a,k,y_1,\dots,y_n)$ with integer coefficients such that, for every Diophantine set $E\subseteq\N$, there is an integer $k$ with</p>
+$$E=\{a:\exists y_1,\dots,y_n\in\N\ \ U(a,k,\vec y)=0\}.$$
+<p>$U$ can be chosen of degree at most 4.</p></enonce>
+<philo>
+<p>A single equation contains all the others: choosing the value of the parameter $k$ is choosing a program; solving the equation for $a$ is running this program on input $a$. This is the arithmetical equivalent of the <a href="universality.html">universal machine</a>. The number $n$ of unknowns is fixed once and for all; no family of equations, however complicated, needs more.</p>
+<p>It is also one of the most striking arguments for <a href="church-turing-thesis.html">Church’s thesis</a>. Diophantine sets were defined by questions of arithmetic inherited from Antiquity, semi-decidable sets by the analysis of mechanical computation in the twentieth century; the two definitions owe each other nothing and give the same class.</p>
+</philo>
+<tech>
+<p>The set $W=\{\langle a,k\rangle:\varphi_k(a)\conv\}$ is semi-decidable (simulate $\varphi_k(a)$ with the universal machine), where $\langle a,k\rangle=\frac{(a+k)(a+k+1)}2+a$ is the <a href="recursive-functions.html#cantor-couple">Cantor pairing</a>. By MRDP, there is a polynomial $P(c,\vec y)$ such that $c\in W\iff\exists\vec y\ P(c,\vec y)=0$. Set</p>
+$$U(a,k,c,\vec y)=\big(2c-(a+k)(a+k+1)-2a\big)^2+P(c,\vec y)^2 .$$
+<p>The first bracket vanishes exactly when $c=\langle a,k\rangle$. So $\exists c,\vec y\ U(a,k,c,\vec y)=0\iff\langle a,k\rangle\in W\iff\varphi_k(a)\conv$. A Diophantine set $E$ is semi-decidable (easy direction of MRDP), so it is the domain of a function $\varphi_k$ (<a href="semi-decidability.html#caracterisations-re">characterizations</a>), and $E=\{a:\exists c,\vec y\ U(a,k,c,\vec y)=0\}$.</p>
+<p>For the degree, apply to $U$ the <a href="#reecritures">reduction to degree 4</a> treating $a$ and $k$ as unknowns: the added unknowns are functions of the old ones, so for each value of $(a,k)$ the new equation has a solution if and only if the old one does.</p>
+</tech>
+<techno>
+<p>Quoted here for information: Matiyasevich announced in 1975 that 9 unknowns suffice, at the cost of a gigantic degree (proof published by James Jones, 1982); Jones also showed that 58 unknowns suffice in degree 4, and gave a table of trade-offs between degree and number of unknowns. The minimal number of unknowns is unknown.</p>
+<p>These equations are not used for computing: simulating a program by searching for integer solutions of a polynomial is astronomically slower than running the program. Their interest is that they exist.</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="A polynomial whose positive values are the primes (Putnam, 1960)" id="polynome-premiers">
+<enonce><p>For every Diophantine set $E\subseteq\N$, there is a polynomial $Q(a,y_1,\dots,y_n)$ with integer coefficients whose set of strictly positive values, as $a,\vec y$ range over $\N$, is exactly $E\setminus\{0\}$. In particular, there is a polynomial whose positive values are exactly the primes.</p></enonce>
+<philo><p>This is the kind of statement one would have thought false. It has been known since the eighteenth century that no nonconstant polynomial in one variable takes only prime values, and formulas such as $n^2+n+41$ (prime for $0\le n\le39$, but not for $n=40$) long fed the hope of a “formula for the primes”. The theorem delivers one, but the trick lies in the word “positive”: the polynomial also takes negative values, which are not all negatives of primes, and the sorting is done by the sign.</p></philo>
+<tech>
+<p>Let $P$ be such that $a\in E\iff\exists\vec y\ P(a,\vec y)=0$, and set $Q(a,\vec y)=a\,\big(1-P(a,\vec y)^2\big)$. If $a\in E$ and $a>0$, there is $\vec y$ with $P=0$, and $Q(a,\vec y)=a$. Conversely, if $Q(a,\vec y)>0$, then $a>0$ and $1-P^2>0$; since $P$ is an integer, $P=0$, so $a\in E$ and the value $Q(a,\vec y)=a$ is in $E$. For the primes, apply this result to the set of primes, Diophantine by the <a href="#clotures-mrdp">corollary</a>.</p>
+<p><em>One variable is not enough.</em> Let $f$ be a nonconstant polynomial with integer coefficients, and $p=f(x_0)$ prime. Since $u-v$ divides $f(u)-f(v)$, $p$ divides $f(x_0+kp)$ for every $k$. If all these values were prime, they would all equal $p$, and $f-p$ would have infinitely many roots: $f$ would be constant.</p>
+</tech>
+<techno>
+<p>The function <code>putnam_non_carres</code> in <a href="assets/code/diophante.py">diophante.py</a> applies Putnam’s trick to the non-squares equation of the <a href="#def-diophantien">definition</a>: running through all values of the four variables below 12, the positive values obtained are exactly $2,3,5,6,7,8,10,11$, that is, the non-squares in this range.</p>
+<p>Quoted here for information: Jones, Sato, Wada and Wiens wrote down explicitly in 1976 a polynomial of degree 25 in 26 variables whose positive values are the primes; it is a sum of fourteen conditions, and fits in half a page.</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="No computable bound on solutions" id="pas-de-borne">
+<enonce><p>For a Diophantine equation $D$ with code $e$, let $m(e)$ be the smallest integer $m$ such that $D$ has a solution all of whose unknowns are at most $m$, and $m(e)=0$ if $D$ has no solution. No computable function $f$ satisfies $m(e)\le f(e)$ for every $e$.</p></enonce>
+<philo>
+<p>The solutions of an equation can be hidden arbitrarily far away, and one cannot know in advance how far to search. The function $m$ plays for equations the role that the <a href="busy-beavers.html#sigma-non-calculable">busy beaver function</a> plays for machines: it escapes every computable bound.</p>
+<p>Very simple families already give an idea of the phenomenon. Pell’s equation $x^2-dy^2=1$ always has a solution with $y\ge1$ when $d$ is not a square (Lagrange, 1768, quoted here for information; the <a href="#pell">Pell lemma</a> treats the case $d=a^2-1$); the smallest is $(31,4)$ for $d=60$, $(63,8)$ for $d=62$, but $(1{,}766{,}319{,}049,\ 226{,}153{,}980)$ for $d=61$. The example should not be over-interpreted: for Pell’s equation, the solution can be computed, and therefore bounded (continued fractions). It is over the set of all equations that the bound becomes impossible.</p>
+</philo>
+<tech><p>If such an $f$ existed, here is a decision procedure for the tenth problem: given an equation with code $e$, try all tuples of unknowns less than or equal to $f(e)$, finitely many. If one of them is a solution, the equation has one; otherwise it has none, since $m(e)\le f(e)$ and an equation that has a solution has one of size at most $m(e)$. This contradicts the <a href="#mrdp">MRDP theorem</a>.</p></tech>
+<techno><p>The function <code>pell</code> in <a href="assets/code/diophante.py">diophante.py</a> computes the smallest solution by continued fractions. For $d=109$ it is already $x=158{,}070{,}671{,}986{,}249$, $y=15{,}140{,}424{,}455{,}100$; an exhaustive search over $y$, at a billion trials per second, would take about four hours, whereas the continued fraction expansion gives it in a few dozen operations. For an arbitrary equation, no method of this kind exists in general.</p></techno>
+</res>
+
+<res type="Theorem" nom="Π₁ conjectures are equations without solutions" id="conjectures">
+<enonce>
+<ol>
+<li>For every statement of the form $\forall n\ R(n)$, with $R$ decidable, one can compute a Diophantine equation that has no solution if and only if the statement is true.</li>
+<li>Let $T$ be a recursively axiomatizable and sound theory (it proves only true statements), which can express “equation $D$ has no solution”. There is an equation with no solution for which $T$ does not prove that it has none.</li>
+</ol>
+</enonce>
+<philo>
+<p>Goldbach’s conjecture (“every even number greater than 2 is a sum of two primes”), Fermat’s last theorem, the consistency of ZFC are of the form $\forall n\ R(n)$ with $R$ decidable. Each is therefore equivalent to the absence of solutions of a particular Diophantine equation, which can be written down explicitly. This is also true, less obviously, of the Riemann hypothesis (Davis, Matiyasevich and Robinson, 1976, result quoted here for information).</p>
+<p>The second point is Gödel’s incompleteness in a very pure arithmetical form: there are equations that have no solution, without ordinary mathematics being able to prove it. For the equation expressing the consistency of ZFC, it is the <a href="incompleteness.html#godel2">second incompleteness theorem</a> that says so, under the sole hypothesis that ZFC is consistent.</p>
+</philo>
+<tech>
+<p>(1) The set $A=\{x:\exists n\ \neg R(n)\}$ is semi-decidable (search for a counterexample), and it equals $\N$ or $\emptyset$ according as the statement is false or true. By MRDP, whose proof is effective, compute $P$ with $x\in A\iff\exists\vec y\ P(x,\vec y)=0$; the equation $P(0,\vec y)=0$ will do. For Goldbach, $R(n)$ says “$2n+4$ is a sum of two primes”, decidable by trial; for the consistency of ZFC, $R(n)$ says “$n$ is not the code of a proof of $0=1$ in ZFC”, decidable because the axioms of ZFC form a decidable set.</p>
+<p>(2) Let $S$ be the set of codes of equations that have a solution; $S$ is semi-decidable and not decidable (MRDP). The set $N_T$ of codes $e$ such that $T$ proves “equation $e$ has no solution” is semi-decidable: enumerate the proofs of $T$. Since $T$ is sound, $N_T\subseteq\overline S$. If we had $N_T=\overline S$, then $\overline S$ would be semi-decidable, and $S$ would be decidable by <a href="semi-decidability.html#post-complement">Post’s theorem</a>. So there is $e\in\overline S\setminus N_T$.</p>
+</tech>
+<techno><p>Explicit equations of this kind have been written: it is possible, with patience, to produce a polynomial whose lack of integer roots is equivalent to Goldbach’s conjecture. Chaitin likewise wrote an exponential Diophantine equation linked to the digits of the number $\Omega$ (see the <a href="kolmogorov-omega.html#omega-theorie">chapter on Ω</a>).</p></techno>
+</res>
+
+<res type="Remark" nom="What is not known, and complexity" id="questions-ouvertes">
+<enonce><p>The results of this remark are quoted for information, except the case of one unknown.</p>
+<ul>
+<li><strong>One unknown</strong>: decidable. <strong>Degree 2</strong>: decidable (Siegel, 1972). <strong>Degree 3</strong>: open. <strong>Degree 4</strong>: undecidable, by the <a href="#reecritures">reduction</a>.</li>
+<li><strong>Rational solutions</strong>: it is not known whether one can decide that an equation with integer coefficients has a solution in $\mathbb Q$.</li>
+<li><strong>Complexity</strong>: even when the problem is decidable, it can be hard. Deciding whether $\alpha x^2+\beta y=\gamma$ has a solution in $\N$, for integers $\alpha,\beta,\gamma$ given in binary, is NP-complete (Manders and Adleman, 1978).</li>
+</ul>
+</enonce>
+<philo><p>The talk this chapter draws on ended with a question: computability has shed light on number theory; can the reverse happen, with results of arithmetic shedding light on computability or <a href="complexity.html">complexity</a>? The result of Manders and Adleman shows at least that Diophantine equations are also a good language for complexity: an equation of degree 2 in two unknowns suffices to code every NP problem.</p></philo>
+<tech><p><em>One unknown.</em> If $D(x)=c_dx^d+\cdots+c_1x+c_0$ and $D(x)=0$, then $x$ divides $c_0$: if $c_0\ne0$, it suffices to try the divisors of $c_0$, finitely many; if $c_0=0$, $x=0$ is a solution.</p></tech>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="First Diophantine sets" id="ex-dio-premiers">
+<p>Give a Diophantine representation (an equation with parameter $a$) of: (a) the even numbers; (b) the numbers not divisible by 3; (c) the numbers that are not powers of 2.</p>
+<corrige>
+<ul>
+<li>(a) $a-2x=0$.</li>
+<li>(b) $a=3x+r+1$ with $r\in\{0,1\}$, that is, $r+s=1$: $(a-3x-r-1)^2+(r+s-1)^2=0$.</li>
+<li>(c) $a$ is not a power of 2 if and only if it has an odd divisor greater than 1 (or it equals 0): $a\big(a-(2x+3)(y+1)\big)=0$. The factor $a$ takes care of $a=0$; for $a\ge1$, the equation $a=(2x+3)(y+1)$ says that $a$ has the odd divisor $2x+3\ge3$.</li>
+</ul>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Lowering the degree" id="ex-dio-degre">
+<p>Write a system of equations of degree at most 2 that has a solution if and only if $x^3-2y^2=5$ has one, following the <a href="#reecritures">method of rewritings</a>. What is the degree of the resulting single equation?</p>
+<corrige>
+<p>Write $x^3=2y^2+5$ (nonnegative coefficients), then name the intermediate results: $u=x\cdot x$, $v=u\cdot x$, $w=y\cdot y$, $t=2w$, $v=t+5$. Each equation has degree at most 2, and $u,v,w,t$ are determined by $x,y$. The single equation $(u-x^2)^2+(v-ux)^2+(w-y^2)^2+(t-2w)^2+(v-t-5)^2=0$ has degree 4. Here the equation has a solution, $x=7$, $y=13$: $343-2\cdot169=5$; the auxiliary unknowns are then $u=49$, $v=343$, $w=169$, $t=338$.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Putnam’s trick on composite numbers" id="ex-dio-putnam">
+<p>Apply the construction of <a href="#polynome-premiers">Putnam’s theorem</a> to the representation $a-(x_1+2)(x_2+2)=0$ of the composite numbers. Check that the positive values obtained are indeed the composite numbers.</p>
+<corrige>
+<p>Set $Q(a,x_1,x_2)=a\big(1-(a-(x_1+2)(x_2+2))^2\big)$. If $a=(x_1+2)(x_2+2)$, then $Q=a$, which is composite. Otherwise the square is at least 1, so $1-(\cdots)^2\le0$ and $Q\le0$. The positive values of $Q$ are therefore exactly the composite numbers. A computation on $a,x_1,x_2<40$ does give $4,6,8,9,10,12,14,15,16,18,\dots$</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Linear equations are decidable" id="ex-dio-lineaire">
+<p>Show that one can decide whether $ax+by=c$ ($a,b,c\in\mathbb Z$ given) has a solution (a) in $\mathbb Z$; (b) in $\N$.</p>
+<corrige>
+<p>(a) Let $g=\gcd(a,b)$ (if $a=b=0$, one needs $c=0$). Every combination $ax+by$ is a multiple of $g$, and by Bézout’s identity (extended Euclidean algorithm) $g$ itself is one: there is a solution in $\mathbb Z$ if and only if $g\mid c$.</p>
+<p>(b) If $a$ and $b$ have the same sign and are nonzero, a solution in $\N$ satisfies $|x|\le|c|/|a|$ and $|y|\le|c|/|b|$: a finite search suffices. If one is zero, it is an equation in one unknown. If $a>0>b$ and $g\mid c$, starting from a solution $(x_0,y_0)$ in $\mathbb Z$, the pairs $(x_0+t|b|/g,\ y_0+ta/g)$ are solutions, and for $t$ large enough both coordinates are nonnegative: there is a solution in $\N$ if and only if $g\mid c$. The tenth problem is therefore decidable for degree 1; the frontier lies between degree 2 (decidable) and degree 4 (undecidable).</p>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="The primes through Wilson" id="ex-dio-wilson">
+<p>(a) Prove Wilson’s theorem: an integer $n\ge2$ is prime if and only if $n$ divides $(n-1)!+1$. (b) Deduce, using the Diophantine character of the factorial (<a href="#exp-diophantienne">proposition</a>), a Diophantine representation of the primes, without going through MRDP.</p>
+<corrige>
+<p>(a) If $p$ is prime, each $x\in\{1,\dots,p-1\}$ has an inverse modulo $p$ in this set (Bézout). We have $x^2\equiv1\pmod p$ only for $x=1$ and $x=p-1$, since $p\mid(x-1)(x+1)$ implies $p\mid x-1$ or $p\mid x+1$ (<a href="bases.html#lemme-euclide">Euclid’s lemma</a>). The other elements group into pairs $\{x,x^{-1}\}$ with product 1: $(p-1)!\equiv1\cdot(p-1)\equiv-1\pmod p$. If $n$ is composite, $n=uv$ with $1<u\le v<n$: if $u<v$, $u$ and $v$ appear in $(n-1)!$, so $n\mid(n-1)!$; if $u=v$ and $u>2$, $u$ and $2u$ appear ($2u<u^2=n$), so $n\mid(n-1)!$; there remains $n=4$, with $3!=6\equiv2\pmod4$. In all cases $(n-1)!+1\equiv1$ or $3\pmod n$, and $n\nmid(n-1)!+1$. A computation confirms that the $n<60$ satisfying the condition are exactly the primes.</p>
+<p>(b) $a\text{ prime}\iff\exists m\,\exists q\ \big(a\ge2\wedge m=(a-1)!\wedge m+1=a\,q\big)$. The relation $m=(a-1)!$ is Diophantine, as is $a\ge2$ (“$\exists z\ a=z+2$”), and the conjunction translates into a sum of squares (<a href="#dioph-clotures">closure lemma</a>). The prime-representing polynomial of Jones, Sato, Wada and Wiens also starts from Wilson’s theorem.</p>
+</corrige>
+</exo>

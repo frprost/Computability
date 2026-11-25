@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Kolmogorov complexity and Chaitin’s number Ω · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html" aria-current="page"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Kolmogorov complexity and Chaitin’s number Ω</h1>
+<p class="chapo">How many bits does it take to describe an object? The question has a precise answer, which no algorithm computes. It gives a quantitative form of incompleteness and a real number, Ω, whose digits contain the whole halting problem.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="universality.html#enumeration">Enumeration theorem</a> · <a href="undecidability.html">Undecidability</a> · <a href="semi-decidability.html#k-complet">Completeness of halting</a> · <a href="undecidability.html#reductibilites">Turing reduction</a> · <a href="incompleteness.html">Incompleteness</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#description">Describing a word</a></li><li><a href="#non-calculable">A function that can be approximated but not computed</a></li><li><a href="#chaitin-incompletude">Incompleteness according to Chaitin</a></li><li><a href="#prefixe">Self-delimiting programs</a></li><li><a href="#omega">The number Ω</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<p>A sequence of a million zeros can be described in one line; a sequence of a million bits obtained by tossing a coin can, it seems, be described only by copying it out. Kolmogorov (1965), Solomonoff (1964) and Chaitin (1966) gave a precise meaning to this intuition: the complexity of an object is the length of the shortest program that generates it. This chapter draws three consequences from it: a new proof of incompleteness, which shows <em>how much</em> a theory cannot prove; a definition of randomness for an infinite sequence; and the number $\Omega$, the halting probability of a randomly drawn program.</p>
+
+<h2 id="description">Describing a word</h2>
+
+<div class="resultat definition" id="mots-entiers"><div class="entete-res"><div class="type">Convention</div><div class="nom">Binary words, integers and self-delimiting encoding</div></div>
+<div class="enonce">
+<p>We write $\{0,1\}^\ast$ for the set of binary words, $|w|$ for the length of a word $w$ and $\varepsilon$ for the empty word. The integer $n$ is identified with the word obtained by writing $n+1$ in binary and erasing the leading digit 1: $0\leftrightarrow\varepsilon$, $1\leftrightarrow0$, $2\leftrightarrow1$, $3\leftrightarrow00$, $4\leftrightarrow01$, etc. This is a bijection between $\N$ and $\{0,1\}^\ast$, which respects the “by length, then alphabetical” order, and the word of $n$ has length $\lfloor\log_2(n+1)\rfloor$. The functions $\varphi_e$ (<a href="universality.html#phi">notation</a>) are thus seen as partial functions from $\{0,1\}^\ast$ to $\{0,1\}^\ast$.</p>
+<p>The <strong>self-delimiting encoding</strong> of a word $w$ is $\bar w=1^{|w|}0\,w$, of length $2|w|+1$. When reading a word that starts with $\bar w$, one knows where $\bar w$ ends: count the 1s up to the first 0, then read that many digits. Thus $\bar w\,p=\bar w'\,p'$ implies $w=w'$ and $p=p'$.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>A program is a text, hence a word; so is a result. The self-delimiting encoding answers a practical difficulty: when two words are glued together, the boundary between them is lost. The prefix $1^{|w|}0$ acts as a length declaration, at the cost of doubling the size.</p></div>
+<div class="niveau" data-niveau="tech"><p>The bijection is primitive recursive in both directions: $n\mapsto$ its word is obtained by successive divisions of $n+1$ by 2, and the word $w$ corresponds to the integer whose binary expansion is $1w$, minus 1. The words of length $k$ correspond to the integers from $2^k-1$ to $2^{k+1}-2$: there are $2^k$ of them, and there are $2^k-1$ words of length strictly less than $k$.</p></div>
+<div class="niveau" data-niveau="techno"><p>The file <a href="assets/code/kolmogorov.py">kolmogorov.py</a> programs the bijection and the self-delimiting encoding. With $e=12$, whose word is $101$, and the program $p=0110$, the input $\bar e\,p$ of the universal machine defined below is $1110\,101\,0110$, which the function <code>lire_auto</code> splits back up unambiguously.</p></div>
+</div>
+
+<div class="resultat definition" id="def-c"><div class="entete-res"><div class="type">Definition</div><div class="nom">Kolmogorov complexity</div></div>
+<div class="enonce">
+<p>For a partial computable function $\varphi_e$ and a word $x$, the <strong>complexity of $x$ relative to $e$</strong> is</p>
+$$C_e(x)=\min\{|p|:\varphi_e(p)=x\}\qquad(\min\varnothing=\infty).$$
+<p>Let $U$ be the function defined by $U(\bar e\,p)=\varphi_e(p)$, and undefined on words not of the form $\bar e\,p$. We set $C(x)=C_U(x)$, the <strong>Kolmogorov complexity</strong> of $x$.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>$C(x)$ is the size of the shortest explanation of $x$: a program, written in a language fixed once and for all, that produces $x$ and halts. A very regular word has a short explanation; a word with no regularity has none shorter than itself. The next theorem shows that the choice of language changes this measure only by a constant.</p></div>
+<div class="niveau" data-niveau="tech"><p>$U$ is partial computable: on input $q$, count the leading 1s of $q$ up to the first 0 (if there is none, loop), read the word $e$ of that length, then compute $\varphi_e(p)$ on the remainder $p$ using the universal function (<a href="universality.html#enumeration">enumeration theorem</a>). By the previous convention, each word can be written in at most one way in the form $\bar e\,p$, so $U$ is well defined.</p></div>
+<div class="niveau" data-niveau="techno"><p>A lossless compressor (zip, zlib) provides <em>upper bounds</em> on complexity: if the decompressor is a fixed program of length $d$, then $C(x)\le|\mathrm{zip}(x)|+O(d)$. The file <a href="assets/code/kolmogorov.py">kolmogorov.py</a> compresses four sequences of 800,000 bits: a million zeros, the pattern <code>ab</code> repeated and the periodic decimals of $1/7$ drop below 1,400 bits; a sequence of bytes drawn by the system’s random generator stays around 800,300 bits. No program can give the corresponding <em>lower</em> bound, as we shall see.</p></div>
+</div>
+
+<div class="resultat theoreme" id="invariance"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Invariance theorem (Kolmogorov, Solomonoff, Chaitin)</div></div>
+<div class="enonce">
+<p>For every $e$ and every word $x$, $C(x)\le C_e(x)+2|e|+1$. In particular:</p>
+<ol>
+<li>there is a constant $c$ such that $C(x)\le|x|+c$ for every $x$;</li>
+<li>for every total computable function $f$, there is $c_f$ such that $C(f(x))\le C(x)+c_f$;</li>
+<li>if $V$ is another partial computable function with the same property as $U$ (for every $e$ there is $c'_e$ with $C_V\le C_e+c'_e$), then $|C(x)-C_V(x)|$ is bounded independently of $x$.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>Complexity depends on the programming language, but only by a constant: the one needed to write an interpreter of one in the other. On large enough objects, this constant no longer counts. This is what makes $C$ an intrinsic notion, up to an additive constant, just as computability itself does not depend on the chosen model.</p></div>
+<div class="niveau" data-niveau="tech"><p>If $\varphi_e(p)=x$ with $|p|=C_e(x)$, then $U(\bar e\,p)=x$ and $|\bar e\,p|=2|e|+1+C_e(x)$. (1) Apply the above to an index $e$ of the identity, for which $C_e(x)=|x|$. (2) If $U(p)=x$, then $f(U(p))=f(x)$; the function $f\circ U$ is partial computable, with index $a$, and $C(f(x))\le C_a(f(x))+2|a|+1\le C(x)+2|a|+1$. (3) By the hypothesis applied to an index $b$ of $U$, $C_V\le C_U+c'_b$, and the main inequality, applied to an index of $V$, gives the other direction.</p></div>
+<div class="niveau" data-niveau="techno"><p>The constant $2|e|+1$ is the price of the self-delimiting encoding of the interpreter. With a more economical encoding of $e$, for example $\overline{\ell}\,e$ where $\ell$ is the word of the integer $|e|$, one gets $|e|+2\log_2|e|+O(1)$: only the constant changes, never the form of the result.</p></div>
+</div>
+
+<div class="resultat theoreme" id="incompressibles"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Incompressible words exist</div></div>
+<div class="enonce">
+<p>For all $n$ and $k\le n$, more than $2^n(1-2^{-k})$ words of length $n$ satisfy $C(x)\ge n-k$. In particular, for every $n$, there is a word of length $n$ with $C(x)\ge n$: it is said to be <strong>incompressible</strong>.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>Almost all words have no exploitable regularity: fewer than one word in a thousand can be compressed by ten bits. The objects we know how to describe briefly, the ones that interest us, are therefore exceptions. And the proposition asserts the existence of incompressible words without exhibiting a single one: we shall see that beyond a certain size one cannot prove that a given word is incompressible.</p></div>
+<div class="niveau" data-niveau="tech"><p>There are $2^{n-k}-1$ programs of length strictly less than $n-k$ (<a href="#mots-entiers">convention</a>), and each produces at most one word. At most $2^{n-k}-1<2^n\cdot2^{-k}$ words therefore have complexity less than $n-k$. The case $k=0$ gives: at most $2^n-1$ words of complexity $&lt;n$, whereas there are $2^n$ words of length $n$.</p></div>
+<div class="niveau" data-niveau="techno"><p>The count is merciless for “universal compressors”: no lossless compression program shortens every file, since there are fewer short files than long ones. A compressor gains on some files only by losing (a little) on others, like the random bytes of the previous example, which grow by a few hundred bits.</p></div>
+</div>
+
+<h2 id="non-calculable">A function that can be approximated but not computed</h2>
+
+<div class="resultat theoreme" id="c-non-calculable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">C is not computable (Berry’s argument)</div></div>
+<div class="enonce">
+<ol>
+<li>Every total computable function $m$ such that $m(x)\le C(x)$ for every word $x$ is bounded. In particular, $C$ is not computable.</li>
+<li>The set $\{(x,k):C(x)\le k\}$ is semi-decidable. Equivalently, there is a total computable function $(x,s)\mapsto C_s(x)$, nonincreasing in $s$, such that $C(x)=\lim_s C_s(x)$: $C$ is <strong>approximable from above</strong>.</li>
+<li>The set $R=\{x:C(x)\ge|x|\}$ of incompressible words is infinite, but it contains no infinite semi-decidable set.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>Berry, a librarian at Oxford, proposed the following paradox to Russell in 1906: “the smallest integer not definable in fewer than fifteen words” has just been defined in fourteen words. In logic, the paradox is a contradiction; in computability, it becomes a proof. If complexity could be computed, a short program would search for “the first word of complexity greater than a million”, and produce it, which would give it a complexity far below a million. One can always <em>improve</em> a description (find a shorter program), but one never knows whether one has found the best.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1) Suppose $m$ is unbounded. Let $M$ be the machine which, on input $k$ (a word, read as an integer), runs through the words in order and returns the first $x$ such that $m(x)\ge k$: the search always succeeds, and $M$ is total computable, with index $a$. The word $x_k=M(k)$ satisfies $C(x_k)\ge m(x_k)\ge k$ and, by <a href="#invariance">invariance</a>, $C(x_k)\le C_a(x_k)+2|a|+1\le\log_2(k+1)+2|a|+1$. For $k$ large enough, $\log_2(k+1)+2|a|+1&lt;k$: contradiction. Finally $C$ is unbounded, since there are only finitely many programs of a given length; so it cannot be computable, otherwise $m=C$ would contradict the above.</p>
+<p>(2) Let $c$ be the constant of invariance (1). Set $C_s(x)=\min\big(\{|x|+c\}\cup\{|p|:|p|\le s,\ U(p)=x\text{ in at most }s\text{ steps}\}\big)$, computable by simulation. It is nonincreasing in $s$, and equals $C(x)$ as soon as $s$ exceeds the length and the running time of a shortest program for $x$. Then $C(x)\le k\iff\exists s\ C_s(x)\le k$, which is semi-decidable (<a href="semi-decidability.html#projection">projection</a>). Conversely, from a semi-decision procedure for $\{(x,k):C(x)\le k\}$ one gets $C_s(x)=\min(\{|x|+c\}\cup\{k:$ the procedure accepts $(x,k)$ in at most $s$ steps$\})$.</p>
+<p>(3) $R$ is infinite by the <a href="#incompressibles">previous proposition</a>. If $W\subseteq R$ were semi-decidable and infinite, the machine which, on input $k$, enumerates $W$ and returns the first enumerated element of length at least $k$ would be total computable; it would produce words $x_k\in R$, hence with $C(x_k)\ge|x_k|\ge k$, and the same bound $C(x_k)\le\log_2(k+1)+O(1)$ as in (1) leads to the same contradiction.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Point (2) is the status of every real compressor: each compression algorithm provides an upper bound, and they can be combined (take the best of several compressors, let a search for short programs run longer) to lower the bound. What is impossible is to stop the search knowing that the minimum has been reached. With an oracle for halting, on the other hand, $C(x)$ can be computed: ask, for each program $p$ of length at most $|x|+c$, whether $U(p)$ halts (halting of $U$ is semi-decidable, hence reduces to $K$ by the <a href="semi-decidability.html#k-complet">completeness of halting</a>), then run those that halt. So $C\le_T K$ (<a href="undecidability.html#reductibilites">Turing reduction</a>).</p></div>
+</div>
+
+<h2 id="chaitin-incompletude">Incompleteness according to Chaitin</h2>
+
+<div class="resultat theoreme" id="chaitin"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Chaitin’s incompleteness theorem (1974)</div></div>
+<div class="enonce">
+<p>Let $\mathsf T$ be a consistent theory containing $\mathsf{PA}$ whose set of axioms is decidable. There is an integer $L$ such that, for every $k\ge L$ and every word $x$, $\mathsf T$ does not prove the sentence “$C(x)>k$”. Yet this sentence is true for infinitely many words $x$.</p>
+<p>Here “$C(x)>k$” denotes the negation of the Σ formula which defines, by the <a href="incompleteness.html#representabilite">definability proposition</a>, the semi-decidable set $\{(x,k):C(x)\le k\}$.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p>Gödel’s first theorem says that a theory lets truths slip through; Chaitin says which ones, and measures how many. A theory cannot prove that an object is more complex than itself: the constant $L$ is, roughly, the length of a program that enumerates the theorems of $\mathsf T$. Axioms of a few thousand bits do not make it possible to prove the incompressibility of any word longer than a few thousand bits, whereas almost all long words are incompressible.</p>
+<p>Chaitin saw in this a reason to treat mathematics somewhat like an experimental science: to prove more, one must add information, that is, new axioms.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>The theorems of $\mathsf T$ form a semi-decidable set, since the axioms are decidable and checking a proof is mechanical. Let $P$ be the machine which, on input $k$, enumerates the theorems of $\mathsf T$ and halts on the first one of the form “$C(x)>k$”, returning $x$. Let $a$ be an index of $P$. If $P(k)=x$, then $C(x)\le|k|+2|a|+1\le\log_2(k+1)+2|a|+1$ (<a href="#invariance">invariance</a>). Choose $L$ such that $\log_2(k+1)+2|a|+1\le k$ for all $k\ge L$.</p>
+<p>Suppose $\mathsf T$ proves “$C(x)>k$” for some $k\ge L$ and some word $x$. Then $P(k)$ halts, and returns a word $x'$ (perhaps different from $x$) such that $\mathsf T$ proves “$C(x')>k$”. But $C(x')\le\log_2(k+1)+2|a|+1\le k$: the Σ sentence “$C(x')\le k$” is true, hence provable in $\mathsf{PA}$ (<a href="incompleteness.html#sigma-complet">Σ-completeness</a>), hence in $\mathsf T$. The theory would prove a sentence and its negation, contrary to the hypothesis.</p>
+<p>Finally, there are words of every length $n$ with $C(x)\ge n$ (<a href="#incompressibles">proposition</a>): for $n>L$, the sentence “$C(x)>L$” is true and unprovable. The machine $P$ does not need to know its own length: $L$ is chosen after $P$, and the argument makes no appeal to the <a href="smn-recursion.html#kleene">recursion theorem</a>.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>For $\mathsf T=\mathsf{PA}$ or $\mathsf T=$ <a href="bases.html#zfc">ZFC</a>, the constant $L$ depends on the size of a program that checks the proofs of $\mathsf T$, written for the chosen universal machine. With a reasonable programming language, a few kilobytes suffice; but the exact value of $L$ has no intrinsic meaning, since $C$ is defined only up to a constant.</p></div>
+</div>
+
+<h2 id="prefixe">Self-delimiting programs</h2>
+
+<p>To define a halting probability, one must draw a program at random, bit after bit, without knowing in advance when to stop. For this we restrict ourselves to machines none of whose programs is the beginning of another.</p>
+
+<div class="resultat theoreme" id="kraft"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Prefix-free sets and Kraft’s inequality</div></div>
+<div class="enonce">
+<p>A set $S\subseteq\{0,1\}^\ast$ is <strong>prefix-free</strong> if no word of $S$ is a strict beginning (prefix) of another word of $S$. Then</p>
+$$\sum_{p\in S}2^{-|p|}\le1.$$
+</div>
+<div class="niveau" data-niveau="philo"><p>Imagine drawing the bits of a program by coin tosses, one by one, until a word of $S$ is obtained. The word $p$ comes out with probability $2^{-|p|}$, and, since no word of $S$ extends another, these events are mutually exclusive: their probabilities cannot add up to more than 1.</p></div>
+<div class="niveau" data-niveau="tech"><p>To the word $p=p_1\cdots p_\ell$ associate the interval $I_p=[0.p_1\cdots p_\ell,\ 0.p_1\cdots p_\ell+2^{-\ell}[$ of $[0,1[$ (written in base 2), of length $2^{-|p|}$: these are the reals whose binary expansion starts with $p$. If neither of $p$ and $q$ is a prefix of the other, they differ at a position $i\le\min(|p|,|q|)$, and $I_p$, $I_q$ are disjoint (one is in the left half, the other in the right half of the interval associated with their common beginning). For every finite subset of $S$, the intervals are therefore disjoint and contained in $[0,1[$, and the sum of their lengths is at most 1. A series of nonnegative terms all of whose partial sums are bounded by 1 has sum at most 1.</p></div>
+<div class="niveau" data-niveau="techno"><p>The variable-length codes of compression formats (Huffman codes) are prefix-free for the same reason: the decoder must know where each codeword ends without a separator. Kraft’s inequality says exactly which codeword lengths are possible.</p></div>
+</div>
+
+<div class="resultat theoreme" id="universelle-prefixe"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Prefix-free universal machine and prefix complexity</div></div>
+<div class="enonce">
+<p>A partial computable function is <strong>prefix-free</strong> if its domain is. There is a partial computable function $(e,p)\mapsto M_e(p)$ such that:</p>
+<ul>
+<li>each $M_e$ is prefix-free;</li>
+<li>if $\varphi_e$ is prefix-free, then $M_e=\varphi_e$.</li>
+</ul>
+<p>The function $U(\bar e\,p)=M_e(p)$ is then partial computable and prefix-free. We define the <strong>prefix complexity</strong> $\mathit{KP}(x)=\min\{|p|:U(p)=x\}$, and, for prefix-free $M$, $\mathit{KP}_M(x)=\min\{|p|:M(p)=x\}$. We have:</p>
+<ol>
+<li>for every prefix-free $M$, with index $e$, $\mathit{KP}(x)\le\mathit{KP}_M(x)+2|e|+1$;</li>
+<li>$C(x)\le\mathit{KP}(x)+c$ and $\mathit{KP}(x)\le|x|+2\log_2(|x|+1)+c$ for some constant $c$;</li>
+<li>$\sum_x2^{-\mathit{KP}(x)}\le1$.</li>
+</ol>
+<p>(The literature writes $K(x)$ for prefix complexity; we write $\mathit{KP}$ so as not to confuse it with the halting set $K$.)</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>A prefix-free program carries its own end within it: it can be read from a tape with no end marker, and the machine knows when it has read everything. This is the situation of a computer reading a file whose size is written in the header. Prefix complexity is a little larger than plain complexity (the length must be included in the description, which costs on the order of $\log|x|$ bits), but it has better properties: it behaves like a probability measure, as point (3) says.</p></div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Construction of $M_e$.</strong> At stage $s$, compute $s$ steps of $\varphi_e$ on each of the first $s$ words, and arrange the words whose computation has just halted in word order. Go through these words one by one: a word $q$ is <em>accepted</em> if it is neither a prefix nor an extension of an already accepted word. Set $M_e(p)=\varphi_e(p)$ if $p$ is accepted at some stage, and $M_e(p)$ undefined otherwise. To compute $M_e(p)$, run the stages until $p$ is accepted: this is a procedure uniform in $(e,p)$, so $(e,p)\mapsto M_e(p)$ is partial computable (<a href="church-turing-thesis.html">Church’s thesis</a>, or a direct write-up using the <a href="universality.html#enumeration">universal function</a>). The domain of $M_e$ is the set of accepted words, prefix-free by construction. If the domain of $\varphi_e$ is prefix-free, each word of the domain eventually appears and is comparable to no other: all are accepted, and $M_e=\varphi_e$.</p>
+<p><strong>$U$ is prefix-free.</strong> If $\bar e\,p$ is a prefix of $\bar e'\,p'$, reading the two self-delimiting codes gives $e=e'$, then $p$ a prefix of $p'$; since $p,p'\in\mathrm{dom}\,M_e$, $p=p'$.</p>
+<p>(1) If $M=\varphi_e$ is prefix-free, $M=M_e$, and $M(p)=x$ implies $U(\bar e\,p)=x$. (2) $U$ is a partial computable function: by <a href="#invariance">invariance</a> applied to one of its indices, $C\le\mathit{KP}+c$. For the second inequality, let $M$ be the function which, on input $\bar\ell\,x$, where $\ell$ is the word of the integer $|x|$, returns $x$: its domain is prefix-free (read $\ell$, hence the length of what follows, then exactly $|x|$ digits), and $|\bar\ell\,x|=|x|+2|\ell|+1\le|x|+2\log_2(|x|+1)+1$. Conclude by (1). (3) The shortest programs $p_x$ of the different $x$ are distinct words of the domain of $U$, which is prefix-free: apply <a href="#kraft">Kraft’s inequality</a>.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>The construction of $M_e$ is the technique of <em>dovetailing</em>: one cannot know in advance whether a computation will halt, so all of them are advanced one step in turn, and decisions are taken as halts are observed. The same procedure is used to enumerate a semi-decidable set (<a href="semi-decidability.html#caracterisations-re">characterizations</a>).</p></div>
+</div>
+
+<h2 id="omega">The number Ω</h2>
+
+<div class="resultat definition" id="def-omega"><div class="entete-res"><div class="type">Definition</div><div class="nom">Halting probability Ω (Chaitin, 1975)</div></div>
+<div class="enonce">
+<p>Set</p>
+$$\Omega=\sum_{p\in\mathrm{dom}\,U}2^{-|p|},\qquad \Omega_s=\sum\big\{2^{-|p|}:|p|\le s\text{ and }U(p)\text{ halts in at most }s\text{ steps}\big\}.$$
+<p>Then $0<\Omega\le1$, each $\Omega_s$ is a rational computable from $s$, the sequence $(\Omega_s)$ is nondecreasing and tends to $\Omega$. For every $n\ge1$, there is a unique integer $j_n$ such that $j_n2^{-n}<\Omega\le(j_n+1)2^{-n}$.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>$\Omega$ is the probability that a program, whose bits are drawn by coin tosses, halts. It is a well-defined real number between 0 and 1, which can be approximated from below by running more and more programs for longer and longer. But one never knows how far one still is from the limit: the programs that have not yet halted may do so later.</p></div>
+<div class="niveau" data-niveau="tech"><p>$\Omega\le1$ by <a href="#kraft">Kraft’s inequality</a>, and $\Omega>0$ since $U$ halts on at least one program (for example on $\bar e$, if $\varphi_e$ is defined only on the empty word: its domain $\{\varepsilon\}$ is prefix-free, so $M_e=\varphi_e$ and $U(\bar e)=\varphi_e(\varepsilon)$). $\Omega_s$ is a finite sum computed by simulating at most $2^{s+1}$ programs for $s$ steps. It increases with $s$, and for every $\epsilon>0$ some finite partial sum of $\Omega$ exceeds $\Omega-\epsilon$; the programs it involves are all counted in $\Omega_s$ for $s$ large enough. Finally $j_n$ is the largest integer $j$ such that $j2^{-n}<\Omega$; it lies between $0$ and $2^n-1$.</p></div>
+<div class="niveau" data-niveau="techno"><p>$\Omega$ depends on the chosen universal machine, like complexity. All the properties proved below hold for every choice. The last result of the chapter computes the first digits of a number of the same kind for a toy machine, built from the busy beavers.</p></div>
+</div>
+
+<div class="resultat theoreme" id="omega-arret"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The first n bits of Ω decide halting for programs of length at most n</div></div>
+<div class="enonce">
+<p>There is an algorithm which, from $n$ and $j_n$, decides, for each program $p$ of length at most $n$, whether $U(p)$ halts. Consequently:</p>
+<ol>
+<li>$\Omega$ is irrational; in particular $\Omega<1$, and $j_n$ is the integer written in binary with the first $n$ digits of $\Omega$;</li>
+<li>the sequence of binary digits of $\Omega$ is not computable;</li>
+<li>$\Omega\equiv_TK$: each is computable with an oracle for the other.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>The first digits of $\Omega$ summarize, in compressed form, the answers to an exponential number of halting questions: $n$ bits answer for the $2^{n+1}-1$ programs of length at most $n$. Knowing a thousand digits of $\Omega$ would suffice, in principle, to decide every conjecture of the form “such-and-such a program does not halt” that can be written in fewer than a thousand bits, like <a href="undecidability.html#goldbach">Goldbach’s conjecture</a>. But these digits are “in principle” only: the method of computation requires waiting for a time that grows like the busy beavers.</p></div>
+<div class="niveau" data-niveau="tech">
+<p><strong>The algorithm.</strong> Search for an $s\ge n$ such that $\Omega_s>j_n2^{-n}$: it exists, since $\Omega_s$ tends to $\Omega>j_n2^{-n}$. Then answer “$U(p)$ halts” if and only if $U(p)$ halts in at most $s$ steps. If $|p|\le n$ and $U(p)$ halted at step $t>s$, then, at stage $t$, $\Omega_t\ge\Omega_s+2^{-|p|}>j_n2^{-n}+2^{-n}\ge\Omega$, which is impossible since $\Omega_t\le\Omega$.</p>
+<p><strong>A $U$-undecidable program.</strong> Let $M$ be the partial computable function $M(1^e0)=\varphi_e(e)$, undefined elsewhere. Its domain is contained in $\{1^e0:e\in\N\}$, prefix-free; if $a$ is an index of $M$, then $M=M_a$ and $e\in K\iff U(\bar a\,1^e0)$ halts. Since $K$ is not decidable (<a href="undecidability.html#arret">halting</a>), halting of $U$ is not either, even restricted to these programs.</p>
+<p>(1) If $\Omega$ were rational, $\Omega=u/v$, one would compute $j_n=\lceil u2^n/v\rceil-1$ from $n$, and the algorithm would decide halting of all the programs $U(\bar a\,1^e0)$ (take $n=|\bar a|+e+1$): contradiction. An irrational is not of the form $j2^{-n}$; so $j_n2^{-n}<\Omega<(j_n+1)2^{-n}$, which means that $j_n$ is written with the first $n$ digits of $\Omega$. (2) Computable digits would likewise give $j_n$ and halting. (3) The previous argument shows $K\le_T\Omega$. Conversely, the set $\{(n,j):\Omega>j2^{-n}\}=\{(n,j):\exists s\ \Omega_s>j2^{-n}\}$ is semi-decidable, hence reduces to $K$ (<a href="semi-decidability.html#k-complet">completeness of halting</a>). With an oracle for $K$, one obtains $j_n$ as the largest $j<2^n$ such that $\Omega>j2^{-n}$, and hence the first $n$ digits of $\Omega$.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>The algorithm is a quantitative version of the argument linking halting to the <a href="busy-beavers.html#sigma-non-calculable">busy beavers</a>: knowing $S(n)$ is knowing the time beyond which an $n$-state machine will no longer halt; knowing $j_n$ is being able to compute such a time $s$ for programs of length $n$. The time $s$ thus obtained bounds the duration of all computations of $U$ that halt on programs of length at most $n$; as for $S$, such a function of $n$ eventually exceeds every computable function.</p></div>
+</div>
+
+<div class="resultat theoreme" id="omega-aleatoire"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Ω is random (Chaitin, 1975)</div></div>
+<div class="enonce">
+<p>Write $\Omega\!\restriction\!n$ for the word formed by the first $n$ binary digits of $\Omega$. There is a constant $c$ such that, for every $n$,</p>
+$$\mathit{KP}(\Omega\!\restriction\!n)\ge n-c.$$
+</div>
+<div class="niveau" data-niveau="philo">
+<p>No program produces the first $n$ digits of $\Omega$ in much fewer than $n$ bits: there is no shortcut, no pattern. The digits of $\Omega$ behave like independent coin tosses, although $\Omega$ is perfectly defined. Randomness, defined as the absence of a shorter description, coexists here with the most complete determination.</p>
+<p>One can deduce, for example, that each block of $k$ digits appears in $\Omega$ with frequency $2^{-k}$ (result quoted for information).</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>Let $M$ be the partial function which, on input $p$, computes $w=U(p)$ (if this computation halts). It sets $n=|w|$ and lets $j$ be the integer written in binary by $w$. It then searches for an $s\ge n$ such that $\Omega_s>j2^{-n}$. If it finds one, it forms the finite list of the results $U(q)$ of the programs $q$ of length at most $n$ that halt in at most $s$ steps, and returns the first word $y$ not in this list. The domain of $M$ is contained in that of $U$, hence prefix-free; let $a$ be an index of $M$. Take for $p$ a shortest program for $\Omega\!\restriction\!n$. Then $w=\Omega\!\restriction\!n$, $j=j_n$ by the <a href="#omega-arret">previous theorem</a>, and that theorem shows that the list contains <em>all</em> the results of programs of length at most $n$. The word $y=M(p)$ is produced by none of them: $\mathit{KP}(y)>n$. But $\mathit{KP}(y)\le|p|+2|a|+1=\mathit{KP}(\Omega\!\restriction\!n)+2|a|+1$ (<a href="#universelle-prefixe">invariance</a>). Hence $\mathit{KP}(\Omega\!\restriction\!n)>n-2|a|-1$.</p></div>
+<div class="niveau" data-niveau="techno"><p>Since $C\le\mathit{KP}+c$ and $\mathit{KP}(x)\le C(x)+2\log_2|x|+O(1)$ (by prefixing a shortest plain program with its length), one also gets $C(\Omega\!\restriction\!n)\ge n-2\log_2n-O(1)$. With plain complexity, one cannot do better for any infinite sequence: every sequence has infinitely many prefixes compressible by about $\log n$ bits (Martin-Löf, result quoted). This is one reason for choosing prefix complexity to define randomness of infinite sequences.</p></div>
+</div>
+
+<div class="resultat theoreme" id="omega-theorie"><div class="entete-res"><div class="type">Theorem</div><div class="nom">A theory determines only finitely many digits of Ω</div></div>
+<div class="enonce">
+<p>Let $\mathsf T$ be a theory of arithmetic, sound (it proves only true sentences), whose set of axioms is decidable. There is $N$ such that, for every $n\ge N$, $\mathsf T$ proves no sentence of the form “$\Omega\!\restriction\!n=w$”.</p>
+<p>The sentence “$\Omega\!\restriction\!n=w$”, that is, “$j2^{-n}<\Omega<(j+1)2^{-n}$” where $j$ is the integer written by $w$, is expressed in arithmetic as the conjunction of “$\exists s\ \Omega_s>j2^{-n}$” and “$\forall s\ \Omega_s\le(j+1)2^{-n}$” (<a href="incompleteness.html#representabilite">definability</a>).</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>The axioms of a theory form a finite description. They can therefore fix only finitely many digits of a number whose digits are incompressible: beyond that, each digit of $\Omega$ is a mathematical fact that is true “for no reason”, with no proof from simpler principles. This is the most radical form of incompleteness, and it holds for <a href="bases.html#zfc">ZFC</a> as for every reasonable theory that proves only arithmetical truths.</p></div>
+<div class="niveau" data-niveau="tech"><p>Let $M$ be the function which, on input $\bar\nu$, where $\nu$ is the word of the integer $n$, enumerates the theorems of $\mathsf T$ and returns the $w$ of the first theorem of the form “$\Omega\!\restriction\!n=w$”. Its domain is contained in the set of self-delimiting codes, which is prefix-free. If $\mathsf T$ proves “$\Omega\!\restriction\!n=w$”, then $M(\bar\nu)$ is defined, and it is $\Omega\!\restriction\!n$ since $\mathsf T$ is sound. So $\mathit{KP}(\Omega\!\restriction\!n)\le|\bar\nu|+c_M\le2\log_2(n+1)+1+c_M$ (<a href="#universelle-prefixe">invariance</a>). With the <a href="#omega-aleatoire">previous theorem</a>, $n-c\le2\log_2(n+1)+1+c_M$, which is false for $n$ large enough.</p>
+<p>Soundness is necessary here: the sentence “$\Omega\!\restriction\!n=w$” contains a universal part, and a consistent but unsound theory could prove false ones. Chaitin obtained a stronger result, quoted here for information: such a theory determines only finitely many digits of $\Omega$, at arbitrary positions, and this number is bounded by the complexity of its axioms plus a constant. He also wrote an exponential <a href="diophantine-equations.html#conjectures">Diophantine equation</a> with a parameter $k$ that has infinitely many solutions if and only if the $k$-th digit of $\Omega$ is 1 (1987).</p></div>
+<div class="niveau" data-niveau="techno"><p>The sentences “$\Omega>q$” are Σ₁: when they are true, $\mathsf{PA}$ proves them (<a href="incompleteness.html#sigma-complet">Σ-completeness</a>), by exhibiting a stage $s$ and the computations that halt. Lower bounds on $\Omega$ are therefore accessible; what escapes theories are the upper bounds, which say that no other program will halt.</p></div>
+</div>
+
+<div class="resultat definition" id="omega-castors"><div class="entete-res"><div class="type">Example</div><div class="nom">A toy Ω computed from the busy beavers</div></div>
+<div class="enonce">
+<p>This example uses the chapter <a href="busy-beavers.html">Busy beavers</a>, which comes later; nothing else depends on it. Code a <a href="busy-beavers.html#def-rado">Radó machine</a> with $n$ states by the word $1^n0$ followed, for each of the $2n$ transitions, by the symbol written (1 bit), the move (1 bit) and the next state (a number from $0$ to $n$, $0$ for $H$, written on $\lceil\log_2(n+1)\rceil$ bits). This code has length $\ell(n)=n+1+2n\,(2+\lceil\log_2(n+1)\rceil)$, and the set of codes is prefix-free. The machine $V$ which, on a code, runs the coded machine on a tape of 0s, has as domain the codes of the machines that halt, and</p>
+$$\Omega_V=\sum_{n\ge1}h(n)\,2^{-\ell(n)},$$
+<p>where $h(n)$ is the number of $n$-state tables that halt. With $h(1)=32$, $h(2)=9{,}784$ and $h(3)=7{,}571{,}840$, one gets $0.17287<\Omega_V<0.17899$, and the first seven binary digits: $\Omega_V=0.0010110\ldots$</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>$V$ is not a prefix-free universal machine, and the previous theorems do not apply to it: nothing is claimed here about the randomness of $\Omega_V$. But the example shows where the difficulty lies: each new digit requires knowing $h(n)$ for larger $n$, that is, deciding halting for all $n$-state machines. This can be done up to $n=5$, at the cost of decades of effort, and it is known that ZFC no longer allows it beyond a certain rank (<a href="busy-beavers.html#castors-zfc">beavers and ZFC</a>).</p></div>
+<div class="niveau" data-niveau="tech"><p>The code is prefix-free: the block $1^n0$ gives $n$, hence the total length. There are $(4n+4)^{2n}$ tables with $n$ states (some words of length $\ell(n)$ code no table, when a state field exceeds $n$). An $n$-state machine that halts does so in at most $S(n)$ steps, with $S(1)=1$, $S(2)=6$, $S(3)=21$ (<a href="busy-beavers.html#valeurs-bb">proven values</a>): $h(1),h(2),h(3)$ are obtained by simulating each table for $S(n)$ steps. The exact contribution of $n\le3$ is $A=32\cdot2^{-8}+9{,}784\cdot2^{-19}+7{,}571{,}840\cdot2^{-28}\approx0.171869$. For $n\ge4$, the contribution of $n$ lies between the mass of the tables whose first transition ($A0$) goes to $H$, a proportion $1/(n+1)$ of the tables, and the mass of all tables, $m(n)=(4n+4)^{2n}2^{-\ell(n)}=2^{-(n+1)}\big((n+1)/2^{\lceil\log_2(n+1)\rceil}\big)^{2n}\le2^{-(n+1)}$. Exact computation of the sums for $4\le n<200$, and bounding the remainder by $2^{-200}$, give $A+\sum m(n)/(n+1)\approx0.172876$ and $A+\sum m(n)\approx0.178980$, whose binary expansions start with $0.0010110\,0$ and $0.0010110\,1$.</p></div>
+<div class="niveau" data-niveau="techno"><p>The program <a href="assets/code/castor_omega.c">castor_omega.c</a> enumerates the $64$, $20{,}736$ and $16{,}777{,}216$ tables with 1, 2 and 3 states and counts those that halt (about one second). The largest term of the remainder comes from $n=7$, where the state field uses all eight of its values: all words of length $\ell(7)$ are codes, of total mass $2^{-8}$. To gain the eighth digit, one would have to tighten the bounds, hence know at least part of $h(4),\dots,h(7)$; for 7 states, that is out of reach.</p></div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-ko-zeros"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — Regular words are compressible</span></div><div class="corps-exo">
+<p>Show that there is a constant $c$ such that, for every $n$: $C(0^n)\le\log_2(n+1)+c$ and $C(ww)\le C(w)+c$ for every word $w$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>The function $f(n)=0^n$ (from the integer $n$, identified with a word of length $\lfloor\log_2(n+1)\rfloor$, to the word $0^n$) is total computable. By <a href="#invariance">invariance</a>, $C(0^n)\le C(n)+c_f\le|n|+c+c_f\le\log_2(n+1)+c'$. Likewise $g(w)=ww$ is total computable, whence $C(ww)\le C(w)+c_g$. A word of length $n$ made of zeros can therefore be described with about $\log_2 n$ bits: it is highly compressible, whereas most words of length $n$ are not (<a href="#incompressibles">incompressible words</a>).</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-ko-concat"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 2 — Complexity of a concatenation</span></div><div class="corps-exo">
+<p>Show that there is a constant $c$ such that $C(xy)\le2\,C(x)+C(y)+c$ for all words $x,y$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>The problem is knowing where the description of $x$ ends and that of $y$ begins. Use the <a href="#mots-entiers">self-delimiting encoding</a> $\bar p=1^{|p|}0\,p$. Let $V$ be the partial computable function which, on input $\bar p\,q$, reads $|p|$ (the leading 1s), then $p$, then the remainder $q$, and returns $U(p)\,U(q)$ if both computations halt. If $p$ and $q$ are minimal descriptions of $x$ and $y$, then $V(\bar p\,q)=xy$, with $|\bar p\,q|=2|p|+1+|q|$. So $C_V(xy)\le2C(x)+1+C(y)$. Since $V=\varphi_e$ for a fixed $e$, invariance gives $C(xy)\le C_V(xy)+2|e|+1$. The factor 2 comes from the self-delimiting encoding; it can be reduced to $C(x)+O(\log C(x))$ with a more economical encoding of the length, but no correction term can be removed altogether in general (result quoted for information).</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-ko-minimal"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — A minimal program cannot be computed</span></div><div class="corps-exo">
+<p>Show that there is no total computable function $f$ such that, for every word $x$, $f(x)$ is a program of minimal length for $x$ (that is, $U(f(x))=x$ and $|f(x)|=C(x)$).</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>If such an $f$ existed, $C(x)=|f(x)|$ would be computable, which contradicts the <a href="#c-non-calculable">theorem</a>. One cannot even compute a function $f$ such that $U(f(x))=x$ and $|f(x)|\le C(x)+k$ for a constant $k$: $|f(x)|-k$ would be an unbounded computable lower bound for $C$. A real compressor (zip, etc.) gives a computable upper bound on $C$, up to a constant; it is never optimal on all words.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-ko-binomial"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 4 — Few 1s, little information</span></div><div class="corps-exo">
+<p>Let $x$ be a word of length $n$ containing exactly $k$ occurrences of the letter 1. Show that $C(x)\le\log_2\binom nk+4\log_2(n+1)+c$, with $c$ independent of $x$, $n$ and $k$. Numerical application for $n=1000$ and $k=100$.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Describe $x$ by three data: $n$, $k$, and the rank $i$ of $x$ in the alphabetically ordered list of words of length $n$ with $k$ ones. Let $V$ be the function which, on $\bar n\,\bar k\,i$, enumerates this list and returns its $i$-th element. There are $\binom nk$ words in the list, so $i<\binom nk$ is written with at most $\log_2\binom nk+1$ bits; $\bar n$ and $\bar k$ cost $2|n|+1$ and $2|k|+1$ bits, with $|k|\le|n|\le\log_2(n+1)$. By invariance:</p>
+$$C(x)\le\log_2\tbinom nk+1+4\log_2(n+1)+2+2|e|+1 .$$
+<p>For $n=1000$, $k=100$: $\log_2\binom{1000}{100}\approx464.4$ and $4\log_2 1001\approx39.9$, that is, about 505 bits plus a constant, instead of 1000. With $k=250$ one finds about 806 bits, and with $k=500$ about 995: a balanced word is hardly compressible by this method. This is the link with Shannon entropy: $\log_2\binom nk\approx n\,H(k/n)$, where $H(p)=-p\log_2p-(1-p)\log_2(1-p)$.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="undecidable-mathematics.html"><small>← Previous</small>The undecidable in ordinary mathematics</a><a href="languages.html" style="text-align:right"><small>Next →</small>Undecidability in formal language theory</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

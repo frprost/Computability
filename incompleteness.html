@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost and Claude">
+<title>Computation and logic: incompleteness and the decision problem · Computability</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <span class="selecteur-legende">Reading level:</span>
+  <div class="selecteur" role="group" aria-label="Reading level">
+    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
+    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
+    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
+    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html" aria-current="page"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<main class="contenu">
+<h1>Computation and logic: incompleteness and the decision problem</h1>
+<p class="chapo">The undecidability of halting yields in a few lines Gödel’s theorems and the negative answer to Hilbert’s decision problem.</p>
+<div class="prerequis"><strong>Prerequisites</strong><a href="semi-decidability.html">Semi-decidability</a> · <a href="bases.html#logique">Predicate logic</a></div>
+<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#le-langage-de-larithmetique">The language of arithmetic</a></li><li><a href="#le-theoreme-dincompletude">The incompleteness theorem</a></li><li><a href="#peano">Peano arithmetic and the second theorem</a></li><li><a href="#le-probleme-de-la-decision">The decision problem</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
+
+
+<h2 id="le-langage-de-larithmetique">The language of arithmetic</h2>
+
+<p>We consider the first-order formulas built with variables, the constants $0,1$, the operations $+$ and $\times$, equality, the connectives $\neg,\wedge,\vee,\Rightarrow$ and the quantifiers $\forall,\exists$ ranging over the integers (see the appendix <a href="bases.html#logique">Predicate logic</a>). A sentence is a formula with no free variable; it is <em>true</em> if it is true in $\N$ with the usual addition and multiplication. We write $\underline n$ for the term $(\cdots((0+1)+1)\cdots)+1$ ($n$ times $+1$), which denotes the integer $n$.</p>
+
+<div class="resultat definition" id="delta0"><div class="entete-res"><div class="type">Definition</div><div class="nom">Bounded formulas and Σ₁ formulas</div></div>
+<div class="enonce"><p>The <strong>bounded</strong> (or $\Delta_0$) formulas are built from equalities $t_1=t_2$ by the connectives and the bounded quantifiers $\exists x&lt;t$ and $\forall x&lt;t$ ($x$ not occurring in the term $t$). A <strong>$\Sigma_1$</strong> formula has the form $\exists y\,\theta$ with $\theta$ bounded. A relation $R\subseteq\N^k$ is <strong>$\Sigma_1$</strong> if there is a $\Sigma_1$ formula $\phi(x_1,\dots,x_k)$ such that $R(\vec n)$ holds if and only if $\phi(\underline{n_1},\dots,\underline{n_k})$ is true. A partial function is $\Sigma_1$ if its graph $\{(\vec x,y):f(\vec x)=y\}$ is. We write $x\le t$ for $x&lt;t+1$.</p><p>The $\Sigma_1$ relations are exactly the semi-decidable sets, that is, the class $\Sigma_1$ of the <a href="arithmetical-hierarchy.html#def-hierarchie">arithmetical hierarchy</a>. A bounded formula is decided by examining all cases, so a $\Sigma_1$ relation is semi-decidable. The converse is the <a href="#representabilite">representability proposition</a> below.</p></div>
+<div class="niveau" data-niveau="philo"><p>A bounded formula speaks of only finitely many cases, which can all be examined: its truth can be computed. A $\Sigma_1$ formula asserts the existence of a witness, which will be recognized if met: this is exactly the form of a statement “the program eventually halts”.</p></div>
+</div>
+
+<div class="resultat theoreme" id="sigma1-clotures"><div class="entete-res"><div class="type">Lemma</div><div class="nom">Closure of Σ₁ relations</div></div>
+<div class="enonce"><p>The $\Sigma_1$ relations contain the relations defined by bounded formulas, and are closed under $\wedge$, $\vee$, existential quantification $\exists x$, bounded universal quantification $\forall x&lt;t$, and substitution of terms for variables.</p></div>
+<div class="niveau" data-niveau="tech"><p>Let $\exists y\,\theta$ and $\exists y'\,\theta'$ be two $\Sigma_1$ formulas ($y,y'$ renamed to be distinct and new). We have:</p>
+<ul>
+<li>$\exists y\,\theta\wedge\exists y'\,\theta'$ is equivalent to $\exists w\,\exists y\le w\,\exists y'\le w\,(\theta\wedge\theta')$, and likewise for $\vee$;</li>
+<li>$\exists x\,\exists y\,\theta$ is equivalent to $\exists w\,\exists x\le w\,\exists y\le w\,\theta$;</li>
+<li>$\forall x&lt;t\ \exists y\,\theta(x,y)$ is equivalent to $\exists w\,\forall x&lt;t\ \exists y&lt;w\ \theta(x,y)$. The forward direction is the only non-obvious one: for each value $x$ less than the value of $t$ (there are finitely many), choose a witness $y_x$, and take for $w$ an integer larger than all the $y_x$.</li>
+</ul>
+<p>A bounded formula $\theta$ is equivalent to $\exists y\,(y=y\wedge\theta)$. Substituting a term for a free variable preserves boundedness (renaming bound variables).</p></div>
+</div>
+
+<div class="resultat theoreme" id="beta"><div class="entete-res"><div class="type">Lemma</div><div class="nom">Gödel’s β function</div></div>
+<div class="enonce"><p>Let $\beta(c,d,i)$ be the remainder of the division of $c$ by $1+(i+1)d$.</p>
+<ol>
+<li>The relation $\beta(c,d,i)=r$ is defined by a bounded formula.</li>
+<li>For every finite sequence $a_0,\dots,a_n$ of integers, there are $c,d$ such that $\beta(c,d,i)=a_i$ for every $i\le n$.</li>
+</ol></div>
+<div class="niveau" data-niveau="philo"><p>With only addition and multiplication, one can speak of finite sequences of any length: two numbers suffice to code them. This is what allows school arithmetic to speak of entire computations, which are sequences of configurations.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(1) $\beta(c,d,i)=r\iff r<1+(i+1)\times d\ \wedge\ \exists q\le c\ \big(c=q\times(1+(i+1)\times d)+r\big)$.</p>
+<p>(2) Let $s=\max(n,a_0,\dots,a_n)+1$, $d=s!$ and $m_i=1+(i+1)d$ for $i\le n$.</p>
+<ul>
+<li><em>The $m_i$ are pairwise coprime.</em> If a prime $p$ divides $m_i$ and $m_j$ with $i&lt;j$, it divides $m_j-m_i=(j-i)d$. It does not divide $d$, otherwise it would divide $m_i-(i+1)d=1$. By <a href="bases.html#lemme-euclide">Euclid’s lemma</a>, $p$ divides $j-i\le n&lt;s$, so $p\le s$ and $p$ divides $s!=d$: contradiction.</li>
+<li><em>Chinese remainders.</em> Let $M=m_0m_1\cdots m_n$. Consider the map $c\mapsto(c\bmod m_0,\dots,c\bmod m_n)$ from $\{0,\dots,M-1\}$ to $\prod_i\{0,\dots,m_i-1\}$. It is injective: if $c$ and $c'$ have the same remainders, each $m_i$ divides $|c-c'|$. Now if pairwise coprime integers divide $N$, their product divides $N$ (by induction on their number: if $m_0\cdots m_{k-1}$ divides $N$, write $N=m_0\cdots m_{k-1}N'$; a prime factor $p$ of $m_k$ divides no $m_i$, $i&lt;k$, so, by Euclid’s lemma, it divides $N'$; repeating with $m_k/p$ and $N'/p$, one gets that $m_k$ divides $N'$). So $M$ divides $|c-c'|&lt;M$, and $c=c'$. Both sets having $M$ elements, the map is also surjective.</li>
+<li>Since $a_i&lt;s\le d&lt;m_i$, there is therefore $c&lt;M$ with $c\bmod m_i=a_i$, that is, $\beta(c,d,i)=a_i$, for every $i\le n$.</li>
+</ul>
+</div>
+<div class="niveau" data-niveau="techno"><p>For the sequence $3,1,4$: $s=5$, $d=120$, the moduli are $121$, $241$, $361$, and $c=5{,}744{,}236$ works ($c\bmod121=3$, $c\bmod241=1$, $c\bmod361=4$). The numbers quickly become enormous; only their existence matters.</p></div>
+</div>
+
+<div class="resultat theoreme" id="representabilite"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Recursive functions and semi-decidable sets are definable in arithmetic</div></div>
+<div class="enonce"><p>Every (partial) recursive function is $\Sigma_1$. Consequently, for every semi-decidable set $A$, there is a formula $\exists y\,\theta(x,y)$, with $\theta$ bounded, such that $n\in A$ if and only if $\exists y\,\theta(\underline n,y)$ is true. In particular, there is a $\Sigma_1$ formula $\kappa(x)$ such that $e\in K\iff\kappa(\underline e)$ is true, and the relation $z=x^y$ is $\Sigma_1$: exponentiation is definable with $+$ and $\times$.</p></div>
+<div class="niveau" data-niveau="philo"><p>Elementary arithmetic, the arithmetic of school, suffices to speak of all computations: “program $e$ halts” translates into a statement about integers. Mathematics contains computer science, as computer science contains mathematics (a proof is a text, hence a datum).</p></div>
+<div class="niveau" data-niveau="tech">
+<p>By induction on the definition of $f$ (<a href="recursive-functions.html#def-mu">recursive functions</a>), using the <a href="#sigma1-clotures">closure lemma</a> at each step.</p>
+<ul>
+<li>Base functions: $y=\underline m$, $y=x+1$, $y=x_i$ are bounded formulas.</li>
+<li>Substitution $f=\sigma[g,h_1,\dots,h_k]$: $y=f(\vec x)\iff\exists z_1\cdots\exists z_k\,\big(z_1=h_1(\vec x)\wedge\cdots\wedge z_k=h_k(\vec x)\wedge y=g(\vec z)\big)$, which indeed requires each $h_i(\vec x)$ to be defined.</li>
+<li>Recursion $f=\rho[g,h]$: $y=f(n,\vec x)$ if and only if
+$$\exists c\,\exists d\,\Big[\exists u\,\big(u=g(\vec x)\wedge\beta(c,d,0)=u\big)\ \wedge\ \forall i&lt;n\ \exists v\,\exists w\,\big(\beta(c,d,i)=v\wedge\beta(c,d,i+1)=w\wedge w=h(i,v,\vec x)\big)\ \wedge\ \beta(c,d,n)=y\Big].$$
+If this formula is true, the sequence $a_i=\beta(c,d,i)$ satisfies $a_0=g(\vec x)$ and $a_{i+1}=h(i,a_i,\vec x)$, so $a_i=f(i,\vec x)$ by induction on $i\le n$, and $y=a_n$. Conversely, if $f(n,\vec x)=y$, the values $f(0,\vec x),\dots,f(n,\vec x)$ are all defined, and the <a href="#beta">β lemma</a> provides $c,d$ coding them.</li>
+<li>Minimization $f=\mu[g]$: $y=f(\vec x)\iff g(\vec x,y)=0\ \wedge\ \forall z&lt;y\ \exists v\,\big(v=g(\vec x,z)\wedge\neg(v=0)\big)$, which translates the definition exactly (the values $g(\vec x,z)$, $z&lt;y$, must be defined and nonzero).</li>
+</ul>
+<p>A semi-decidable set is the <a href="semi-decidability.html#def-re">domain</a> of a computable function $\varphi$, which is recursive (<a href="equivalence.html#classe-calculable">equivalence of models</a>): $n\in A\iff\exists y\,(y=\varphi(n))$, a $\Sigma_1$ relation by closure. For $K$, take $\varphi(e)=u(e,e)$. Finally $(x,y)\mapsto x^y$ is primitive recursive.</p>
+<p>Kleene’s predicate $T_1$ is a special case: one could have translated directly “$y$ codes a computation of machine $e$ on $e$”, but the proof by induction avoids writing this formula. A stronger form (<a href="diophantine-equations.html#mrdp">MRDP theorem</a>) shows that bounded quantifiers can even be dispensed with.</p>
+</div>
+</div>
+
+<h2 id="le-theoreme-dincompletude">The incompleteness theorem</h2>
+
+<div class="resultat theoreme" id="godel1"><div class="entete-res"><div class="type">Theorem</div><div class="nom">First incompleteness theorem (computational form)</div></div>
+<div class="enonce"><p>Let $\mathsf T$ be a theory of arithmetic whose axioms form a decidable set (one can check mechanically that a text is a proof) and which is <em>sound</em> (it proves only true sentences). Then there is a true sentence that $\mathsf T$ does not prove. It can even be chosen of the form “program $e$ does not halt on $e$”.</p></div>
+<div class="niveau" data-niveau="philo">
+<p>No system of axioms, however rich, can prove all truths about the integers. There will always be true but unprovable statements, and some can be exhibited: they are assertions of non-termination of programs. Mathematical truth goes beyond any formalization.</p>
+<p>The link with computation is direct: if a system proved all truths, one could decide halting of programs by searching mechanically for a proof of “$e$ halts” or of “$e$ does not halt”. Since halting is undecidable, such completeness is impossible.</p>
+<p>This theorem has often been misinterpreted. It does not say that “everything is relative”, nor that mathematics is inconsistent, nor that the human mind surpasses machines. This last argument (Lucas, Penrose) assumes that we know our own system of thought to be consistent; nothing guarantees it, and a human who “sees” the truth of a Gödel sentence does so by reasoning in a stronger system, which also has its unprovable statements. <a href="computability-ai.html#lob">Löb’s theorem</a> makes this point precise: a system reasoning within a theory cannot prove that its own proofs are reliable.</p>
+<p>The chapter on <a href="kolmogorov-omega.html">Kolmogorov complexity</a> gives a quantitative form of this theorem: a theory can prove that a word is complex only up to a bound fixed by the size of its axioms (<a href="kolmogorov-omega.html#chaitin">Chaitin’s theorem</a>), and it determines only finitely many digits of the number <a href="kolmogorov-omega.html#omega-theorie">Ω</a>.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Since the axioms of $\mathsf T$ are decidable, the set of theorems of $\mathsf T$ is semi-decidable (enumerate all proofs). Consider $B=\{e: \mathsf T\vdash\neg\kappa(\underline e)\}$, which is semi-decidable. By soundness of $\mathsf T$, $B\subseteq\overline K$. Since $\overline K$ is not semi-decidable (<a href="semi-decidability.html#kbar">corollary</a>), $B\neq\overline K$: there is $e\in\overline K\setminus B$, that is, such that $\neg\kappa(\underline e)$ is true ($e$ does not halt on $e$) but not provable in $\mathsf T$.</p>
+<p>One can even build $e$ explicitly: by the recursion theorem, let $e$ be the program which, on any input, searches for a proof of $\neg\kappa(\underline e)$ in $\mathsf T$ and halts if it finds one. If $\mathsf T$ proved $\neg\kappa(\underline e)$, then $e$ would halt, and $\mathsf T$ would prove a false sentence. So $\mathsf T$ does not prove it, $e$ does not halt, and $\neg\kappa(\underline e)$ is true.</p>
+<p>Gödel (1931) obtains the same result under a weaker hypothesis than soundness (ω-consistency), and Rosser (1936) under consistency alone, with sentences built by the <a href="#diagonal">diagonal lemma</a>, the logical analogue of the <a href="smn-recursion.html#kleene">recursion theorem</a>: see <a href="#rosser">Rosser’s theorem</a> below.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>The program of the proof, in pseudo-code (the function <code>is_a_proof</code> is a mechanical checker, which exists because the axioms are decidable):</p>
+<pre><code>gödel(x):
+    me := text of this program                            // recursion theorem
+    for n = 0, 1, 2, ...:
+        if is_a_proof(n, "program me does not halt on me"):
+            halt</code></pre>
+<p>This program does not halt, but the theory cannot prove it. Statements of this kind have been realized concretely: Yedidia and Aaronson (2016) built a Turing machine with 7,918 states whose non-termination is not provable in the set theory <a href="bases.html#zfc">ZFC</a> (assuming that an extension of ZFC by a large-cardinal axiom is consistent); later work produced machines with fewer than 800 states that halt if and only if the theory ZF is inconsistent. See also the <a href="busy-beavers.html#castors-zfc">corresponding theorem for busy beavers</a>.</p>
+</div>
+</div>
+
+<h2 id="peano">Peano arithmetic and the second theorem</h2>
+
+<p>The second theorem concerns what a theory proves <em>about itself</em>. One must therefore fix a proof system and a precise theory, and check that the theory can reason about its own proofs. This is the purpose of the lemmas that follow.</p>
+
+<div class="resultat definition" id="def-peano"><div class="entete-res"><div class="type">Definition</div><div class="nom">Proofs, Peano arithmetic, provability predicate</div></div>
+<div class="enonce">
+<p><strong>Proofs.</strong> We fix the following Hilbert calculus. Logical axioms: the instances of propositional tautologies; $\forall x\,\phi\Rightarrow\phi[x:=t]$ ($t$ substitutable for $x$); $\forall x\,(\phi\Rightarrow\psi)\Rightarrow(\phi\Rightarrow\forall x\,\psi)$ ($x$ not free in $\phi$); $x=x$ and $x=y\Rightarrow(\phi[z:=x]\Rightarrow\phi[z:=y])$ for atomic $\phi$. Rules: <em>modus ponens</em> (from $\phi$ and $\phi\Rightarrow\psi$, infer $\psi$) and generalization (from $\phi$, infer $\forall x\,\phi$). We write $\exists x\,\phi$ for $\neg\forall x\,\neg\phi$. A <strong>proof</strong> in a theory $\mathsf T$ (a set of sentences, its axioms) is a finite sequence of formulas each of which is a logical axiom, an axiom of $\mathsf T$, or follows from earlier ones by a rule; $\mathsf T\vdash\phi$ if $\phi$ is the last formula of a proof.</p>
+<p><strong>Peano arithmetic</strong> $\mathsf{PA}$: the axioms $\neg(x+1=0)$; $x+1=y+1\Rightarrow x=y$; $x+0=x$; $x+(y+1)=(x+y)+1$; $x\times0=0$; $x\times(y+1)=(x\times y)+x$ (universal closures), and the induction schema $\phi(0)\wedge\forall x\,(\phi(x)\Rightarrow\phi(x+1))\Rightarrow\forall x\,\phi(x)$ for every formula $\phi$. We write $x&lt;t$ for $\exists z\,(x+(z+1)=t)$, and treat $\exists x&lt;t$, $\forall x&lt;t$ as bounded quantifiers.</p>
+<p><strong>Coding.</strong> Number the symbols, and code formulas (words) and proofs (sequences of formulas) by integers, as for <a href="recursive-functions.html#godel">words and sequences of words</a>; $\ulcorner\phi\urcorner$ is the code of $\phi$. We consider theories $\mathsf T$ containing $\mathsf{PA}$ whose set of axiom codes is primitive recursive. Then the relation “$p$ codes a proof in $\mathsf T$ of the formula with code $f$” is primitive recursive (check each formula of the sequence). If $\chi$ is its characteristic function, set $\mathrm{Prf}_{\mathsf T}(p,f)=\phi_\chi(p,f,\underline1)$, where $\phi_\chi$ is the formula given by the previous proposition, then</p>
+$$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \Box\phi=\mathrm{Prov}_{\mathsf T}(\underline{\ulcorner\phi\urcorner}),\qquad \mathrm{Con}(\mathsf T)=\neg\,\Box(0=1).$$
+<p>The axiomhood of $\mathsf T$ is defined by a disjunction “axiom of $\mathsf{PA}$ or other axiom”, so that $\mathsf{PA}$ trivially proves that every axiom of $\mathsf{PA}$ is an axiom of $\mathsf T$.</p>
+<p><strong>Σ formulas.</strong> In what follows, a Σ formula is built from the formulas $t_1=t_2$ and $\neg(t_1=t_2)$ by $\wedge$, $\vee$, $\exists x$, $\exists x&lt;t$ and $\forall x&lt;t$. All the formulas written in the <a href="#representabilite">definability proposition</a> are of this form (before being put into the form $\exists y\,\theta$, which is no longer needed); in particular $\mathrm{Prov}_{\mathsf T}$ is a Σ formula.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>A proof is a text, hence a number; “being a proof” is a mechanically checkable property, hence expressible in arithmetic. A theory that speaks about numbers thus speaks, without meaning to, about its own proofs.</p></div>
+</div>
+
+<div class="resultat theoreme" id="sigma-complet"><div class="entete-res"><div class="type">Lemma</div><div class="nom">Σ-completeness</div></div>
+<div class="enonce"><p>Every true Σ sentence is provable in $\mathsf{PA}$. Moreover, every bounded sentence is provable in $\mathsf{PA}$ if it is true, and refutable if it is false.</p></div>
+<div class="niveau" data-niveau="philo"><p>To prove that a computation halts, it suffices to run it and write down the trace: $\mathsf{PA}$ can check finite computations. The hard truths are the others, the statements of non-termination.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>(a) <em>Computations.</em> By induction on $n$ (in the metalanguage), $\mathsf{PA}\vdash\underline m+\underline n=\underline{m+n}$: for $n=0$, this is the axiom $x+0=x$; then $\underline m+(\underline n+1)=(\underline m+\underline n)+1=\underline{m+n}+1$, which is the term $\underline{m+n+1}$. Likewise $\mathsf{PA}\vdash\underline m\times\underline n=\underline{mn}$. By induction on a closed term $t$ with value $n$, $\mathsf{PA}\vdash t=\underline n$.</p>
+<p>(b) <em>Differences.</em> If $m&lt;n$, $\mathsf{PA}\vdash\neg(\underline m=\underline n)$, by induction on $m$: $\underline n$ has the form $\underline k+1$, and one uses $\neg(x+1=0)$ for $m=0$, then $x+1=y+1\Rightarrow x=y$ and the induction hypothesis.</p>
+<p>(c) <em>Bounded quantifiers.</em> $\mathsf{PA}$ proves by induction the usual rules of calculation (associativity and commutativity of $+$ and $\times$, distributivity, cancellation, $x=0\vee\exists w\,x=w+1$). One deduces, by induction on $n$, $\mathsf{PA}\vdash\forall x\,\big(x<\underline n\Leftrightarrow x=\underline 0\vee\cdots\vee x=\underline{n-1}\big)$ (for $n=0$, $\neg\,x<0$).</p>
+<p>(d) <em>Bounded sentences</em>, by induction on their number of symbols. A closed equality $t_1=t_2$ reduces by (a) to $\underline m=\underline n$, provable if $m=n$ and refutable otherwise by (b). The connectives are handled by cases. For $\forall x&lt;t\,\phi(x)$: if $t$ has value $n$, (a) and (c) show that the sentence is equivalent in $\mathsf{PA}$ to $\phi(\underline0)\wedge\cdots\wedge\phi(\underline{n-1})$, and each $\phi(\underline k)$, which has fewer symbols, is provable or refutable according to its truth. Likewise for $\exists x&lt;t$.</p>
+<p>(e) <em>Σ sentences</em>, by induction: the atomic cases, $\wedge$, $\vee$ and bounded quantifiers are as in (d); if $\exists y\,\phi(y)$ is true, $\phi(\underline m)$ is true for some $m$, hence provable, and $\exists y\,\phi(y)$ follows.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="pa-rp"><div class="entete-res"><div class="type">Lemma</div><div class="nom">PA knows the primitive recursive functions</div></div>
+<div class="enonce"><p>For every primitive recursive function $f$, the formula $\phi_f(\vec x,y)$ built in the <a href="#representabilite">definability proposition</a> satisfies $\mathsf{PA}\vdash\forall\vec x\,\exists y\,\phi_f(\vec x,y)$ and $\mathsf{PA}\vdash\forall\vec x\,\forall y\,\forall y'\,\big(\phi_f(\vec x,y)\wedge\phi_f(\vec x,y')\Rightarrow y=y'\big)$, and $\mathsf{PA}$ proves the equations defining $f$. In particular, if $f(\vec n)=m$, then $\mathsf{PA}\vdash\forall y\,\big(\phi_f(\underline{\vec n},y)\Leftrightarrow y=\underline m\big)$.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>By induction on the definition of $f$. The base functions and substitution are immediate (the composition of functional relations is functional). For recursion $f=\rho[g,h]$, the only non-trivial point is the <em>extension lemma</em>, an internal version of the β lemma: $\mathsf{PA}$ proves that every coded sequence $(c,d)$ of length $n$ can be extended by an arbitrary value $a$, that is, $\forall c\,\forall d\,\forall n\,\forall a\,\exists c'\,\exists d'\,\big(\forall i&lt;n\ \beta(c',d',i)=\beta(c,d,i)\ \wedge\ \beta(c',d',n)=a\big)$. It is proved in $\mathsf{PA}$ by following the proof of the β lemma, each step being an induction: the existence of a common multiple $d'$ of $1,\dots,s$ (induction on $s$) replaces $s!$, the coprimality of the moduli follows from Euclid’s lemma (which $\mathsf{PA}$ proves via the least number principle and Bézout’s identity), and the Chinese remainders are obtained by induction on the number of congruences (if $c$ works for the first $k$ moduli and $L$ is their product, coprime to $m_k$, one of the $c+jL$, $j&lt;m_k$, also works for $m_k$). With this lemma, the existence of $y$ in $\phi_f(n,\vec x,y)$ is proved by induction on $n$ in $\mathsf{PA}$; uniqueness, by showing by induction on $i\le n$ that two witness sequences have the same terms (functionality of $\phi_g$ and $\phi_h$); and the equations $f(0,\vec x)=g(\vec x)$, $f(n+1,\vec x)=h(n,f(n,\vec x),\vec x)$ by extending the witness sequence by one term. The last claim combines uniqueness with the Σ-completeness lemma, which gives $\mathsf{PA}\vdash\phi_f(\underline{\vec n},\underline m)$.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="diagonal"><div class="entete-res"><div class="type">Lemma</div><div class="nom">Diagonal lemma</div></div>
+<div class="enonce"><p>For every formula $\psi(x)$ with one free variable, there is a sentence $G$ such that $\mathsf{PA}\vdash G\Leftrightarrow\psi(\underline{\ulcorner G\urcorner})$.</p></div>
+<div class="niveau" data-niveau="philo"><p>This is the logical version of the <a href="smn-recursion.html#kleene">recursion theorem</a>: a sentence can speak of its own code, as a program can know its own text. With $\psi(x)=$ “$x$ is not provable”, one obtains a sentence that says “I am not provable”.</p></div>
+<div class="niveau" data-niveau="tech"><p>Let $\mathrm{sb}(m,n)$ be the code of the formula obtained by replacing, in the formula with code $m$, the variable $x$ by $\underline n$; $\mathrm{sb}$ is primitive recursive. Set $\delta(x)=\exists y\,\big(\phi_{\mathrm{sb}}(x,x,y)\wedge\psi(y)\big)$, $m=\ulcorner\delta\urcorner$ and $G=\delta(\underline m)$. Then $\mathrm{sb}(m,m)=\ulcorner G\urcorner=g$, and, by the <a href="#pa-rp">previous lemma</a>, $\mathsf{PA}\vdash\forall y\,\big(\phi_{\mathrm{sb}}(\underline m,\underline m,y)\Leftrightarrow y=\underline g\big)$. So $\mathsf{PA}\vdash G\Leftrightarrow\exists y\,(y=\underline g\wedge\psi(y))\Leftrightarrow\psi(\underline g)$.</p></div>
+</div>
+
+<div class="resultat theoreme" id="derivabilite"><div class="entete-res"><div class="type">Lemma</div><div class="nom">Derivability conditions (Hilbert, Bernays, Löb)</div></div>
+<div class="enonce"><p>For every theory $\mathsf T$ as above and all sentences $\phi,\psi$:</p>
+<ol>
+<li>if $\mathsf T\vdash\phi$, then $\mathsf{PA}\vdash\Box\phi$;</li>
+<li>$\mathsf{PA}\vdash\Box(\phi\Rightarrow\psi)\Rightarrow(\Box\phi\Rightarrow\Box\psi)$;</li>
+<li>$\mathsf{PA}\vdash\sigma\Rightarrow\Box\sigma$ for every Σ sentence $\sigma$; in particular $\mathsf{PA}\vdash\Box\phi\Rightarrow\Box\Box\phi$.</li>
+</ol></div>
+<div class="niveau" data-niveau="philo"><p>These three properties say that $\mathsf{PA}$ knows, about $\mathsf T$, what we know ourselves: that an existing proof is a proof (1), that two proofs can be chained (2), and that a computation that succeeds can be checked (3).</p></div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Notation.</strong> For a formula $\phi(\vec x)$, let $s_\phi(\vec n)=\ulcorner\phi(\underline{\vec n})\urcorner$, a primitive recursive function (substitution of the numerals $\underline{n_j}$, with code $\mathrm{num}(n_j)$, for the variables). We write $\Box\phi(\dot{\vec x})$ for the formula $\exists f\,\big(\phi_{s_\phi}(\vec x,f)\wedge\mathrm{Prov}_{\mathsf T}(f)\big)$; for closed $\phi$, this is $\Box\phi$. The primitive recursive relation “$p$ is a proof of $f$” is defined, by a formula $\mathrm{Prf}_{\mathsf T}$, as: $\mathrm{lh}(p)\ge1$, the last term of $p$ is $f$, and for every $i<\mathrm{lh}(p)$, the term $(p)_i$ is an axiom, or there are $j,k&lt;i$ with $(p)_k=\mathrm{imp}((p)_j,(p)_i)$ (<em>modus ponens</em>), or there are $j&lt;i$ and a variable $v$ with $(p)_i=\mathrm{gen}(v,(p)_j)$ (generalization); $\mathrm{imp}(a,b)$ is the code of $\phi\Rightarrow\psi$ if $a,b$ are those of $\phi,\psi$, and so on.</p>
+<p><strong>(F) Symbolic computation in PA.</strong> $\mathsf{PA}$ proves the defining equations of primitive recursive functions (<a href="#pa-rp">lemma</a>), hence all identities obtained by unfolding these definitions finitely many times, and, by induction, identities with variables such as $\mathrm{num}(y+1)=\ulcorner\cdot+1\urcorner(\mathrm{num}(y))$ (the numeral of $y+1$ is that of $y$ followed by $+1$), “$\mathrm{num}(y)$ is a closed term”, $s_{\phi\Rightarrow\psi}(\vec x)=\mathrm{imp}(s_\phi(\vec x),s_\psi(\vec x))$, or the lengths and terms of a concatenation of sequences: $\mathrm{lh}(p\frown q)=\mathrm{lh}(p)+\mathrm{lh}(q)$, $(p\frown q)_i=(p)_i$ if $i<\mathrm{lh}(p)$ and $(p\frown q)_{\mathrm{lh}(p)+i}=(q)_i$ if $i<\mathrm{lh}(q)$. Likewise, $\mathsf{PA}$ proves that $\mathrm{Prf}_{\mathsf T}(p,f)$ is equivalent to the conjunction of the clauses defining proofs. These are the only facts about the coding used below.</p>
+<p>(1) If $p$ codes a proof of $\phi$, the sentence $\mathrm{Prf}_{\mathsf T}(\underline p,\underline{\ulcorner\phi\urcorner})$ is true, hence provable in $\mathsf{PA}$ (Σ-completeness), and $\Box\phi$ follows. We shall need the <em>uniform form</em>: if $\mathsf T\vdash\phi(\vec x)$, then $\mathsf{PA}\vdash\forall\vec x\,\Box\phi(\dot{\vec x})$. Let $\pi$ be a proof of $\phi(\vec x)$; a proof of $\phi(\underline{\vec n})$ is $\pi$ followed by the generalizations $\forall x_k\phi,\dots,\forall x_1\cdots\forall x_k\phi$, then the logical axioms $\forall x_1\cdots\forall x_k\phi\Rightarrow\forall x_2\cdots\forall x_k\phi(\underline{n_1},x_2,\dots)$, etc., and the corresponding <em>modus ponens</em>. Its code $P(\vec n)$ is a primitive recursive function of $\vec n$, and $\mathsf{PA}\vdash\forall\vec n\,\mathrm{Prf}_{\mathsf T}(P(\vec n),s_\phi(\vec n))$: the lines of $\pi$ and the generalizations are fixed lines, whose correctness $\mathsf{PA}$ checks (Σ-completeness), and the instantiation lines are logical axioms because $\mathrm{num}(n_j)$ is a closed term (F), hence substitutable.</p>
+<p>(2) Reason in $\mathsf{PA}$. Let $p$ be a proof of $\mathrm{imp}(a,b)$ and $q$ a proof of $a$, and $r=p\frown q\frown\langle b\rangle$. By (F), for $i<\mathrm{lh}(p)$, the line $(r)_i=(p)_i$ is justified in $r$ as in $p$, by the same indices; for $\mathrm{lh}(p)\le i<\mathrm{lh}(p)+\mathrm{lh}(q)$, the line $(r)_i=(q)_{i-\mathrm{lh}(p)}$ is justified as in $q$, the indices being shifted by $\mathrm{lh}(p)$; the last line $b$ is obtained by <em>modus ponens</em> from lines $\mathrm{lh}(p)+\mathrm{lh}(q)-1$ (which is $a$) and $\mathrm{lh}(p)-1$ (which is $\mathrm{imp}(a,b)$). So $\mathrm{Prf}_{\mathsf T}(r,b)$. This gives (2), and its form with variables: $\mathsf{PA}\vdash\Box(\phi\Rightarrow\psi)(\dot{\vec x})\wedge\Box\phi(\dot{\vec x})\Rightarrow\Box\psi(\dot{\vec x})$, thanks to $s_{\phi\Rightarrow\psi}=\mathrm{imp}(s_\phi,s_\psi)$. With the uniform form of (1), one gets: if $\mathsf T\vdash\phi_1\wedge\cdots\wedge\phi_k\Rightarrow\psi$ (formulas with variables $\vec x$), then $\mathsf{PA}\vdash\Box\phi_1(\dot{\vec x})\wedge\cdots\wedge\Box\phi_k(\dot{\vec x})\Rightarrow\Box\psi(\dot{\vec x})$. Call this <em>reasoning under $\Box$</em>.</p>
+<p>(3) We show, for every Σ formula $\sigma(\vec x)$, that $\mathsf{PA}\vdash\forall\vec x\,\big(\sigma(\vec x)\Rightarrow\Box\sigma(\dot{\vec x})\big)$, by induction on $\sigma$, after three preliminary results proved in $\mathsf{PA}$.</p>
+<ul>
+<li>(A) $\forall u\,\forall v\ \Box(\dot u+\dot v=\dot w)$ with $w=u+v$. By induction on $v$: for $v=0$, reason under $\Box$ with the axiom $x+0=x$ ($\dot 0$ is the term $0$); from $v$ to $v+1$, the axiom $x+(y+1)=(x+y)+1$, the hypothesis $\Box(\dot u+\dot v=\dot w)$ and the rules of equality give, under $\Box$, $\dot u+(\dot v+1)=\dot w+1$, and $\dot v+1$, $\dot w+1$ are the numerals of $v+1$, $w+1$ (F). Likewise (M) for $\times$, with the axioms of $\times$ and (A).</li>
+<li>(T) For every term $t(\vec x)$: $\forall\vec x\ \Box\big(t(\dot{\vec x})=\dot n\big)$ with $n=t(\vec x)$. By induction on $t$: $\Box(\dot x=\dot x)$; $0$ and $1$ are provably equal to the numerals $0$ and $0+1$; for $t_1+t_2$ and $t_1\times t_2$, reason under $\Box$ with the induction hypotheses, the compatibility of equality with $+$ and $\times$, then (A) or (M).</li>
+<li>(N) $\forall u\,\forall v\ \big(u\ne v\Rightarrow\Box\neg(\dot u=\dot v)\big)$. By induction on $u$: if $u=0$, then $v=v_1+1$ and the axiom $\neg(x+1=0)$ gives $\Box\neg(0=\dot v_1+1)$; if $u=u_1+1$ and $v=0$, likewise; if $u=u_1+1$ and $v=v_1+1$, the induction hypothesis gives $\Box\neg(\dot u_1=\dot v_1)$, and the axiom $x+1=y+1\Rightarrow x=y$, under $\Box$, gives $\Box\neg(\dot u_1+1=\dot v_1+1)$.</li>
+</ul>
+<p>Induction on $\sigma$, still in $\mathsf{PA}$:</p>
+<ul>
+<li>$t_1=t_2$: if $t_1(\vec x)=t_2(\vec x)=n$, (T) gives $\Box(t_1(\dot{\vec x})=\dot n)$ and $\Box(t_2(\dot{\vec x})=\dot n)$, whence $\Box(t_1(\dot{\vec x})=t_2(\dot{\vec x}))$ under $\Box$. $\neg(t_1=t_2)$: if the values $n_1\ne n_2$, (T) and (N) likewise give $\Box\neg(t_1(\dot{\vec x})=t_2(\dot{\vec x}))$;</li>
+<li>$\sigma_1\wedge\sigma_2$, $\sigma_1\vee\sigma_2$: induction hypotheses, then under $\Box$ with $\phi\Rightarrow(\psi\Rightarrow\phi\wedge\psi)$ and $\phi\Rightarrow\phi\vee\psi$;</li>
+<li>$\exists y\,\sigma(\vec x,y)$: if $\sigma(\vec x,y)$, the induction hypothesis (the variable $y$ being one of the variables) gives $\Box\sigma(\dot{\vec x},\dot y)$, and the logical axiom $\sigma(\vec x,y)\Rightarrow\exists y\,\sigma(\vec x,y)$, under $\Box$, gives $\Box\,\exists y\,\sigma(\dot{\vec x},y)$;</li>
+<li>$\forall y&lt;t\ \sigma$: first show, by induction on $n$, $\forall y&lt;n\ \sigma(\vec x,y)\Rightarrow\Box\,\forall y<\dot n\ \sigma(\dot{\vec x},y)$. For $n=0$, $\forall y<0\ \sigma$ is provable ($\neg\,y<0$). From $n$ to $n+1$: the hypothesis gives $\forall y&lt;n\ \sigma$ and $\sigma(\vec x,n)$, hence $\Box\,\forall y<\dot n\ \sigma$ (induction) and $\Box\sigma(\dot{\vec x},\dot n)$ (induction on $\sigma$), and the provable formula $\forall y&lt;z\ \sigma\wedge\sigma(\vec x,z)\Rightarrow\forall y&lt;z+1\ \sigma$, under $\Box$, concludes. One passes from $\dot n$ to the term $t$ by (T). The case $\exists y&lt;t\ \sigma$ is similar: a witness $y&lt;n$ gives $\Box\sigma(\dot{\vec x},\dot y)$ and $\Box(\dot y<\dot n)$ (cases already treated, $y&lt;n$ being a Σ formula).</li>
+</ul>
+<p>Finally $\Box\phi$ is a Σ sentence, whence $\mathsf{PA}\vdash\Box\phi\Rightarrow\Box\Box\phi$.</p>
+<p>The proofs above are complete, except that the symbol-by-symbol writing of the coding functions and of the identities (F) is not spelled out: these are primitive recursive definitions and routine inductions (Hilbert and Bernays, 1939, give all the details; see also Boolos, <em>The Logic of Provability</em>, 1993).</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="godel2"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Second incompleteness theorem (Gödel, 1931)</div></div>
+<div class="enonce"><p>Let $\mathsf T$ be a theory containing $\mathsf{PA}$ whose set of axioms is primitive recursive. If $\mathsf T$ is consistent, then $\mathsf T$ does not prove the sentence $\mathrm{Con}(\mathsf T)$ expressing its own consistency.</p></div>
+<div class="niveau" data-niveau="philo"><p>A system cannot guarantee its own reliability from within. To prove that a theory is consistent, one needs a stronger theory, whose consistency is even less assured. This is the end of Hilbert’s programme, which sought to found mathematics by proving its consistency by elementary means.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>By the <a href="#diagonal">diagonal lemma</a> applied to $\psi(x)=\neg\mathrm{Prov}_{\mathsf T}(x)$, there is $G$ with $\mathsf{PA}\vdash G\Leftrightarrow\neg\Box G$: “I am not provable in $\mathsf T$”.</p>
+<p>(i) $\mathsf T\nvdash G$. Otherwise, by condition 1, $\mathsf T\vdash\Box G$, and, since $\mathsf T\vdash G\Rightarrow\neg\Box G$, $\mathsf T\vdash\neg\Box G$: $\mathsf T$ would be inconsistent.</p>
+<p>(ii) $\mathsf{PA}\vdash\mathrm{Con}(\mathsf T)\Rightarrow G$. Indeed:</p>
+<ul>
+<li>from $\mathsf{PA}\vdash G\Rightarrow\neg\Box G$, conditions 1 and 2 give $\mathsf{PA}\vdash\Box G\Rightarrow\Box\neg\Box G$;</li>
+<li>condition 3 gives $\mathsf{PA}\vdash\Box G\Rightarrow\Box\Box G$;</li>
+<li>the tautology $\Box G\Rightarrow(\neg\Box G\Rightarrow0=1)$ and conditions 1 and 2 give $\mathsf{PA}\vdash\Box\Box G\Rightarrow(\Box\neg\Box G\Rightarrow\Box(0=1))$;</li>
+<li>so $\mathsf{PA}\vdash\Box G\Rightarrow\Box(0=1)$, that is, $\mathsf{PA}\vdash\mathrm{Con}(\mathsf T)\Rightarrow\neg\Box G$, and $\neg\Box G\Rightarrow G$.</li>
+</ul>
+<p>(iii) If $\mathsf T\vdash\mathrm{Con}(\mathsf T)$, then, since $\mathsf T$ contains $\mathsf{PA}$, (ii) gives $\mathsf T\vdash G$, which (i) forbids.</p>
+<p>Point (ii) is the formalization, in $\mathsf{PA}$, of the first theorem: “if $\mathsf T$ is consistent, $G$ is not provable”. All the technical difficulty lies in condition 3.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="rosser"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Gödel under ω-consistency and Rosser under consistency</div></div>
+<div class="enonce"><p>Let $\mathsf T$ be a theory containing $\mathsf{PA}$, with a primitive recursive set of axioms.</p>
+<ol>
+<li>(Gödel, 1931) If $\mathsf T$ is <em>ω-consistent</em>, that is, if there is no formula $\phi(x)$ such that $\mathsf T\vdash\exists x\,\phi(x)$ and $\mathsf T\vdash\neg\phi(\underline n)$ for every $n$, then the sentence $G$ of the second theorem is neither provable nor refutable in $\mathsf T$.</li>
+<li>(Rosser, 1936) If $\mathsf T$ is merely consistent, there is a sentence $R$ that is neither provable nor refutable in $\mathsf T$.</li>
+</ol></div>
+<div class="niveau" data-niveau="philo"><p>Soundness (“everything $\mathsf T$ proves is true”) is a strong semantic hypothesis, which cannot be checked from within. Gödel weakens it to a syntactic condition, ω-consistency; Rosser shows that it suffices that the theory not contradict itself. His sentence says: “if I am proved, I was refuted earlier”. It compares the lengths of proofs instead of speaking only of their existence.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>Recall that $\mathrm{Prf}_{\mathsf T}(p,f)$ defines a primitive recursive relation: by the <a href="#pa-rp">lemma</a> on primitive recursive functions, for all integers $p,f$, $\mathsf{PA}$ proves $\mathrm{Prf}_{\mathsf T}(\underline p,\underline f)$ if it is true and its negation otherwise. An ω-consistent theory is consistent (an inconsistent theory proves everything).</p>
+<p>(1) $\mathsf T\nvdash G$ by point (i) of the proof of the second theorem (which uses only consistency). Suppose $\mathsf T\vdash\neg G$, hence $\mathsf T\vdash\Box G$, that is, $\mathsf T\vdash\exists p\ \mathrm{Prf}_{\mathsf T}(p,\underline{\ulcorner G\urcorner})$. Since $G$ has no proof, each sentence $\mathrm{Prf}_{\mathsf T}(\underline n,\underline{\ulcorner G\urcorner})$ is false, hence refutable in $\mathsf{PA}\subseteq\mathsf T$: $\mathsf T$ is not ω-consistent.</p>
+<p>(2) Let $\mathrm{neg}$ be the primitive recursive function that associates with $\ulcorner\phi\urcorner$ the code of $\neg\phi$. By the <a href="#diagonal">diagonal lemma</a>, there is $R$ such that
+$$\mathsf{PA}\vdash R\Leftrightarrow\forall p\,\Big(\mathrm{Prf}_{\mathsf T}(p,\underline{\ulcorner R\urcorner})\Rightarrow\exists q\le p\ \mathrm{Prf}_{\mathsf T}\big(q,\mathrm{neg}(\underline{\ulcorner R\urcorner})\big)\Big),$$
+where $\mathrm{neg}(\underline{\ulcorner R\urcorner})$ is written using the formula for $\mathrm{neg}$; $\mathsf{PA}$ proves that it equals $\underline{\ulcorner\neg R\urcorner}$.</p>
+<ul>
+<li>Suppose $p_0$ codes a proof of $R$ in $\mathsf T$. Since $\mathsf T$ is consistent, $\neg R$ has no proof, and for each $q\le p_0$, $\mathsf{PA}\vdash\neg\mathrm{Prf}_{\mathsf T}(\underline q,\underline{\ulcorner\neg R\urcorner})$. With $\mathsf{PA}\vdash\forall q\,(q\le\underline{p_0}\Leftrightarrow q=\underline0\vee\cdots\vee q=\underline{p_0})$ (Σ-completeness, point (c)), $\mathsf{PA}\vdash\neg\exists q\le\underline{p_0}\ \mathrm{Prf}_{\mathsf T}(q,\underline{\ulcorner\neg R\urcorner})$. With $\mathsf{PA}\vdash\mathrm{Prf}_{\mathsf T}(\underline{p_0},\underline{\ulcorner R\urcorner})$, we get $\mathsf{PA}\vdash\neg R$, and $\mathsf T$ proves $R$ and $\neg R$: contradiction.</li>
+<li>Suppose $q_0$ codes a proof of $\neg R$. Since $R$ has no proof, for each $p\le q_0$, $\mathsf{PA}\vdash\neg\mathrm{Prf}_{\mathsf T}(\underline p,\underline{\ulcorner R\urcorner})$. Reason in $\mathsf{PA}$: let $p$ be such that $\mathrm{Prf}_{\mathsf T}(p,\underline{\ulcorner R\urcorner})$; we have $p\le\underline{q_0}$ or $\underline{q_0}\le p$; the first case is excluded (it is one of $p=\underline0,\dots,\underline{q_0}$, all refuted); in the second, $q=\underline{q_0}$ works, since $\mathrm{Prf}_{\mathsf T}(\underline{q_0},\underline{\ulcorner\neg R\urcorner})$. So $\mathsf{PA}\vdash R$, and $\mathsf T$ proves $R$ and $\neg R$: contradiction.</li>
+</ul>
+</div>
+</div>
+
+<h2 id="le-probleme-de-la-decision">The decision problem</h2>
+
+<p>We consider here predicate calculus <em>without equality</em>, over an arbitrary countable language: constants, function symbols and relation symbols. A sentence is <strong>valid</strong> if it is true in every structure (every nonempty domain, every interpretation of the symbols). Every sentence can be written, effectively, in <em>negation normal form</em>: without $\Rightarrow$, negation applying only to atomic formulas (push negations inwards with De Morgan’s laws and $\neg\forall=\exists\neg$). A sentence $\phi$ is valid if and only if the negation normal form of $\neg\phi$ has no model.</p>
+
+<div class="resultat theoreme" id="completude"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Completeness of tableaux (Gödel, 1929, in the form of Beth and Smullyan)</div></div>
+<div class="enonce">
+<p>A <strong>tableau</strong> for a finite set $\Gamma$ of sentences in negation normal form is a tree each node of which carries a sentence, built from a branch formed by the elements of $\Gamma$ by applying, to a sentence already present on a branch, one of the following rules at the end of that branch:</p>
+<ul>
+<li>(α) for $A\wedge B$, add $A$ then $B$;</li>
+<li>(β) for $A\vee B$, split the branch in two, one with $A$, the other with $B$;</li>
+<li>(γ) for $\forall x\,A$, add $A[x:=t]$ for a closed term $t$;</li>
+<li>(δ) for $\exists x\,A$, add $A[x:=c]$ for a new constant $c$, taken from a reserve $c_0,c_1,\dots$ and absent from the branch.</li>
+</ul>
+<p>A branch is <strong>closed</strong> if it contains an atomic formula and its negation; a tableau is closed if all its branches are.</p>
+<p><em>Theorem.</em> $\Gamma$ has no model if and only if it admits a closed tableau, and one can then be found by a fixed systematic construction. Consequently, the set of valid sentences is semi-decidable.</p>
+</div>
+<div class="niveau" data-niveau="philo"><p>If a sentence is true in all possible interpretations, there is a finite proof showing it, and a machine can find it by trying them all. What Gödel showed in 1929, two years before incompleteness, is that logic itself is complete: only theories that speak about the integers escape all axiomatization. Proof search in logic is therefore a semi-decidable problem, like halting.</p></div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Soundness.</strong> If $\Gamma$ has a model $\mathcal M$, every tableau for $\Gamma$ has a branch all of whose sentences are true in an extension of $\mathcal M$ (interpreting the reserve constants used). This holds at the start, and each rule preserves it: for (β), one of $A$, $B$ is true; for (γ), $A[x:=t]$ is true since $\forall x\,A$ is; for (δ), interpret the new constant $c$ by a witness of $\exists x\,A$. Such a branch is not closed.</p>
+<p><strong>Systematic construction.</strong> Enumerate $t_0,t_1,\dots$ the closed terms of the language augmented with the reserve constants. At step $n$, on each non-closed branch, apply the rule of each sentence present: only once in total for α, β and δ; and, for each sentence $\forall x\,A$, add the $A[x:=t_k]$ for all $k\le n$ (those not already there). Stop extending a branch as soon as it is closed. Each step is finite.</p>
+<p><strong>König’s lemma.</strong> If the systematic tableau is closed, it is finite. Indeed, each node has at most two children. If the tree were infinite, one of the children of the root would have infinitely many descendants, then one of its children, and so on: one would obtain an infinite branch. But a closed branch stops being extended, so an infinite branch is never closed.</p>
+<p><strong>Completeness.</strong> If the systematic tableau is not closed, it has an open branch $B$ (finite, or infinite by König’s lemma). Let $H$ be the set of sentences of $B$. By construction:</p>
+<ul>
+<li>$H$ does not contain both an atom and its negation;</li>
+<li>if $A\wedge B\in H$, then $A,B\in H$, and if $A\vee B\in H$, then $A\in H$ or $B\in H$;</li>
+<li>if $\exists x\,A\in H$, then $A[x:=c]\in H$ for some constant $c$;</li>
+<li>if $\forall x\,A\in H$, then $A[x:=t]\in H$ for <em>every</em> closed term $t$, since $t=t_k$ is added at step $\max(n,k)$ if $\forall x\,A$ appears at step $n$.</li>
+</ul>
+<p>Define the Herbrand structure $\mathcal H$: its domain is the set of closed terms; a function symbol $f$ sends $t_1,\dots,t_k$ to the term $f(t_1,\dots,t_k)$; a relation $P$ is true at $(t_1,\dots,t_k)$ if and only if $P(t_1,\dots,t_k)\in H$. Each closed term denotes itself there, and, by induction on the size of sentences, every sentence of $H$ is true in $\mathcal H$: for an atom, this is the definition; for $\neg P(\vec t)$, use that $P(\vec t)\notin H$; for $\forall x\,A$, all its instances $A[x:=t]$, smaller, are true, and the elements of the domain are exactly the terms $t$. So $\Gamma\subseteq H$ has a model.</p>
+<p><strong>Semi-decidability.</strong> For a sentence $\phi$, build step by step the systematic tableau of the negation normal form of $\neg\phi$, and stop if it closes. By the above, this happens if and only if $\neg\phi$ has no model, that is, if $\phi$ is valid.</p>
+<p>With equality, one reduces to this case by replacing $=$ by a relation symbol $E$ and adding as hypotheses the axioms making $E$ a congruence; a model of these axioms gives, by passing to the quotient, a model in which $E$ is equality.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Example: $\phi=\exists x\,\forall y\,P(x,y)\Rightarrow\forall y\,\exists x\,P(x,y)$. The negation normal form of $\neg\phi$ is $\exists x\,\forall y\,P(x,y)\wedge\exists y\,\forall x\,\neg P(x,y)$. The tableau: (α) gives the two conjuncts; (δ) gives $\forall y\,P(c_0,y)$ and $\forall x\,\neg P(x,c_1)$; (γ) gives $P(c_0,c_1)$ and $\neg P(c_0,c_1)$: the branch is closed, so $\phi$ is valid. The converse $\forall y\,\exists x\,P\Rightarrow\exists x\,\forall y\,P$ gives on the contrary an infinite tableau, whose open branch describes a countermodel.</p></div>
+</div>
+
+<div class="resultat theoreme" id="entscheidung"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Church-Turing theorem (1936)</div></div>
+<div class="enonce"><p>There is no algorithm that decides whether a sentence of first-order predicate calculus is universally valid (true in all interpretations), even without equality. Hilbert and Ackermann’s <em>Entscheidungsproblem</em> has a negative answer. The set of valid sentences is semi-decidable, but not decidable.</p></div>
+<div class="niveau" data-niveau="philo"><p>This was the goal of Turing’s 1936 paper, and the reason why he invented his machines: to prove that there is no universal “proving machine”, one first had to say what a machine is. Leibniz’s dream, to settle every controversy by a computation (“<em>Calculemus!</em>”), is impossible in its general form. The computer was born of an impossibility theorem. The chapter <a href="logic-and-types.html#frontiere">Logic and types</a> specifies where the frontier runs: propositional calculus and the logic of one-place properties are decidable, and a single two-place relation suffices to make everything undecidable. The chapter <a href="decidable-theories.html">Decidable theories</a> presents, on the contrary, theories that can be decided, such as addition on the integers or the real numbers.</p></div>
+<div class="niveau" data-niveau="tech">
+<p>To every machine $Z$ (in quadruple format) and every integer $x$, we effectively associate a sentence $\phi_{Z,x}$, valid if and only if $Z$ halts on input $\overline x$. A decider for validity would therefore decide halting, which is impossible; and semi-decidability is the <a href="#completude">completeness theorem</a>.</p>
+<p><strong>The language.</strong> A constant $o$, two function symbols $s$ and $p$ (successor and predecessor), two binary relations $E$ (“same cell”) and $L$ (“to the left of”), and, for each state $q_i$ and each symbol $S_j$ of $Z$, two binary relations: $Q_i(t,h)$, “at instant $t$, the machine is in state $q_i$, the head at $h$”, and $C_j(t,u)$, “at instant $t$, cell $u$ contains $S_j$”. We write $[z]$, for $z\in\mathbb Z$, for the term $s^z(o)$ if $z\ge0$ and $p^{-z}(o)$ if $z<0$. The instants will be the terms $s^k(o)$.</p>
+<p><strong>The axioms</strong> (universal closures):</p>
+<ul>
+<li>(E) $E$ is an equivalence relation; $E(x,y)\Rightarrow E(sx,sy)\wedge E(px,py)$; $E(s\,p\,x,x)$; $E(p\,s\,x,x)$; $E(x,y)\wedge Q_i(t,x)\Rightarrow Q_i(t,y)$ and $E(x,y)\wedge C_j(t,x)\Rightarrow C_j(t,y)$ for all $i,j$;</li>
+<li>(L) $L(x,sx)$; $L(x,y)\wedge L(y,z)\Rightarrow L(x,z)$; $\neg L(x,x)$; $E(x,y)\wedge L(y,z)\Rightarrow L(x,z)$; $L(x,y)\wedge E(y,z)\Rightarrow L(x,z)$;</li>
+<li>(I) the initial state: $Q_0(o,o)$, $C_1(o,[k])$ for $0\le k\le x$, and $L(u,o)\vee L([x],u)\Rightarrow C_B(o,u)$;</li>
+<li>(T) for each quadruple $q_iS_jS_kq_l$: $Q_i(t,h)\wedge C_j(t,h)\Rightarrow Q_l(st,h)\wedge C_k(st,h)$; for $q_iS_jRq_l$: $Q_i(t,h)\wedge C_j(t,h)\Rightarrow Q_l(st,sh)\wedge C_j(st,h)$; for $q_iS_jLq_l$: likewise with $ph$;</li>
+<li>(F) for each quadruple beginning with $q_iS_j$ and each symbol $S_m$: $Q_i(t,h)\wedge C_j(t,h)\wedge C_m(t,u)\wedge\neg E(u,h)\Rightarrow C_m(st,u)$ (the other cells do not change).</li>
+</ul>
+<p>Let $\mathrm{Ax}$ be their conjunction, and $\mathrm{Halt}=\exists t\,\exists h\,\bigvee Q_i(t,h)\wedge C_j(t,h)$, the disjunction ranging over the pairs $(q_i,S_j)$ for which $Z$ has no quadruple. Set $\phi_{Z,x}=\mathrm{Ax}\Rightarrow\mathrm{Halt}$.</p>
+<p><strong>If $Z$ halts, $\phi_{Z,x}$ is valid.</strong> Let $\mathcal M$ be a model of $\mathrm{Ax}$, and $e_z$ the element denoted by $[z]$. By (E), $s(e_z)$ is $E$-equivalent to $e_{z+1}$ and $p(e_z)$ to $e_{z-1}$ (for example, for $z<0$, $s(e_z)=s(p(e_{z+1}))$). By (L), $L(e_z,e_{z'})$ for $z&lt;z'$; so $\neg E(e_z,e_{z'})$ if $z\neq z'$, since $E(e_{z'},e_z)$ and $L(e_z,e_{z'})$ would give $L(e_{z'},e_{z'})$. We then show, by induction on $k$: if, after $k$ steps, the machine is in state $q_i$, the head on cell $z$, with contents $\tau(w)$ in each cell $w$, then $\mathcal M\models Q_i(s^ko,e_z)$ and $\mathcal M\models C_{\tau(w)}(s^ko,e_w)$ for every $w\in\mathbb Z$. For $k=0$, this is (I) (the cells $w<0$ and $w>x$ satisfy $L(e_w,o)$ or $L(e_x,e_w)$). At the next step, the axiom (T) of the quadruple applied gives the new state, at a position $E$-equivalent to $e_{z\pm1}$ or $e_z$, then (E) transports it to $e_{z\pm1}$; it also gives the contents of cell $z$; and (F) gives those of the cells $w\ne z$, since $\neg E(e_w,e_z)$. If the machine halts after $k$ steps in state $q_i$ reading $S_j$, no quadruple begins with $q_iS_j$, and $t=s^ko$, $h=e_z$ witness $\mathrm{Halt}$.</p>
+<p><strong>If $Z$ does not halt, $\phi_{Z,x}$ is not valid.</strong> Take the domain $\mathbb Z$, $o=0$, $s(z)=z+1$, $p(z)=z-1$, $E$ equality, $L$ the strict order, $Q_i(t,h)$ true if and only if $t\ge0$ and the machine is, after $t$ steps, in state $q_i$ with the head at $h$, and $C_j(t,u)$ true if and only if $t\ge0$ and cell $u$ then contains $S_j$. The axioms (E), (L), (I) are true. For (T) and (F): their premise $Q_i(t,h)\wedge C_j(t,h)$ is true only if, at instant $t$, the machine is in state $q_i$ and reads $S_j$; since $Z$ is deterministic, the quadruple beginning with $q_iS_j$ is the one that applies, and the conclusion describes instant $t+1$. Finally $\mathrm{Halt}$ is false, since the machine never halts. This structure is a model of $\mathrm{Ax}\wedge\neg\mathrm{Halt}$.</p>
+<p>The map $(Z,x)\mapsto\phi_{Z,x}$ is computable, and $\phi_{Z,x}$ does not contain equality. The halting problem therefore reduces to validity, which is undecidable.</p>
+</div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<p class="legende-exo">Levels: ★ direct application of the course, ★★ standard exercise, ★★★ going further. Solutions are hidden: click “Solution” to show them.</p><div class="exercice" id="ex-inc-deux"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 1 — 2 + 2 = 4 in PA</span></div><div class="corps-exo">
+<p>Show that $\mathsf{PA}\vdash\underline2+\underline2=\underline4$, using only the axioms $x+0=x$ and $x+(y+1)=(x+y)+1$ and the rules of equality.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Recall that $\underline2=(0+1)+1$ and $\underline4=(((0+1)+1)+1)+1$. By the axiom $x+(y+1)=(x+y)+1$ with $y=0+1$: $\underline2+\underline2=\underline2+((0+1)+1)=(\underline2+(0+1))+1$. Again with $y=0$: $\underline2+(0+1)=(\underline2+0)+1$, and $\underline2+0=\underline2$ by the first axiom. Substituting (rules of equality): $\underline2+\underline2=((\underline2)+1)+1=\underline4$. Each step is an instance of an axiom or of the substitution rule; this is the prototype of <a href="#sigma-complet">Σ-completeness</a>: true computations on explicit integers are provable.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-inc-complete"><div class="entete-exo"><span class="etoiles" title="level 1">★</span><span class="nom-exo">Exercise 2 — A complete theory is decidable</span></div><div class="corps-exo">
+<p>Let $\mathsf T$ be a consistent theory with decidable axioms, <em>complete</em>: for every sentence $\phi$, $\mathsf T\vdash\phi$ or $\mathsf T\vdash\neg\phi$. Show that the set of theorems of $\mathsf T$ is decidable.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Given $\phi$, enumerate all proofs of $\mathsf T$ (one can check mechanically whether a text is a proof). By completeness, one eventually finds a proof of $\phi$ or a proof of $\neg\phi$. In the first case, $\phi$ is a theorem. In the second, $\phi$ is not one, otherwise $\mathsf T$ would prove $\phi$ and $\neg\phi$, and would be inconsistent. The procedure always terminates. Contrapositive: a consistent theory with decidable axioms whose theorems are undecidable is incomplete. This is the road to incompleteness followed in exercise 5.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-inc-indecidable"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 3 — The theorems of PA are undecidable</span></div><div class="corps-exo">
+<p>Assume that $\mathsf{PA}$ is sound. Show that $K\le_m\{\ulcorner\phi\urcorner:\mathsf{PA}\vdash\phi\}$, and deduce that the set of theorems of $\mathsf{PA}$ is semi-decidable but not decidable.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>By <a href="#representabilite">definability</a>, one computes from $e$ a $\Sigma_1$ sentence $H_e$ expressing “$\varphi_e(e)\conv$” (“there is a computation code $s$ such that $T(e,e,s)$”). If $e\in K$, $H_e$ is a true Σ sentence, hence provable in $\mathsf{PA}$ (<a href="#sigma-complet">Σ-completeness</a>). If $\mathsf{PA}\vdash H_e$, then $H_e$ is true, since $\mathsf{PA}$ is sound, so $e\in K$. Thus $e\mapsto\ulcorner H_e\urcorner$ reduces $K$ to the theorems. These are semi-decidable (enumerate proofs) and not decidable, otherwise $K$ would be.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-inc-coherente-fausse"><div class="entete-exo"><span class="etoiles" title="level 2">★★</span><span class="nom-exo">Exercise 4 — Consistent but false</span></div><div class="corps-exo">
+<p>Assume $\mathsf{PA}$ is consistent. Show that the theory $\mathsf T=\mathsf{PA}+\neg\mathrm{Con}(\mathsf{PA})$ is consistent, but that it proves a false sentence.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>If $\mathsf T$ were inconsistent, we would have $\mathsf{PA}+\neg\mathrm{Con}(\mathsf{PA})\vdash0=1$, so $\mathsf{PA}\vdash\neg\neg\mathrm{Con}(\mathsf{PA})$ (proof by contradiction, valid in the calculus used), that is, $\mathsf{PA}\vdash\mathrm{Con}(\mathsf{PA})$, which the <a href="#godel2">second incompleteness theorem</a> forbids. So $\mathsf T$ is consistent. But it proves $\neg\mathrm{Con}(\mathsf{PA})$, which says “there is a proof of $0=1$ in $\mathsf{PA}$”: this is false since $\mathsf{PA}$ is consistent. Consistency is therefore strictly weaker than soundness, and this is why Rosser had to work to use consistency alone (<a href="#rosser">Rosser’s theorem</a>). $\mathsf T$ asserts the existence of an integer (the code of a proof) that it cannot exhibit: it is not ω-consistent.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-inc-inseparables"><div class="entete-exo"><span class="etoiles" title="level 3">★★★</span><span class="nom-exo">Exercise 5 — Every consistent extension of PA is undecidable</span></div><div class="corps-exo">
+<p>Let $\mathsf T\supseteq\mathsf{PA}$ be consistent, not necessarily sound. Using the <a href="semi-decidability.html#ex-sd-inseparables">recursively inseparable</a> sets $A=\{e:\varphi_e(e)=0\}$ and $B=\{e:\varphi_e(e)=1\}$, show that the set of theorems of $\mathsf T$ is not decidable. Deduce a new proof of incompleteness under the sole hypothesis of consistency.</p>
+<details class="corrige"><summary>Solution</summary><div class="texte-corrige">
+<p>Write “$\varphi_e(e)=y$” in the form $V_e(y)$: $\exists s\,\big(T(e,e,s)\wedge U(s)=y\wedge\forall s'&lt;s\,\neg T(e,e,s')\big)$, with $T$ and $U$ represented as in the <a href="#representabilite">definability proposition</a>. Set $C=\{e:\mathsf T\vdash V_e(\underline0)\}$.</p>
+<p><em>$A\subseteq C$.</em> If $\varphi_e(e)=0$, $V_e(\underline0)$ is a true Σ sentence, hence provable in $\mathsf{PA}\subseteq\mathsf T$.</p>
+<p><em>$B\cap C=\emptyset$.</em> If $\varphi_e(e)=1$, with computation coded by $s_0$, then $\mathsf{PA}$ proves $\neg V_e(\underline0)$. Indeed, reason in $\mathsf{PA}$ about an $s$ witnessing $V_e(\underline0)$. If $s<\underline{s_0}$, $s$ is one of the numerals $\underline0,\dots,\underline{s_0-1}$, and $\neg T(e,e,\underline j)$ is provable for each (true bounded sentence). If $s=\underline{s_0}$, $U(\underline{s_0})=\underline1\ne\underline0$. If $s>\underline{s_0}$, the clause $\forall s'&lt;s\,\neg T$ is contradicted at $s'=\underline{s_0}$. So $\mathsf T\vdash\neg V_e(\underline0)$, and by consistency $\mathsf T\nvdash V_e(\underline0)$: $e\notin C$.</p>
+<p>If the theorems of $\mathsf T$ were decidable, $C$ would be decidable and would separate $A$ from $B$: impossible. With <a href="#ex-inc-complete">exercise 2</a>, if the axioms of $\mathsf T$ are decidable, $\mathsf T$ is incomplete. We have recovered Rosser’s theorem without building a self-referential sentence.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="arithmetical-hierarchy.html"><small>← Previous</small>The arithmetical hierarchy</a><a href="diophantine-equations.html" style="text-align:right"><small>Next →</small>Diophantine equations and Hilbert’s tenth problem</a></nav>
+<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>

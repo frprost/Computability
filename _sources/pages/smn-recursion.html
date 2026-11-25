@@ -1,0 +1,157 @@
+<!--
+titre: The s-m-n theorem and the recursion theorem
+court: s-m-n and recursion
+chapo: Specializing a program, composing programs, and above all: writing programs that know their own text. Kleene’s recursion theorem gives a mathematical form to self-reference.
+prerequis: universality.html|Universality and the φ notation
+-->
+
+<h2 id="le-theoreme-s-m-n">The s-m-n theorem</h2>
+
+<res type="Theorem" nom="s-m-n theorem (Kleene)" id="smn">
+<enonce>
+<p>For all $m,n\ge1$ there is a primitive recursive function $s^m_n:\N^{m+1}\to\N$ such that, for all $e,y_1,\dots,y_m,z_1,\dots,z_n$:</p>
+$$\varphi^{(m+n)}_e(y_1,\dots,y_m,z_1,\dots,z_n)\simeq\varphi^{(n)}_{s^m_n(e,y_1,\dots,y_m)}(z_1,\dots,z_n).$$
+</enonce>
+<philo>
+<p>If a program $P$ depends on five inputs and the values of two of them are known, one can <em>mechanically</em> build a program $Q$ that depends only on the other three: a specialized version of $P$. This is <em>partial evaluation</em>; compilers use it to propagate constants and precompute everything that can be precomputed. The theorem says that this specialization is always possible, and that it is itself a simple computation, which does not require running $P$.</p>
+</philo>
+<tech>
+<p>From $e$ and $\vec y$, build the machine that, starting from $\overline{z_1}B\cdots B\overline{z_n}$, writes $\overline{y_1}B\cdots B\overline{y_m}B$ to the left of its input, moves the head back to the beginning, then runs the machine with index $e$ (states renamed). The code of this machine is obtained from $\eta(e)$ and $\vec y$ by primitive recursive operations on Gödel numbers (concatenation, renaming of states, building a sequence of $y_i+1$ writing quadruples), and one returns to an index via $\eta^{-1}$.</p>
+<p>A short proof “by Church’s thesis” can also be given: the function $(e,\vec y)\mapsto$ “an index of the program that fixes the first $m$ arguments” is clearly computable. But this argument does not say that $s^m_n$ is primitive recursive, or even total; the explicit construction is what guarantees it.</p>
+</tech>
+<techno>
+<p>A concrete example with $m=n=1$: the <a href="turing-machines.html#ex-add">addition</a> machine (states renamed $r_0,\dots,r_4$), specialized at $y=2$. The prefix ($q_0$ to $s_7$) moves back two squares, writes $\overline{2}=111$ towards the left, then hands over to addition by a quadruple with no effect. The result computes $z\mapsto 2+z$.</p>
+<div class="tm-widget" data-titre="s¹₁(addition, 2)" data-args="3"><pre class="src">q0 1 L s1
+s1 B L s2
+s2 B 1 s3
+s3 1 L s4
+s4 B 1 s5
+s5 1 L s6
+s6 B 1 s7
+s7 1 1 r0
+r0 1 B r1
+r1 B R r2
+r2 1 R r2
+r2 B R r3
+r3 1 B r4</pre></div>
+<p>For an arbitrary value $y$, the prefix has $2y+4$ quadruples: <code>q0 1 L s1</code>, <code>s1 B L s2</code>, then for $t=1,\dots,y+1$: <code>s(2t) B 1 s(2t+1)</code> and, except for the last one, <code>s(2t+1) 1 L s(2t+2)</code>; finally <code>s(2y+3) 1 1 r0</code>. The length of the code grows linearly with $y$, which makes the function $s^1_1$ primitive recursive.</p>
+</techno>
+</res>
+
+<res type="Corollary" nom="Index of a composite" id="composee">
+<enonce><p>There is a primitive recursive function $c$ such that $\varphi_{c(x,y)}=\varphi_x\circ\varphi_y$ for all $x,y$.</p></enonce>
+<tech><p>The function $\theta(x,y,z)\simeq\varphi_x(\varphi_y(z))\simeq u(x,u(y,z))$, where $u$ is the universal function, is computable; let $k$ be one of its indices. By s-m-n, $\theta(x,y,z)\simeq\varphi^{(3)}_k(x,y,z)\simeq\varphi_{s^2_1(k,x,y)}(z)$. Set $c(x,y)=s^2_1(k,x,y)$.</p>
+</tech>
+<philo><p>Two programs can be “plugged” one after the other without running them, by a mere manipulation of their text, as a linker does. This is commonplace for a programmer; the point is that the construction is uniform and computable.</p></philo>
+</res>
+
+<h2 id="recursion">The recursion theorem</h2>
+
+<res type="Theorem" nom="Kleene’s recursion theorem (fixed-point form)" id="kleene">
+<enonce><p>For every total computable function $f:\N\to\N$, there is an index $n$ such that $\varphi_{f(n)}=\varphi_n$.</p></enonce>
+<philo>
+<p>Interpret $f$ as a transformation of programs that always halts: a compiler, an optimizer, a “virus” that modifies code, or any rewriting whatsoever. The theorem asserts that there is always a program whose transformation <em>does not change its behaviour</em>. No computable transformation can change the meaning of every program.</p>
+<p>Its most astonishing consequence: a program can <em>use its own text</em>. There are programs that print their own source code (“quines”), programs that compute their own number, and more generally, for every task that uses “the text of the program performing it”, a program that accomplishes it. This is the computational version of reflexivity: the λ-calculus realizes it with the combinator $\mathsf Y$, biology with DNA, which contains the description of the machinery that copies it (von Neumann studied, as early as the 1940s, self-reproducing automata based on this principle).</p>
+</philo>
+<tech>
+<p>Let $\Psi(u,x)\simeq\varphi_{\varphi_u(u)}(x)$ (undefined if $\varphi_u(u)\ind$). It is computable: compute $t=\varphi_u(u)$, then $\varphi_t(x)$, using the universal function. By s-m-n, there is a primitive recursive, hence total, $g$ such that $\varphi_{g(u)}(x)\simeq\Psi(u,x)$, that is,
+$$\varphi_{g(u)}=\varphi_{\varphi_u(u)}\quad\text{if }\varphi_u(u)\conv.$$
+The function $f\circ g$ is computable and total; let $w$ be one of its indices. Then $\varphi_w(w)=f(g(w))$ is defined, and
+$$\varphi_{g(w)}=\varphi_{\varphi_w(w)}=\varphi_{f(g(w))}.$$
+It suffices to set $n=g(w)$.</p>
+<p><strong>Diagonal reading.</strong> Arrange the functions $\varphi_{\varphi_i(j)}$ in an infinite table (row $i$, column $j$; by convention it is the nowhere-defined function if $\varphi_i(j)\ind$). The diagonal $j\mapsto\varphi_{\varphi_j(j)}=\varphi_{g(j)}$ is itself a row of the table, that of the index $d_0$ of $g$. Transforming the diagonal by $f$ gives the sequence $j\mapsto\varphi_{f(g(j))}$, which is again a row, that of the index $w$ of $f\circ g$. This row crosses the diagonal at column $w$: there, the diagonal entry $\varphi_{g(w)}$ and the transformed entry $\varphi_{f(g(w))}$ coincide. It is the same diagonal as in Cantor’s argument, but here it produces a fixed point instead of a contradiction, because the diagonal is <em>in</em> the table.</p>
+</tech>
+<techno>
+<p>The fixed point is explicit: $n=g(w)$ where $w$ is an index of $f\circ g$. A program is a fixed point when it consists of two parts: a <em>template</em> (a piece of data describing the program) and an <em>interpreter</em> that rebuilds the program from the template. This is the structure of all quines. In Python:</p>
+<pre><code>s = 's = %r\nprint(s %% s)'
+print(s % s)</code></pre>
+<p>The string <code>s</code> is the template; <code>print(s % s)</code> applies it to itself, exactly like $\varphi_u(u)$ in the proof. The same pattern, in the λ-calculus, is the fixed-point combinator $\mathsf Y=\lambda f.(\lambda x.f(xx))(\lambda x.f(xx))$: the term $\lambda x.f(xx)$ is applied to itself.</p>
+<p>A quine in JavaScript, which prints exactly its own text:</p>
+<pre><code>(function q(){console.log('('+q+')()')})()</code></pre>
+</techno>
+</res>
+
+<res type="Theorem" nom="Recursion with parameters and uniform form" id="kleene-parametres">
+<enonce>
+<p>(1) For every computable function $\psi(e,x)$, there is $n$ such that $\varphi_n(x)\simeq\psi(n,x)$ for all $x$.<br>
+(2) There is a primitive recursive function $h$ such that, for every $z$ with $\varphi_z$ total, $\varphi_{h(z)}=\varphi_{\varphi_z(h(z))}$.</p>
+</enonce>
+<philo><p>Form (1) is the one most used: “to write program $n$, one may assume that $n$ is already known”. It justifies after the fact all recursive definitions: a program may call itself by its number.</p></philo>
+<tech>
+<p>(1) By s-m-n, $\psi(e,x)\simeq\varphi_{s(e)}(x)$ for a primitive recursive $s$. Kleene’s theorem applied to $s$ gives $n$ with $\varphi_n=\varphi_{s(n)}$, whence $\varphi_n(x)\simeq\psi(n,x)$.</p>
+<p>(2) In the previous proof, the index $w$ of $f\circ g$ is obtained from an index $z$ of $f$ through the index of the composite: $w=c(z,d_0)$ where $d_0$ is a fixed index of $g$. The fixed point $h(z)=g(c(z,d_0))$ is therefore a primitive recursive function of $z$. </p>
+</tech>
+</res>
+
+<res type="Theorem" nom="Third form: fixed point uniform in parameters" id="kleene-uniforme">
+<enonce><p>For every total computable function $f:\N^{k+1}\to\N$, there is a primitive recursive function $n_f:\N^k\to\N$ such that, for all $\vec x\in\N^k$,
+$$\varphi_{n_f(\vec x)}=\varphi_{f(n_f(\vec x),\,\vec x)}.$$</p></enonce>
+<philo>
+<p>Kleene’s theorem gives a fixed point for <em>one</em> transformation. Here the transformation depends on parameters $\vec x$, and the fixed point is computed from the parameters, by a mere manipulation of texts. A single “generator” produces, for each value of the parameters, a program that knows itself: for instance, for each $x$, a program that prints its own text followed by $x$, or a program that contains its own number and the value of $x$ for which it was produced.</p>
+<p>It is this uniformity that makes it possible to chain fixed points: one first fixes a program as a function of a second one, still unknown, then fixes the second. This is how <a href="#double-recursion">double recursion</a> is obtained.</p>
+</philo>
+<tech>
+<p>The function $\Psi(u,\vec x,y)\simeq\varphi_{\varphi^{(k+1)}_u(u,\vec x)}(y)$ (undefined if $\varphi^{(k+1)}_u(u,\vec x)\ind$) is computable by the universal function; let $d$ be one of its indices. By <a href="#smn">s-m-n</a>, the function $\tilde g(u,\vec x)=s^{k+1}_1(d,u,\vec x)$ is primitive recursive and satisfies
+$$\varphi_{\tilde g(u,\vec x)}(y)\simeq\Psi(u,\vec x,y),\qquad\text{hence}\qquad\varphi_{\tilde g(u,\vec x)}=\varphi_{\varphi^{(k+1)}_u(u,\vec x)}\ \text{ if }\varphi^{(k+1)}_u(u,\vec x)\conv.$$
+The function $(u,\vec x)\mapsto f(\tilde g(u,\vec x),\vec x)$ is computable and total; let $v$ be one of its indices (of arity $k+1$). Then $\varphi^{(k+1)}_v(v,\vec x)=f(\tilde g(v,\vec x),\vec x)$ is defined for all $\vec x$, and
+$$\varphi_{\tilde g(v,\vec x)}=\varphi_{\varphi^{(k+1)}_v(v,\vec x)}=\varphi_{f(\tilde g(v,\vec x),\,\vec x)}.$$
+Set $n_f(\vec x)=\tilde g(v,\vec x)=s^{k+1}_1(d,v,\vec x)$: this is a primitive recursive function of $\vec x$, since $d$ and $v$ are constants and $s^{k+1}_1$ is primitive recursive.</p>
+<p>For $k=0$ one recovers <a href="#kleene">Kleene’s theorem</a>, with the same proof. Form (1) of <a href="#kleene-parametres">recursion with parameters</a> is the special case $f(e,x)=s(e)$ (with no parameter); form (2) moreover makes the fixed point uniform in an index of $f$. The two uniformities combine: $v$ is obtained from an index $z$ of $f$ by a primitive recursive function (index of a composite, s-m-n), and hence $n_f(\vec x)$ is a primitive recursive function of $(z,\vec x)$.</p>
+
+</tech>
+<techno>
+<p>The fixed point is written explicitly: $n_f(\vec x)=s^{k+1}_1(d,v,\vec x)$. Concretely, the machine with index $n_f(\vec x)$ writes $\overline{v}\,B\,\overline{x_1}\,B\cdots B\,\overline{x_k}\,B$ in front of its input $\overline y$, then runs the machine with index $d$, which computes $t=\varphi_v(v,\vec x)=f(n_f(\vec x),\vec x)$ and finally simulates the machine with index $t$ on $y$. The text of the program, that is, the value of $v$, is written into the program itself; the parameters $\vec x$ are copied into it.</p>
+<p>The same pattern in Python: the function <code>make</code> computes, for each $x$, a program that prints exactly its own text, and whose text contains $x$.</p>
+<pre><code>def make(x):
+    s = 'x = %d\ns = %r\nprint(s %% (x, s))'
+    return s % (x, s)</code></pre>
+<p>For example <code>make(7)</code> returns the program</p>
+<pre><code>x = 7
+s = 'x = %d\ns = %r\nprint(s %% (x, s))'
+print(s % (x, s))</code></pre>
+<p>which prints these three lines. We checked this by running the programs produced for $x=0$, $7$ and $42$: each one prints exactly its own text. The string <code>s</code> plays the role of $v$ (the template), and the function <code>make</code> that of $n_f$: it only copies, without running anything.</p>
+</techno>
+</res>
+
+<res type="Theorem" nom="Double recursion (Smullyan)" id="double-recursion">
+<enonce><p>For all total computable functions $f,g:\N^2\to\N$, there are $a,b$ such that $\varphi_a=\varphi_{f(a,b)}$ and $\varphi_b=\varphi_{g(a,b)}$.</p></enonce>
+<tech><p>By the <a href="#kleene-uniforme">third form</a> (with one parameter), one first finds, for every $b$, a fixed point $a(b)$ of $x\mapsto f(x,b)$, with $a$ primitive recursive: $\varphi_{a(b)}=\varphi_{f(a(b),b)}$. Then apply Kleene’s theorem to $y\mapsto g(a(y),y)$: there is $b$ with $\varphi_b=\varphi_{g(a(b),b)}$, and set $a=a(b)$. </p></tech>
+<philo><p>Two programs can know each other: each can use the text of the other. This is the principle behind pairs of viruses that reinstall each other, or two quines that print each other.</p></philo>
+</res>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercises</h2>
+
+<exo niveau="1" titre="Programming with s-m-n" id="ex-smn-double">
+<p>Show that there is a primitive recursive function $g$ such that $\varphi_{g(e)}(x)\simeq2\,\varphi_e(x)$ for all $e,x$.</p>
+<corrige>
+<p>The function $\psi(e,x)\simeq2\,\varphi_e(x)$ is computable (compute $\varphi_e(x)$ with the <a href="universality.html#universelle">universal function</a>, then double). It has an index $a$: $\varphi^{(2)}_a(e,x)\simeq\psi(e,x)$. By the <a href="#smn">s-m-n theorem</a>, $g(e)=s^1_1(a,e)$ works: $\varphi_{g(e)}(x)\simeq\varphi^{(2)}_a(e,x)\simeq2\,\varphi_e(x)$. One can also use the <a href="#composee">corollary on composites</a> with an index of $x\mapsto2x$.</p>
+</corrige>
+</exo>
+
+<exo niveau="1" titre="Two equivalent neighbouring programs" id="ex-smn-voisins">
+<p>Show that there is $e$ such that $\varphi_e=\varphi_{e+1}$.</p>
+<corrige>
+<p>Apply the <a href="#kleene">recursion theorem</a> to the total computable function $f(n)=n+1$: there is $n$ such that $\varphi_{f(n)}=\varphi_n$, that is, $\varphi_{n+1}=\varphi_n$.</p>
+</corrige>
+</exo>
+
+<exo niveau="2" titre="Programs that talk about themselves" id="ex-smn-quines">
+<p>Show that there are indices $a$, $b$ and $c$ such that, for all $x$: $\varphi_a(x)=a$; $\varphi_b(x)=b+x$; $W_c=\{c\}$.</p>
+<corrige>
+<p>Each time, apply <a href="#kleene-parametres">form (1) of the recursion theorem</a>: for every computable function $\psi(e,x)$, there is $n$ such that $\varphi_n(x)\simeq\psi(n,x)$.</p>
+<ul>
+<li>$\psi(e,x)=e$ gives $a$ with $\varphi_a(x)=a$: a program that outputs its own index, whatever the input (a <em>quine</em>).</li>
+<li>$\psi(e,x)=e+x$ gives $b$.</li>
+<li>$\psi(e,x)=0$ if $x=e$, undefined otherwise, is computable (test equality, and loop if it fails); it gives $c$ with $\varphi_c(x)\conv\iff x=c$, i.e. $W_c=\{c\}$.</li>
+</ul>
+</corrige>
+</exo>
+
+<exo niveau="3" titre="Two programs that print each other" id="ex-smn-mutuels">
+<p>Show that there are two <em>distinct</em> indices $a\ne b$ such that $\varphi_a$ is the constant function equal to $b$, and $\varphi_b$ the constant function equal to $a$.</p>
+<corrige>
+<p>Let $i\ge1$ be an index of $(n,x)\mapsto n$ (there are infinitely many, hence a nonzero one: <a href="universality.html#ex-un-indices">exercise</a>), and $k(n)=s^1_1(i,n)$: $\varphi_{k(n)}$ is the constant $n$. By the <a href="arithmetical-hierarchy.html#smn-injectif">padding lemma</a>, $s^1_1$ can be chosen strictly increasing in $\langle i,n\rangle$; a strictly increasing function $h$ satisfies $h(m)\ge m$, whence $k(n)\ge\langle i,n\rangle=\frac{(i+n)(i+n+1)}2+i>n$ since $i\ge1$.</p>
+<p>Now apply the recursion theorem to $\psi(e,x)=k(e)$: there is $a$ such that $\varphi_a(x)=k(a)$ for all $x$. Set $b=k(a)$. Then $\varphi_a$ is the constant $b$, $\varphi_b=\varphi_{k(a)}$ is the constant $a$, and $b>a$. <a href="#double-recursion">Smullyan’s double recursion</a> gives another, more symmetric proof.</p>
+</corrige>
+</exo>
