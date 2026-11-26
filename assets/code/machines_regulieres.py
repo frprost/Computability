@@ -1,7 +1,7 @@
-# Machines de Turing régulières (méthode du polycopié de Ch. Boitet), construites et testées.
-# Compagnon de la page equivalence.html#machines-regulieres du manuel de calculabilité.
-# Sémantique des quadruplets : (état, symbole lu) -> (action, nouvel état), action = 'L', 'R' ou symbole écrit.
-# Convention des macros "E" : bande = blocs de barres séparés par UN blanc ; tête en E (deux cases après la dernière barre).
+# Regular Turing machines (method of Ch. Boitet's lecture notes), built and tested.
+# Companion to the page equivalence.html#machines-regulieres of the computability manual.
+# Semantics of quadruples: (state, symbol read) -> (action, new state), action = 'L', 'R' or symbol written.
+# Convention of the "E" macros: tape = blocks of strokes separated by ONE blank; head at E (two cells after the last stroke).
 import itertools, sys
 B,BAR,XM='B','1','X'
 CNT=[0]
@@ -11,7 +11,7 @@ def fresh(p='s'):
     CNT[0]+=1; return '%s%d'%(p,CNT[0])
 class M:
     def __init__(s,q,start,finals):
-        s.q=q; s.start=start; s.finals=finals   # finals : dict nom -> état
+        s.q=q; s.start=start; s.finals=finals   # finals: dict name -> state
     def syms(s):
         r={B,BAR}
         for (a,x),(act,n) in s.q.items():
@@ -40,7 +40,7 @@ def seq(*ms):
         link(q,m1.finals['f'],m2.start,syms)
     return M(q,ms[0].start,{'f':ms[-1].finals['f']})
 def mk(spec,finals=('f',)):
-    """spec : liste de (état, symbole, action, état) avec noms locaux ; 'e' = départ."""
+    """spec: list of (state, symbol, action, state) with local names; 'e' = start."""
     ren={}
     def r(n):
         if n not in ren: ren[n]=fresh(n)
@@ -50,8 +50,8 @@ def mk(spec,finals=('f',)):
         assert (r(a),x) not in q
         q[(r(a),x)]=(act,r(n))
     return M(q,r('e'),{f:r(f) for f in finals})
-# --- macros convention E
-def goE_spec(a,out):  # depuis une case du contenu (barre ou blanc séparateur), aller en E
+# --- macros, convention E
+def goE_spec(a,out):  # from a cell of the content (stroke or separating blank), go to E
     return [(a,BAR,'R',a),(a,B,'R',a+'_b'),(a+'_b',BAR,'R',a),(a+'_b',B,B,out)]
 def CopyFromEnd(j):
     sp=[('e',B,'L','c0')]
@@ -85,13 +85,13 @@ def KeepLast():
     sp=[('e',B,'L','a'),('a',B,'L','b'),('b',BAR,'L','b'),('b',B,'L','k'),
         ('k',BAR,B,'kk'),('kk',B,'L','k'),('k',B,'L','k2'),('k2',BAR,B,'kk'),('k2',B,'R','g0'),
         ('g0',B,'R','g0b'),('g0b',B,'R','g1')]
-    # g1 : on avance vers le dernier bloc (blancs puis barres)
+    # g1: move towards the last block (blanks then strokes)
     sp+=[('g1',B,'R','g1'),('g1',BAR,BAR,'h')]
     sp+=goE_spec('h','f')
     return mk(sp)
-def GoLeft():  # de E à la barre la plus à gauche
+def GoLeft():  # from E to the leftmost stroke
     return mk([('e',B,'L','v'),('v',B,'L','w'),('w',BAR,'L','w'),('w',B,'L','x'),('x',BAR,'L','w'),('x',B,'R','y'),('y',B,'R','f')])
-# --- normalisation : N(Z, m, d) remplace les m derniers blocs par le bloc de Psi_Z(arguments)
+# --- normalization: N(Z, m, d) replaces the last m blocks by the block of Psi_Z(arguments)
 def N(Z,m,d):
     lam,rho='λ%d'%d,'ρ%d'%d
     t=fresh('N')
@@ -101,7 +101,7 @@ def N(Z,m,d):
         assert (a,x) not in q,(a,x); q[(a,x)]=(act,n)
     L=lambda n: t+n
     S=Z.syms()|{B,BAR}
-    # Z1 : poser ρ en E-1, remonter m blocs, poser λ, aller sur la première barre
+    # Z1: put ρ at E-1, go back m blocks, put λ, go to the first stroke
     add(L('e'),B,'L',L('a')); add(L('a'),B,rho,L('a')); add(L('a'),rho,'L',L('b1'))
     for k in range(1,m+1):
         add(L('b%d'%k),BAR,'L',L('b%d'%k))
@@ -113,7 +113,7 @@ def N(Z,m,d):
     Ltg={n for (a,x),(act,n) in Z.q.items() if act=='L'}; Rtg={n for (a,x),(act,n) in Z.q.items() if act=='R'}
     for a in Z.states():
         A=zs(a); u=lambda x: A+'~'+t+x
-        # ρ : insérer un blanc à la place de ρ, en repoussant ρ et les bornes extérieures
+        # ρ: insert a blank in place of ρ, pushing ρ and the outer markers
         if a in Rtg and (zs(a),rho) not in q:
             add(A,rho,B,u('r1')); add(u('r1'),B,'R',u('P'+rho))
             for c in [rho]+FR:
@@ -123,7 +123,7 @@ def N(Z,m,d):
                 for c in [rho]+FR: add(u('W'+f),c,'R',u('P'+f))
             for c in FR: add(u('K'),c,'L',u('K'))
             add(u('K'),rho,'L',u('r3')); add(u('r3'),B,B,A)
-        # λ : décaler d'une case à gauche tout ce qui est à gauche de λ (jusqu'au premier double blanc)
+        # λ: shift one cell to the left everything left of λ (up to the first double blank)
         if a in Ltg and (zs(a),lam) not in q:
             add(A,lam,lam,u('g')); add(u('g'),lam,'L',u('g1'))
             for c in [BAR]+FL: add(u('g1'),c,'L',u('g1')); add(u('g2'),c,'L',u('g1'))
@@ -132,12 +132,12 @@ def N(Z,m,d):
                 add(u('s'),c,B,u('s1'+c)); add(u('s1'+c),B,'L',u('s2'+c)); add(u('s2'+c),B,c,u('s3')); add(u('s3'),c,'R',u('s4'))
             add(u('s4'),B,'R',u('s')); add(u('s'),B,'R',u('s'))
             add(u('s'),lam,B,u('t1')); add(u('t1'),B,'L',u('t2')); add(u('t2'),B,lam,u('t3')); add(u('t3'),lam,'R',u('t4')); add(u('t4'),B,B,A)
-    # Z3 : couples terminaux -> qL
+    # Z3: terminal pairs -> qL
     qL=L('qL')
     for a in Z.states():
         for x in Z3SYMS:
             if (a,x) not in Z.q: add(zs(a),x,x,qL)
-    # Z4 : regrouper les barres juste à droite de λ, ajouter une barre, effacer λ et ρ, aller en E
+    # Z4: gather the strokes just right of λ, add a stroke, erase λ and ρ, go to E
     ALL=S|{lam,rho}
     for x in ALL-{lam}: add(qL,x,'L',qL)
     add(qL,lam,'R',L('A'))
@@ -156,20 +156,20 @@ def N(Z,m,d):
     add(L('C5'),B,BAR,L('C6')); add(L('C6'),BAR,'L',L('C6')); add(L('C6'),lam,B,L('C7'))
     add(L('C7'),B,'R',L('C8')); add(L('C8'),BAR,'R',L('C8')); add(L('C8'),B,'R',L('C9')); add(L('C9'),BAR,'R',L('C8')); add(L('C9'),B,B,L('f'))
     return M(q,L('e'),{'f':L('f')}),d
-# --- fonctions -> machines autonomes (convention Boitet : départ sur la première barre, résultat = nombre de barres)
+# --- functions -> standalone machines (Boitet's convention: start on the first stroke, result = number of strokes)
 class Fn:
     def __init__(s,arity,pyf,build,depth): s.n=arity; s.py=pyf; s.build=build; s.depth=depth
 def standalone(asm):
-    # depuis la première barre de l'entrée : aller en E, assembler, garder le dernier bloc, retirer une barre
+    # from the first stroke of the input: go to E, assemble, keep the last block, remove a stroke
     g=mk(goE_spec('e','f'))
     return seq(g,asm,KeepLast(),DecLast())
-def Nf(f,m):  # normalisée de la machine autonome de f
+def Nf(f,m):  # normalized form of the standalone machine for f
     Z=f.build()
     mach,_=N(Z,m,f.depth+1)
     return mach
 def Proj(n,i): return Fn(n,lambda *x:x[i-1],lambda: standalone(seq(*[CopyFromEnd(n-i+1)])),0)
 def Const(n,c): return Fn(n,lambda *x:c,lambda: standalone(seq(AppendZero(),*[IncLast() for _ in range(c)])),0)
-Succ=Fn(1,lambda x:x+1,lambda: mk([('e',BAR,BAR,'f')]),0)   # machine vide (q0 sur x+1 barres)
+Succ=Fn(1,lambda x:x+1,lambda: mk([('e',BAR,BAR,'f')]),0)   # empty machine (q0 on x+1 strokes)
 def Comp(g,hs):
     n=hs[0].n; k=len(hs)
     def build():
@@ -202,7 +202,7 @@ def Mu(g):
         return y
     return Fn(n,py,build,g.depth+1)
 def Rec(g,h,n,const=None):
-    # f(x,0)=g(x), f(x,y+1)=h(x,y,f(x,y)) ; n = nombre de paramètres (g d'arité n, ou constante si n=0)
+    # f(x,0)=g(x), f(x,y+1)=h(x,y,f(x,y)); n = number of parameters (g of arity n, or a constant if n=0)
     def build():
         init=[AppendZero()]
         if n==0: init+=[AppendZero()]+[IncLast() for _ in range(const)]
@@ -226,7 +226,7 @@ def Rec(g,h,n,const=None):
         for i in range(y): v=h.py(*x,i,v)
         return v
     return Fn(n+1,py,build,max(g.depth if g else 0,h.depth)+1)
-# --- exécution
+# --- execution
 def run(m,tape_list,maxsteps=5*10**7):
     tape={i:c for i,c in enumerate(tape_list) if c!=B}
     h=0; st=m.start; n=0; q=m.q
@@ -254,8 +254,8 @@ def psi(f,args):
     return sum(1 for v in tape.values() if v==BAR), n, len(m.q)
 
 # =====================================================================
-# Tests.  python3 machines_regulieres.py        (quelques minutes)
-#         python3 machines_regulieres.py long   (ajoute multiplication et minimisation : ~30 min, plusieurs Go)
+# Tests.  python3 machines_regulieres.py        (a few minutes)
+#         python3 machines_regulieres.py long   (adds multiplication and minimization: ~30 min, several GB)
 # =====================================================================
 import itertools
 
@@ -267,7 +267,7 @@ def raw(spec,n):
     return Fn(n,py,lambda:m,0)
 Za=raw([('q0','1','L','q1'),('q1','B','L','q2'),('q2','B','1','q3'),('q3','1','R','q4'),('q4','B','R','q5'),('q5','1','R','q5'),('q5','B','R','q6'),('q6','B','X','q7'),('q7','X','R','q8'),('q8','B','1','q9')],1)
 Zb=raw([('q0','1','L','q1'),('q1','B','1','q2'),('q2','1','L','q3'),('q3','B','1','q4'),('q4','1','L','q5'),('q5','B','X','q6')],1)
-# Zc : 2 arguments ; efface le séparateur et va écrire une barre loin à gauche puis loin à droite
+# Zc: 2 arguments; erases the separator and writes a stroke far to the left then far to the right
 Zc=raw([('q0','1','R','q0'),('q0','B','X','q1'),('q1','X','R','q2'),('q2','1','R','q2'),('q2','B','R','q3'),('q3','B','R','q4'),('q4','B','1','q5'),('q5','1','L','q5'),('q5','B','L','q5'),('q5','X','L','q6'),('q6','1','L','q6'),('q6','B','L','q7'),('q7','B','L','q8'),('q8','B','1','q9')],2)
 
 def bars(t): return sum(1 for v in t.values() if v==BAR)
@@ -276,36 +276,36 @@ def T(name,f,rng):
     m=f.build(); ok=True; mx=0
     for args in rng:
         r=run(m,enc(args)); got=None if r is None else bars(r[2])
-        if got!=f.py(*args): ok=False; print('  ÉCHEC',name,args,got,f.py(*args)); break
+        if got!=f.py(*args): ok=False; print('  FAILURE',name,args,got,f.py(*args)); break
         mx=max(mx,r[3])
-    print('%-28s %-5s %9d quadruplets, %7d pas au plus'%(name,ok,len(m.q),mx),flush=True)
+    print('%-28s %-5s %9d quadruples, %7d steps at most'%(name,ok,len(m.q),mx),flush=True)
 def check_reg(name,m,f,rng):
     ok=True
     for args in rng:
         st,h,tape,_=run(m,enc(args)); lo=min(tape)
         cells=[tape.get(i,B) for i in range(lo,max(tape)+1)]
         if not(st==m.finals['f'] and h==lo and cells==enc([f(*args)]) and not any((st,x) in m.q for x in (B,BAR,XM))):
-            ok=False; print('  ÉCHEC',name,args); break
-    print('%-28s régulière : %s'%(name,ok),flush=True)
+            ok=False; print('  FAILURE',name,args); break
+    print('%-28s regular: %s'%(name,ok),flush=True)
 if __name__=='__main__':
     import sys
     add=Rec(Proj(1,1),Comp(Succ,[Proj(3,3)]),1)
     pd=Rec(None,Proj(2,1),0,const=0)
     monus=Rec(Proj(1,1),Comp(pd,[Proj(3,3)]),1)
     T('projection A(3,2)',Proj(3,2),itertools.product(range(3),repeat=3))
-    T('constante 3',Const(2,3),itertools.product(range(3),repeat=2))
+    T('constant 3',Const(2,3),itertools.product(range(3),repeat=2))
     T('addition',add,itertools.product(range(4),repeat=2))
-    T('prédécesseur',pd,[(x,) for x in range(5)])
-    T('soustraction bornée',monus,itertools.product(range(4),repeat=2))
+    T('predecessor',pd,[(x,) for x in range(5)])
+    T('truncated subtraction',monus,itertools.product(range(4),repeat=2))
     T('Za o A(2,2)',Comp(Za,[Proj(2,2)]),itertools.product(range(3),repeat=2))
     T('Zb o A(3,1)',Comp(Zb,[Proj(3,1)]),itertools.product(range(2),repeat=3))
     T('Zc(A(2,2),A(2,1))',Comp(Zc,[Proj(2,2),Proj(2,1)]),itertools.product(range(3),repeat=2))
     T('Zb(Za(x))',Comp(Zb,[Comp(Za,[Proj(2,1)])]),itertools.product(range(3),repeat=2))
     T('Zc(Zb(x),Za(x))',Comp(Zc,[Comp(Zb,[Proj(1,1)]),Comp(Za,[Proj(1,1)])]),[(x,) for x in range(4)])
-    T('récursion, h = Zc',Rec(Proj(1,1),Comp(Zc,[Proj(3,3),Proj(3,2)]),1),itertools.product(range(3),repeat=2))
+    T('recursion, h = Zc',Rec(Proj(1,1),Comp(Zc,[Proj(3,3),Proj(3,2)]),1),itertools.product(range(3),repeat=2))
     for nm,Z in (('Za',Za),('Zb',Zb),('Zc',Zc)):
         MAXD[0]=1
-        check_reg("Z' pour "+nm,seq(mk(goE_spec('e','f')),N(Z.build(),Z.n,1)[0],GoLeft()),Z.py,itertools.product(range(4),repeat=Z.n))
+        check_reg("Z' for "+nm,seq(mk(goE_spec('e','f')),N(Z.build(),Z.n,1)[0],GoLeft()),Z.py,itertools.product(range(4),repeat=Z.n))
     for nm,f,rng in (('addition',add,itertools.product(range(3),repeat=2)),('Zc(Zb(x),Za(x))',Comp(Zc,[Comp(Zb,[Proj(1,1)]),Comp(Za,[Proj(1,1)])]),[(x,) for x in range(3)])):
         MAXD[0]=f.depth+1
         check_reg(nm,seq(f.build(),IncLast(),GoLeft()),f.py,rng)

@@ -2,18 +2,32 @@
 titre: Other models of computation
 court: Other models
 chapo: Two counters, dominoes, fractions, a local rule with two states: universality emerges in systems of disconcerting simplicity. And one stack is not enough.
+chapo_clair: Two counters, dominoes, fractions, a row of cells that change colour according to their neighbours: the ability to compute everything emerges in systems of disconcerting simplicity.
 prerequis: equivalence.html|Equivalence of models ; undecidability.html|Undecidability ; languages.html|Languages and grammars
 -->
 
 
 
+<clair>
+<p>The Turing machine is not the only device capable of computing everything. This chapter presents systems that look much poorer and are capable of it too: a machine that has only two counters which it can increase, decrease and test; a list of fractions that one multiplies; a row of black and white cells that change according to a local rule.</p>
+<p>The phenomenon is general: as soon as a system makes it possible to store an arbitrary amount of information and to transform it according to conditional rules, it becomes universal. This is why universality, and therefore undecidability, is found almost everywhere, even in games and physical models.</p>
+</clair>
+
 <h2 id="machines-a-compteurs">Counter machines</h2>
+
+<clair>
+<p>A counter machine has a few counters, like abacuses, which it can increase by 1, decrease by 1, or test for zero. With only two counters, it can compute everything, provided the data are coded in a clever way.</p>
+</clair>
+
 
 <res type="Theorem" nom="Universality of two-counter machines (Minsky, 1961)" id="compteurs">
 <enonce>
 <p>A <strong>counter machine</strong> has a finite number of registers holding natural numbers and a program made of numbered instructions of two kinds: $\mathrm{INC}(r,j)$ (add 1 to register $r$, go to instruction $j$) and $\mathrm{DEC}(r,j,k)$ (if $r>0$, subtract 1 and go to $j$; otherwise go to $k$). Every computable function is computable by a counter machine, and even by a machine with <em>two</em> counters, provided the input $x$ is coded by $2^x$ and the output $y$ by $2^y$.</p>
 </enonce>
-<philo><p>Two boxes of pebbles, and all one can do is add or remove a pebble and test whether a box is empty: that is enough to compute everything. Memory need not be structured; it only needs to be unbounded.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine that has only two counters, which it can increase by 1, decrease by 1 and compare with zero, can compute everything a Turing machine computes. The data only need to be coded cleverly in the counters.</p>
+<p>Imagine two boxes of pebbles. All one can do is add a pebble, remove one, and look whether a box is empty. That is enough to compute everything! Memory need not be neatly organized, with cells and addresses; it only needs to be unbounded.</p>
+</philo>
 <tech>
 <p><strong>Step 1: any number of counters.</strong> A counter machine $M$ <em>computes</em> $f:\N^n\rightharpoonup\N$ if, started at instruction $1$ with $x_1,\dots,x_n$ in counters $r_1,\dots,r_n$ and $0$ in the others, it reaches the halting instruction if and only if $f(\vec x)$ is defined, and then $r_0$ contains $f(\vec x)$ (the other counters contain anything). First we program a few fragments, which are chained by replacing their “end” with the next instruction:</p>
 <ul>
@@ -46,7 +60,10 @@ prerequis: equivalence.html|Equivalence of models ; undecidability.html|Undecida
 
 <res type="Theorem" nom="Two counters do not compute 2^x (Schroeppel, 1972)" id="schroeppel">
 <enonce><p>Consider a two-counter machine which, started on $(x,0)$, halts for every $x$, with $f(x)$ in its first counter, where $f$ is injective. Then there are integers $x_0\ge0$, $L\ge1$ and $G\ge0$ such that $f(x_0+kL)=f(x_0)+kG$ for every $k\ge0$. In particular, no two-counter machine computes $x\mapsto2^x$, or $x\mapsto x^2$, on the input $x$ coded directly.</p></enonce>
-<philo><p>With two counters, one of them is almost always empty when the other is large: the machine then keeps only a single number and its state in memory. On large enough, well-chosen inputs, all it can do with this number is multiply it by a fixed fraction and add a constant to it; its behaviour is “piecewise affine”. It cannot manufacture exponential growth from $x$; it has to be given it as input, in the form $2^x$.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> With two counters, if the starting number is given as it is, one cannot compute 2 multiplied by itself that number of times. The clever coding of the data is therefore indispensable.</p>
+<p>With two boxes of pebbles, one is almost always empty when the other is full: the machine really keeps only one number in mind. All it can do with it, in the long run, is multiply it by a fixed fraction and add a fixed quantity to it. It cannot itself manufacture very rapid growth; this must be supplied from the start, in the way the input is written.</p>
+</philo>
 <tech>
 <p>The instructions are numbered $1,\dots,m$ and a configuration is a triple $(i,a,b)$. It is <em>null</em> if $a=0$ or $b=0$.</p>
 <p><strong>Phase lemma.</strong> For each instruction $i$, there are integers $T_i$ and $d_i\ge1$ such that one of the following two things happens for all $n\ge T_i$: (α) the computation starting from $(i,n,0)$ never reaches, after at least one step, a null configuration or a halt; (β) it reaches a first one, $C(n)$, whose instruction $i'$ does not depend on $n$, and there is $(u,v)\in\N^2$ independent of $n$ such that $C(n+d_i)=C(n)+(0,u,v)$, with $u=0$ if the first counter of $C(n)$ is zero and $v=0$ if the second is. The same holds, symmetrically, starting from $(i,0,n)$.</p>
@@ -62,36 +79,195 @@ prerequis: equivalence.html|Equivalence of models ; undecidability.html|Undecida
 </tech>
 </res>
 
+<res type="Theorem" nom="Two counters directly simulate a tape (Minsky, 1961)" id="compteurs-bande">
+<enonce>
+<p>Let $Z$ be a Turing machine whose alphabet has $b\ge2$ symbols, numbered from $0$ to $b-1$, the blank bearing the number $0$. If the head is at $p$ on the tape $\tau$, let</p>
+$$d=\sum_{i\ge0}c\big(\tau(p+i)\big)\,b^i,\qquad g=\sum_{i\ge0}c\big(\tau(p-1-i)\big)\,b^i,$$
+<p>where $c(s)$ is the number of the symbol $s$ (these sums are finite). One can build, from $Z$, a machine with three counters $g,d,t$ which, starting from $(g,d,t)=(g_0,d_0,0)$, halts if and only if $Z$ halts from the corresponding configuration, and then with $(g,d)$ equal to the coding of the final configuration and $t=0$. Then a machine with two counters which, starting from $(2^{g_0}3^{d_0},0)$, does the same with $(2^g3^d,0)$.</p>
+</enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The tape of a Turing machine can be stored in two numbers: one for what is to the left of the head, the other for the scanned cell and what lies to its right. A machine that can only add 1, subtract 1 and test for zero can then imitate the Turing machine step by step.</p>
+<p>The idea is that of writing numbers. A tape that contains only blanks and strokes is written as a sequence of 0s and 1s, that is, as a number in binary. The units digit of the right-hand number is the scanned cell: to read it, it suffices to know whether the number is even or odd. Moving the head one cell to the right means removing this digit from the right-hand number (dividing it by 2) and adding it to the left-hand number (multiplying it by 2 and adding the digit). Dividing and multiplying by 2 are done with repeated additions and subtractions of 1, using a third counter as scratch.</p>
+<p>It remains to go from three counters to two. The three numbers are stored in a single one, thanks to prime numbers: the triple (5, 2, 0) becomes 2<sup>5</sup> × 3<sup>2</sup> × 5<sup>0</sup> = 288. Adding 1 to the second number is multiplying by 3; testing whether it is zero is looking whether 288 is divisible by 3. The second counter serves as scratch for these multiplications and divisions. The price is staggering: to add 2 and 1, the two-counter machine makes a number of steps with 28 digits.</p>
+</philo>
+<tech>
+<p>We write <em>fragments</em>: pieces of program that begin at a label and end with a jump to an “end” label. An unconditional jump to $j$ is written $\mathrm{DEC}(z,j,j)$ on a counter $z$ that is never modified, which is always $0$.</p>
+<ul>
+<li>$\mathrm{TRANS}(x,y,m)$, which does $y:=y+m\,x$ and $x:=0$: the instruction $\mathrm{DEC}(x,\cdot,\text{end})$ followed by $m$ times $\mathrm{INC}(y)$, with a return to the $\mathrm{DEC}$.</li>
+<li>$\mathrm{ADD}(x,r)$, which does $x:=x+r$ for a constant $r$: $r$ instructions $\mathrm{INC}(x)$.</li>
+<li>$\mathrm{DIV}(x,y,b)$, which does $y:=y+\lfloor x/b\rfloor$, $x:=0$, and exits to one of $b$ labels according to the remainder: the instructions $D_1,\dots,D_b$, where $D_k=\mathrm{DEC}(x,D_{k+1},R_{k-1})$ and where $D_{b+1}$ is $\mathrm{INC}(y)$ followed by a return to $D_1$. If $x=qb+r$ with $r<b$, the machine makes $q$ complete rounds, then the $\mathrm{DEC}$ of $D_{r+1}$ fails and one exits at $R_r$.</li>
+</ul>
+<p><strong>Three counters.</strong> For each state $q$ of $Z$, the fragment $\mathrm{Read}_q$ is $\mathrm{DIV}(d,t,b)$: at the exit $R_r$, the scanned cell is the symbol $s$ with number $r$, $d=0$ and $t$ contains the rest of the tape to the right, $\lfloor d/b\rfloor$. According to the quadruple beginning with $q\,s$:</p>
+<table>
+<tr><th>quadruple</th><th>fragment (after $\mathrm{Read}_q$, exit $R_r$)</th><th>effect</th></tr>
+<tr><td>$q\,s\,s'\,q'$</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{ADD}(d,c(s'))$, go to $\mathrm{Read}_{q'}$</td><td>$d:=b\lfloor d/b\rfloor+c(s')$</td></tr>
+<tr><td>$q\,s\,R\,q'$</td><td>$\mathrm{TRANS}(g,d,b)$, $\mathrm{ADD}(d,r)$, $\mathrm{TRANS}(d,g,1)$, $\mathrm{TRANS}(t,d,1)$</td><td>$g:=bg+r$, $d:=\lfloor d/b\rfloor$</td></tr>
+<tr><td>$q\,s\,L\,q'$</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{ADD}(d,r)$; $\mathrm{DIV}(g,t,b)$, exit $R_{r'}$; $\mathrm{TRANS}(t,g,1)$, $\mathrm{TRANS}(d,t,b)$, $\mathrm{ADD}(t,r')$, $\mathrm{TRANS}(t,d,1)$</td><td>$g:=\lfloor g/b\rfloor$, $d:=bd+(g\bmod b)$</td></tr>
+<tr><td>none</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{ADD}(d,r)$, halt</td><td>$d$ is restored</td></tr>
+</table>
+<p>Each row transforms the coding $(g,d)$ of the configuration into that of the next configuration, with $t=0$ before and after: moving right removes the units digit of $d$ and places it as the units digit of $g$, which shifts the tape by one cell; moving left does the converse; writing changes the units digit of $d$. Since the blank is $0$, blanks added at the edges do not change the numbers. The three-counter machine (plus $z$) therefore halts exactly when $Z$ halts, with the coding of the final configuration. For a machine whose alphabet is $\{B,1\}$, we have $b=2$: $g$ and $d$ are the two halves of the tape read as binary numbers.</p>
+<p><strong>Two counters.</strong> We apply to this machine <a href="#compteurs">step 2</a> of the previous theorem: the contents $(g,d,t,z)$ are stored in $A=2^g3^d5^t7^z$, $B$ being $0$ between two fragments; $\mathrm{INC}$ of a counter becomes a multiplication of $A$ by the corresponding prime, $\mathrm{DEC}$ a division with examination of the remainder. The jumps $\mathrm{DEC}(z,j,j)$ simply become $\mathrm{DEC}(B,j,j)$, since $B=0$. Since $z$ and $t$ are $0$ at the start and at halting, the machine starts from $2^{g_0}3^{d_0}$ and halts on $2^g3^d$.</p>
+<p><strong>Cost.</strong> A step of $Z$ costs a number of steps proportional to $g+d$, hence exponential in the length of the tape, for three counters; an $\mathrm{INC}$ with three counters costs a number of steps proportional to $A$ with two counters, hence a second exponential. This is the price of the coding, and <a href="#schroeppel">Schroeppel’s theorem</a> shows that it cannot be avoided.</p>
+</tech>
+<techno>
+<p>For the addition $2+1$ (tape $111B11$, hence $d_0=1+2+4+16+32=55$ in binary read from cell $0$):</p>
+<pre><code>$ python3 counters.py examples/addition.tm 2 1
+Turing machine: 5 quadruples, 6 steps, result 3.
+Three counters (base 2): 83 instructions; start (g, d, t) = (0, 55, 0); 492 steps.
+Two counters: 902 instructions; start A = 2^0 3^55 (27 digits); 3163345499250309688368905610 steps (28 digits).
+The three runs give the same final tape.</code></pre>
+</techno>
+</res>
+
+<atelier titre="two counters, in Python">
+<p>The file <code>counters.py</code> of the <a href="programs.html">downloadable programs</a> carries out both stages. A class <code>Assembler</code> writes a program with labels; its methods <code>transfer</code>, <code>add</code> and <code>divide</code> are the fragments TRANS, ADD and DIV of the technical level.</p>
+<inclure fichier="assets/programs/counters.py" de="    # ---- fragments" a="G, D, T, Z = 0, 1, 2, 3" titre="The fragments" ouvert="1"/>
+<p>The translation of a Turing machine into three counters follows the table row by row:</p>
+<inclure fichier="assets/programs/counters.py" de="def three_counters(machine):" a="def initial_values(codes, b, args):" titre="Turing machine → three counters" ouvert="1"/>
+<p>Then the passage to two counters, through prime numbers:</p>
+<inclure fichier="assets/programs/counters.py" de="def two_counters(program, k):" a="# --------------------------------------------------------------------------- checking" titre="Three counters → two counters" ouvert="1"/>
+<h4>Running a machine that makes 10<sup>27</sup> steps</h4>
+<p>A two-counter machine spends almost all its time in small loops: “while A is not zero, subtract 1 from A and add 3 to B”. The interpreter recognizes these loops (a sequence of <code>DEC</code> of one counter and <code>INC</code> of other counters that returns to its starting point) and executes all their rounds at once, by a division and a multiplication. The result is exactly that of step-by-step execution, and the number of steps counted is the true one. The function <code>compare</code> runs the Turing machine, the three-counter machine and the two-counter machine, and checks that the three final tapes coincide; <code>tests.py</code> does so for the eleven example machines.</p>
+<inclure fichier="assets/programs/counters.py"/>
+</atelier>
+
 <h2 id="automates-a-pile">Pushdown automata</h2>
+
+<clair>
+<p>An automaton that has a single stack, of which it can read only the top element, cannot compute everything. With two stacks, it can: the two stacks play the role of the two halves of the tape of a Turing machine.</p>
+</clair>
+
 
 <res type="Proposition" nom="One stack is not enough, two stacks are" id="piles">
 <enonce><p>Automata with one stack (a finite automaton equipped with a stack) recognize exactly the context-free languages; they are not universal: for example the language $\{a^nb^nc^n:n\ge0\}$, obviously decidable, is recognized by no pushdown automaton. On the other hand, a finite automaton equipped with <em>two</em> stacks simulates a Turing machine.</p></enonce>
-<philo><p>A stack is a memory of which only the top is visible: it can be used to check brackets, not to compare three quantities. Two stacks back to back form a Turing tape: the head sits between the two tops. The frontier of universality runs between “one” and “two”.</p></philo>
-<tech><p>Simulating a tape with two stacks: the left stack holds the cells to the left of the head (top = neighbouring cell), the right stack the cell being read and the following ones. A move to the right pops on the right and pushes on the left. One-stack automata accept exactly the context-free languages (<a href="languages.html#automates-pile">proof</a>), and the <a href="languages.html#lemme-etoile">pumping lemma</a> shows that $a^nb^nc^n$ is not context-free. Problems about pushdown automata remain partly decidable (emptiness of a context-free language is <a href="languages.html#decidables-grammaires">decidable</a>), but the <em>equivalence</em> of two nondeterministic pushdown automata, or the universality of a grammar, are <a href="languages.html#indecidables-2">undecidable</a> (one passes effectively from grammars to automata and back).</p></tech>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> An automaton equipped with a single stack cannot compute everything. With two stacks, it can.</p>
+<p>A stack is a memory of which only the top is visible, like a stack of plates. It suffices to check brackets, not to compare three quantities. Two stacks placed back to back form a Turing tape: what is to the left of the head is in the first stack, what is to the right in the second, and moving the head amounts to passing a plate from one stack to the other. The frontier of universality runs between “one” and “two”.</p>
+</philo>
+<tech>
+<p><strong>Two-stack automata.</strong> Such an automaton is given by a finite set of states $Q$, an initial state $q_0$, a stack alphabet $\Gamma$ and a <em>partial</em> table $\delta$ which, to a triple $(q,g,d)\in Q\times(\Gamma\cup\{\bot\})^2$ (the state and the tops of the stacks $G$ and $D$, $\bot$ denoting an empty stack), associates $(\pi_G,\pi_D,w_G,w_D,q')$: pop $G$ or not, pop $D$ or not (only if it is not empty), push the word $w_G$ onto $G$ and $w_D$ onto $D$, go to state $q'$. The automaton halts when $\delta$ is not defined.</p>
+<p><strong>Construction.</strong> Let $Z$ be a quadruple machine, with alphabet $\Gamma\ni B$. The automaton $A_Z$ has the states of $Z$ and, for each quadruple $q\,s\,a\,q'$, each $g\in\Gamma\cup\{\bot\}$ and each $d\in\{s\}$ (or $d\in\{B,\bot\}$ if $s=B$, an empty stack being read as a blank), the following transition $\delta(q,g,d)$, where $\pi_D$ means “pop $D$ if $d\ne\bot$”:</p>
+<table>
+<tr><th>quadruple</th><th>action on the stacks</th></tr>
+<tr><td>$q\,s\,s'\,q'$ (write)</td><td>$\pi_D$, push $s'$ onto $D$</td></tr>
+<tr><td>$q\,s\,R\,q'$</td><td>$\pi_D$, push $s$ onto $G$ (unless $s=B$ and $g=\bot$)</td></tr>
+<tr><td>$q\,s\,L\,q'$</td><td>pop $G$ if $g\ne\bot$; $\pi_D$; push onto $D$ the word $s\,\hat g$, where $\hat g=g$ if $g\ne\bot$ and $\hat g=B$ otherwise (the $s$ is omitted if $s=B$ and $d=\bot$)</td></tr>
+</table>
+<p><strong>Invariant.</strong> Say that $(q,G,D)$ <em>represents</em> the configuration of $Z$ with state $q$, tape $\tau$ and head at $p$ if, read from the top and completed with blanks, $D$ is the sequence $\tau(p),\tau(p+1),\dots$ and $G$ the sequence $\tau(p-1),\tau(p-2),\dots$. The initial configuration of $Z$ is represented by $(q_0,\varnothing,D_0)$, where $D_0$ contains the tape, cell $0$ at the top. Suppose that $(q,G,D)$ represents $(q,\tau,p)$. The top of $D$ is $\tau(p)$, or $\bot$ if $\tau(p)=B$ and $D$ is empty; so $\delta(q,g,d)$ is defined if and only if $Z$ has a quadruple beginning with $q\,\tau(p)$, and both halt together. Otherwise, one checks case by case that the result represents the next configuration: writing replaces the top of $D$; moving right passes $\tau(p)$ from the top of $D$ to the top of $G$, and the new top of $D$ is $\tau(p+1)$; moving left brings $\tau(p-1)$ (the top of $G$, or a blank) above $\tau(p)$ on $D$. By induction, the automaton makes one step for each step of $Z$, and halts with the same tape. It has at most $2(|\Gamma|+1)$ transitions per quadruple.</p>
+<p><strong>One stack is not enough.</strong> A one-stack automaton that reads its input from left to right recognizes exactly the context-free languages (<a href="languages.html#automates-pile">proof</a>), and the <a href="languages.html#lemme-etoile">pumping lemma</a> shows that $\{a^nb^nc^n\}$ is not one of them. With two stacks, one first copies the input onto $D$, then simulates a Turing machine that decides this language. Problems about pushdown automata remain partly decidable (emptiness of a context-free language is, <a href="languages.html#decidables-grammaires">proposition</a>), but the equivalence of two nondeterministic pushdown automata is <a href="languages.html#indecidables-2">undecidable</a>.</p>
+</tech>
+<techno>
+<p>Trace of the automaton translated from addition (<code>examples/addition.tm</code>), on input $1+1$. The stack $G$ is written from bottom to top, its top against the vertical bar; the stack $D$ from top to bottom, its top against the other bar. The scanned cell is therefore always just right of the middle.</p>
+<pre><code>$ python3 stacks.py examples/addition.tm 1 1 --trace
+Turing machine: 5 quadruples; two-stack automaton: 21 transitions.
+  q0     G = [|   |1 1 B 1 1] = D
+  q1     G = [|   |B 1 B 1 1] = D
+  q2     G = [|   |1 B 1 1] = D
+  q2     G = [1|   |B 1 1] = D
+  q3     G = [1 B|   |1 1] = D
+  q4     G = [1 B|   |B 1] = D
+Input [1, 1]: the two runs agree for 5 steps; result 2 strokes, that is 2.</code></pre>
+</techno>
 </res>
 
+<atelier titre="the translation into a two-stack automaton, in Python">
+<p>The file <code>stacks.py</code> contains an interpreter for two-stack automata and the translation of the technical level. A stack is a Python list whose last element is the top.</p>
+<inclure fichier="assets/programs/stacks.py" de="def from_turing(machine):" a="def initial_stacks(*args):" titre="Turing machine → two-stack automaton" ouvert="1"/>
+<p>The function <code>compare</code> advances the machine and the automaton side by side, and checks after each step that the tape reconstructed from the two stacks is that of the machine: this is the invariant of the proof, checked at every step.</p>
+<inclure fichier="assets/programs/stacks.py"/>
+</atelier>
+
+
 <h2 id="probleme-de-correspondance-de-post">Post’s correspondence problem</h2>
+
+<clair>
+<p>Post’s game of dominoes, already met in the chapter <a href="languages.html">Languages</a>, can imitate any computation; this is why one cannot decide whether it has a solution.</p>
+</clair>
+
 
 <res type="Theorem" nom="Undecidability of Post’s correspondence problem (1946)" id="pcp">
 <enonce>
 <p>An <strong>instance</strong> is a finite list of dominoes $\frac{u_1}{v_1},\dots,\frac{u_k}{v_k}$, where the $u_i,v_i$ are words. A <strong>solution</strong> is a nonempty sequence of indices $i_1,\dots,i_m$ (repetitions allowed) such that $u_{i_1}\cdots u_{i_m}=v_{i_1}\cdots v_{i_m}$. There is no algorithm that decides whether an instance has a solution.</p>
 </enonce>
-<philo><p>A domino game a child understands, and no program can say in general whether it has a solution. Post’s problem is the favourite tool for proving the undecidability of questions about grammars and languages, because it speaks only of words. It is also used to prove the undecidability of questions about <a href="undecidable-mathematics.html#matrices-post">matrix products</a>.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> We have a set of dominoes, each bearing a word on top and a word at the bottom. One cannot decide in general whether they can be lined up (reusing each domino as often as one likes) so as to read the same word on top and at the bottom.</p>
+<p>A game a child understands, and no program can say in general whether it has a solution. This game, invented by Post in 1946, is the favourite tool for showing that questions about grammars and languages are undecidable, because it speaks only of words. It is also used for <a href="undecidable-mathematics.html#matrices-post">matrix products</a>. The simulator on the page makes it possible to look for solutions and to see that they can be very long.</p>
+</philo>
 <tech><p>The complete proof is given in the chapter <a href="languages.html#post-langages">Languages and grammars</a>: one reduces the word problem of a semi-Thue system, itself undecidable by a reduction from halting, to the modified Post problem (whose solution must start with a prescribed domino), then the latter to Post’s problem. The dominoes are designed so that the only way to make top and bottom equal is to write, on top, the sequence of words of a derivation, the bottom always being one word ahead; catching up is possible only if the derivation reaches the target word. The problem is semi-decidable (try all sequences by increasing length), hence $\Sigma_1$-complete. It is decidable for two dominoes, undecidable from five on (Neary, 2015).</p></tech>
 <techno>
 <p>Example: dominoes $\frac{a}{baa}$, $\frac{ab}{aa}$, $\frac{bba}{bb}$. The sequence $3,2,3,1$ gives on top $bba\cdot ab\cdot bba\cdot a=bbaabbbaa$ and on the bottom $bb\cdot aa\cdot bb\cdot baa=bbaabbbaa$: it is a solution.</p>
+<div class="pcp-widget" data-titre="The example"><pre class="src">a/baa
+ab/aa
+bba/bb</pre></div>
 </techno>
 </res>
 
+<res type="Theorem" nom="From Turing machines to Post’s dominoes" id="pcp-turing">
+<enonce>
+<p>To every (quadruple) machine $Z$ and every input $\vec x$, one effectively associates a list of dominoes $\mathcal D_{Z,\vec x}$ that has a solution if and only if $Z$ halts on $\vec x$. Consequently Post’s problem is undecidable, and even $\Sigma_1$-complete.</p>
+</enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> For any program, one can build a set of dominoes that has a solution exactly when the program halts. The solution, when it exists, writes out the whole computation of the program, step after step.</p>
+<p>The dominoes are designed so that there is no choice. The first domino writes at the bottom the starting state of the machine. To catch up with the bottom, it must be copied on top, and the only dominoes that allow this write at the bottom, at the same time, the next step of the computation. The bottom therefore always keeps one step ahead: it is like copying a page while always having the next line to write underneath.</p>
+<p>The top can catch up with the bottom only at the very end: special dominoes, which are of use only once the machine has halted, “eat” the tape one cell at a time until the two lines have the same length. If the machine never halts, these dominoes are never used, and the bottom keeps its lead forever: there is no solution. Knowing whether a set of dominoes has a solution would therefore be knowing whether a program halts.</p>
+</philo>
+<tech>
+<p>The words are written over the alphabet formed by the symbols $\Gamma$ of $Z$, its states, a separator $\#$ and a letter $H$ (“halted”). A configuration with state $q$ and the head on the cell containing $s$ is written $u\,q\,s\,v$ ($u$ and $v$ words of $\Gamma$, possibly surrounded by blanks). We first build a <em>modified</em> list, whose solution must begin with the first domino (a domino is written $\frac{\text{top}}{\text{bottom}}$):</p>
+<ol>
+<li>start: $\frac{\#}{\#\,B\,q_0\,w\,\#}$, where $q_0w$ is the initial configuration (the blank added in front is harmless);</li>
+<li>copy: $\frac{a}{a}$ for $a\in\Gamma$; separators: $\frac{\#}{\#}$ and $\frac{\#}{B\,\#}$ (add a blank to the right of the configuration being written);</li>
+<li>for each quadruple: $q\,s\,s'\,q'$ gives $\frac{q\,s}{q'\,s'}$; $q\,s\,R\,q'$ gives $\frac{q\,s}{s\,q'}$; $q\,s\,L\,q'$ gives $\frac{c\,q\,s}{q'\,c\,s}$ for each $c\in\Gamma$, and, at the left edge, $\frac{\#\,q\,s}{\#\,q'\,B\,s}$ and $\frac{\#\,q\,s}{B\,\#\,q'\,B\,s}$;</li>
+<li>halt: $\frac{q\,s}{H\,s}$ for each pair $(q,s)$ that begins no quadruple;</li>
+<li>erasure: $\frac{a\,H}{H}$ and $\frac{H\,a}{H}$ for $a\in\Gamma$; end: $\frac{H\,\#\,\#}{\#}$.</li>
+</ol>
+<p><strong>If $Z$ halts, there is a solution.</strong> Let $C_0,C_1,\dots,C_n$ be the computation, $C_n$ a halting configuration. We write the word $\#C_0\#C_1\#\cdots\#C_n\#C'_n\#E_1\#\cdots\#E_m\#H\#\#$, where $C'_n$ is $C_n$ with its state replaced by $H$, and where each $E_{j+1}$ is obtained by erasing a letter next to $H$ in $E_j$, down to $H$ alone. Each configuration is completed with the necessary blanks (a blank on the right when the head reaches the end, on the left when it must go there). This word is obtained on top and at the bottom with the same sequence of dominoes: the start domino, then, for each configuration on top, copies and a rule, halt or erasure domino which write at the bottom the next configuration, separated by a separator domino; finally $\frac{\#}{\#}$ and the end domino.</p>
+<p><strong>If there is a solution, $Z$ halts.</strong> Consider a solution, which begins with the start domino, and follow the simultaneous reading of top and bottom. We show by induction that, each time the top has written $\#C_0\#\cdots\#C_k$ (with configurations possibly completed with blanks), the bottom has written exactly $\#C_0\#\cdots\#C_k\#C_{k+1}$, where $C_{k+1}$ follows $C_k$ in the computation of $Z$, or else $C_k$ contains $H$. The top must copy $C_k$, which contains a single state letter, preceded by letters of $\Gamma$ (or by $\#$) and followed by a letter of $\Gamma$ (otherwise no domino fits). Letters of $\Gamma$ can be covered only by copies; the state letter $q$, with the letter $s$ that follows it, can be covered only by the domino of the quadruple beginning with $q\,s$ (there is at most one, since $Z$ is deterministic), or by a halt domino if this quadruple does not exist. The bottom therefore receives the next configuration. Now, in all dominoes except the erasures and the end domino, the bottom is at least as long as the top: as long as no $H$ appears, the bottom keeps at least one configuration ahead, and the solution cannot end. An $H$ appears at the bottom only through a halt domino, when the top copies a halting configuration of $Z$: the machine halts.</p>
+<p><strong>Ordinary list.</strong> The <a href="languages.html#post-langages">star trick</a> (step 2 of the proof in the chapter Languages) transforms the modified list into an ordinary list that has a solution if and only if the modified list has one beginning with the first domino. The problem is semi-decidable (one tries all sequences by increasing length), hence $\Sigma_1$-complete by the <a href="semi-decidability.html#k-complet">completeness of halting</a>.</p>
+</tech>
+<techno>
+<p>For the addition $1+1$ (machine <code>examples/addition.tm</code>), the modified list has 20 dominoes and the solution built from the computation uses 71 of them. The common word writes the successive configurations, then the erasure:</p>
+<pre><code>$ python3 post.py
+Modified problem: 20 dominoes; solution of 71 dominoes, checked.
+Common word: # B q0 1 1 B 1 1 # B q1 B 1 B 1 1 # B B q2 1 B 1 1 # B B 1 q2 B 1 1
+             # B B 1 B q3 1 1 # B B 1 B q4 B 1 # B B 1 B H B 1 # B B 1 H B 1 # …
+Ordinary Post problem: 22 dominoes; solution of 72 dominoes, checked.</code></pre>
+<p>For the machine with a single quadruple <code>q0 1 B q1</code>, the blind breadth-first search (without knowing the computation) finds a solution of 13 dominoes among the 14 of the list: <code>python3 post.py --search</code>.</p>
+</techno>
+</res>
+
+<atelier titre="from machines to dominoes, in Python">
+<p>The file <code>post.py</code> builds the list of dominoes of a machine, builds the solution from the computation, checks it, then passes to the ordinary list. A word is a tuple of letters, each letter being a string: a symbol, a state name, <code>#</code> or <code>H</code>.</p>
+<inclure fichier="assets/programs/post.py" de="def modified_dominoes(machine, *args):" a="def solution_from_computation(" titre="The list of dominoes of a machine" ouvert="1"/>
+<p>The solution is built configuration by configuration, exactly as in the first half of the proof:</p>
+<inclure fichier="assets/programs/post.py" de="def solution_from_computation(" a="def to_ordinary(dominoes):" titre="The solution, from the computation" ouvert="1"/>
+<p>The file also contains a breadth-first search (<code>search</code>), which keeps only the “lead” of one side over the other: this is the semi-decision of the problem. It finds the solutions of the small examples of the chapter, but it can never conclude that there is none. The <a href="#pcp">simulator</a> above, and those of the chapter <a href="languages.html#post-langages">Languages</a>, make it possible to carry out the same search in the browser.</p>
+<inclure fichier="assets/programs/post.py"/>
+</atelier>
+<p class="philo-aussi">The game of dominoes translates in turn into logic: see <a href="logic-and-types.html#floyd">from Post’s problem to logic</a>, in the chapter Logic and types.</p>
+
+
 <h2 id="diophantiennes">Diophantine equations</h2>
+
+<clair>
+<p>Polynomial equations in integers are also a universal model of computation (see <a href="diophantine-equations.html">Diophantine equations</a>).</p>
+</clair>
+
 
 <p>Polynomial equations with integer coefficients also form a universal model of computation: a set is semi-decidable if and only if it is the set of parameters for which an equation has an integer solution. This result, the Matiyasevich-Robinson-Davis-Putnam theorem, and its consequences in arithmetic have their own chapter: <a href="diophantine-equations.html">Diophantine equations</a>.</p>
 
 <h2 id="systemes-multiplicatifs-fractran">Multiplicative systems: FRACTRAN</h2>
 
+<clair>
+<p>John Conway invented a language whose programs are lists of fractions. One starts from a number, multiplies it by the first fraction of the list that gives an integer result, and starts again. This primary-school game suffices to compute everything.</p>
+</clair>
+
+
 <res type="Theorem" nom="Universality of FRACTRAN (Conway, 1987)" id="fractran">
 <enonce><p>A FRACTRAN program is a finite list of fractions $f_1,\dots,f_k$. Starting from an integer $n$, find the first fraction $f_i$ such that $n f_i$ is an integer, replace $n$ by $nf_i$, and start again; stop if none works. This model is universal: for every computable function $f$, there is a program and a prime $q$ such that, starting from $q\,2^x$, the program halts if and only if $f(x)$ is defined, and then on $3^{f(x)}$.</p></enonce>
-<philo><p>A program is a list of fractions; computing is multiplying. The strangest and most frugal language imaginable, and yet it computes everything computable. John Conway even wrote a fourteen-fraction program (PRIMEGAME) that generates the primes. A FRACTRAN program is also a generalized Collatz function, which makes these iterations <a href="undecidable-mathematics.html#collatz-generalise">undecidable</a>.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A FRACTRAN program is a simple list of fractions. One starts from an integer; one multiplies it by the first fraction of the list that still gives an integer result; and one starts again. This strange language can compute everything that is computable.</p>
+<p>Computing, here, is multiplying, and nothing else. The secret is prime factorization: a number such as 2<sup>3</sup> × 3<sup>5</sup> × 7 contains three “counters” (the exponents 3, 5 and 1), and multiplying by a fraction adds or removes units from these counters. We are back to counter machines. The mathematician John Conway even wrote a program of fourteen fractions that produces, one after another, all the prime numbers.</p>
+</philo>
 <tech>
 <p>Let $f$ be a computable function and $M$ a counter machine that computes it in the sense of step 1 of <a href="#compteurs">Minsky’s theorem</a> (input in $r_1$; on halting, result in $r_0$ and other counters zero, emptying them if necessary). We also assume that no instruction jumps to itself: if needed, such an instruction $i$ is replaced by a detour through two new instructions, $\mathrm{INC}(t,i^*)$ and $i^*:\mathrm{DEC}(t,i,i)$, on an unused counter $t$.</p>
 <p>Associate a prime $p_r$ with each counter $r_r$, with $p_1=2$ and $p_0=3$ (here the index is that of the counter, not the rank of the prime), and a prime $q_i$ with each instruction, all distinct. The configuration “instruction $i$, counters $c_r$” is coded by $n=q_i\prod_rp_r^{c_r}$. The FRACTRAN program contains, for each instruction $i$:</p>
@@ -108,12 +284,20 @@ prerequis: equivalence.html|Equivalence of models ; undecidability.html|Undecida
 
 <h2 id="automates-cellulaires">Cellular automata</h2>
 
+<clair>
+<p>A cellular automaton is a row of cells, each black or white, which all change at the same time according to the colour of their neighbours. Conway’s famous “Game of Life” is a two-dimensional example. Even rule 110, one of the simplest in one dimension, can compute everything.</p>
+</clair>
+
+
 <res type="Definition" nom="Cellular automata, elementary automata" id="def-automate-cellulaire">
 <enonce>
 <p>A one-dimensional <strong>cellular automaton</strong> is given by a finite set of states $Q$, a radius $r\ge1$ and a <strong>local rule</strong> $f:Q^{2r+1}\to Q$. A configuration is a sequence $c\in Q^{\mathbb Z}$ (an infinite line of cells); in one step, all cells change at the same time, according to $c'_i=f(c_{i-r},\dots,c_{i+r})$. The <strong>elementary automata</strong> are those of radius $1$ on $Q=\{0,1\}$. Their rule is given by the eight values $f(1,1,1),f(1,1,0),\dots,f(0,0,0)$, read as the binary expansion of an integer between $0$ and $255$, the <em>Wolfram number</em> of the rule. Thus <strong>rule 110</strong>, $110=01101110$ in binary, is:</p>
 $$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow\\0&1&1&0&1&1&1&0\end{array}$$
 </enonce>
-<philo><p>This is the most “physical” model of computation in this chapter: no reading head, no central program, only a local rule applied everywhere at once, like the laws of physics. Von Neumann and Ulam invented it around 1950 to study machines capable of reproducing themselves. The history of a configuration is drawn line by line, time running downwards: it is a <em>space-time diagram</em>, exactly the one used for <a href="undecidable-mathematics.html#pavage-origine">tilings</a>, for the <a href="complexity.html#cook-levin">Cook-Levin theorem</a> and for the <a href="logic-and-types.html#binaire">decision problem</a>.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A <em>cellular automaton</em> is a row of cells, white or black for example. At each instant, all cells change at the same time, and each chooses its new colour by looking only at its own colour and that of its neighbours.</p>
+<p>This is the model of computation closest to physics: no reading head, no conductor, only a local rule applied everywhere at once, like the laws of nature. John von Neumann and Stanisław Ulam invented it around 1950 to study machines capable of reproducing themselves. By drawing the successive rows one below the other, one obtains a picture of the whole history of the computation, the same big table that serves for <a href="undecidable-mathematics.html#pavage-origine">tilings</a> and for <a href="logic-and-types.html#binaire">logic</a>.</p>
+</philo>
 <techno>
 <div class="ac-widget" data-regle="110" data-depart="droite" data-titre="Space-time diagram of an elementary automaton"></div>
 <p>The simulator above draws $100$ steps on a line of $160$ cells closed into a ring. A few rules to try: $110$ (localized structures that move and interact), $90$ (the Sierpinski triangle, see the <a href="#ex-am-regle90">exercise</a>), $30$ (random-looking behaviour), $184$ (a model of road traffic), $240$ (a simple shift).</p>
@@ -122,7 +306,10 @@ $$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&
 
 <res type="Theorem" nom="A cellular automaton simulates a Turing machine in real time" id="ac-simule-mt">
 <enonce><p>For every Turing machine $Z$, there is a cellular automaton of radius $1$ each of whose steps performs one step of $Z$. Consequently, the question “starting from this finite configuration (surrounded by blank cells), will the automaton make such-and-such a state appear?” is undecidable for some automata. Conversely, the evolution of a cellular automaton from a finite configuration can be computed by a Turing machine.</p></enonce>
-<philo><p>The two models simulate each other: a cellular automaton is nothing but a Turing machine in which each cell would be its own processor. It computes no more functions, but it can be faster for some tasks, since all the cells work in parallel. The simulation below is the exact analogue, for a local rule repeated in time, of the set of Wang tiles used to prove the undecidability of <a href="undecidable-mathematics.html#pavage-origine">tiling with an origin tile</a>.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A cellular automaton can imitate a Turing machine, at the rate of one step of the machine for one step of the automaton. Conversely, a Turing machine can compute the evolution of a cellular automaton.</p>
+<p>It suffices that each cell of the automaton represent a cell of the tape, with in addition a mark “the head is here, at such and such a stage”. The marked cell and its neighbours are updated according to the program of the machine, the others do not move. The two models therefore compute exactly the same things. The automaton can only be faster for some tasks, since all its cells work together.</p>
+</philo>
 <tech><p>Take as states of the automaton the symbols $s$ of $Z$ and the pairs $(q,s)$ (“the head, in state $q$, is on this cell, which contains $s$”). The initial configuration carries $(q_0,\text{blank})$ in one cell and blanks elsewhere. The local rule $f(g,c,d)$ is as follows. If $c=(q,s)$ and $Z$ has the transition “write $s'$, go to state $q'$, move”, then the new value is $s'$ (the head leaves); if $q$ is a halting state, the cell keeps the value $(q,s)$. If $c=s$ is a symbol and the left neighbour $g=(q,t)$ has a rightward transition with target state $q'$, the new value is $(q',s)$ (the head arrives); likewise with the right neighbour for a leftward transition. Otherwise $c$ does not change. Since there is only one head, these cases do not overlap, and the configuration at time $t$ is exactly that of $Z$ after $t$ steps. The state $(q_{\text{halt}},s)$ appears if and only if $Z$ halts: conclude by the <a href="undecidability.html#arret">undecidability of halting</a>. For the converse, a finite configuration stays finite (it grows by at most $r$ cells on each side at each step), and the rule is applied cell by cell.</p></tech>
 <techno><p>The program <a href="assets/code/automates.py">automates.py</a> builds this local rule for a 3-state Radó machine, and checks that the automaton and the machine have the same configuration after each of the first 20 steps; the machine halts at step 14 with six symbols $1$, the value of <a href="busy-beavers.html#valeurs-bb">Σ(3)</a>.</p></techno>
 </res>
@@ -130,8 +317,9 @@ $$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&
 <res type="Theorem" nom="Rule 110 is universal (Cook, 2004)" id="regle-110">
 <enonce><p>The elementary automaton 110 is universal: for every Turing machine and every input, there is a configuration of rule 110, made of a finite pattern placed on a periodic background, whose evolution simulates the computation of the machine. (Result quoted for information, conjectured by Wolfram in 1985 and proved by Matthew Cook, whose proof was published in 2004.)</p></enonce>
 <philo>
-<p>Two states, three neighbours, eight cases: it is hard to imagine a simpler rule, and yet it computes everything computable. Rule 110 joins the list of universal systems with almost no structure: <a href="#compteurs">two-counter machines</a>, <a href="#fractran">FRACTRAN</a>, Diophantine equations, the <a href="undecidable-mathematics.html#groupes-topologie">Game of Life</a>. As with them, universality implies the undecidability of simple questions about the evolution of the rule from a given configuration.</p>
-<p>The proof does not go directly through Turing machines. In the diagram of rule 110, localized structures, “spaceships”, move at different speeds on a periodic background and collide. Cook showed that by arranging these spaceships suitably, their collisions simulate a <em>cyclic tag system</em>, a variant of <a href="languages.html#systemes-normaux">Post systems</a>, which is itself universal.</p>
+<p class="en-clair"><strong>In plain words.</strong> In “rule 110”, each cell is white or black and looks only at its two immediate neighbours. This tiny rule can nevertheless compute everything.</p>
+<p>Two colours, three cells looked at, eight possible situations: it is hard to imagine anything simpler. The physicist Stephen Wolfram suspected it in 1985, and Matthew Cook proved it in 2004. In the pictures produced by this rule, one sees patterns that move like little spaceships on a regular background and collide. Cook showed that by arranging these spaceships well, their collisions reproduce a computation.</p>
+<p>Rule 110 joins the list of systems that can compute everything with almost nothing: two counters, a list of fractions, equations in integers, the famous Game of Life. As with them, this power has a downside: simple questions about its evolution have no computable answer.</p>
 </philo>
 <tech><p>Two clarifications, quoted for information. First, the initial configuration is not finite in the sense of the <a href="#ac-simule-mt">previous theorem</a>: an infinite periodic background is needed, and even a periodic repetition of one pattern on the right and another on the left; it is a computable configuration, but not one with finite support. Second, Cook’s simulation was exponentially slow; Neary and Woods (2006) made it polynomial, which shows that predicting the evolution of rule 110 is a $\mathsf P$-complete problem. Rule 110 has also been used to build very small universal Turing machines.</p></tech>
 </res>
@@ -145,7 +333,10 @@ $$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&
 <li><strong>Gardens of Eden.</strong> A configuration is a <em>Garden of Eden</em> if it has no predecessor: it can only occur at the start. By the Moore-Myhill theorem (1962–1963), an automaton has Gardens of Eden if and only if there are two distinct configurations, differing on only finitely many cells, that have the same image. The Game of Life has Gardens of Eden. Their existence is decidable in dimension 1 and undecidable in dimension 2 (Kari).</li>
 </ul>
 </enonce>
-<philo><p>The frontier between dimension 1 and dimension 2 recalls the one in <a href="logic-and-types.html#binaire">logic</a> between unary and binary relations, and that of tilings: a line can be analysed by finite automata, a plane can contain a space-time diagram, hence a computation. For questions about behaviour from a given configuration, on the contrary, one dimension already suffices for undecidability, since time provides the second.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Wolfram sorted cellular automata into four families according to what one observes: those that become uniform, those that repeat, those that look chaotic, and those that produce complex structures. Knowing which family a given automaton belongs to is undecidable in general.</p>
+<p>The classification is very telling when one looks at the pictures, but it is not a precise definition: it describes what one sees by trying a few random starts. The automata of the fourth family, those that look like life, are precisely the ones that can compute, and for them one cannot predict for certain what will eventually happen.</p>
+</philo>
 </res>
 
 <!--EXERCICES-->

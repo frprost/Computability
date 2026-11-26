@@ -1,14 +1,14 @@
-/* castors_tnf.c : enumeration exhaustive des machines de Rado a n etats (n<=4), 2 symboles,
-   en "forme normale arborescente". Une machine n est definie que sur les transitions qu elle
-   emploie : quand la simulation atteint une transition non definie, on ramifie (arret a cet
-   endroit, ou toute ecriture, tout deplacement, tout etat deja employe ou un seul etat neuf).
-   Le premier deplacement est vers la droite (symetrie miroir). Toute machine se ramene ainsi
-   a une feuille de l arbre, a renumerotation des etats et miroir pres.
-   Usage : ./castors_tnf 4 1000 30 5000
-   Une feuille qui ne s arrete pas en 1000 pas recoit une preuve de non-arret (raisonnement
-   arriere, cycle, cycle translate, n-grammes), les transitions non definies comptant comme
-   des arrets possibles. Les feuilles restantes (UNKNOWN) sont passees a far.c.
-   La limite de 1000 pas ne sert qu a trier : aucune valeur de S n est supposee. */
+/* castors_tnf.c: exhaustive enumeration of the Rado machines with n states (n<=4), 2 symbols,
+   in "tree normal form". A machine is defined only on the transitions it uses:
+   when the simulation reaches an undefined transition, we branch (halt at this point,
+   or any write, any move, any state already used or a single new state).
+   The first move is to the right (mirror symmetry). Every machine thus reduces
+   to a leaf of the tree, up to renumbering of states and mirroring.
+   Usage: ./castors_tnf 4 1000 30 5000
+   A leaf that does not halt within 1000 steps receives a non-halting proof (backward
+   reasoning, cycler, translated cycler, n-grams), undefined transitions counting as
+   possible halts. The remaining leaves (UNKNOWN) are passed to far.c.
+   The 1000-step limit is only used for sorting: no value of S is assumed. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -161,5 +161,5 @@ int main(int argc,char**argv){
   n=atoi(argv[1]); LIM=atoi(argv[2]); bdepth=atoi(argv[3]); BIG=atoi(argv[4]); if(argc>5) GMAX=atoi(argv[5]);
   for(int s=0;s<n;s++)for(int r=0;r<2;r++) NX[s][r]=n;
   explore();
-  printf("n=%d feuilles=%ld arret=%ld (S=%d Sigma=%d) sans_arret=%ld arriere=%ld cycle=%ld cycle_translate=%ld ngrammes=%ld inconnues=%ld\n",n,leaves,cnt_halt,bestS,bestSig,cnt_nohalt,cnt_back,cnt_cyc,cnt_tc,cnt_cps,cnt_unknown);
+  printf("n=%d leaves=%ld halt=%ld (S=%d Sigma=%d) nohaltTrans=%ld backward=%ld cycler=%ld transcycler=%ld ngrams=%ld unknown=%ld\n",n,leaves,cnt_halt,bestS,bestSig,cnt_nohalt,cnt_back,cnt_cyc,cnt_tc,cnt_cps,cnt_unknown);
 }

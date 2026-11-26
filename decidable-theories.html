@@ -12,7 +12,7 @@
 <body>
 <header class="entete"><div class="entete-int">
   <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
-  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
+  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels <span class="version">version 2</span></a>
   <span class="selecteur-legende">Reading level:</span>
   <div class="selecteur" role="group" aria-label="Reading level">
     <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
@@ -23,50 +23,79 @@
   <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
 </div></header>
 <div class="page">
-<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html" aria-current="page"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html" aria-current="page"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="programs.html">Python programs</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
 <main class="contenu">
 <h1>Decidable theories</h1>
-<p class="chapo">The arithmetic of the integers with addition and multiplication is undecidable. But addition alone is decidable, and so is the theory of the real numbers, multiplication included. This chapter explains these results and what distinguishes them: a theory becomes undecidable when it can describe a computation.</p>
+<p class="chapo pas-philo">The arithmetic of the integers with addition and multiplication is undecidable. But addition alone is decidable, and so is the theory of the real numbers, multiplication included. This chapter explains these results and what distinguishes them: a theory becomes undecidable when it can describe a computation.</p><p class="chapo seulement philo">The arithmetic of the integers with addition and multiplication is undecidable; with addition alone, it becomes decidable. And geometry, real numbers included, is decidable too. A theory tips over into the undecidable when it can describe a computation.</p>
 <div class="prerequis"><strong>Prerequisites</strong><a href="incompleteness.html#godel1">Incompleteness</a> · <a href="logic-and-types.html#binaire">One binary relation suffices</a> · <a href="languages.html#automates-finis">Finite automata</a> · <a href="diophantine-equations.html#mrdp">MRDP theorem</a></div>
 <nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#methodes">Theories and methods</a></li><li><a href="#presburger-section">Presburger arithmetic</a></li><li><a href="#reels">The real numbers and geometry</a></li><li><a href="#paysage">The landscape</a></li><li><a href="#exercices">Exercises</a></li></ol></nav>
 
 
+<div class="seulement philo clair">
+<p>Gödel’s theorem might lead one to believe that every mathematical theory is undecidable. It is not so. If we give up multiplication, all questions about the integers that speak only of addition and comparison can be settled by a machine (Presburger, 1929). More surprisingly, all questions of elementary geometry, and more generally about the real numbers with addition and multiplication, can be too (Tarski, 1948).</p>
+<p>What tips a theory over into the undecidable is not its apparent difficulty, but its ability to describe a computation. The real numbers are “too smooth” to code a Turing machine; the integers with multiplication are not.</p>
+</div>
+
 <p>The <a href="incompleteness.html">incompleteness theorem</a> and the <a href="logic-and-types.html#binaire">decision problem</a> give the impression that logic is undecidable as soon as it becomes interesting. This is not so. Rich mathematical theories are decidable: a machine can settle any of their statements. This chapter presents the most important ones, with two methods of proof (quantifier elimination and automata), then the dividing line between decidable and undecidable theories.</p>
 
 <h2 id="methodes">Theories and methods</h2>
+
+<div class="seulement philo clair">
+<p>A theory is the set of sentences that are true in a structure (the integers, the reals…). It is decidable if a machine can say, for each sentence, whether it is true. The main method consists in eliminating the “there exists” and “for all” of each sentence, replacing it with a simpler equivalent sentence that is checked directly.</p>
+</div>
+
 
 <div class="resultat definition" id="def-theorie"><div class="entete-res"><div class="type">Definition</div><div class="nom">Theory of a structure, decidable theory</div></div>
 <div class="enonce">
 <p>Fix a first-order language (constant, function and relation symbols). The <strong>theory</strong> of a structure $\mathcal M$ is the set $\mathrm{Th}(\mathcal M)$ of sentences true in $\mathcal M$. More generally, the theory generated by a set of axioms $\Gamma$ is the set of sentences provable from $\Gamma$, that is (by <a href="incompleteness.html#completude">completeness</a>) true in all models of $\Gamma$. A theory is <strong>decidable</strong> if the set of codes of its sentences is decidable, <strong>complete</strong> if it contains, for every sentence $\phi$, $\phi$ or $\neg\phi$.</p>
 <p>Notation: $\mathrm{Th}(\N,+,\times)$ is true arithmetic, $\mathrm{Th}(\N,+)$ (with $0$, $1$ and $<$) is <strong>Presburger arithmetic</strong>, $\mathrm{Th}(\R,+,\times)$ (with $0$, $1$ and $<$) is the theory of the real numbers.</p>
 </div>
-<div class="niveau" data-niveau="philo"><p>$\mathrm{Th}(\mathcal M)$ is always complete: a sentence is true or false in $\mathcal M$. For such a theory, being decidable means having a mechanical oracle for truth in $\mathcal M$. The incompleteness theorem says this is impossible for $(\N,+,\times)$: one cannot even axiomatize $\mathrm{Th}(\N,+,\times)$ by a decidable set of axioms, since a complete theory so axiomatized is decidable (<a href="incompleteness.html#ex-inc-complete">exercise</a>).</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>In plain words.</strong> The <em>theory</em> of a mathematical domain (the integers, the reals, the lines of the plane) is the set of all true sentences about it. It is <em>decidable</em> if a program can tell, of any sentence, whether it is true or false.</p>
+<p>A decidable theory is a mechanical oracle for truth: one asks the question, the machine answers, without genius or intuition. For the integers with addition and multiplication, the incompleteness theorem says that this oracle does not exist. This chapter shows that it does exist for important domains, and looks for what makes the difference.</p>
+</div>
 </div>
 
 <div class="resultat theoreme" id="arithmetique-indecidable"><div class="entete-res"><div class="type">Theorem</div><div class="nom">True arithmetic is undecidable</div></div>
 <div class="enonce"><p>$\mathrm{Th}(\N,+,\times)$ is not decidable; it is not even semi-decidable.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>In plain words.</strong> No program can tell, of every sentence about the whole numbers written with addition and multiplication, whether it is true. No program can even write the list of all true sentences.</p>
+<p>With addition and multiplication, the sentence “such a program halts” can be written as a statement about numbers. An oracle for truth about the integers would therefore solve the halting problem, which is impossible.</p>
+</div>
 <div class="niveau" data-niveau="tech"><p>By the <a href="diophantine-equations.html#mrdp">MRDP theorem</a>, there is a polynomial $P$ such that $e\in K\iff\exists\vec y\ P(e,\vec y)=0$. The sentence $\exists\vec y\ (P^+(\underline e,\vec y)=P^-(\underline e,\vec y))$, where $P^+$ and $P^-$ collect the monomials with positive and negative coefficients, is computed from $e$ and is true in $\N$ if and only if $e\in K$. A decision procedure for $\mathrm{Th}(\N,+,\times)$ would therefore decide $K$. Likewise for the complement of $K$, with the negation of this sentence: $\mathrm{Th}(\N,+,\times)$ is not semi-decidable, since $\overline K$ is not.</p></div>
 </div>
 
 <div class="resultat theoreme" id="elimination"><div class="entete-res"><div class="type">Proposition</div><div class="nom">The method of quantifier elimination</div></div>
 <div class="enonce"><p>A theory $\mathsf T$ <strong>eliminates quantifiers</strong> if every formula is equivalent, in $\mathsf T$, to a quantifier-free formula with the same free variables. If this formula is computed from the first one, and if the quantifier-free sentences of $\mathsf T$ can be decided, then $\mathsf T$ is decidable. To eliminate quantifiers, it suffices to eliminate $\exists x$ in front of a conjunction of atomic formulas and negations of atomic formulas.</p></div>
-<div class="niveau" data-niveau="philo"><p>This is the high-school method for solving systems: unknowns are eliminated one by one. “There is $x$ such that $ax+b=0$” is replaced by a condition on $a$ and $b$ alone. If the quantified variable can always be made to disappear, a sentence reduces to a combination of variable-free facts, checked by a computation.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>In plain words.</strong> If every sentence can be replaced by an equivalent sentence with no “there exists” and no “for all”, the theory becomes decidable: all that remains is a simple check, a computation.</p>
+<p>This is the method used in secondary school to solve a system: the unknowns are eliminated one by one. “There is a number x such that a × x + b = 0” is replaced by a condition that speaks only of a and b (“a is not zero, or else a and b are both zero”). If the variable can always be made to disappear, every question comes down to a computation on known numbers.</p>
+</div>
 <div class="niveau" data-niveau="tech"><p>Quantifiers are eliminated from the inside out, replacing $\forall x$ by $\neg\exists x\neg$. In front of a quantifier-free formula, put it in disjunctive normal form $\bigvee_i C_i$ (each $C_i$ a conjunction of literals), use $\exists x\bigvee_iC_i\equiv\bigvee_i\exists x\,C_i$, and eliminate $\exists x$ in front of each $C_i$, first pulling out the literals in which $x$ does not occur. For a sentence, one obtains a quantifier-free, hence variable-free, sentence, which is decided by hypothesis.</p></div>
 </div>
 
 <div class="resultat theoreme" id="ordres-denses"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Dense orders without endpoints</div></div>
 <div class="enonce"><p>The theory $\mathsf{DLO}$ of dense total orders with neither least nor greatest element eliminates quantifiers; it is complete and decidable. In particular, $(\mathbb Q,<)$ and $(\R,<)$ satisfy the same sentences.</p></div>
-<div class="niveau" data-niveau="philo"><p>An instructive example: logic with one binary relation is <a href="logic-and-types.html#binaire">undecidable</a>, but if the axioms of $\mathsf{DLO}$ are added, it becomes decidable. Adding axioms can make a theory decidable: the axioms constrain what the relation can do, and a dense order is too homogeneous to draw a computation. What matters is not the language alone, but what the models allow one to describe.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>In plain words.</strong> The questions about the order of fractions (“between two fractions, there is always another”, “there is no largest fraction”) can all be decided by a program.</p>
+<p>The lesson is surprising. The logic that speaks of a relation between two objects is <a href="logic-and-types.html#binaire">undecidable</a> in general. But if this relation is required to be a “dense” order like that of the fractions, everything becomes decidable again. Such an order is too regular, too similar to itself everywhere, for a computation to be drawn in it. What matters is not the language, but what the domain allows one to describe.</p>
+</div>
 <div class="niveau" data-niveau="tech"><p>The axioms: $<$ is a strict total order; $\forall x\forall y\,(x&lt;y\Rightarrow\exists z\,(x&lt;z\wedge z&lt;y))$; $\forall x\exists y\,(y&lt;x)$ and $\forall x\exists y\,(x&lt;y)$. Negative literals are replaced: $\neg(x&lt;a)\equiv(x=a\vee a&lt;x)$, $\neg(x=a)\equiv(x&lt;a\vee a&lt;x)$, then one redistributes. It remains to eliminate $\exists x$ in front of a conjunction of formulas $x=a$, $x&lt;u$, $l&lt;x$ (replace $x&lt;x$ by false, $x=x$ by true). If there is some $x=a$, replace $x$ by $a$ everywhere. Otherwise, $\exists x\,(\bigwedge_i l_i&lt;x\wedge\bigwedge_j x&lt;u_j)$ is equivalent to $\bigwedge_{i,j}l_i&lt;u_j$: if each $l_i$ is smaller than each $u_j$, then $\max_il_i<\min_ju_j$ and density gives an $x$ in between; if one of the two families is empty, the absence of endpoints gives $x$, and the empty conjunction is true. The language has no constant: a quantifier-free sentence is a Boolean combination of “true” and “false”. Every sentence is therefore equivalent, in $\mathsf{DLO}$, to true or to false: the theory is complete, and the computation is a decision procedure.</p></div>
 </div>
 
 <h2 id="presburger-section">Presburger arithmetic</h2>
 
+<div class="seulement philo clair">
+<p>Without multiplication, the integers become surprisingly docile: every question that speaks only of addition, comparison and divisibility by fixed numbers can be settled by an algorithm.</p>
+</div>
+
+
 <div class="resultat theoreme" id="presburger"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Addition of integers is decidable (Presburger, 1929)</div></div>
 <div class="enonce"><p>The theory $\mathrm{Th}(\N,0,1,+,<)$ is decidable.</p></div>
 <div class="niveau" data-niveau="philo">
-<p>With addition alone, many things can be said: “every integer is even or odd”, “every amount of at least 8 euros can be paid with coins of 3 and 5”, “$x\equiv y \pmod 7$”, and everything concerning systems of linear inequalities over the integers. But two variables cannot be multiplied. And it is multiplication that makes it possible to encode finite sequences (by the <a href="incompleteness.html#beta">β lemma</a>), hence computations. Without it, arithmetic is no longer rich enough to talk about itself.</p>
-<p>Presburger proved this theorem in 1929 by quantifier elimination, in a language enriched with the congruences $x\equiv y\pmod m$. We give here a proof by automata, due to Büchi (1960), closer to computer science: a number is a binary word, and addition proceeds from right to left with a carry, which a finite automaton can do.</p>
+<p class="en-clair"><strong>In plain words.</strong> Every sentence about the whole numbers that uses only addition and comparison can be declared true or false by a program.</p>
+<p>With addition, a lot can already be said: “every number is even or odd”, “every amount of at least 8 euros can be paid with coins of 3 and 5 euros”. But two unknowns cannot be multiplied together. Now it is multiplication that makes it possible to store a whole list of numbers in a single number, and hence to write a computation. Without it, arithmetic can no longer speak about itself, and it becomes decidable.</p>
+<p>The proof given here is due to Büchi (1960). A number is written in binary, and addition proceeds from right to left with a carry, as at school. A very simple machine, which needs to remember only the carry, can check an addition: it is a <a href="languages.html">finite automaton</a>.</p>
 </div>
 <div class="niveau" data-niveau="tech">
 <p><em>Encoding.</em> An $n$-tuple $(x_1,\dots,x_n)$ is written as a word over the alphabet $\{0,1\}^n$: the $k$-th letter consists of the $k$-th bits of the $x_i$, least significant bits first. An $n$-tuple has infinitely many encodings, which differ by zero letters $(0,\dots,0)$ appended at the end. One shows, by induction on $\phi(x_1,\dots,x_n)$, that there is a deterministic finite automaton $\mathcal A_\phi$ accepting exactly the encodings of the $n$-tuples satisfying $\phi$ (all of them or none, for each $n$-tuple), and that it is computed from $\phi$.</p>
@@ -80,17 +109,26 @@
 
 <div class="resultat theoreme" id="multiplication-non-definissable"><div class="entete-res"><div class="type">Corollary</div><div class="nom">Multiplication is not definable from addition</div></div>
 <div class="enonce"><p>There is no formula $\mu(x,y,z)$ of the language $\{0,1,+,<\}$ such that, for all $x,y,z\in\N$, $(\N,+)\models\mu(x,y,z)\iff z=xy$.</p></div>
-<div class="niveau" data-niveau="philo"><p>Presburger’s theorem and the undecidability of arithmetic, taken together, show an expressiveness property: addition does not make it possible to define multiplication. A decision procedure serves here as a measuring instrument.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>In plain words.</strong> With addition alone, multiplication cannot be defined. Otherwise, the theory of addition would be as undecidable as that of multiplication, which is not the case.</p>
+<p>We are of course used to seeing multiplication as repeated addition: 3 × 4 = 4 + 4 + 4. But “repeat x times” is not a sentence that can be written with addition alone when x is an unknown. Decidability serves here as a measuring instrument: it proves that a language is too poor to express a notion.</p>
+</div>
 <div class="niveau" data-niveau="tech"><p>If such a formula existed, every sentence of the language $\{0,1,+,\times,<\}$ could be translated into a sentence of the language $\{0,1,+,<\}$ true in $\N$ if and only if the first one is: replace each product by a new variable, existentially quantified and constrained by $\mu$ (for example $P(s\times t)$ becomes $\exists z\,(\mu(s,t,z)\wedge P(z))$, starting with the innermost products). One would decide $\mathrm{Th}(\N,+,\times)$, which is <a href="#arithmetique-indecidable">impossible</a>. Result quoted for information: the sets of integers definable in $(\N,+)$ are exactly the <em>eventually periodic</em> sets (Ginsburg and Spanier, 1966, for the multivariable version: the semilinear sets), which shows directly that the set of squares is not definable.</p></div>
 </div>
 
 <h2 id="reels">The real numbers and geometry</h2>
 
+<div class="seulement philo clair">
+<p>For the real numbers, Tarski showed that every question formulated with addition, multiplication and comparison can be decided. All of Descartes’s geometry, which translates into equations over the reals, is therefore decidable in principle.</p>
+</div>
+
+
 <div class="resultat theoreme" id="tarski"><div class="entete-res"><div class="type">Theorem</div><div class="nom">The real numbers are decidable (Tarski, 1948)</div></div>
 <div class="enonce"><p>The theory $\mathrm{Th}(\R,0,1,+,\times,<)$ eliminates quantifiers and is decidable. (Result quoted for information, the general proof being long; a case and a consequence are proved below.)</p></div>
 <div class="niveau" data-niveau="philo">
-<p>The contrast is striking. Over the integers, addition and multiplication make the theory undecidable; over the reals, with the same operations, every sentence is settled by a computation. Elementary Euclidean geometry inherits this, since it can be translated into coordinates: a statement about points, lines and circles is decided mechanically. This is what Tarski wanted to prove.</p>
-<p>The deep reason is that the reals are too “continuous” to contain the integers as a definable part: one cannot say “$x$ is an integer” with $+$, $\times$ and $<$ on $\R$. Without the integers, no finite sequences, no computations. It suffices to add the sine function, which vanishes exactly at the multiples of $\pi$, for the integers to become definable and the theory to become <a href="undecidable-mathematics.html#zeros-sinus">undecidable</a>. Over the rationals, on the contrary, $\mathbb Z$ can be defined (Julia Robinson, 1949, quoted for information), and $\mathrm{Th}(\mathbb Q,+,\times)$ is undecidable.</p>
+<p class="en-clair"><strong>In plain words.</strong> Every sentence about the real numbers written with addition, multiplication and comparison can be declared true or false by a program. School geometry (points, lines, circles) is therefore decidable too.</p>
+<p>The contrast is striking. Over the whole numbers, addition and multiplication make the theory undecidable. Over the real numbers, with exactly the same operations, everything is settled by a computation. Elementary geometry benefits, since it can be translated into coordinates: every statement about triangles and circles is decided mechanically. This was Tarski’s dream.</p>
+<p>The reason is that the reals are too “continuous” for the integers to be told apart in them: with addition, multiplication and comparison, one cannot write “x is a whole number”. Without the integers, no computations. It is enough to add the sine function, which vanishes exactly at the multiples of π, for the integers to reappear and for everything to become <a href="undecidable-mathematics.html#zeros-sinus">undecidable</a> again.</p>
 </div>
 <div class="niveau" data-niveau="tech">
 <p><em>An example of elimination.</em> For all reals $a,b,c$:</p>
@@ -102,6 +140,11 @@ $$\exists x\ (ax^2+bx+c=0)\iff(a\ne0\wedge b^2-4ac\ge0)\vee(a=0\wedge b\ne0)\vee
 </div>
 
 <h2 id="paysage">The landscape</h2>
+
+<div class="seulement philo clair">
+<p>The table that follows gathers the known theories, decidable or not. The border runs where a theory becomes able to code a computation.</p>
+</div>
+
 
 <div class="resultat theoreme" id="paysage-theories"><div class="entete-res"><div class="type">Remark</div><div class="nom">Decidable and undecidable theories</div></div>
 <div class="enonce">
@@ -118,8 +161,9 @@ $$\exists x\ (ax^2+bx+c=0)\iff(a\ne0\wedge b^2-4ac\ge0)\vee(a=0\wedge b\ne0)\vee
 </table>
 </div>
 <div class="niveau" data-niveau="philo">
-<p>The right-hand column has a common feature: each time, one can <em>encode a computation</em>, generally by defining (or interpreting) the integers with addition and multiplication, or a grid. Monadic second-order logic, for example, is decidable on a line ($\N$ with successor) or on a tree, but not on a grid, where one finds again the tilings and space-time diagrams of Turing machines. The left-hand column contains structures too poor (dense orders, integers without multiplication) or too homogeneous (the reals, the complex numbers) for that. Tarski, Mostowski and Robinson made this idea into a method: a theory that makes it possible to interpret a small part of arithmetic is undecidable, and so is every consistent extension of that theory.</p>
-<p>The dividing line therefore does not separate fields of mathematics, but powers of expression: as soon as a theory can describe what a computer does, a computer can no longer decide it.</p>
+<p class="en-clair"><strong>In plain words.</strong> The table arranges the known theories in two columns, decidable and undecidable. A theory becomes undecidable as soon as it can describe the working of a machine.</p>
+<p>In the right-hand column, each time, a computation can be written: either by recovering the integers with addition and multiplication, or by drawing a grid in which each cell depends on its neighbours. In the left-hand column, the domains are too poor (the integers without multiplication) or too regular (the reals) for that.</p>
+<p>The border therefore does not separate fields of mathematics, such as algebra and geometry. It separates powers of expression: as soon as a theory can describe what a computer does, no computer can decide it any more.</p>
 </div>
 </div>
 

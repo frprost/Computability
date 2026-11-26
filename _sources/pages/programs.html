@@ -1,0 +1,70 @@
+<!--
+titre: Downloadable programs
+court: Python programs
+chapo: All the constructions of the technological level exist as Python programs that can be downloaded, read, modified and run on one’s own computer.
+-->
+
+<clair>
+<p>The technological level of the manual describes complete machines: every instruction is written out. These machines often have thousands of instructions, and nobody would check them by hand. So they have been programmed. The programs are gathered here; there is no need to know how to program to run them, just follow the installation instructions.</p>
+</clair>
+
+<p class="philo-aussi"><a class="telechargement" href="assets/programs.zip" download>Download the programs (programs.zip)</a></p>
+
+<h2 id="installer">Installing and running</h2>
+
+<p class="philo-aussi">The programs need only Python 3 (version 3.8 or later), with no additional library.</p>
+<ol class="philo-aussi">
+<li><strong>Install Python.</strong> On Linux and macOS, it is usually already present: type <code>python3 --version</code> in a terminal. Otherwise, or on Windows, download it from <a href="https://www.python.org/downloads/">python.org</a> (on Windows, tick “Add Python to PATH” during installation).</li>
+<li><strong>Unzip</strong> <code>programs.zip</code>: this gives a folder <code>programs</code>.</li>
+<li><strong>Open a terminal in this folder</strong> (on Windows: right-click in the folder, “Open in Terminal”; on macOS: right-click, “New Terminal at Folder”).</li>
+<li><strong>Run the checks</strong>: <code>python3 tests.py</code> (on Windows: <code>py tests.py</code>). After about ten seconds, the program displays “Everything as expected.”</li>
+</ol>
+<p class="philo-aussi">Each file run without arguments (<code>python3 compiler.py</code>) displays its usage instructions.</p>
+
+<h2 id="fichiers">The files</h2>
+
+<clair><p>Each program corresponds to a chapter. The first three suffice to see a Turing machine compute and to build a machine automatically from a formula.</p></clair>
+
+<table class="philo-aussi">
+<tr><th>File</th><th>What it does</th><th>Chapter</th></tr>
+<tr><td><code>machines.py</code></td><td>Simulator of quadruple Turing machines. Reads <code>.tm</code> files (one quadruple per line) and displays, on request, each step of the computation.</td><td><a href="turing-machines.html">Turing machines</a></td></tr>
+<tr><td><code>examples/*.tm</code></td><td>The machines of chapter 3: addition, subtractions, constants, projections, multiplication, sign, equality.</td><td><a href="turing-machines.html#exemples">Examples</a></td></tr>
+<tr><td><code>recursive.py</code></td><td>Recursive functions: the six building blocks $C$, $S$, $A$, $\sigma$, $\rho$, $\mu$, the evaluation of a term, a library (operations, comparisons, quotient, Cantor pairs…), and convenient writing by general substitution.</td><td><a href="recursive-functions.html">Recursive functions</a></td></tr>
+<tr><td><code>compiler.py</code></td><td>The compiler from recursive functions to Turing machines: it writes the complete machine, runs it, compares the result.</td><td><a href="equivalence.html#recursives-turing">Equivalence</a></td></tr>
+<tr><td><code>turing_to_recursive.py</code></td><td>The converse direction: a Turing machine becomes a recursive term with a single minimization (Kleene normal form), checked step by step.</td><td><a href="equivalence.html#turing-recursives">Equivalence</a></td></tr>
+<tr><td><code>lambda_calculus.py</code></td><td>Normal-order reducer of λ-terms, Church numerals, and compiler from recursive functions to the λ-calculus.</td><td><a href="lambda-calculus.html">λ-calculus</a>, <a href="equivalence.html#lambda">Equivalence</a></td></tr>
+<tr><td><code>universal.py</code></td><td>A universal function $U(e,x)$ written with the six building blocks, then, by compiling it, a universal Turing machine (about 30 million quadruples).</td><td><a href="universality.html">Universality</a></td></tr>
+<tr><td><code>recursion.py</code></td><td>The s-m-n theorem on Turing machines; Kleene’s fixed point; a program that prints its own text.</td><td><a href="smn-recursion.html">s-m-n and recursion</a></td></tr>
+<tr><td><code>halting.py</code></td><td>The diagonal argument, executed: four candidate “halting deciders”, and the program that defeats each of them.</td><td><a href="undecidability.html">Undecidability</a></td></tr>
+<tr><td><code>stacks.py</code></td><td>Two-stack automata: the translation of a Turing machine, the two stacks playing the two halves of the tape, checked step by step.</td><td><a href="other-models.html#piles">Other models</a></td></tr>
+<tr><td><code>counters.py</code></td><td>Counter machines: the tape stored in two numbers (in binary for blanks and strokes), then only two counters thanks to prime numbers; an interpreter that runs machines of 10<sup>27</sup> steps.</td><td><a href="other-models.html#compteurs-bande">Other models</a></td></tr>
+<tr><td><code>post.py</code></td><td>Post’s correspondence problem: the list of dominoes of a Turing machine, the solution drawn from its computation, and a breadth-first search.</td><td><a href="other-models.html#pcp-turing">Other models</a></td></tr>
+<tr><td><code>post_logic.py</code></td><td>From dominoes to logic: a sentence with one binary relation and one binary function, valid if and only if the dominoes have a solution (TPTP format for automated provers).</td><td><a href="logic-and-types.html#floyd">Logic and types</a></td></tr>
+<tr><td><code>tests.py</code></td><td>Checks all the preceding claims.</td><td></td></tr>
+</table>
+
+<h2 id="exemples">A few commands</h2>
+
+<pre class="philo-aussi"><code>python3 machines.py examples/addition.tm 2 3 --trace
+python3 recursive.py "rho[A(1,1), sigma[S, A(3,2)]]" 2 3
+python3 compiler.py mult 2 3 --output mult.tm
+python3 machines.py mult.tm 2 3
+python3 turing_to_recursive.py examples/proper_subtraction.tm 5 2
+python3 lambda_calculus.py --compile fact 3
+python3 universal.py
+python3 universal.py --machine
+python3 recursion.py
+python3 halting.py
+python3 stacks.py examples/addition.tm 1 1 --trace
+python3 counters.py examples/addition.tm 2 1
+python3 post.py
+python3 post_logic.py</code></pre>
+
+<p>The syntax of terms is that of the chapter <a href="recursive-functions.html">Recursive functions</a>: <code>C(k,m)</code> for the constant $m^{(k)}$, <code>S</code>, <code>A(k,i)</code> for $A^{(k)}_i$, <code>sigma[g, h1, ..., hk]</code>, <code>rho[g, h]</code>, <code>mu[g]</code>; the Greek letters σ, ρ, μ are accepted, as well as the names of the library (<code>python3 recursive.py --list</code>).</p>
+
+<h2 id="autres">The other programs of the manual</h2>
+
+<p class="philo-aussi">The verification programs of the more advanced chapters (busy beavers, complexity, Presburger, Kolmogorov, quantum randomness…) are in the folder <code>assets/code/</code> of the site; each one is run with <code>python3 file.py</code> (or compiled with <code>cc</code> for the C files) and checks what it claims.</p>
+
+<h2 id="licence">Licence</h2>
+<p class="philo-aussi">The programs are under the MIT licence: they may be copied, modified and redistributed freely, keeping the mention of the authors (Frédéric Prost and Claude).</p>

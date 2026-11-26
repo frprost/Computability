@@ -2,10 +2,22 @@
 titre: Turing machines
 court: Turing machines
 chapo: A finite automaton, a read head, an endless tape: the simplest and most mechanical model of computation, defined here formally and executable in the page.
+chapo_clair: A tape of cells, a head that reads one cell at a time, a few rules: the machine imagined by Alan Turing in 1936 to describe what a person who computes does. It looks trivial; yet it can compute everything.
 prerequis: bases.html#mots|Alphabets and words ; bases.html#entiers|Integers
 -->
 
+<clair>
+<p>In 1936, the English mathematician Alan Turing asked himself a question that looks simple: <em>what exactly does a person who computes do?</em> They have a sheet of paper, a pencil, and they follow rules. At each moment, they look at one place on the sheet, remember which stage they are at, write or erase a sign, then move their gaze a little further. Nothing else.</p>
+<p>Turing keeps only that and imagines a machine that is its caricature: a tape divided into cells, a head that reads one cell at a time, and a short list of instructions. This chapter shows that this trivial machine can add, subtract, multiply, compare. The following chapters will show that it can in fact compute everything, which makes it the best tool for proving what <em>cannot</em> be computed.</p>
+</clair>
+
 <h2 id="une-machine-tres-simple">A very simple machine</h2>
+
+<clair>
+<p>Imagine a very long paper tape, divided into cells. Each cell is empty or carries a stroke. Above the tape, a reading head looks at a single cell. The machine also has a small dial that shows its “state”, that is, the stage of the work it has reached, like the bookmark in a recipe.</p>
+<p>The program is a list of rules of the form: “if you are at stage 3 and you see a stroke, erase it and go to stage 4”. A rule does only one thing: write in the cell, or else move one cell to the left, or one cell to the right. When no rule applies, the machine halts. That is all.</p>
+</clair>
+
 
 <p>To model what a human computer does, Alan Turing proposed a very simple mathematical model in 1936. There are many variants of it, all equivalent as regards what they compute; we follow Martin Davis’s presentation with <em>quadruples</em> (<em>Computability and Unsolvability</em>, 1958). A machine consists of three elements:</p>
 <ol>
@@ -14,7 +26,7 @@ prerequis: bases.html#mots|Alphabets and words ; bases.html#entiers|Integers
 <li>a <strong>program</strong>: a finite list of instructions, the quadruples.</li>
 </ol>
 
-<figure>
+<figure class="philo-aussi">
 <svg viewBox="0 0 560 170" role="img" aria-label="Diagram of a Turing machine: a tape of cells, a head in state q pointing at a cell containing 1, and a program.">
   <g font-family="ui-monospace, Menlo, monospace" font-size="18" fill="currentColor">
     <g stroke="currentColor" stroke-width="1.2" fill="none">
@@ -46,6 +58,11 @@ q1 B R q0</pre></div>
 
 <h2 id="definition-formelle">Formal definition</h2>
 
+<clair>
+<p>To be able to reason about these machines as mathematical objects, they must be described without any ambiguity. A machine is a finite list of rules; a moment of its computation is a “snapshot” that shows what is on the tape, where the head is and which stage has been reached.</p>
+</clair>
+
+
 <res type="Definition" nom="Turing machine" id="def-mt">
 <enonce>
 <p>We fix two disjoint countably infinite sets: the <em>states</em> $Q=\{q_0,q_1,\dots\}$ and the <em>symbols</em> $S=\{S_0,S_1,\dots\}$, as well as two marks $L,R\notin Q\cup S$. We write $B=S_0$ (the <em>blank</em>) and $1=S_1$ (the <em>bar</em>, sometimes written $|$).</p>
@@ -53,7 +70,11 @@ q1 B R q0</pre></div>
 $$ q_i\,S_j\,S_k\,q_l \qquad q_i\,S_j\,R\,q_l \qquad q_i\,S_j\,L\,q_l $$
 <p>which is <strong>consistent</strong>: two distinct quadruples of $P_Z$ never begin with the same pair $q_i\,S_j$.</p>
 </enonce>
-<philo><p>Everything is finite: the alphabet actually used, the states, the program. Only the tape is unlimited, but at each moment it carries only finitely many non-blank symbols: this is the “unbounded finiteness” of the <a href="motivations.html">motivations</a>. Consistency is the mathematical form of determinism: each situation corresponds to at most one action.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A Turing machine is a finite list of rules. Each rule says: “at such and such a stage, if you read such and such a sign, perform such and such an action (write a sign, go left, go right), then go to such and such a stage”. Two rules cannot begin in the same way: at each moment, there is at most one thing to do.</p>
+<p>Everything is finite in this machine: the number of signs, the number of stages, the number of rules. Only the tape is unlimited, but at each moment it carries only finitely many signs. It is the image of a person who computes with a limited memory but who can always take an extra sheet of scrap paper.</p>
+<p>The machine understands nothing of what it does. It has no intuition, no initiative. This is precisely what makes it valuable: if one proves that such a machine can solve a problem, then the problem can be solved without any intelligence, in a purely mechanical way.</p>
+</philo>
 <tech><p>We write $E_Z\subset Q$ and $S_Z\subset S$ for the (finite) sets of states and symbols that appear in $P_Z$. Fixing “canonical” sets $Q$ and $S$ in advance makes it possible to say that the set of all machines is countable, and to code them by integers (chapter <a href="equivalence.html#godel-mt">Equivalence</a>).</p></tech>
 <techno><p>In the simulator, a program is written one quadruple per line, for example <code>q0 1 B q1</code>; symbols are arbitrary words (<code>B</code>, <code>1</code>, <code>X</code>…), and <code>L</code>, <code>R</code> are reserved for moves. The simulator rejects an inconsistent program.</p></techno>
 </res>
@@ -68,7 +89,10 @@ $$ q_i\,S_j\,S_k\,q_l \qquad q_i\,S_j\,R\,q_l \qquad q_i\,S_j\,L\,q_l $$
 </ol>
 <p>$\alpha$ is <strong>terminal</strong> if no quadruple of $P_Z$ begins with $q_i\,S_j$. A <strong>computation</strong> is a finite sequence $\alpha_1\vdash_Z\alpha_2\vdash_Z\dots\vdash_Z\alpha_p$ where $\alpha_p$ is terminal; we write $\alpha_p=\mathrm{Res}_Z(\alpha_1)$, the <em>resultant</em>. If no computation starts from $\alpha_1$, $\mathrm{Res}_Z(\alpha_1)$ is undefined.</p>
 </enonce>
-<philo><p>An instantaneous description is a complete snapshot of the machine: nothing else influences what follows. The computation is a film, frame by frame, and the rule that passes from one frame to the next is purely local: it looks only at the state and the cell read.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> At each moment, the complete state of the machine fits on one line: the contents of the tape, the position of the head and the current stage. A computation is the sequence of these lines, each obtained from the previous one by applying the only possible rule.</p>
+<p>This can be compared to a film: each line is a frame, and a simple rule makes it possible to draw the next frame. Nothing else intervenes, neither chance nor the past. If one frame is known, the whole rest of the film is known. It is this property that will later make it possible to check a computation line by line, as one checks a written-out addition.</p>
+</philo>
 <tech>
 <p>Descriptions that differ only by blanks added at the ends describe the same situation, just as $3$, $3.0$ and $3.00$ denote the same number; we reason on the <em>minimal</em> description. Since $P_Z$ is consistent, a description has at most one successor: the relation $\vdash_Z$ is functional, and $\mathrm{Res}_Z$ is a partial function.</p>
 </tech>
@@ -77,10 +101,20 @@ $$ q_i\,S_j\,S_k\,q_l \qquad q_i\,S_j\,R\,q_l \qquad q_i\,S_j\,L\,q_l $$
 
 <h2 id="fonctions-calculees">Computed functions</h2>
 
+<clair>
+<p>For a machine to compute with numbers, one must agree on a way of writing them on the tape. We choose the most primitive one: the number 3 is written with sticks, as one counts on one’s fingers or as a prisoner counts days on a wall. The starting numbers are placed on the tape, the machine is started, and when it halts we count the strokes: that is the result.</p>
+<p>A machine may also never halt. In that case, there is no result. This possibility, which looks like a defect, is in fact at the heart of the whole subject.</p>
+</clair>
+
+
 <res type="Convention" nom="Coding integers on the tape" id="codage-entrees">
 <enonce>
 <p>The integer $x$ is represented by the word $\overline{x}=1^{x+1}$ ($x+1$ bars). An $n$-tuple $(x_1,\dots,x_n)$ is represented by $\overline{x_1}\,B\,\overline{x_2}\,B\cdots B\,\overline{x_n}$. For a word $\alpha$, we write $\langle\alpha\rangle$ for the number of bars it contains.</p>
 </enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The number 0 is written with one stick, the number 1 with two sticks, the number 2 with three sticks, and so on. When there are several numbers, they are separated by an empty cell. The result, at the end, is simply the total number of sticks left on the tape.</p>
+<p>Why one extra stick? Without it, the number 0 would be an empty cell, and two consecutive empty cells would no longer make it possible to know where the data end. This writing in sticks is very slow (a billion is written with a billion sticks), but slowness does not matter here: we want to know what is computable, not what is fast.</p>
+</philo>
 <tech><p>We put $x+1$ bars rather than $x$ to distinguish the argument $0$ from the absence of an argument: the tape for $(0,0)$ is <code>1 B 1</code>, that for $()$ is entirely blank. On output, on the contrary, bars are counted without offset: $\langle\alpha\rangle=y$ codes $y$. This asymmetry, inherited from Davis, simplifies the successor machine (see below); other conventions are possible and give the same class of functions.</p></tech>
 </res>
 
@@ -90,15 +124,62 @@ $$ q_i\,S_j\,S_k\,q_l \qquad q_i\,S_j\,R\,q_l \qquad q_i\,S_j\,L\,q_l $$
 $$\Psi^{(n)}_Z(x_1,\dots,x_n)\simeq\big\langle \mathrm{Res}_Z\big(q_0\,\overline{x_1}B\cdots B\overline{x_n}\big)\big\rangle,$$
 <p>undefined when the resultant is. A function $f:\N^n\to\N$ is <strong>Turing-computable</strong> if there is $Z$ such that $f=\Psi^{(n)}_Z$. We write $\mathcal T$ for this class.</p>
 </enonce>
-<philo><p>The machine starts in state $q_0$, with the head on the first bar of the input. If it never halts, the function has no value at that point: non-termination is the only way for a machine to “not answer”. Every halt, on the contrary, produces an answer.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine defines a function: we write the starting numbers, start the machine, and if it halts, the number of remaining sticks is the answer. A function is called “Turing computable” if there is a machine that computes it in this way.</p>
+<p>If the machine never halts, there is no answer for these starting numbers: the function is not defined at that point. This is not a design error. “Partial” functions, which do not have a value everywhere, are the price to pay for a model that computes everything that is computable. The chapter on <a href="motivations.html">motivations</a> explains why this cannot be avoided.</p>
+</philo>
 <tech><p>The same machine computes one function for each arity $n$. The same function is computed by infinitely many machines (one can always add useless instructions, for example involving a state that is never reached).</p></tech>
 <techno><p>The examples of the next section are all executable. The result displayed is $\langle\alpha\rangle$, the total number of bars when the machine halts, as in the definition.</p></techno>
 </res>
 
+<atelier titre="simulating a Turing machine in Python">
+<p>The complete simulator fits in about sixty useful lines: it is the file <code>machines.py</code> of the <a href="programs.html">downloadable programs</a>. Here is its core, which implements exactly the relation $\alpha\vdash_Z\beta$ of the <a href="#def-pas">definition</a>. The tape is a dictionary that associates a symbol with each non-blank cell; the table of quadruples is indexed by the pair (state, scanned symbol), which makes the consistency requirement (at most one quadruple per pair) visible in the very structure of the data.</p>
+<pre><code>class Machine:
+    def __init__(self, quadruples, initial_state="q0"):
+        self.table = {}
+        for q in quadruples:                        # q = (state, scanned, action, new state)
+            if (q[0], q[1]) in self.table:
+                raise InconsistentMachine(q)
+            self.table[(q[0], q[1])] = q
+
+    def step(self, c):                              # c: tape, position, state
+        read = c.tape.get(c.position, "B")
+        q = self.table.get((c.state, read))
+        if q is None:
+            return False                            # no quadruple: halt
+        if q[2] == "L":   c.position -= 1
+        elif q[2] == "R": c.position += 1
+        elif q[2] == "B": c.tape.pop(c.position, None)
+        else:             c.tape[c.position] = q[2]
+        c.state = q[3]
+        return True</code></pre>
+<p>(Simplified excerpt.) The initial configuration implements the <a href="#codage-entrees">input convention</a> (a block of $x_j+1$ strokes, one blank between two blocks, head on the first stroke, state $q_0$) and the result is the number of strokes at halting, $\langle\mathrm{Res}_Z(\cdot)\rangle$. To run a machine written in a file (one quadruple per line) and display each instantaneous description:</p>
+<pre><code>python3 machines.py examples/addition.tm 2 3 --trace
+q0 1 1 1 B 1 1 1 1
+q1 B 1 1 B 1 1 1 1
+q2 1 1 B 1 1 1 1
+1 q2 1 B 1 1 1 1
+...
+halted after 6 steps, 5 strokes: result 5</code></pre>
+<p>All the machines of this chapter are in the folder <code>examples/</code> of the archive.</p>
+</atelier>
+
+
 <h2 id="exemples">Example programs</h2>
+
+<clair>
+<p>Here are real machines, of a few rules each. They can be run in the page: the “Step” button advances one rule at a time, and one sees the head move and the strokes appear or disappear.</p>
+<p>The addition machine is a good first example. To add 2 and 3, we write three strokes, an empty cell, then four strokes (each number is written with one stroke more than its value, so that the number zero is visible). The machine erases one stroke at the start of each packet: five remain. It does not “know” what an addition is; it applies five rules, and the result is correct.</p>
+<p>Subtraction shows a more worrying phenomenon. If the first machine is asked to compute 2 minus 4, it runs forever: it does not know how to answer, and it does not halt. A second machine, barely different, answers 0 in this case.</p>
+</clair>
+
 
 <res type="Example" nom="The successor" id="ex-succ">
 <enonce><p>The machine $P=\{\,q_0\,B\,B\,q_0\,\}$ computes $x\mapsto x+1$.</p></enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To add 1 to a number, it suffices… to do nothing. The number $x$ is written with $x+1$ sticks; if the machine halts immediately, $x+1$ sticks remain, that is, the answer $x+1$.</p>
+<p>This almost comical example shows that the choice of the way the data are written does part of the work. This is true in real computing too: a good data format simplifies programs enormously.</p>
+</philo>
 <tech><p>On the input $\overline{x}$, the head reads a bar in state $q_0$; no quadruple begins with $q_0\,1$, the machine halts immediately, and the tape carries $x+1$ bars. (The quadruple $q_0BBq_0$ serves only to make $P$ nonempty; it is never executed.)</p></tech>
 <techno><div class="tm-widget" data-args="3"><pre class="src">q0 B B q0</pre></div></techno>
 </res>
@@ -106,6 +187,10 @@ $$\Psi^{(n)}_Z(x_1,\dots,x_n)\simeq\big\langle \mathrm{Res}_Z\big(q_0\,\overline
 <res type="Example" nom="Addition" id="ex-add">
 <enonce><p>The following machine computes $(x,y)\mapsto x+y$: it erases the first bar of each argument.</p>
 $$q_0\,1\,B\,q_1\quad q_1\,B\,R\,q_2\quad q_2\,1\,R\,q_2\quad q_2\,B\,R\,q_3\quad q_3\,1\,B\,q_4$$</enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To add two numbers written in sticks, the machine erases one stick at the start of each of the two packets. Exactly the desired total remains.</p>
+<p>The machine has no notion of addition. It executes five rules. Yet, whatever the two numbers, it gives the right answer. This is the whole idea of an algorithm: a blind but sure method, which works in every case.</p>
+</philo>
 <tech><p>On $1^{x+1}B1^{y+1}$: the first bar is erased ($q_0\to q_1$), the head crosses the rest of the first block ($q_2$), crosses the separator ($q_2\to q_3$) and erases the first bar of the second block ($q_3\to q_4$). $x+y$ bars remain; the state $q_4$ has no instruction, and the machine halts. The result need not be a single block, since all the bars are counted.</p></tech>
 <techno><div class="tm-widget" data-args="2, 3"><pre class="src">q0 1 B q1
 q1 B R q2
@@ -119,7 +204,10 @@ q3 1 B q4</pre></div></techno>
 $$\begin{aligned}&q_0\,1\,B\,q_0\quad q_0\,B\,R\,q_1\quad q_1\,1\,R\,q_1\quad q_1\,B\,R\,q_2\quad q_2\,1\,R\,q_2\quad q_2\,B\,L\,q_3\quad q_3\,1\,B\,q_3\quad q_3\,B\,L\,q_4\\ &q_4\,1\,L\,q_5\quad q_5\,1\,L\,q_5\quad q_5\,B\,L\,q_6\quad q_6\,B\,R\,q_8\quad q_6\,1\,L\,q_7\quad q_7\,1\,L\,q_7\quad q_7\,B\,R\,q_0\quad q_8\,B\,B\,q_8\end{aligned}$$
 <p>Replacing the last quadruple by $q_8\,B\,R\,q_9$ and $q_9\,1\,B\,q_8$ (erase what remains of the second block), we obtain the <strong>truncated subtraction</strong> $x\monus y=\max(x-y,0)$, which is total.</p>
 </enonce>
-<philo><p>This is the first example in this manual where partiality appears naturally: a machine that “does not know what to answer” does not halt. The total version is obtained by deciding on a default answer ($0$), which is possible here but not always (see <a href="undecidability.html#sans-prolongement">functions with no computable extension</a>).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To compute $x-y$, the machine removes one stick from each packet, in turn, until the second is exhausted. If the first packet runs out first (when $x$ is smaller than $y$), the first version goes round in circles forever; the second version answers 0.</p>
+<p>This is the first example in the manual of a machine that does not halt because it has no answer to give. A machine that “loops” is not necessarily badly written: it may express that a question has no answer. The whole difficulty of the subject will come from the fact that one cannot always know in advance whether a machine will halt.</p>
+</philo>
 <tech>
 <p>Start from $q_0\,1^{m+1}B1^{n+1}$. One iteration of the loop erases the first bar of the first block, goes to the end of the second ($q_1,q_2$), erases its last bar ($q_3$), then comes back: if the second block is empty, state $q_4$ reads a blank and the machine halts; otherwise we come back to the first block ($q_5$) and test whether it is empty ($q_6$); if it is not, we return to its beginning ($q_7$) and start again. After $k$ iterations, $m+1-k$ and $n+1-k$ bars remain; the halt occurs for $k=n+1$, with $m-n$ bars, if $m\ge n$.</p>
 </tech>
@@ -163,6 +251,10 @@ q9 1 B q8</pre></div>
 
 <res type="Example" nom="Constant functions" id="ex-const">
 <enonce><p>For every $k$ and every $m$, the constant function $m^{(k)}:(x_1,\dots,x_k)\mapsto m$ is Turing-computable.</p></enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine can ignore its data and always answer the same number: it erases everything, then writes as many sticks as needed.</p>
+<p>This case seems pointless, but it serves as a basic brick: to build complicated machines, simple machines are assembled, and “write such and such a number” is one of them.</p>
+</philo>
 <tech><p>The machine erases all the argument blocks (a blank followed by a blank signals the end of the input), then writes $m$ bars. For $k=0$ the tape is blank from the start and the erasing phase stops at once.</p>
 </tech>
 <techno>
@@ -182,6 +274,10 @@ v2 1 R w3</pre></div></techno>
 
 <res type="Example" nom="Choosing an argument (projections)" id="ex-proj">
 <enonce><p>For $1\le i\le k$, the projection $A^{(k)}_i:(x_1,\dots,x_k)\mapsto x_i$ is Turing-computable.</p></enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine can keep only one of its starting numbers, for example the second, and erase the others.</p>
+<p>It is the most mundane operation there is, but it makes it possible to reorder and select data. The basic bricks of the next chapter (keep a number, add 1, write a constant) are exactly these.</p>
+</philo>
 <tech><p>The blocks are processed one after the other, with one group of states per block (there are $k$ blocks, a fixed number): block $i$ loses its first bar and is kept, the others are erased. $x_i$ bars remain.</p>
 </tech>
 <techno>
@@ -203,6 +299,12 @@ c3 B R b4</pre></div></techno>
 <p>These machines are written by hand. The chapter <a href="equivalence.html">Equivalence of models</a> shows how to <em>build automatically</em> a machine for every recursive function; the page contains a compiler that actually does it.</p>
 
 <h2 id="bibliotheque-commune">A library common to the three models</h2>
+
+<clair>
+<p>The same functions (successor, addition, multiplication, factorial, comparison…) are programmed in this chapter with Turing machines, in the next chapter with formulas, and in the chapter on the λ-calculus with functions that apply to other functions. Comparing the three versions of the same function is the best way to see that these three ways of computing, very different in appearance, amount to the same thing.</p>
+<p>Small machines are written by hand in about twenty rules. For more complicated functions, such as power, we let a program build the machine from the formula: it writes several thousand rules. The details are at the technological level.</p>
+</clair>
+
 <p>The same twelve functions are defined in the three models of this manual (see also the chapters <a href="recursive-functions.html#bibliotheque-commune">Recursive functions</a> and <a href="lambda-calculus.html#bibliotheque-commune">λ-calculus</a>). The simplest are computed by hand-written machines, whose correctness is proved by an <em>invariant</em>: a description of the tape and the state, true at the beginning of each round of the loop. For power, factorial and quotient, we use the machine produced by the <a href="equivalence.html#rec-turing">compiler</a> from the recursive definition: this is the most direct link between the two models. All the machines have been tested by simulation, the output being compared with the specification (inputs up to 5 or 7 depending on the case).</p>
 <table class="table-trois">
 <tr><th>Function</th><th>Specification</th><th>Recursive</th><th>Turing</th><th>λ-calculus</th></tr>
@@ -361,12 +463,18 @@ d1 B B z</pre></div><p>The machine compiled from the recursive definition:</p><d
 
 <h2 id="ensembles-predicats">Functions, sets, predicates, languages</h2>
 
+<clair>
+<p>Computing a number, answering yes or no to a question, sorting correct and incorrect sentences: these three activities seem different. They are in fact interchangeable. A question answered by yes or no is a function worth 1 or 0. A sentence is a sequence of letters that can be numbered. The manual therefore moves freely from one language to the other.</p>
+</clair>
+
+
 <res type="Proposition" nom="Four equivalent ways of speaking about the computable" id="quatre-presentations">
 <enonce>
 <p>Computability can be presented through <em>functions</em> (from $\N^n$ to $\N$), through <em>sets</em> (a set $A\subseteq\N$ is decidable if its characteristic function $\chi_A$ is Turing-computable), through <em>predicates</em> (a property $p$ of integers is decidable if the function equal to $1$ when $p(x)$ holds and $0$ otherwise is computable) or through <em>languages</em> (a language $L\subseteq\Sigma^*$ is decidable if a machine reading a word $w$ answers in finite time whether $w\in L$). These four presentations are equivalent, in the sense that each translates into the others through computable codings.</p>
 </enonce>
 <philo>
-<p>“Computing a function”, “recognizing a property”, “sorting correct words from incorrect ones”: three apparently different jobs (the accountant, the judge, the spell-checker) which are in fact the same. The key is that several numbers can always be coded by one, and a word by a number: asking a yes/no question about finite objects amounts to computing a function with values in $\{0,1\}$, and conversely computing $f$ amounts to answering the questions “is $f(x)$ equal to $y$?”.</p>
+<p class="en-clair"><strong>In plain words.</strong> Computing a function, deciding whether a number has a property, recognizing whether a sentence is well formed: these are three ways of saying the same thing. What is computable in one language is computable in the others.</p>
+<p>An accountant who computes, a judge who decides yes or no, a proofreader who spots mistakes do, from the point of view of computability, the same job. This makes it possible to state results in the most natural form: we shall speak of “problems” (a question, a yes or no answer) rather than of functions as soon as impossibility is at stake.</p>
 </philo>
 <tech>
 <p><strong>Coding pairs.</strong> <a href="cantor.html">Cantor’s</a> bijection $\langle x,y\rangle=\tfrac12\big((x+y)^2+3x+y\big)$ and its inverses $\pi_1,\pi_2$ are primitive recursive; iterating it, every $n$-tuple is coded by an integer. Sets and predicates are therefore the same thing (a predicate is the characteristic function of the set of $x$ that satisfy it), and a set of $n$-tuples reduces to a set of integers.</p>
@@ -378,6 +486,11 @@ d1 B B z</pre></div><p>The machine compiled from the recursive definition:</p><d
 
 <h2 id="machines-avec-oracle">Oracle machines</h2>
 
+<clair>
+<p>An oracle, in ancient Greece, answered the questions that nobody else could settle. In computability, we imagine a machine that can, at certain moments, ask such an oracle a question and receive the right answer instantly. It is a thought experiment: it makes it possible to measure how hard a problem is, by asking what more we could do if we knew how to solve it.</p>
+</clair>
+
+
 <p>To study degrees of undecidability (chapter <a href="arithmetical-hierarchy.html">Arithmetical hierarchy</a>), a machine is allowed to query a fixed set $A\subseteq\N$, a “black box” that instantly answers the question “$n\in A$?”.</p>
 
 <res type="Definition" nom="Turing machine with oracle" id="def-oracle">
@@ -386,7 +499,10 @@ d1 B B z</pre></div><p>The machine compiled from the recursive definition:</p><d
 $$\alpha\vdash_{Z^A}\gamma\,q_k\,S_j\,\delta \text{ if } \langle\alpha\rangle\in A,\qquad \alpha\vdash_{Z^A}\gamma\,q_l\,S_j\,\delta \text{ if } \langle\alpha\rangle\notin A.$$
 <p>We define as above $\Psi^{(n)}_{Z^A}$ and the class $\mathcal T^A$ of $A$-computable functions. One proves that $\mathcal T^A=P^A$, the functions recursive relative to $A$ (<a href="equivalence.html#relatif">relative equivalence</a>).</p>
 </enonce>
-<philo><p>An oracle is a hypothesis: “if we knew how to answer such and such an impossible question, what more could we compute?”. We thus discover that the impossible has degrees: even with an oracle for the halting problem, some questions remain unanswered.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine with an oracle is an ordinary machine that is allowed, at certain moments, to ask a question of the type “does this number have such and such a property?” and to receive the right answer effortlessly.</p>
+<p>Nobody will ever build such a machine if the oracle answers an impossible question. But the thought experiment is fruitful: it makes it possible to compare impossible problems with one another. We shall discover that there are more or less serious impossibilities, as there are larger and smaller infinities.</p>
+</philo>
 <tech><p>The machine asks the question about the number of bars present on the tape; the contents of the tape are not modified, only the next state depends on the answer. A machine without oracle quadruples computes the same function for every $A$: $\mathcal T\subseteq\mathcal T^A$, and $\mathcal T^A=\mathcal T$ if $A$ is computable (replace each oracle query by the computation of $\chi_A$).</p>
 </tech>
 </res>
@@ -395,7 +511,10 @@ $$\alpha\vdash_{Z^A}\gamma\,q_k\,S_j\,\delta \text{ if } \langle\alpha\rangle\in
 <enonce>
 <p>For every $A\subseteq\N$, the characteristic function $\chi_A$ is $A$-computable: $\chi_A\in\mathcal T^A$.</p>
 </enonce>
-<philo><p>This is almost a tautology, but it fixes the meaning of the word: an oracle is an answer given for free, and what costs is only the work around the question. It also shows that the hierarchy of degrees is “full”: any set, however complicated, becomes computable as soon as it is given as an oracle.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> If we are allowed to ask an oracle “is this number in the set?”, then we obviously know how to say whether a number is in the set.</p>
+<p>This is almost obvious, but it fixes the meaning of the word: an oracle gives the answer to its question for free. Every set, even the most complicated, becomes easy if it is given as an oracle. The interesting question is therefore: what <em>else</em> does an oracle make it possible to obtain?</p>
+</philo>
 <tech>
 <p>The question concerns $\langle\alpha\rangle$, the number of bars on the tape. On the input $\overline x=1^{x+1}$, there are $x+1$ bars: first erase one, then query the oracle, which receives exactly $x$; then erase the whole block, and write a bar if and only if the answer was positive. The following machine $Z$ works:</p>
 $$\begin{array}{llll}
@@ -429,6 +548,11 @@ def psi(x, A):
 
 <h2 id="variantes">Variants of the model: external universality</h2>
 
+<clair>
+<p>Many variants of the machine can be imagined: a tape infinite on one side only, several tapes, several heads, a squared sheet instead of a tape, rules that write and move at the same time. All of them compute exactly the same things. Only the speed changes. This robustness is the first reason to think that the Turing machine has captured something fundamental, and not merely one model among others.</p>
+</clair>
+
+
 <p>We distinguish three forms of universality of Turing machines: <em>external</em> universality (reasonably modifying the model does not change what it computes, below), <em>internal</em> universality (a single machine simulates all the others, see <a href="universality.html">Universality</a>) and universality <em>in terms of models of computation</em> (the <a href="church-turing-thesis.html">Church-Turing thesis</a>).</p>
 
 <p>The machine can be given more capabilities: write <em>and</em> move in a single step (quintuples, the model of the <a href="busy-beavers.html">busy beavers</a>), several tapes, several heads on the same tape, a nondeterministic program, or any combination of these. Capabilities can also be removed: a tape infinite on one side only, an alphabet reduced to $\{B,1\}$, a number of states bounded once and for all (a <a href="universality.html#universelle">universal machine</a> suffices). For each of these models we follow the same scheme (instantaneous descriptions, computation step, resultant, computed function), and obtain exactly the class $T$ of Turing-computable functions. The simulations change computation time by at most a polynomial factor (see <a href="three-approaches.html#cout-simulation">Cost of simulation</a>), but never the set of computable functions. Here is the simplest case treated in detail.</p>
@@ -437,7 +561,10 @@ def psi(x, A):
 <enonce>
 <p>A <strong>quintuple machine</strong> (or “mobile” machine) is a finite consistent set of quintuples $q_i\,S_j\,S_k\,X\,q_l$ with $X\in\{L,R,I\}$: reading $S_j$ in state $q_i$, it writes $S_k$, moves left, right or stays put ($I$), and goes to state $q_l$. Defining instantaneous descriptions, computations and computed functions $\Psi^{(n)}$ in the same way, we obtain a class $T_m$ of functions, and $T_m=T$.</p>
 </enonce>
-<philo><p>Whether the machine does one or two things per step changes nothing about what it can compute: only the number of steps. This is the simplest case of a general phenomenon. As soon as the programs of one model can be <em>compiled</em> into another, the two models have the same power; the whole equivalence of models of computation rests on compilers of this kind.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A machine that, at each step, writes a sign <em>and</em> moves computes nothing more than a machine that does one or the other. It only goes twice as fast.</p>
+<p>This is the first example of a general fact: the details of the definition do not matter. Changing the rules of the game changes the speed, never the frontier between what can be computed and what cannot.</p>
+</philo>
 <tech>
 <p>$T\subseteq T_m$: a quadruple machine is a quintuple machine that uses only part of its possibilities. Replace $q_i\,S_j\,S_k\,q_l$ by $q_i\,S_j\,S_k\,I\,q_l$, and $q_i\,S_j\,X\,q_l$ ($X=L,R$) by $q_i\,S_j\,S_j\,X\,q_l$. An induction on the length of computations shows that the two machines have the same resultants.</p>
 <p>$T_m\subseteq T$: a quintuple $q_i\,S_j\,S_k\,I\,q_l$ becomes the quadruple $q_i\,S_j\,S_k\,q_l$. For $q_i\,S_j\,S_k\,X\,q_l$ with $X=L$ or $R$, one must first write, then move, going through a <em>new</em> intermediate state $r$, specific to this quintuple: $q_i\,S_j\,S_k\,r$ and $r\,S_k\,X\,q_l$. The machine obtained is consistent, and each step of the quintuple machine is simulated by one or two steps.</p>
@@ -452,6 +579,20 @@ B 1 1 r4     r4 1 R h      # B 1 1 R h</code></pre>
 </techno>
 </res>
 
+<atelier titre="the translation from quintuples to quadruples">
+<p>The proof can be programmed in a few lines (function <code>quintuples_to_quadruples</code> of <code>machines.py</code>): each quintuple $q\,s\,s'\,X\,q'$ becomes two quadruples linked by a fresh state $m$, specific to this quintuple. In state $m$, the scanned symbol is necessarily $s'$, the one just written; a single quadruple therefore suffices for the move.</p>
+<pre><code>def quintuples_to_quadruples(quintuples):
+    quads, k = [], 0
+    for q, s, written, move, q2 in quintuples:
+        k += 1
+        mid = "%s_%s_%d" % (q, s, k)              # fresh intermediate state
+        quads.append((q, s, written, mid))        # 1. write
+        quads.append((mid, written, move, q2))    # 2. move
+    return Machine(quads, quintuples[0][0] if quintuples else "q0")</code></pre>
+<p>The number of steps is at most doubled; the number of states increases by the number of quintuples. (The motionless move $I$ is handled by omitting the second quadruple and renaming $m$ to $q'$.)</p>
+</atelier>
+
+
 <res type="Proposition" nom="What makes universality disappear" id="restrictions">
 <enonce>
 <p>Some restrictions, on the other hand, lose computable functions:</p>
@@ -464,7 +605,10 @@ B 1 1 r4     r4 1 R h      # B 1 1 R h</code></pre>
 <p>The first three points are proved below. The last one requires the theory of context-free languages: it is proved later (<a href="languages.html#automates-pile">pushdown automata and grammars</a>, <a href="languages.html#lemme-etoile">pumping lemma</a>), and nothing in the intermediate chapters depends on it.</p>
 <p>On the other hand, randomness adds nothing: a probabilistic machine whose answer is correct with probability greater than $1/2$ computes only computable functions.</p>
 </enonce>
-<philo><p>What gives Turing machines their power is therefore neither the size of the alphabet, nor the number of states, nor the richness of the instructions: it is the possibility of going back over what has been written, in an unbounded memory. Remove either of these two things and we fall into strictly weaker models, but ones for which many properties can be decided (see the summary in the chapter <a href="languages.html#indecidables-2">Languages and grammars</a>).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Some restrictions, on the other hand, cause a loss of power: a head that can only go to the right, a tape that cannot be rewritten, a machine that has only one sign.</p>
+<p>What makes the machine strong is therefore neither its vocabulary, nor the number of its stages: it is the possibility of going back to reread what it has written, that is, of having a scratch memory with no limit fixed in advance.</p>
+</philo>
 <tech>
 <p><strong>One-way head.</strong> Suppose the machine has no quadruple moving left. A cell that has been left is then never read again. When the head arrives on a cell in state $q$ and reads $s$ there, the machine applies writing quadruples on the spot, deterministically, until: it leaves to the right in a state $q'$, or halts, or loops on the spot (a (state, symbol) pair repeats). Write $\delta(q,s)\in E\cup\{\text{halt},\text{loop}\}$ for this outcome, which depends only on $q$ and $s$. On the input $w=s_1\cdots s_\ell$, the state on leaving cell $j$ is therefore obtained by reading $w$ with the deterministic finite automaton with transition function $\delta$ (the two outcomes $\text{halt}$ and $\text{loop}$ being absorbing). After the input, the head reads only blanks, and the sequence of states $q,\delta(q,B),\delta(\delta(q,B),B),\dots$ reaches the halt within at most $|E|$ cells or never reaches it. The set of inputs on which the machine halts is therefore recognized by a finite automaton: it is regular (recognized by a finite automaton; these languages are studied in the chapter <a href="languages.html#automates-finis">Languages and grammars</a>, but the following argument does not need them). For inputs $\overline x=1^{x+1}$, a finite automaton over one letter has an ultimately periodic sequence of states, so the set of $x$ on which the machine halts is ultimately periodic: such a machine does not semi-decide, for example, the decidable set of squares, whose gaps grow.</p>
 <p><strong>Probabilistic machines.</strong> A probabilistic machine has, for each (state, symbol) pair, zero, one or two quadruples; when there are two, it tosses a coin, independently at each step. It <em>computes</em> $f$ if, for every $x$, the probability of halting with the result $f(x)$ exceeds $1/2$ when $f(x)$ is defined, and if, when $f(x)$ is not defined, no result has probability greater than $1/2$. Such an $f$ is computable. Write $P(x,y)$ for the probability of halting with the result $y$, and $P_s(x,y)$ for the sum of the $2^{-c}$ over the computations that halt in at most $s$ steps with the result $y$, $c$ being the number of coin tosses of the computation. These computations are disjoint events, finitely many for each $s$, so $P_s(x,y)$ is a computable rational, increasing in $s$, with limit $P(x,y)$. The algorithm searches, for $s=0,1,2,\dots$ and $y\le s$, for a pair with $P_s(x,y)>1/2$, and answers $y$. If $f(x)$ is defined, $P(x,f(x))>1/2$, so such a pair exists; and every answer $y$ satisfies $P(x,y)\ge P_s(x,y)>1/2$, whence $y=f(x)$, since two different results cannot each have probability greater than $1/2$. If $f(x)$ is not defined, no pair works and the algorithm does not halt. Conversely, a deterministic machine is a probabilistic machine that never tosses.</p>
@@ -476,6 +620,11 @@ B 1 1 r4     r4 1 R h      # B 1 1 R h</code></pre>
 
 <h2 id="temps">Computation time</h2>
 
+<clair>
+<p>Knowing that a computation is possible is not enough: it must also finish before the end of the universe. The number of steps of a machine gives an honest measure of computation time. This measure separates the problems we know how to solve quickly from those for which we only know how to check a proposed solution quickly.</p>
+</clair>
+
+
 <res type="Definition" nom="Computation time, classes P and NP" id="temps-p-np">
 <enonce>
 <p>The <strong>time</strong> of a computation is its number of steps (<a href="#def-pas">computation step</a>). A machine (with one or several tapes) works <strong>in time $t(n)$</strong> if, on every input of length $n$, it halts in at most $t(n)$ steps. We work here on words (for example integers written in binary), since the length of the unary notation $1^{x+1}$ is exponential in that of the binary notation.</p>
@@ -483,7 +632,10 @@ B 1 1 r4     r4 1 R h      # B 1 1 R h</code></pre>
 <p>A <strong>nondeterministic</strong> machine may have several quadruples for the same (state, symbol) pair; it <em>accepts</em> an input if <em>at least one</em> of its possible computations halts in an accepting state. $\mathsf{NP}$ is the class of languages accepted by a nondeterministic machine all of whose computations, on an input of length $n$, have at most $p(n)$ steps.</p>
 <p>Equivalently, $L\in\mathsf{NP}$ if and only if there are a polynomial $q$ and a language $R\in\mathsf P$ (of coded pairs) such that $x\in L\iff\exists y\ \big(|y|\le q(|x|)\wedge(x,y)\in R\big)$: $y$ is a <strong>certificate</strong> that can be checked quickly. A language $L\in\mathsf{NP}$ is <strong>NP-complete</strong> if every language of $\mathsf{NP}$ reduces to it by a function computable in polynomial time.</p>
 </enonce>
-<philo><p>$\mathsf P$ gathers the problems we know how to <em>solve</em> quickly, $\mathsf{NP}$ those for which we know how to <em>check</em> a proposed solution quickly. Whether the two classes are equal is the most famous open question in computer science. Thanks to the polynomial simulations between models (<a href="three-approaches.html#cout-simulation">cost of simulations</a>), these classes do not depend on the reasonable model chosen.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The time of a computation is its number of steps. We put in one family, called P, the problems we know how to solve quickly, and in another, called NP, those for which we know how to check quickly a solution proposed to us.</p>
+<p>Finding the solution of a giant sudoku grid is hard; checking that a filled grid is correct is easy. The great open question of computer science, “is P equal to NP?”, asks whether this difference is real or whether we merely lack ingenuity. A one-million-dollar prize awaits whoever solves it.</p>
+</philo>
 <tech><p><strong>Equivalence of the two definitions.</strong> If $N$ is nondeterministic in time $p$, with at most $d$ choices per step, a computation is determined by the sequence of its choices, a word $y$ of length $p(n)$ over $\{1,\dots,d\}$ (coded in binary). The relation “the computation of $N$ on $x$ guided by the choices $y$ accepts” is checked by simulating $p(|x|)$ steps: it is in $\mathsf P$. Conversely, if $x\in L\iff\exists y\,(|y|\le q(|x|)\wedge(x,y)\in R)$ and $R$ is decided in time $r$, a nondeterministic machine writes a word $y$ of length at most $q(|x|)$ by choosing each letter, then runs the machine for $R$: all its computations have at most $O(q(n)+r(n+q(n)))$ steps, which is polynomial. That NP-complete problems exist (for example the satisfiability of propositional formulas) is the Cook-Levin theorem (1971), proved in the chapter <a href="complexity.html#cook-levin">Complexity</a>, which also studies computation space and the other classes.</p></tech>
 </res>
 

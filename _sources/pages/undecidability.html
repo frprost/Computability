@@ -2,10 +2,21 @@
 titre: Undecidable problems
 court: Undecidability
 chapo: No program can decide whether an arbitrary program halts. From this single fact follows a host of very concrete impossibilities, summed up by Rice’s theorem.
+chapo_clair: No program will ever be able to say, for any program, whether it will eventually halt. From this single impossibility follow very concrete limits on what computer science can check automatically.
 prerequis: universality.html|Universality ; smn-recursion.html|The s-m-n theorem
 -->
 
+<clair>
+<p>Every programmer has known a program that “runs” forever: we wait, not knowing whether it will finish or is stuck in a loop. Could we not write a tool that examines a program and says in advance: “this one will halt”, or “this one will run forever”?</p>
+<p>In 1936, Turing proved that this is impossible, not for lack of ingenuity or computing power, but by a logical impossibility, as final as the impossibility of building a round square. This chapter explains why, then shows that this impossibility spreads to almost all the questions we would like to ask about the behaviour of programs.</p>
+</clair>
+
 <h2 id="le-probleme-de-larret">The halting problem</h2>
+
+<clair>
+<p>Turing’s proof resembles the liar paradox (“this sentence is false”). Suppose that a magic program, let us call it “Oracle”, could tell of every program whether it halts. We then write a program “Contrarian” that asks Oracle about itself and does the opposite of the prediction: if Oracle announces “Contrarian halts”, Contrarian runs forever; if Oracle announces “it runs forever”, Contrarian halts at once. Oracle is bound to be wrong about Contrarian. So Oracle does not exist.</p>
+</clair>
+
 
 <p>The <a href="motivations.html#non-calculables">first argument</a> for non-computability was a size argument: there are more functions than programs. It is correct but non-constructive. Which functions, concretely, are not computable? The most natural candidate is linked to partiality: the only way for a computation not to answer is not to halt. Can one predict, from outside, whether a computation will halt?</p>
 
@@ -14,9 +25,9 @@ prerequis: universality.html|Universality ; smn-recursion.html|The s-m-n theorem
 <p>The set $K=\{e\in\N:\varphi_e(e)\conv\}$ is not decidable. Consequently the set $H=\{\langle e,x\rangle:\varphi_e(x)\conv\}$ (often written $K_0$) is not decidable either: no program takes as input a program $e$ and a datum $x$, always halts, and answers correctly whether $e$ halts on $x$.</p>
 </enonce>
 <philo>
-<p>There is not, and there will never be, any software that examines an arbitrary program and says with certainty whether it will eventually halt or loop forever. This is not a question of computing power or of artificial intelligence: it is a logical impossibility, of the same kind as the impossibility of constructing, with straightedge and compass, a square with the same area as a circle.</p>
-<p>The argument is that of the liar. If a “halting oracle” existed, one could write a contrarian program that queries the oracle about itself and does the opposite of what it predicts: if it is predicted to halt, it loops; if it is predicted to loop, it halts. The oracle is necessarily wrong about that program.</p>
-<p>This does not mean that nothing can be known: for many particular programs one proves that they terminate, and tools do so automatically. It means that <em>no single method</em> works for all of them.</p>
+<p class="en-clair"><strong>In plain words.</strong> There is no program that, given any program and any input, always says correctly whether this program will halt on this input.</p>
+<p>There is not, and there will never be, a tool that examines any program and predicts for certain whether it will finish or loop forever. It is not a question of technology: a computer a thousand times faster would change nothing. Real tools detect many infinite loops, but each one is wrong or silent about some programs.</p>
+<p>The proof works like the liar paradox. If such a seer existed, we would write a program that asks it about itself and does the opposite of what it announces. The seer would be wrong about that program: so it cannot exist.</p>
 </philo>
 <tech>
 <p>Suppose $\chi_K$ is computable. The function</p>
@@ -37,13 +48,39 @@ $$p(e)\simeq\begin{cases}0&\text{if }\chi_K(e)=0,\\ \ind&\text{if }\chi_K(e)=1\e
 </techno>
 </res>
 
+<atelier titre="the diagonal argument, run">
+<p>The file <code>halting.py</code> of the <a href="programs.html">downloadable programs</a> makes the proof concrete. A candidate “decider” is a Python function <code>decide(source, x)</code> that claims to tell whether the program with text <code>source</code> halts on input <code>x</code>. The function <code>paradox</code> builds the diagonal program $D$: thanks to the <a href="smn-recursion.html#kleene">fixed point</a>, $D$ has its own text in the variable <code>SELF</code>, asks the decider what it will do on itself, and does the opposite.</p>
+<inclure fichier="assets/programs/halting.py" de="def paradox(decider_source):" a="CANDIDATES = {" titre="The diagonal program" ouvert="1"/>
+<p>Four candidates are put to the test, from the most naive to the most reasonable (simulate the program for 1,000 lines and answer “it halts” if it has finished). Each one is wrong about its diagonal program:</p>
+<pre><code>$ python3 halting.py
+Candidate "always answers yes"
+   it claims that D halts on its own text
+   in fact, D: no halt within the budget
+   the candidate is wrong: yes
+...
+Candidate "simulates 1000 lines and concludes"
+   it claims that D does not halt on its own text
+   in fact, D: halts
+   the candidate is wrong: yes</code></pre>
+<p>An infinite run obviously cannot be watched to its end: the program runs $D$ with a budget of lines. But for the first candidate the text of $D$ shows the loop <code>while True: pass</code> directly, and it is reached since the decider answers yes. The last candidate illustrates the real lesson: simulating “long enough” is never enough, because the diagonal program itself simulates the decider and halts just after it.</p>
+</atelier>
+
+
 <h2 id="reductions">Reductions</h2>
+
+<clair>
+<p>Once a problem is known to be impossible, other impossibilities follow from it by a simple argument: if knowing how to solve problem B made it possible to solve the halting problem, then B is impossible too. We say that halting has been “reduced” to B.</p>
+</clair>
+
 
 <p>The halting problem seems very special. It is not: many problems reduce to it, by the technique of <strong>reduction</strong>. To show that a problem $B$ is undecidable, one shows that if $B$ were decidable, halting would be too.</p>
 
 <res type="Definition" nom="Many-one reduction" id="reduction">
 <enonce><p>$A\le_m B$ if there is a total computable function $f$ such that, for every $x$, $x\in A\iff f(x)\in B$. If $A\le_m B$ and $B$ is decidable, then so is $A$: $\chi_A=\chi_B\circ f$. Hence if $A$ is undecidable and $A\le_m B$, $B$ is undecidable.</p></enonce>
-<philo><p>Reducing $A$ to $B$ means turning every question about $A$ into a question about $B$. If we knew how to answer questions about $B$, we would know how to answer those about $A$. A reduction carries the difficulty along, as a translator carries the meaning.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Reducing a problem A to a problem B means finding an automatic way of turning each question of A into a question of B that has the same answer.</p>
+<p>If we knew how to solve B, we would therefore know how to solve A. Contrapositive: if A is impossible, so is B. This is how the impossibility of halting spreads, step by step, to hundreds of other problems.</p>
+</philo>
 </res>
 
 <res type="Proposition" nom="Some undecidable problems about programs" id="exemples-indecidables">
@@ -58,8 +95,8 @@ $$p(e)\simeq\begin{cases}0&\text{if }\chi_K(e)=0,\\ \ind&\text{if }\chi_K(e)=1\e
 </ol>
 </enonce>
 <philo>
-<p>These are the questions that development tools ask every day: detect an unused variable, remove dead code, check that a function returns the right value, that a program never hangs, that an optimization does not change behaviour. No tool can answer them perfectly for all programs.</p>
-<p>Real tools therefore make compromises: they answer “I don’t know” in some cases (“sound” static analysis, which may raise false alarms), or they handle only part of the languages, or they ask a human for help (proof assistants). Dead code is of real industrial importance: software evolves over decades, often rewritten automatically, and whole parts become useless without it always being possible to detect.</p>
+<p class="en-clair"><strong>In plain words.</strong> One cannot decide automatically whether a program always halts, whether it always returns the same value, whether it computes the same thing as another program, or whether it reaches a certain line.</p>
+<p>These are the questions that development tools ask every day: detect useless code, check that a change has broken nothing, make sure that a program never crashes. These tools exist and render immense services, but none can be right in all cases: they must sometimes answer “I don’t know”, or err on the side of caution.</p>
 </philo>
 <tech>
 <p>(1) From $P$ (without input), choose a variable $v$ absent from $P$ and form $P'=P;\ v:=v+1$. Then $P'$ uses $v$ if and only if $P$ halts. The map $P\mapsto(P',v)$ is computable: it is a reduction of halting on empty input (undecidable, by an immediate reduction from $H$) to problem (1). (2) is similar: the instruction $v:=v+1$ is reached if and only if $P$ halts.</p>
@@ -89,8 +126,8 @@ $$p(e)\simeq\begin{cases}0&\text{if }\chi_K(e)=0,\\ \ind&\text{if }\chi_K(e)=1\e
 <p>On the other hand, for a <em>fixed</em> index $x_0$, the set $\mathrm{Im}\,\varphi_{x_0}$ may or may not be decidable depending on $x_0$.</p>
 </enonce>
 <philo>
-<p>All these proofs follow the same scenario: for each $x$, one builds a program $h(x)$ that starts by simulating $\varphi_x(x)$ and does the “right thing” only if this simulation halts. Knowing what $h(x)$ does then amounts to knowing whether $\varphi_x(x)$ halts. A single undecidable question, halting, thus contaminates almost all questions about the behaviour of programs: this is what <a href="#rice-theoreme">Rice’s theorem</a> makes systematic.</p>
-<p>The last remark warns against a hasty intuition: it is the questions asked about an <em>arbitrary</em> program that are undecidable. For a fixed program, the question may be easy (if $\varphi_{x_0}$ is the identity, $\mathrm{Im}\,\varphi_{x_0}=\N$) or not (if $\varphi_{x_0}(x)=x$ for $x\in K$ and diverges otherwise, $\mathrm{Im}\,\varphi_{x_0}=K$).</p>
+<p class="en-clair"><strong>In plain words.</strong> Each of these impossibilities is proved by showing that a tool that answered it would make it possible to solve the halting problem.</p>
+<p>The scenario is always the same: we build a program that starts by simulating a computation of which we do not know whether it halts, and that does “the interesting thing” only afterwards. Answering the question about this program means knowing whether the initial computation halts.</p>
 </philo>
 <tech>
 <p>Let $g(x,y)\simeq 12$ if $\varphi_x(x)\conv$, and $g(x,y)\ind$ otherwise. The function $g$ is computable (simulate $\varphi_x(x)$; if the simulation halts, return 12). Let $n$ be an index of $g$; by the <a href="smn-recursion.html#smn">s-m-n</a> theorem, $h(x)=s^1_1(n,x)$ is total computable and $\varphi_{h(x)}(y)=g(x,y)$. Thus:</p>
@@ -106,15 +143,18 @@ $$p(e)\simeq\begin{cases}0&\text{if }\chi_K(e)=0,\\ \ind&\text{if }\chi_K(e)=1\e
 
 <h2 id="rice">Rice’s theorem</h2>
 
+<clair>
+<p>Rice’s theorem generalizes all this at a stroke: no interesting question about what a program does can be settled automatically in all cases.</p>
+</clair>
+
+
 <res type="Theorem" nom="Rice’s theorem (1953)" id="rice-theoreme">
 <enonce>
 <p>Let $\mathcal F$ be a set of computable functions of one variable which is <em>non-trivial</em> ($\mathcal F\neq\emptyset$ and $\mathcal F$ does not contain all computable functions). Then the set $\{e:\varphi_e\in\mathcal F\}$ of indices of the functions in $\mathcal F$ is not decidable.</p>
 </enonce>
 <philo>
-<p>Every property <em>of the behaviour</em> of a program (of the function it computes, not of its text) is undecidable, as soon as it is neither always true nor always false. “Does this program always return an even number?”, “does it ever print ‘hello’?”, “does it compute the sorting function?”, “is it a virus?” (in the sense of a given behaviour): none of these questions admits a general decision procedure.</p>
-<p>One must read precisely what the theorem forbids: a <em>single, automatic, always correct and always answering</em> method, valid for <em>all</em> programs. It does not forbid proving that a particular program is correct: that is the work of formal verification, which has produced for example a fully proved C compiler (CompCert) or a proved operating system kernel (seL4). Nor does it forbid approximate analyses, which sometimes answer “I don’t know”.</p>
-<p>Antivirus software knows this well: it recognizes known signatures and suspicious behaviours, but none can guarantee to detect all malicious programs without ever accusing a healthy one.</p>
-<p>The chapter <a href="computability-ai.html#synthese">Computability and artificial intelligence</a> draws the consequences for an AI that would program from a specification, or that one would want to control.</p>
+<p class="en-clair"><strong>In plain words.</strong> Every property of the <em>behaviour</em> of a program (what it computes, and not how it is written) is impossible to decide automatically, as soon as it is neither always true nor always false.</p>
+<p>“Does this program compute the average correctly?”, “does this program send out personal data?”, “is this software a virus?”: none of these questions can be settled by a program that would always be right. On the other hand, the <em>text</em> of a program can be examined (its length, the words it contains): this is what antivirus software does, and it is why a virus that modifies its text can escape it.</p>
 </philo>
 <tech>
 <p>Let $\Theta$ be the nowhere-defined function. Replacing $\mathcal F$ by its complement if necessary (which does not change decidability), we may assume $\Theta\notin\mathcal F$. Since $\mathcal F\ne\emptyset$, choose $\psi\in\mathcal F$. By s-m-n, there is a total recursive $f$ such that</p>
@@ -133,10 +173,16 @@ $$\varphi_{f(e)}(x)\simeq\begin{cases}\psi(x)&\text{if }\varphi_e(e)\conv,\\ \in
 
 <h2 id="liens-avec-la-logique">Links with logic</h2>
 
+<clair>
+<p>If we could predict whether programs halt, we would solve at a stroke mathematical riddles open for centuries. This is another way of measuring how hard this problem is.</p>
+</clair>
+
+
 <res type="Proposition" nom="A halting decider would settle Goldbach’s conjecture" id="goldbach">
 <enonce><p>Goldbach’s conjecture (every even integer $\ge4$ is a sum of two primes) is true if and only if a certain program without input, which searches for a counterexample, does not halt.</p></enonce>
 <philo>
-<p>A halting oracle would solve at a stroke a host of open problems: Goldbach, the Riemann hypothesis (which can also be expressed as the halting of a program), and in fact every statement of the form “there is no verifiable counterexample”. The undecidability of halting is therefore not a programmer’s curiosity: it is intimately linked to the difficulty of mathematics itself.</p>
+<p class="en-clair"><strong>In plain words.</strong> A tool able to predict whether programs halt would solve Goldbach’s conjecture (“every even number greater than 2 is the sum of two primes”), open since 1742.</p>
+<p>It would be enough to write a program that searches for a counterexample, trying all even numbers one by one, and to ask the tool whether this program halts. Many other great questions of mathematics (including the Riemann hypothesis) likewise come down to the halting of a program. Turing’s impossibility therefore also has a mathematical reach.</p>
 </philo>
 <tech>
 <p>The program tests successively $x=4,6,8,\dots$ and halts as soon as it finds an $x$ that is <em>not</em> a sum of two primes. Each test is a bounded search (try all $p\le x$). The program halts if and only if the conjecture is false. More generally, every statement of the form $\forall x\,R(x)$ with $R$ decidable (a $\Pi_1$ statement, see <a href="arithmetical-hierarchy.html">Arithmetical hierarchy</a>) is equivalent to the non-halting of a program.</p>
@@ -156,6 +202,11 @@ while true :
 
 <h2 id="degres">Degrees of undecidability</h2>
 
+<clair>
+<p>Not all impossible problems are impossible to the same degree. Some are more so than others, and they can be ranked, as one ranks difficulties: this is the theory of degrees of undecidability.</p>
+</clair>
+
+
 <p>The decidable/undecidable distinction is finer than it seems: some problems are “more undecidable” than others. The halting problem is <em>complete for the semi-decidable problems</em>: every semi-decidable problem reduces to it (see <a href="semi-decidability.html">Semi-decidability</a>). But there are strictly harder problems, such as the totality of a program, which even a halting oracle does not decide. The <a href="arithmetical-hierarchy.html">arithmetical hierarchy</a> classifies these degrees according to the logical form of statements.</p>
 
 <res type="Definition" nom="Hierarchy of reducibilities" id="reductibilites">
@@ -170,14 +221,17 @@ while true :
 <p>We have $A\le_1B\Rightarrow A\le_mB\Rightarrow A\le_{tt}B\Rightarrow A\le_TB$, and none of the converses holds in general. For example $\overline K\le_T K$ (invert the oracle’s answer), but $\overline K\not\le_m K$ (otherwise $\overline K$ would be semi-decidable). Two one-one equivalent sets are even recursively isomorphic (<a href="arithmetical-hierarchy.html#myhill">Myhill’s theorem</a>), and the level of a problem in the <a href="arithmetical-hierarchy.html#post">arithmetical hierarchy</a> is measured by these reductions.</p>
 </enonce>
 <philo>
-<p>“$A$ reduces to $B$” means “$A$ is no harder than $B$”: knowing how to solve $B$ suffices to solve $A$. The different reducibilities specify <em>how</em> one is allowed to use $B$: a single question asked blindly, several questions fixed in advance, or a free dialogue. The stricter the rule, the finer the hierarchy of difficulties.</p>
-<p>Post asked in 1944 whether there are semi-decidable problems strictly between “decidable” and “as hard as halting”. Friedberg and Muchnik showed independently (1956-1957) that there are (<a href="#friedberg-muchnik">theorem below</a>), and even that there are two, $A$ and $B$, that are incomparable: neither $A\le_TB$ nor $B\le_TA$. The difficulty of problems is not a linear scale.</p>
+<p class="en-clair"><strong>In plain words.</strong> There are several precise ways of saying “problem A is no harder than problem B”, depending on how we are allowed to use a solution of B to solve A.</p>
+<p>We may be allowed only a single question to B, or several, or as many as we like. These variants make it possible to compare finely problems that are all impossible, as one compares climbing difficulties that are all beyond our strength.</p>
 </philo>
 </res>
 
 <res type="Theorem" nom="Friedberg (1957), Muchnik (1956): there are incomparable semi-decidable degrees" id="friedberg-muchnik">
 <enonce><p>There are two semi-decidable sets $A$ and $B$ such that $A\not\le_TB$ and $B\not\le_TA$. In particular, $A$ and $B$ are neither decidable nor $T$-complete: their degree lies strictly between that of $\emptyset$ and that of $K$, which answers Post’s problem negatively.</p></enonce>
-<philo><p>The proof invents the <em>priority method</em>, which has dominated degree theory ever since. $A$ and $B$ are built step by step, satisfying an infinite list of conflicting requirements: making $A$ differ from what program $e$ computes with $B$ as oracle forces one to freeze a piece of $B$, while the other requirements want to add elements to $B$. They are ranked in order of priority: a requirement may destroy the work of lower-priority ones, which start over, and one shows that each is disturbed only finitely often.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> There are two impossible problems, both “half solvable”, such that neither of the two makes it possible to solve the other.</p>
+<p>One might have thought that impossible problems are arranged on a single scale. It is not so: there are incomparable difficulties, of a different nature. The proof, found independently by an American student and a Soviet student at the same time, invented a method of construction that has dominated the field ever since.</p>
+</philo>
 <tech>
 <p><strong>Notation.</strong> For a set $X$, $\varphi^X_e$ is the $e$-th function computable relative to $X$ (<a href="equivalence.html#enumeration-relative">relative enumeration</a>), and $X\le_TY$ if and only if $c_X=\varphi^Y_e$ for some $e$. We write $\varphi^X_{e,s}(x)=v$ if there is $y<s$ with $T^X_1(\eta^\ast(e),x,y)$ and $U(y)=v$; this $y$ (the code of the computation) is called the <em>use</em>. By the <a href="equivalence.html#relatif">use principle</a>, if $X$ and $Y$ have the same elements below $y$, then $T^X_1(\eta^\ast(e),x,y)\iff T^Y_1(\eta^\ast(e),x,y)$: the computation depends only on $X\cap[0,y[$.</p>
 <p><strong>Requirements.</strong> We build $A=\bigcup_sA_s$ and $B=\bigcup_sB_s$, where $A_s,B_s$ are finite sets computed at stage $s$, so as to satisfy, for every $e$:</p>
@@ -199,23 +253,37 @@ $$R_{2e}:\ c_A\ne\varphi^B_e,\qquad R_{2e+1}:\ c_B\ne\varphi^A_e.$$
 
 <h2 id="impossibilites">Three impossibilities</h2>
 
+<clair>
+<p>Three practical consequences: a program that sometimes loops cannot be “repaired” by making it return a default value; unbounded search cannot be done without; the maximal duration of a computation cannot be fixed in advance.</p>
+</clair>
+
+
 <p>Boitet’s lecture notes end the study of unsolvable problems with three results that close doors one might want to open.</p>
 
 <res type="Theorem" nom="Some partial functions have no computable extension" id="sans-prolongement">
 <enonce><p>There is a partial computable function $\psi$ such that no total computable function $f$ extends it (that is, satisfies $f(x)=\psi(x)$ whenever $\psi(x)\conv$).</p></enonce>
-<philo><p>One might hope to “repair” a program that sometimes loops by making it return a default value in the cases where it does not halt. This is impossible in general: for some programs, every version that always halts necessarily gives a wrong answer somewhere the original did answer. Partiality is not a presentation defect that a good programmer could always remove.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Some programs that sometimes loop cannot be “repaired”: no program that always halts gives the same answers as they do where they give any.</p>
+<p>One might hope to correct a faulty program by making it return a default value, for example 0, in the cases where it does not halt. This is impossible in general, because one would have to be able to recognize these cases, that is, solve the halting problem.</p>
+</philo>
 <tech><p>Let $\psi(x)\simeq\varphi_x(x)+1$. It is computable (universal function). If a total computable $f$ extended it, we would have $f=\varphi_{x_0}$ for some $x_0$; since $f$ is total, $\varphi_{x_0}(x_0)\conv$, so $\psi(x_0)\conv$ and $\varphi_{x_0}(x_0)=f(x_0)=\psi(x_0)=\varphi_{x_0}(x_0)+1$: a contradiction.</p></tech>
 </res>
 
 <res type="Theorem" nom="Minimality of the normal form" id="forme-normale-minimale">
 <enonce><p>In the <a href="equivalence.html#forme-normale">Kleene normal form</a> $\varphi_e(x)\simeq U(\mu y\,T(e,x,y))$, the output function $U$ cannot be removed: there is a partial computable function $\psi$ that cannot be written $\psi(x)\simeq\mu y\,[f(x,y)=1]$ with $f$ total computable.</p></enonce>
-<philo><p>An unbounded search produces the <em>first witness</em> found; in general, a further computation is still needed to extract the answer from it. A single “while” loop suffices for every program, but not a “while” loop that would directly return its counter.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> In general, a small computation after the search cannot be done without: the search alone is not enough to compute everything.</p>
+<p>A search gives the first number that fits; it often still has to be transformed to obtain the answer. The result shows that the form “one search, then a simple computation” is the most economical possible.</p>
+</philo>
 <tech><p>Let $\psi(x)\simeq x$ if $x\in K$, and $\ind$ otherwise; it is computable. If $\psi(x)\simeq\mu y[f(x,y)=1]$, then for $x\in K$ we have $\psi(x)=x$, so $f(x,x)=1$; for $x\notin K$, $\psi(x)\ind$, so $f(x,y)\ne1$ for all $y$, in particular $f(x,x)\neq1$. Thus $x\in K\iff f(x,x)=1$, and $K$ would be decidable.</p></tech>
 </res>
 
 <res type="Theorem" nom="The duration of computations cannot be bounded" id="pas-de-delai">
 <enonce><p>There is no total computable function $f(x,y)$ such that, for all $x,y$: if $\varphi_x(y)\conv$, then the computation halts in fewer than $f(x,y)$ steps.</p></enonce>
-<philo><p>Computer systems use <em>timeouts</em>: after a certain time, a program is considered no longer to be answering. This theorem says that no timeout computed from the program and its data is safe in general: for some programs, one will always abandon a computation that would have succeeded a little later. <a href="busy-beavers.html">Busy beavers</a> show how large these durations can be.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> One cannot fix, by a computation, a duration beyond which we would be sure that a program will no longer halt.</p>
+<p>Computer systems use timeouts: after a certain time, they give up. This theorem says that every timeout computable in advance is sometimes too short: some programs halt just after we have given up. Timeouts are a practical compromise, never a certainty.</p>
+</philo>
 <tech><p>The predicate $m(x,y,w)$: “$\varphi_x(y)$ halts in fewer than $w$ steps” is primitive recursive (simulate $w$ steps; this is a consequence of the construction of Kleene’s predicate). If $f$ existed, $\chi(x,y)=m(x,y,f(x,y))$ would be total computable and would equal 1 if and only if $\varphi_x(y)\conv$: it would decide halting.</p></tech>
 <techno><p>This is exactly the situation of the simulators of this manual: the “max steps” field is a timeout. The machine of the example <a href="busy-beavers.html#valeurs-bb">Σ(5)</a> halts after 47,176,870 steps; with a timeout of 47 million steps, one would wrongly conclude that it loops.</p></techno>
 </res>

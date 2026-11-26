@@ -1,51 +1,55 @@
-# Calculabilité — manuel à trois niveaux de lecture
+# Computability — a manual with three reading levels
 
-Auteurs : **Frédéric Prost et Claude**.
+Authors: **Frédéric Prost and Claude**.
 
-**Version 2.** Les trois niveaux sont plus contrastés : le niveau philosophique est un récit autonome lisible avec le bac (il remplace les énoncés formels), le niveau technique est inchangé, et le niveau technologique contient des « ateliers » avec les constructions complètes et des programmes Python téléchargeables (`assets/programmes/`, archive `assets/programmes.zip`). C’est la version principale du manuel. Elle ajoute les automates à deux piles, les machines à deux compteurs (bande codée dans deux nombres) et la réduction des machines de Turing aux dominos de Post, puis à la logique avec une relation et une fonction binaires.
+**Version 2.** The three levels are more sharply contrasted: the philosophical level is a self-contained narrative readable with a secondary-school education (it replaces the formal statements), the technical level is unchanged, and the technological level contains “workshops” with the complete constructions and downloadable Python programs (`assets/programs/`, archive `assets/programs.zip`). This is the main version of the manual. It adds two-stack automata, two-counter machines (the tape coded in two numbers) and the reduction of Turing machines to Post’s dominoes, then to logic with one binary relation and one binary function. The chapter on complexity also contains a dated section on the announced proof of VP ≠ VNP (November 2026).
 
-Ce qu’une machine peut calculer, ce qu’aucune ne pourra jamais calculer, et pourquoi cela nous concerne tous. Le manuel est un site HTML statique : chaque résultat se lit à trois niveaux (l’énoncé, une explication intuitive, la démonstration complète), avec des programmes et des simulations exécutables.
+What a machine can compute, what no machine will ever be able to compute, and why this concerns all of us. The manual is a static HTML site: each result has a statement and can be read at three levels: philosophical (meaning and implications), technical (mathematical proofs) and technological (complete constructions, executable machines), with programs and interactive simulations.
 
-## Lire le manuel
+This is the English edition of *Calculabilité — manuel à trois niveaux de lecture*. The mathematical notation is the same in both editions.
 
-Ouvrir `index.html` dans un navigateur. Aucun serveur ni connexion n’est nécessaire : KaTeX est embarqué dans `assets/katex/`. Le site peut aussi être publié tel quel, par exemple avec GitHub Pages (branche principale, dossier racine).
+## Reading the manual
 
-## Contenu
+Open `index.html` in a browser. No server or network connection is needed: KaTeX is bundled in `assets/katex/`. The site can also be published as is, for example with GitHub Pages (main branch, root folder).
 
-- 25 chapitres, de la machine de Turing à la complexité, au hasard et au calcul quantique, puis des études de cas (fonction d’Ackermann, castors affairés, calculabilité et IA, autres modèles de calcul) ;
-- des annexes : parcours de lecture, argument de Cantor, notions de base, Leibniz, bibliographie ;
-- des exercices corrigés à la fin de chaque chapitre ;
-- les programmes du niveau technologique, dans `assets/programmes/` : simulateur de machines de Turing, fonctions récursives, compilateur des fonctions récursives vers les machines de Turing, traduction inverse (forme normale de Kleene), λ-calcul, fonction et machine universelles, s-m-n et point fixe, argument diagonal ; `python3 tests.py` vérifie l’ensemble ;
-- les programmes de vérification des autres chapitres, dans `assets/code/` ; chacun s’exécute avec `python3 fichier.py` et vérifie ce qu’il affirme.
+## Contents
 
-Les résultats énoncés sans démonstration sont signalés « cité pour information ».
+- 25 chapters, from Turing machines to complexity, randomness and quantum computing, followed by case studies (the Ackermann function, busy beavers, computability and AI, other models of computation);
+- appendices: reading paths, Cantor’s argument, basic notions, Leibniz, bibliography;
+- exercises with solutions at the end of each chapter;
+- the programs of the technological level, in `assets/programs/`: Turing machine simulator, recursive functions, compiler from recursive functions to Turing machines, converse translation (Kleene normal form), λ-calculus, universal function and machine, s-m-n and fixed point, diagonal argument, two-stack automata, counter machines, Post’s dominoes and their translation into logic; `python3 tests.py` checks everything;
+- the verification programs of the other chapters, in `assets/code/`; each Python file runs with `python3 file.py` and checks what it claims (the C files give their compilation and usage instructions in their header).
 
-## Organisation des fichiers
+Results stated without proof are marked “quoted for information”.
 
-| Chemin | Rôle |
+## File layout
+
+| Path | Role |
 |---|---|
-| `*.html` | pages produites (à ne pas modifier à la main) |
-| `_sources/pages/*.html` | sources des pages, avec un en-tête (titre, sommaire, prérequis) |
-| `_sources/build.py` | assemblage : gabarit, sommaire, numérotation, liens précédent/suivant |
-| `assets/style.css` | mise en page (thème clair et sombre) |
-| `assets/*.js` | simulateurs interactifs (machines de Turing, λ-calcul, Post, automates cellulaires) |
-| `assets/programmes/` | programmes Python du niveau technologique (archive produite par le build : `assets/programmes.zip`) |
-| `assets/code/` | programmes de vérification |
+| `*.html` | generated pages (do not edit by hand) |
+| `_sources/pages/*.html` | page sources, with a header (title, table-of-contents label, prerequisites) |
+| `_sources/build.py` | assembly: template, table of contents, numbering, previous/next links |
+| `assets/style.css` | layout (light and dark themes) |
+| `assets/*.js` | interactive simulators (Turing machines, λ-calculus, Post correspondence, cellular automata) |
+| `assets/programs/` | Python programs of the technological level (archive produced by the build: `assets/programs.zip`) |
+| `assets/code/` | verification programs |
 
-## Reconstruire le site
+Page sources use the same tags as the French edition (`<res>`, `<enonce>`, `<philo>`, `<tech>`, `<techno>`, `<exo>`, `<corrige>`), and the anchors (`id`) are those of the French edition, so that a link from one edition can be carried over to the other by changing only the file name.
 
-Depuis la racine du dépôt :
+## Rebuilding the site
+
+From the root of the repository:
 
 ```
 python3 _sources/build.py
 ```
 
-Pour produire une copie dans un autre dossier : `python3 _sources/build.py --diffusion DOSSIER`, puis copier `assets/` dans `DOSSIER`.
+To produce a copy in another folder: `python3 _sources/build.py --out FOLDER`, then copy `assets/` into `FOLDER`.
 
 ## Licence
 
-- Texte, figures et exercices : [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.fr) (Creative Commons Attribution - Partage dans les mêmes conditions 4.0 International).
-- Code (`assets/code/`, `assets/*.js`, `assets/style.css`, `_sources/build.py`) : licence MIT, voir [`LICENSE-CODE`](LICENSE-CODE).
-- KaTeX (`assets/katex/`) garde sa propre licence MIT, voir `assets/katex/LICENSE`.
+- Text, figures and exercises: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (Creative Commons Attribution-ShareAlike 4.0 International).
+- Code (`assets/programs/`, `assets/code/`, `assets/*.js`, `assets/style.css`, `_sources/build.py`): MIT licence, see [`LICENSE-CODE`](LICENSE-CODE).
+- KaTeX (`assets/katex/`) keeps its own MIT licence, see `assets/katex/LICENSE`.
 
-Le détail est dans [`LICENSE`](LICENSE).
+Details are in [`LICENSE`](LICENSE).

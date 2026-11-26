@@ -1,5 +1,5 @@
-/* Recherche de solutions du problème de correspondance de Post (parcours en largeur).
-   Une configuration est le « surplus » d'un côté sur l'autre ; on s'arrête quand il est vide. */
+/* Search for solutions of the Post correspondence problem (breadth-first search).
+   A configuration is the "overhang" of one side over the other; we stop when it is empty. */
 (function (root) {
   'use strict';
   function parse(text) {
@@ -8,13 +8,13 @@
       l = l.replace(/#.*$/, '').trim();
       if (!l) return;
       var p = l.split('/');
-      if (p.length !== 2 || !p[0].trim() || !p[1].trim()) throw new Error('Domino mal formé : « ' + l + ' » (écrire haut/bas)');
+      if (p.length !== 2 || !p[0].trim() || !p[1].trim()) throw new Error('Malformed domino: "' + l + '" (write top/bottom)');
       dom.push([p[0].trim(), p[1].trim()]);
     });
-    if (!dom.length) throw new Error('Aucun domino.');
+    if (!dom.length) throw new Error('No dominoes.');
     return dom;
   }
-  // étend un surplus (côté s : 0 = haut en avance, 1 = bas en avance) par le domino d
+  // extends an overhang (side: 0 = top ahead, 1 = bottom ahead) by the domino d
   function etendre(surplus, cote, d) {
     var h = (cote === 0 ? surplus : '') + d[0], b = (cote === 1 ? surplus : '') + d[1];
     var n = Math.min(h.length, b.length);

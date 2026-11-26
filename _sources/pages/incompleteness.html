@@ -2,16 +2,30 @@
 titre: Computation and logic: incompleteness and the decision problem
 court: Incompleteness
 chapo: The undecidability of halting yields in a few lines Gödel’s theorems and the negative answer to Hilbert’s decision problem.
+chapo_clair: In 1931, Kurt Gödel showed that no system of axioms can prove all truths about the whole numbers. With the impossibility of predicting whether programs halt, this theorem becomes almost obvious.
 prerequis: semi-decidability.html|Semi-decidability ; bases.html#logique|Predicate logic
 -->
 
+<clair>
+<p>At the beginning of the twentieth century, the great mathematician David Hilbert dreamed of putting mathematics beyond all doubt: writing once and for all a list of axioms, starting truths, from which all mathematical truths could be deduced mechanically, and proving that this list never leads to a contradiction. He even hoped for a mechanical method able to say, for every statement, whether it is provable.</p>
+<p>Kurt Gödel in 1931, then Alonzo Church and Alan Turing in 1936, showed that this dream cannot be fulfilled. This chapter explains why, building on what we already know: if everything about numbers could be proved, we could predict whether programs halt, which is impossible.</p>
+</clair>
+
 <h2 id="le-langage-de-larithmetique">The language of arithmetic</h2>
+
+<clair>
+<p>To speak about whole numbers, we use a very poor language: variables, zero, “plus one”, addition, multiplication, equality, “and”, “or”, “not”, “there exists”, “for all”. The first discovery is that this primary-school language is enough to describe any computation: “program number $e$ halts” translates into a sentence about numbers.</p>
+</clair>
+
 
 <p>We consider the first-order formulas built with variables, the constants $0,1$, the operations $+$ and $\times$, equality, the connectives $\neg,\wedge,\vee,\Rightarrow$ and the quantifiers $\forall,\exists$ ranging over the integers (see the appendix <a href="bases.html#logique">Predicate logic</a>). A sentence is a formula with no free variable; it is <em>true</em> if it is true in $\N$ with the usual addition and multiplication. We write $\underline n$ for the term $(\cdots((0+1)+1)\cdots)+1$ ($n$ times $+1$), which denotes the integer $n$.</p>
 
 <res type="Definition" nom="Bounded formulas and Σ₁ formulas" id="delta0">
 <enonce><p>The <strong>bounded</strong> (or $\Delta_0$) formulas are built from equalities $t_1=t_2$ by the connectives and the bounded quantifiers $\exists x<t$ and $\forall x<t$ ($x$ not occurring in the term $t$). A <strong>$\Sigma_1$</strong> formula has the form $\exists y\,\theta$ with $\theta$ bounded. A relation $R\subseteq\N^k$ is <strong>$\Sigma_1$</strong> if there is a $\Sigma_1$ formula $\phi(x_1,\dots,x_k)$ such that $R(\vec n)$ holds if and only if $\phi(\underline{n_1},\dots,\underline{n_k})$ is true. A partial function is $\Sigma_1$ if its graph $\{(\vec x,y):f(\vec x)=y\}$ is. We write $x\le t$ for $x<t+1$.</p><p>The $\Sigma_1$ relations are exactly the semi-decidable sets, that is, the class $\Sigma_1$ of the <a href="arithmetical-hierarchy.html#def-hierarchie">arithmetical hierarchy</a>. A bounded formula is decided by examining all cases, so a $\Sigma_1$ relation is semi-decidable. The converse is the <a href="#representabilite">representability proposition</a> below.</p></enonce>
-<philo><p>A bounded formula speaks of only finitely many cases, which can all be examined: its truth can be computed. A $\Sigma_1$ formula asserts the existence of a witness, which will be recognized if met: this is exactly the form of a statement “the program eventually halts”.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A sentence about numbers that speaks only of a limited number of cases (“all the numbers below 100 are…”) can be checked by a computation. A sentence of the form “there is a number such that…”, followed by such a check, can be confirmed by finding that number.</p>
+<p>The former are the logical equivalent of “repeat $n$ times” loops, the latter of searches that may never end.</p>
+</philo>
 </res>
 
 <res type="Lemma" nom="Closure of Σ₁ relations" id="sigma1-clotures">
@@ -31,7 +45,10 @@ prerequis: semi-decidability.html|Semi-decidability ; bases.html#logique|Predica
 <li>The relation $\beta(c,d,i)=r$ is defined by a bounded formula.</li>
 <li>For every finite sequence $a_0,\dots,a_n$ of integers, there are $c,d$ such that $\beta(c,d,i)=a_i$ for every $i\le n$.</li>
 </ol></enonce>
-<philo><p>With only addition and multiplication, one can speak of finite sequences of any length: two numbers suffice to code them. This is what allows school arithmetic to speak of entire computations, which are sequences of configurations.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> With only addition and multiplication, a finite list of numbers, of any length, can be coded by two numbers.</p>
+<p>This is an ingenious arithmetical trick of Gödel’s, which uses remainders of divisions. It makes it possible to speak of sequences of computation, hence of programs, in the language of numbers.</p>
+</philo>
 <tech>
 <p>(1) $\beta(c,d,i)=r\iff r<1+(i+1)\times d\ \wedge\ \exists q\le c\ \big(c=q\times(1+(i+1)\times d)+r\big)$.</p>
 <p>(2) Let $s=\max(n,a_0,\dots,a_n)+1$, $d=s!$ and $m_i=1+(i+1)d$ for $i\le n$.</p>
@@ -46,7 +63,10 @@ prerequis: semi-decidability.html|Semi-decidability ; bases.html#logique|Predica
 
 <res type="Proposition" nom="Recursive functions and semi-decidable sets are definable in arithmetic" id="representabilite">
 <enonce><p>Every (partial) recursive function is $\Sigma_1$. Consequently, for every semi-decidable set $A$, there is a formula $\exists y\,\theta(x,y)$, with $\theta$ bounded, such that $n\in A$ if and only if $\exists y\,\theta(\underline n,y)$ is true. In particular, there is a $\Sigma_1$ formula $\kappa(x)$ such that $e\in K\iff\kappa(\underline e)$ is true, and the relation $z=x^y$ is $\Sigma_1$: exponentiation is definable with $+$ and $\times$.</p></enonce>
-<philo><p>Elementary arithmetic, the arithmetic of school, suffices to speak of all computations: “program $e$ halts” translates into a statement about integers. Mathematics contains computer science, as computer science contains mathematics (a proof is a text, hence a datum).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Whatever a program computes can be said by a sentence about whole numbers written with addition and multiplication.</p>
+<p>School arithmetic is enough to speak of all computations. Consequently, every difficulty about programs becomes a difficulty about numbers.</p>
+</philo>
 <tech>
 <p>By induction on the definition of $f$ (<a href="recursive-functions.html#def-mu">recursive functions</a>), using the <a href="#sigma1-clotures">closure lemma</a> at each step.</p>
 <ul>
@@ -64,13 +84,16 @@ If this formula is true, the sequence $a_i=\beta(c,d,i)$ satisfies $a_0=g(\vec x
 
 <h2 id="le-theoreme-dincompletude">The incompleteness theorem</h2>
 
+<clair>
+<p>Suppose that a system of axioms proves all true sentences about numbers, and nothing false. To know whether a program halts, it would then be enough to search, among all possible proofs, for a proof of “it halts” or a proof of “it does not halt”; one of the two would eventually turn up. We could therefore solve the halting problem. This is impossible: such a system does not exist.</p>
+</clair>
+
+
 <res type="Theorem" nom="First incompleteness theorem (computational form)" id="godel1">
 <enonce><p>Let $\mathsf T$ be a theory of arithmetic whose axioms form a decidable set (one can check mechanically that a text is a proof) and which is <em>sound</em> (it proves only true sentences). Then there is a true sentence that $\mathsf T$ does not prove. It can even be chosen of the form “program $e$ does not halt on $e$”.</p></enonce>
 <philo>
-<p>No system of axioms, however rich, can prove all truths about the integers. There will always be true but unprovable statements, and some can be exhibited: they are assertions of non-termination of programs. Mathematical truth goes beyond any formalization.</p>
-<p>The link with computation is direct: if a system proved all truths, one could decide halting of programs by searching mechanically for a proof of “$e$ halts” or of “$e$ does not halt”. Since halting is undecidable, such completeness is impossible.</p>
-<p>This theorem has often been misinterpreted. It does not say that “everything is relative”, nor that mathematics is inconsistent, nor that the human mind surpasses machines. This last argument (Lucas, Penrose) assumes that we know our own system of thought to be consistent; nothing guarantees it, and a human who “sees” the truth of a Gödel sentence does so by reasoning in a stronger system, which also has its unprovable statements. <a href="computability-ai.html#lob">Löb’s theorem</a> makes this point precise: a system reasoning within a theory cannot prove that its own proofs are reliable.</p>
-<p>The chapter on <a href="kolmogorov-omega.html">Kolmogorov complexity</a> gives a quantitative form of this theorem: a theory can prove that a word is complex only up to a bound fixed by the size of its axioms (<a href="kolmogorov-omega.html#chaitin">Chaitin’s theorem</a>), and it determines only finitely many digits of the number <a href="kolmogorov-omega.html#omega-theorie">Ω</a>.</p>
+<p class="en-clair"><strong>In plain words.</strong> For every system of axioms about numbers whose proofs can be checked mechanically, and which proves nothing false, there are true sentences that it does not prove.</p>
+<p>No system of axioms, however rich, captures all truths about the whole numbers. The missing sentence can be added as a new axiom; the new system will in turn have truths that it does not prove. This is not a flaw of this or that system: it is a limit of every purely mechanical approach. Mathematical truth always goes beyond what a fixed set of rules can reach of it.</p>
 </philo>
 <tech>
 <p>Since the axioms of $\mathsf T$ are decidable, the set of theorems of $\mathsf T$ is semi-decidable (enumerate all proofs). Consider $B=\{e: \mathsf T\vdash\neg\kappa(\underline e)\}$, which is semi-decidable. By soundness of $\mathsf T$, $B\subseteq\overline K$. Since $\overline K$ is not semi-decidable (<a href="semi-decidability.html#kbar">corollary</a>), $B\neq\overline K$: there is $e\in\overline K\setminus B$, that is, such that $\neg\kappa(\underline e)$ is true ($e$ does not halt on $e$) but not provable in $\mathsf T$.</p>
@@ -90,6 +113,11 @@ If this formula is true, the sequence $a_i=\beta(c,d,i)$ satisfies $a_0=g(\vec x
 
 <h2 id="peano">Peano arithmetic and the second theorem</h2>
 
+<clair>
+<p>Gödel proved more: a reasonable system of axioms cannot prove its own consistency, that is, the fact that it never leads to a contradiction. This section gives the complete proof for Peano arithmetic, the usual system of axioms for whole numbers.</p>
+</clair>
+
+
 <p>The second theorem concerns what a theory proves <em>about itself</em>. One must therefore fix a proof system and a precise theory, and check that the theory can reason about its own proofs. This is the purpose of the lemmas that follow.</p>
 
 <res type="Definition" nom="Proofs, Peano arithmetic, provability predicate" id="def-peano">
@@ -101,12 +129,18 @@ $$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \
 <p>The axiomhood of $\mathsf T$ is defined by a disjunction “axiom of $\mathsf{PA}$ or other axiom”, so that $\mathsf{PA}$ trivially proves that every axiom of $\mathsf{PA}$ is an axiom of $\mathsf T$.</p>
 <p><strong>Σ formulas.</strong> In what follows, a Σ formula is built from the formulas $t_1=t_2$ and $\neg(t_1=t_2)$ by $\wedge$, $\vee$, $\exists x$, $\exists x<t$ and $\forall x<t$. All the formulas written in the <a href="#representabilite">definability proposition</a> are of this form (before being put into the form $\exists y\,\theta$, which is no longer needed); in particular $\mathrm{Prov}_{\mathsf T}$ is a Σ formula.</p>
 </enonce>
-<philo><p>A proof is a text, hence a number; “being a proof” is a mechanically checkable property, hence expressible in arithmetic. A theory that speaks about numbers thus speaks, without meaning to, about its own proofs.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A proof is a text that follows precise rules; so it can be coded by a number, and “being a proof” becomes a property of numbers that a computation checks. Peano arithmetic is the usual system of axioms for the integers, with reasoning by induction.</p>
+<p>A theory that speaks about numbers can thus speak about its own proofs, without knowing it.</p>
+</philo>
 </res>
 
 <res type="Lemma" nom="Σ-completeness" id="sigma-complet">
 <enonce><p>Every true Σ sentence is provable in $\mathsf{PA}$. Moreover, every bounded sentence is provable in $\mathsf{PA}$ if it is true, and refutable if it is false.</p></enonce>
-<philo><p>To prove that a computation halts, it suffices to run it and write down the trace: $\mathsf{PA}$ can check finite computations. The hard truths are the others, the statements of non-termination.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Peano arithmetic proves all true sentences of the form “there is a number such that… (simple check)”.</p>
+<p>To prove that a computation halts, it is enough to run it and write down all its steps. It is the “for all…” sentences that escape.</p>
+</philo>
 <tech>
 <p>(a) <em>Computations.</em> By induction on $n$ (in the metalanguage), $\mathsf{PA}\vdash\underline m+\underline n=\underline{m+n}$: for $n=0$, this is the axiom $x+0=x$; then $\underline m+(\underline n+1)=(\underline m+\underline n)+1=\underline{m+n}+1$, which is the term $\underline{m+n+1}$. Likewise $\mathsf{PA}\vdash\underline m\times\underline n=\underline{mn}$. By induction on a closed term $t$ with value $n$, $\mathsf{PA}\vdash t=\underline n$.</p>
 <p>(b) <em>Differences.</em> If $m<n$, $\mathsf{PA}\vdash\neg(\underline m=\underline n)$, by induction on $m$: $\underline n$ has the form $\underline k+1$, and one uses $\neg(x+1=0)$ for $m=0$, then $x+1=y+1\Rightarrow x=y$ and the induction hypothesis.</p>
@@ -125,7 +159,10 @@ $$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \
 
 <res type="Lemma" nom="Diagonal lemma" id="diagonal">
 <enonce><p>For every formula $\psi(x)$ with one free variable, there is a sentence $G$ such that $\mathsf{PA}\vdash G\Leftrightarrow\psi(\underline{\ulcorner G\urcorner})$.</p></enonce>
-<philo><p>This is the logical version of the <a href="smn-recursion.html#kleene">recursion theorem</a>: a sentence can speak of its own code, as a program can know its own text. With $\psi(x)=$ “$x$ is not provable”, one obtains a sentence that says “I am not provable”.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> For every property of sentences, one can write a sentence that asserts of itself that it has this property.</p>
+<p>This is the logical version of programs that know their own text. With the property “not being provable”, we obtain Gödel’s sentence: “I am not provable”. If it were provable, it would be false, and the system would prove a falsehood; so it is not provable, and that is precisely what it says: it is true.</p>
+</philo>
 <tech><p>Let $\mathrm{sb}(m,n)$ be the code of the formula obtained by replacing, in the formula with code $m$, the variable $x$ by $\underline n$; $\mathrm{sb}$ is primitive recursive. Set $\delta(x)=\exists y\,\big(\phi_{\mathrm{sb}}(x,x,y)\wedge\psi(y)\big)$, $m=\ulcorner\delta\urcorner$ and $G=\delta(\underline m)$. Then $\mathrm{sb}(m,m)=\ulcorner G\urcorner=g$, and, by the <a href="#pa-rp">previous lemma</a>, $\mathsf{PA}\vdash\forall y\,\big(\phi_{\mathrm{sb}}(\underline m,\underline m,y)\Leftrightarrow y=\underline g\big)$. So $\mathsf{PA}\vdash G\Leftrightarrow\exists y\,(y=\underline g\wedge\psi(y))\Leftrightarrow\psi(\underline g)$.</p></tech>
 </res>
 
@@ -136,7 +173,10 @@ $$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \
 <li>$\mathsf{PA}\vdash\Box(\phi\Rightarrow\psi)\Rightarrow(\Box\phi\Rightarrow\Box\psi)$;</li>
 <li>$\mathsf{PA}\vdash\sigma\Rightarrow\Box\sigma$ for every Σ sentence $\sigma$; in particular $\mathsf{PA}\vdash\Box\phi\Rightarrow\Box\Box\phi$.</li>
 </ol></enonce>
-<philo><p>These three properties say that $\mathsf{PA}$ knows, about $\mathsf T$, what we know ourselves: that an existing proof is a proof (1), that two proofs can be chained (2), and that a computation that succeeds can be checked (3).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Peano arithmetic “knows” about proofs what we know ourselves: that a written proof is a proof, that two proofs can be combined, and that it can check its own proofs.</p>
+<p>These three properties are the only ingredients of Gödel’s second theorem.</p>
+</philo>
 <tech>
 <p><strong>Notation.</strong> For a formula $\phi(\vec x)$, let $s_\phi(\vec n)=\ulcorner\phi(\underline{\vec n})\urcorner$, a primitive recursive function (substitution of the numerals $\underline{n_j}$, with code $\mathrm{num}(n_j)$, for the variables). We write $\Box\phi(\dot{\vec x})$ for the formula $\exists f\,\big(\phi_{s_\phi}(\vec x,f)\wedge\mathrm{Prov}_{\mathsf T}(f)\big)$; for closed $\phi$, this is $\Box\phi$. The primitive recursive relation “$p$ is a proof of $f$” is defined, by a formula $\mathrm{Prf}_{\mathsf T}$, as: $\mathrm{lh}(p)\ge1$, the last term of $p$ is $f$, and for every $i<\mathrm{lh}(p)$, the term $(p)_i$ is an axiom, or there are $j,k<i$ with $(p)_k=\mathrm{imp}((p)_j,(p)_i)$ (<em>modus ponens</em>), or there are $j<i$ and a variable $v$ with $(p)_i=\mathrm{gen}(v,(p)_j)$ (generalization); $\mathrm{imp}(a,b)$ is the code of $\phi\Rightarrow\psi$ if $a,b$ are those of $\phi,\psi$, and so on.</p>
 <p><strong>(F) Symbolic computation in PA.</strong> $\mathsf{PA}$ proves the defining equations of primitive recursive functions (<a href="#pa-rp">lemma</a>), hence all identities obtained by unfolding these definitions finitely many times, and, by induction, identities with variables such as $\mathrm{num}(y+1)=\ulcorner\cdot+1\urcorner(\mathrm{num}(y))$ (the numeral of $y+1$ is that of $y$ followed by $+1$), “$\mathrm{num}(y)$ is a closed term”, $s_{\phi\Rightarrow\psi}(\vec x)=\mathrm{imp}(s_\phi(\vec x),s_\psi(\vec x))$, or the lengths and terms of a concatenation of sequences: $\mathrm{lh}(p\frown q)=\mathrm{lh}(p)+\mathrm{lh}(q)$, $(p\frown q)_i=(p)_i$ if $i<\mathrm{lh}(p)$ and $(p\frown q)_{\mathrm{lh}(p)+i}=(q)_i$ if $i<\mathrm{lh}(q)$. Likewise, $\mathsf{PA}$ proves that $\mathrm{Prf}_{\mathsf T}(p,f)$ is equivalent to the conjunction of the clauses defining proofs. These are the only facts about the coding used below.</p>
@@ -162,7 +202,10 @@ $$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \
 
 <res type="Theorem" nom="Second incompleteness theorem (Gödel, 1931)" id="godel2">
 <enonce><p>Let $\mathsf T$ be a theory containing $\mathsf{PA}$ whose set of axioms is primitive recursive. If $\mathsf T$ is consistent, then $\mathsf T$ does not prove the sentence $\mathrm{Con}(\mathsf T)$ expressing its own consistency.</p></enonce>
-<philo><p>A system cannot guarantee its own reliability from within. To prove that a theory is consistent, one needs a stronger theory, whose consistency is even less assured. This is the end of Hilbert’s programme, which sought to found mathematics by proving its consistency by elementary means.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A reasonable system of axioms that contains arithmetic cannot prove that it never leads to a contradiction, unless it is precisely contradictory.</p>
+<p>A system cannot guarantee its own reliability from within. To prove that a theory is consistent, one needs a stronger theory, whose consistency is even more doubtful. This is the end of Hilbert’s programme: mathematics cannot found itself in an absolutely certain way. It is none the worse for it; like all knowledge, it rests on a reasoned trust.</p>
+</philo>
 <tech>
 <p>By the <a href="#diagonal">diagonal lemma</a> applied to $\psi(x)=\neg\mathrm{Prov}_{\mathsf T}(x)$, there is $G$ with $\mathsf{PA}\vdash G\Leftrightarrow\neg\Box G$: “I am not provable in $\mathsf T$”.</p>
 <p>(i) $\mathsf T\nvdash G$. Otherwise, by condition 1, $\mathsf T\vdash\Box G$, and, since $\mathsf T\vdash G\Rightarrow\neg\Box G$, $\mathsf T\vdash\neg\Box G$: $\mathsf T$ would be inconsistent.</p>
@@ -184,7 +227,10 @@ $$\mathrm{Prov}_{\mathsf T}(f)=\exists p\ \mathrm{Prf}_{\mathsf T}(p,f),\qquad \
 <li>(Gödel, 1931) If $\mathsf T$ is <em>ω-consistent</em>, that is, if there is no formula $\phi(x)$ such that $\mathsf T\vdash\exists x\,\phi(x)$ and $\mathsf T\vdash\neg\phi(\underline n)$ for every $n$, then the sentence $G$ of the second theorem is neither provable nor refutable in $\mathsf T$.</li>
 <li>(Rosser, 1936) If $\mathsf T$ is merely consistent, there is a sentence $R$ that is neither provable nor refutable in $\mathsf T$.</li>
 </ol></enonce>
-<philo><p>Soundness (“everything $\mathsf T$ proves is true”) is a strong semantic hypothesis, which cannot be checked from within. Gödel weakens it to a syntactic condition, ω-consistency; Rosser shows that it suffices that the theory not contradict itself. His sentence says: “if I am proved, I was refuted earlier”. It compares the lengths of proofs instead of speaking only of their existence.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To obtain incompleteness, it is enough to assume that the system is not contradictory; there is no need to assume that it proves only truths.</p>
+<p>This version, due to Barkley Rosser (1936), weakens the hypothesis to the minimum: a consistent system that contains arithmetic always leaves questions unanswered.</p>
+</philo>
 <tech>
 <p>Recall that $\mathrm{Prf}_{\mathsf T}(p,f)$ defines a primitive recursive relation: by the <a href="#pa-rp">lemma</a> on primitive recursive functions, for all integers $p,f$, $\mathsf{PA}$ proves $\mathrm{Prf}_{\mathsf T}(\underline p,\underline f)$ if it is true and its negation otherwise. An ω-consistent theory is consistent (an inconsistent theory proves everything).</p>
 <p>(1) $\mathsf T\nvdash G$ by point (i) of the proof of the second theorem (which uses only consistency). Suppose $\mathsf T\vdash\neg G$, hence $\mathsf T\vdash\Box G$, that is, $\mathsf T\vdash\exists p\ \mathrm{Prf}_{\mathsf T}(p,\underline{\ulcorner G\urcorner})$. Since $G$ has no proof, each sentence $\mathrm{Prf}_{\mathsf T}(\underline n,\underline{\ulcorner G\urcorner})$ is false, hence refutable in $\mathsf{PA}\subseteq\mathsf T$: $\mathsf T$ is not ω-consistent.</p>
@@ -200,6 +246,11 @@ where $\mathrm{neg}(\underline{\ulcorner R\urcorner})$ is written using the form
 
 <h2 id="le-probleme-de-la-decision">The decision problem</h2>
 
+<clair>
+<p>Hilbert asked one last question: is there a mechanical method that says, for every logical statement, whether it is always true? Turing invented his machines precisely to answer it, and the answer is no.</p>
+</clair>
+
+
 <p>We consider here predicate calculus <em>without equality</em>, over an arbitrary countable language: constants, function symbols and relation symbols. A sentence is <strong>valid</strong> if it is true in every structure (every nonempty domain, every interpretation of the symbols). Every sentence can be written, effectively, in <em>negation normal form</em>: without $\Rightarrow$, negation applying only to atomic formulas (push negations inwards with De Morgan’s laws and $\neg\forall=\exists\neg$). A sentence $\phi$ is valid if and only if the negation normal form of $\neg\phi$ has no model.</p>
 
 <res type="Theorem" nom="Completeness of tableaux (Gödel, 1929, in the form of Beth and Smullyan)" id="completude">
@@ -214,7 +265,10 @@ where $\mathrm{neg}(\underline{\ulcorner R\urcorner})$ is written using the form
 <p>A branch is <strong>closed</strong> if it contains an atomic formula and its negation; a tableau is closed if all its branches are.</p>
 <p><em>Theorem.</em> $\Gamma$ has no model if and only if it admits a closed tableau, and one can then be found by a fixed systematic construction. Consequently, the set of valid sentences is semi-decidable.</p>
 </enonce>
-<philo><p>If a sentence is true in all possible interpretations, there is a finite proof showing it, and a machine can find it by trying them all. What Gödel showed in 1929, two years before incompleteness, is that logic itself is complete: only theories that speak about the integers escape all axiomatization. Proof search in logic is therefore a semi-decidable problem, like halting.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> If a logical statement is true in every imaginable situation, there is a proof of it, and a machine can find it by trying all possible proofs.</p>
+<p>This theorem of Gödel’s (1929), not to be confused with incompleteness, is reassuring: logic itself lets nothing escape. But the search stops only if the statement is true; if it is not, it may go on forever.</p>
+</philo>
 <tech>
 <p><strong>Soundness.</strong> If $\Gamma$ has a model $\mathcal M$, every tableau for $\Gamma$ has a branch all of whose sentences are true in an extension of $\mathcal M$ (interpreting the reserve constants used). This holds at the start, and each rule preserves it: for (β), one of $A$, $B$ is true; for (γ), $A[x:=t]$ is true since $\forall x\,A$ is; for (δ), interpret the new constant $c$ by a witness of $\exists x\,A$. Such a branch is not closed.</p>
 <p><strong>Systematic construction.</strong> Enumerate $t_0,t_1,\dots$ the closed terms of the language augmented with the reserve constants. At step $n$, on each non-closed branch, apply the rule of each sentence present: only once in total for α, β and δ; and, for each sentence $\forall x\,A$, add the $A[x:=t_k]$ for all $k\le n$ (those not already there). Stop extending a branch as soon as it is closed. Each step is finite.</p>
@@ -235,7 +289,10 @@ where $\mathrm{neg}(\underline{\ulcorner R\urcorner})$ is written using the form
 
 <res type="Theorem" nom="Church-Turing theorem (1936)" id="entscheidung">
 <enonce><p>There is no algorithm that decides whether a sentence of first-order predicate calculus is universally valid (true in all interpretations), even without equality. Hilbert and Ackermann’s <em>Entscheidungsproblem</em> has a negative answer. The set of valid sentences is semi-decidable, but not decidable.</p></enonce>
-<philo><p>This was the goal of Turing’s 1936 paper, and the reason why he invented his machines: to prove that there is no universal “proving machine”, one first had to say what a machine is. Leibniz’s dream, to settle every controversy by a computation (“<em>Calculemus!</em>”), is impossible in its general form. The computer was born of an impossibility theorem. The chapter <a href="logic-and-types.html#frontiere">Logic and types</a> specifies where the frontier runs: propositional calculus and the logic of one-place properties are decidable, and a single two-place relation suffices to make everything undecidable. The chapter <a href="decidable-theories.html">Decidable theories</a> presents, on the contrary, theories that can be decided, such as addition on the integers or the real numbers.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> There is no mechanical method that says, for every logical statement, whether it is true in all situations.</p>
+<p>This is the question Hilbert called the “decision problem”, and it was to answer it that Turing invented his machines in 1936. There is no “proving machine” that settles all questions: mathematical reasoning does not reduce to a computation that always ends.</p>
+</philo>
 <tech>
 <p>To every machine $Z$ (in quadruple format) and every integer $x$, we effectively associate a sentence $\phi_{Z,x}$, valid if and only if $Z$ halts on input $\overline x$. A decider for validity would therefore decide halting, which is impossible; and semi-decidability is the <a href="#completude">completeness theorem</a>.</p>
 <p><strong>The language.</strong> A constant $o$, two function symbols $s$ and $p$ (successor and predecessor), two binary relations $E$ (“same cell”) and $L$ (“to the left of”), and, for each state $q_i$ and each symbol $S_j$ of $Z$, two binary relations: $Q_i(t,h)$, “at instant $t$, the machine is in state $q_i$, the head at $h$”, and $C_j(t,u)$, “at instant $t$, cell $u$ contains $S_j$”. We write $[z]$, for $z\in\mathbb Z$, for the term $s^z(o)$ if $z\ge0$ and $p^{-z}(o)$ if $z<0$. The instants will be the terms $s^k(o)$.</p>

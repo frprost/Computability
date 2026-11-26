@@ -1,31 +1,31 @@
-/* turing.js — simulateur de machines de Turing et compilateur
-   « fonctions récursives -> machines de Turing » pour le manuel de calculabilité.
-   Fonctionne dans le navigateur (window.Turing) et sous Node (module.exports).
+/* turing.js — Turing machine simulator and compiler
+   "recursive functions -> Turing machines" for the computability manual.
+   Runs in the browser (window.Turing) and under Node (module.exports).
 
-   Conventions (celles du chapitre « Machines de Turing ») :
-   - machine à quadruplets (q, s, a, q') où a est un symbole (écriture), L ou R ;
-   - un entier x est codé par x+1 barres « 1 » ; les arguments sont séparés par un blanc B ;
-   - la machine démarre dans l'état q0, la tête sur la première barre du premier argument ;
-   - le résultat est le nombre total de barres sur la bande à l'arrêt.
+   Conventions (those of the chapter "Turing machines"):
+   - quadruple machine (q, s, a, q') where a is a symbol (write), L or R;
+   - an integer x is coded by x+1 strokes "1"; arguments are separated by a blank B;
+   - the machine starts in state q0, the head on the first stroke of the first argument;
+   - the result is the total number of strokes on the tape when it halts.
 */
 (function (root) {
   'use strict';
 
   /* ------------------------------------------------------------------ */
-  /* Lecture d'un programme texte                                       */
+  /* Reading a program text                                            */
   /* ------------------------------------------------------------------ */
-  // Format accepté : un quadruplet par ligne ou séparé par « ; »
-  //   q0 1 B q1      ou   (q0, 1, B, q1)
+  // Accepted format: one quadruple per line or separated by ";"
+  //   q0 1 B q1      or   (q0, 1, B, q1)
   function parseQuads(text) {
     var quads = [];
     text.split(/[;\n]/).forEach(function (line) {
       line = line.replace(/#.*$/, '').replace(/[(),]/g, ' ').trim();
       if (!line) return;
       var p = line.split(/\s+/);
-      if (p.length !== 4) throw new Error('Quadruplet mal formé : « ' + line + ' »');
+      if (p.length !== 4) throw new Error('Malformed quadruple: "' + line + '"');
       quads.forEach(function (q) {
         if (q[0] === p[0] && q[1] === p[1] && (q[2] !== p[2] || q[3] !== p[3]))
-          throw new Error('Machine non consistante : deux quadruplets commencent par « ' + p[0] + ' ' + p[1] + ' »');
+          throw new Error('Inconsistent machine: two quadruples start with "' + p[0] + ' ' + p[1] + '"');
       });
       quads.push(p);
     });
@@ -37,10 +37,10 @@
       line = line.replace(/#.*$/, '').replace(/[(),]/g, ' ').trim();
       if (!line) return;
       var p = line.split(/\s+/);
-      if (p.length !== 5) throw new Error('Quintuplet mal formé : « ' + line + ' »');
+      if (p.length !== 5) throw new Error('Malformed quintuple: "' + line + '"');
       qs.forEach(function (q) {
         if (q[0] === p[0] && q[1] === p[1] && q.join(' ') !== p.join(' '))
-          throw new Error('Machine non consistante : deux quintuplets commencent par « ' + p[0] + ' ' + p[1] + ' »');
+          throw new Error('Inconsistent machine: two quintuples start with "' + p[0] + ' ' + p[1] + '"');
       });
       qs.push(p);
     });
@@ -48,18 +48,18 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Machine à quadruplets                                              */
+  /* Quadruple machine                                                  */
   /* ------------------------------------------------------------------ */
   function QuadMachine(quads) {
     this.quads = quads;
     this.table = Object.create(null);
     for (var i = 0; i < quads.length; i++) {
       var k = quads[i][0] + '\u0000' + quads[i][1];
-      if (this.table[k]) throw new Error('Machine non consistante : deux quadruplets commencent par ' + quads[i][0] + ', ' + quads[i][1]);
+      if (this.table[k]) throw new Error('Inconsistent machine: two quadruples start with ' + quads[i][0] + ', ' + quads[i][1]);
       this.table[k] = quads[i];
     }
   }
-  // Bande initiale pour un cortège d'entiers
+  // Initial tape for a tuple of integers
   function encodeArgs(args) {
     var cells = [];
     args.forEach(function (x, j) {
@@ -97,7 +97,7 @@
     c.tape.forEach(function (v) { if (v === '1') n++; });
     return n;
   }
-  // Description instantanée (mot γ q S δ), blancs inutiles supprimés
+  // Instantaneous description (word γ q S δ), useless blanks removed
   function describe(c) {
     var keys = Array.from(c.tape.keys());
     var lo = Math.min.apply(null, keys.concat([c.pos]));
@@ -111,8 +111,8 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Machines de Rado (quintuplets, symboles B et 1, état d'arrêt h)    */
-  /* Exécution rapide sur tableau, utilisée pour les castors affairés.  */
+  /* Rado machines (quintuples, symbols B and 1, halting state h)      */
+  /* Fast array-based execution, used for the busy beavers.            */
   /* ------------------------------------------------------------------ */
   function runRado(quints, maxSteps, onProgress) {
     var states = {}, ns = 0;
@@ -136,7 +136,7 @@
       pos += M[idx];
       q = N[idx];
       steps++;
-      if (pos < 0 || pos >= size) { // agrandir la bande
+      if (pos < 0 || pos >= size) { // grow the tape
         var nt = new Uint8Array(size * 2); nt.set(tape, size >> 1);
         pos += size >> 1; lo += size >> 1; hi += size >> 1; tape = nt; size *= 2;
       }
@@ -148,15 +148,15 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Compilateur : fonctions récursives -> machine à quadruplets        */
+  /* Compiler: recursive functions -> quadruple machine                */
   /* ------------------------------------------------------------------ */
-  // Termes :
+  // Terms:
   //   {t:'const', k, m}     (x1..xk) |-> m
   //   {t:'succ'}            x |-> x+1
   //   {t:'proj', k, i}      (x1..xk) |-> xi
-  //   {t:'comp', g, hs:[...]}  sigma[g, h1..hk]   (arité = arité des hi)
+  //   {t:'comp', g, hs:[...]}  sigma[g, h1..hk]   (arity = arity of the hi)
   //   {t:'rec', g, h}       rho[g, h]   f(0,x)=g(x), f(y+1,x)=h(y, f(y,x), x)
-  //   {t:'mu', g}           mu[g](x) = plus petit y tel que g(x, y) = 0
+  //   {t:'mu', g}           mu[g](x) = least y such that g(x, y) = 0
   function arity(f) {
     switch (f.t) {
       case 'const': return f.k;
@@ -166,7 +166,7 @@
       case 'rec': return arity(f.g) + 1;
       case 'mu': return arity(f.g) - 1;
     }
-    throw new Error('terme inconnu ' + f.t);
+    throw new Error('unknown term ' + f.t);
   }
   function evalTerm(f, args, fuel) {
     fuel = fuel || { n: 1e6 };
@@ -186,7 +186,7 @@
       }
     }
   }
-  // Écriture lisible d'un terme
+  // Readable printing of a term
   function show(f) {
     switch (f.t) {
       case 'const': return f.m + '^{(' + f.k + ')}';
@@ -202,33 +202,33 @@
   Builder.prototype.fresh = function () { return this.n++; };
   Builder.prototype.q = function (a, s, act, b) { this.quads.push([a, s, act, b]); };
   var SYMS = ['B', '1', 'X'];
-  // Changement d'état sans effet (lecture puis réécriture du même symbole)
+  // State change with no effect (read then rewrite the same symbol)
   Builder.prototype.link = function (a, b) { var self = this; SYMS.forEach(function (s) { self.q(a, s, s, b); }); };
 
-  // Invariant : la bande contient des blocs de « 1 » séparés par un seul B.
-  // E désigne la case située deux cases après la dernière barre (là où commencerait un nouveau bloc).
+  // Invariant: the tape contains blocks of "1" separated by a single B.
+  // E denotes the cell two cells after the last stroke (where a new block would start).
 
-  // Aller en E depuis une case quelconque du contenu (barre, X ou séparateur)
+  // Go to E from any cell of the content (stroke, X or separator)
   Builder.prototype.gotoEnd = function (e) {
     var a = e, b = this.fresh(), x = this.fresh();
     this.q(a, '1', 'R', a); this.q(a, 'X', 'R', a); this.q(a, 'B', 'R', b);
     this.q(b, '1', 'R', a); this.q(b, 'X', 'R', a); this.q(b, 'B', 'B', x);
     return x;
   };
-  // Depuis E, aller sur la première case du j-ième bloc en partant de la fin
+  // From E, go to the first cell of the j-th block counting from the end
   Builder.prototype.gotoBlock = function (e, j) {
     var s1 = this.fresh();
-    this.q(e, 'B', 'L', s1);           // sur le séparateur après le dernier bloc
+    this.q(e, 'B', 'L', s1);           // on the separator after the last block
     var cur = s1;
     for (var t = 1; t <= j; t++) {
       var scan = this.fresh();
-      this.q(cur, 'B', 'L', scan);     // sur la dernière case du bloc courant
+      this.q(cur, 'B', 'L', scan);     // on the last cell of the current block
       this.q(scan, '1', 'L', scan);
       if (t < j) { var nx = this.fresh(); this.q(scan, 'B', 'B', nx); cur = nx; }
       else { var done = this.fresh(); this.q(scan, 'B', 'R', done); return done; }
     }
   };
-  // Ajouter un bloc codant m
+  // Append a block coding m
   Builder.prototype.append = function (e, m) {
     var cur = e;
     for (var t = 0; t <= m; t++) {
@@ -237,27 +237,27 @@
     }
     var x = this.fresh(); this.q(cur, 'B', 'R', x); return x;
   };
-  // Recopier le j-ième bloc (depuis la fin) à la fin de la bande
+  // Copy the j-th block (from the end) to the end of the tape
   Builder.prototype.copy = function (e, j) {
     var s = this.gotoBlock(e, j);
-    // première barre
+    // first stroke
     var c1 = this.fresh(); this.q(s, '1', 'X', c1);
     var e1 = this.gotoEnd(c1);
     var r0 = this.fresh(); this.q(e1, 'B', '1', r0);
-    // retour vers X
+    // back to X
     this.q(r0, '1', 'L', r0); this.q(r0, 'B', 'L', r0);
     var r1 = this.fresh(); this.q(r0, 'X', '1', r1);
     var r2 = this.fresh(); this.q(r1, '1', 'R', r2);
-    // barres suivantes
+    // following strokes
     var d1 = this.fresh(); this.q(r2, '1', 'X', d1);
     var e2 = this.gotoEnd(d1);
     var e3 = this.fresh(); this.q(e2, 'B', 'L', e3); this.q(e3, 'B', '1', r0);
-    // fin de la source
+    // end of the source
     var f0 = this.fresh(); this.q(r2, 'B', 'B', f0);
     return this.gotoEnd(f0);
   };
-  // Décaler vers la gauche d'une case les k derniers blocs.
-  // Départ sur une case g blanche, g+1 blanche, g+2 début de bloc. Arrivée en E.
+  // Shift the last k blocks one cell to the left.
+  // Start on a blank cell g, g+1 blank, g+2 start of a block. End at E.
   Builder.prototype.shiftTail = function (g, k) {
     var cur = g;
     for (var t = 0; t < k; t++) {
@@ -268,7 +268,7 @@
     }
     var x = this.fresh(); this.q(cur, 'B', 'R', x); return x;
   };
-  // Retirer une barre du j-ième bloc (supposé coder un entier > 0)
+  // Remove a stroke from the j-th block (assumed to code an integer > 0)
   Builder.prototype.dec = function (e, j) {
     var s = this.gotoBlock(e, j);
     var p = this.fresh(); this.link(s, p);
@@ -276,7 +276,7 @@
     var z = this.fresh(); this.q(p2, '1', 'B', z);
     return this.shiftTail(z, j - 1);
   };
-  // Supprimer entièrement le j-ième bloc depuis la fin
+  // Delete the j-th block from the end entirely
   Builder.prototype.del = function (e, j) {
     var loop = e;
     var s = this.gotoBlock(loop, j);
@@ -284,27 +284,27 @@
     this.q(p, '1', 'R', p); var p2 = this.fresh(); this.q(p, 'B', 'L', p2);
     var z = this.fresh(); this.q(p2, '1', 'B', z);
     var p4 = this.fresh(); this.q(z, 'B', 'L', p4);
-    // bloc non vide : revenir sur z, décaler la queue, recommencer
+    // nonempty block: go back to z, shift the tail, start again
     var z2 = this.fresh(); this.q(p4, '1', 'R', z2);
     var back = this.shiftTail(z2, j - 1);
     this.link(back, loop);
-    // bloc vide : on est sur le séparateur gauche w
+    // empty block: we are on the left separator w
     var w = this.fresh(); this.q(p4, 'B', 'B', w);
     if (j === 1) { var x = this.fresh(); this.q(w, 'B', 'R', x); return x; }
     var z3 = this.fresh(); this.q(w, 'B', 'R', z3);
-    var e1 = this.shiftTail(z3, j - 1);        // premier décalage
-    var s2 = this.gotoBlock(e1, j - 1);         // début du bloc qui suit le trou
+    var e1 = this.shiftTail(z3, j - 1);        // first shift
+    var s2 = this.gotoBlock(e1, j - 1);         // start of the block after the gap
     var g1 = this.fresh(); this.q(s2, '1', 'L', g1);
     var g = this.fresh(); this.q(g1, 'B', 'L', g);
-    return this.shiftTail(g, j - 1);            // second décalage
+    return this.shiftTail(g, j - 1);            // second shift
   };
-  // Ajouter une barre au dernier bloc
+  // Add a stroke to the last block
   Builder.prototype.incLast = function (e) {
     var t = this.fresh(), u = this.fresh(), v = this.fresh(), x = this.fresh();
     this.q(e, 'B', 'L', t); this.q(t, 'B', '1', u); this.q(u, '1', 'R', v); this.q(v, 'B', 'R', x);
     return x;
   };
-  // Tester si le j-ième bloc code 0 ; renvoie [sortieZéro, sortieNonZéro], toutes deux en E
+  // Test whether the j-th block codes 0; returns [exitZero, exitNonZero], both at E
   Builder.prototype.testZero = function (e, j) {
     var s = this.gotoBlock(e, j);
     var a = this.fresh(); this.q(s, '1', 'R', a);
@@ -313,8 +313,8 @@
     return [this.gotoEnd(z), this.gotoEnd(nz)];
   };
 
-  // Compile f : précondition E avec les arguments = les n derniers blocs ;
-  // postcondition E avec un bloc supplémentaire codant f(arguments).
+  // Compile f: precondition E with the arguments = the last n blocks;
+  // postcondition E with one more block coding f(arguments).
   Builder.prototype.compile = function (e, f) {
     var self = this, cur = e, i, j;
     switch (f.t) {
@@ -333,7 +333,7 @@
         return cur;
       }
       case 'rec': {
-        var kk = arity(f.g) + 1;              // arité de f
+        var kk = arity(f.g) + 1;              // arity of f
         cur = this.copy(cur, kk);               // cnt := y
         cur = this.append(cur, 0);              // i := 0
         for (i = 0; i < kk - 1; i++) cur = this.copy(cur, kk + 1);
@@ -341,9 +341,9 @@
         for (i = 0; i < kk - 1; i++) cur = this.del(cur, 2);
         var loop = cur;
         var t = this.testZero(loop, 3);
-        // cnt = 0 : on retire cnt et i
+        // cnt = 0: remove cnt and i
         var done = this.del(this.del(t[0], 3), 2);
-        // sinon : corps de boucle
+        // otherwise: loop body
         cur = this.dec(t[1], 3);
         cur = this.copy(cur, 2);                // i
         cur = this.copy(cur, 2);                // acc
@@ -372,28 +372,28 @@
         return fin;
       }
     }
-    throw new Error('terme inconnu');
+    throw new Error('unknown term');
   };
 
-  // Machine complète, au format standard du chapitre « Machines de Turing »
+  // Complete machine, in the standard format of the chapter "Turing machines"
   function compileToTM(f) {
     var b = new Builder();
     var n = arity(f);
     var start = 0;
     var e = b.gotoEnd(start);
     e = b.compile(e, f);
-    for (var i = 0; i < n; i++) e = b.del(e, 2);   // effacer les arguments
-    // retirer une barre du résultat : le nombre de barres vaut alors f(x)
+    for (var i = 0; i < n; i++) e = b.del(e, 2);   // erase the arguments
+    // remove a stroke from the result: the number of strokes is then f(x)
     var t = b.fresh(), u = b.fresh(), x = b.fresh();
     b.q(e, 'B', 'L', t); b.q(t, 'B', 'L', u); b.q(u, '1', 'B', x);
-    // renommage en q0, q1, ... dans l'ordre d'apparition
+    // rename to q0, q1, ... in order of appearance
     var names = { 0: 'q0' }, cnt = 1;
     function nm(s) { if (!(s in names)) names[s] = 'q' + (cnt++); return names[s]; }
     var quads = b.quads.map(function (qd) { return [nm(qd[0]), qd[1], qd[2], nm(qd[3])]; });
     return { quads: quads, states: cnt };
   }
 
-  /* Petite bibliothèque de termes */
+  /* Small library of terms */
   var C = function (k, m) { return { t: 'const', k: k, m: m }; };
   var S = { t: 'succ' };
   var A = function (k, i) { return { t: 'proj', k: k, i: i }; };
@@ -404,19 +404,19 @@
   lib.add = rec(A(1, 1), comp(S, A(3, 2)));                       // add(0,y)=y ; add(x+1,y)=S(add(x,y))
   lib.mult = rec(C(1, 0), comp(lib.add, A(3, 3), A(3, 2)));       // mult(0,y)=0 ; mult(x+1,y)=y+mult(x,y)
   lib.pred = rec(C(0, 0), A(2, 1));                               // pred(0)=0 ; pred(y+1)=y
-  // monus(x, y) = y ∸ x  (récurrence sur le premier argument)
+  // monus(x, y) = y ∸ x  (recursion on the first argument)
   lib.monusRev = rec(A(1, 1), comp(lib.pred, A(3, 2)));
   lib.monus = comp(lib.monusRev, A(2, 2), A(2, 1));                // monus(a,b) = a ∸ b
   lib.sg = rec(C(0, 0), C(2, 1));                                 // sg(0)=0 ; sg(y+1)=1
   lib.sgbar = rec(C(0, 1), C(2, 0));
-  // div(x, y) = mu z [ sgbar( (z+1)*y ∸ x ) ] : plus petit z avec (z+1)y > x  (indéfini si y = 0)
+  // div(x, y) = mu z [ sgbar( (z+1)*y ∸ x ) ] : least z with (z+1)y > x  (undefined if y = 0)
   lib.div = mu(comp(lib.sgbar, comp(lib.monus, comp(lib.mult, comp(S, A(3, 3)), A(3, 2)), A(3, 1))));
-  // puissance : t(y, x) = x^y par récurrence sur y, puis permutation des arguments
+  // power: t(y, x) = x^y by recursion on y, then permutation of the arguments
   lib.powRev = rec(C(1, 1), comp(lib.mult, A(3, 3), A(3, 2)));
   lib.pow = comp(lib.powRev, A(2, 2), A(2, 1));                    // pow(x, y) = x^y
   lib.fact = rec(C(0, 1), comp(lib.mult, comp(S, A(2, 1)), A(2, 2))); // 0! = 1 ; (y+1)! = (y+1) × y!
   lib.eq = comp(lib.sgbar, comp(lib.add, lib.monus, comp(lib.monus, A(2, 2), A(2, 1)))); // χ=(x,y) = sgbar(|x−y|)
-  // fonction partout indéfinie : mu z [ 1 ]
+  // everywhere undefined function: mu z [ 1 ]
   lib.vide = mu(C(2, 1));
 
   var api = {

@@ -1,11 +1,11 @@
-/* Nombre h(n) de tables de Radó à n états (n = 1, 2, 3) qui s'arrêtent,
-   départ sur une bande de 0 dans l'état A.
-   Chaque transition (état, symbole lu) a 4(n+1) choix :
-   symbole écrit (0 ou 1), déplacement (L ou R), état suivant (A.. ou H).
-   Une machine à n états qui s'arrête le fait en au plus S(n) pas
-   (S(1)=1, S(2)=6, S(3)=21, valeurs démontrées au chapitre des castors) :
-   on simule donc S(n) pas et l'on conclut.
-   Compilation : cc -O2 castor_omega.c -o castor_omega */
+/* Number h(n) of Radó tables with n states (n = 1, 2, 3) that halt,
+   starting on a tape of 0s in state A.
+   Each transition (state, symbol read) has 4(n+1) choices:
+   symbol written (0 or 1), move (L or R), next state (A.. or H).
+   An n-state machine that halts does so in at most S(n) steps
+   (S(1)=1, S(2)=6, S(3)=21, values proved in the busy beaver chapter):
+   so we simulate S(n) steps and conclude.
+   Compilation: cc -O2 castor_omega.c -o castor_omega */
 #include <stdio.h>
 #include <string.h>
 int main(void){
@@ -22,13 +22,13 @@ int main(void){
       for(int t=0;t<S[n];t++){
         int c=ch[2*q+tape[pos]];
         tape[pos]=c&1; pos+= (c&2)?1:-1;
-        int nq=c>>2;               /* 0 = H, 1..n = états A.. */
+        int nq=c>>2;               /* 0 = H, 1..n = states A.. */
         if(nq==0){halted=1;break;}
         q=nq-1;
       }
       h+=halted;
     }
-    printf("n=%d  tables=%lld  qui s'arretent=%lld\n",n,total,h);
+    printf("n=%d  tables=%lld  halting=%lld\n",n,total,h);
   }
   return 0;
 }

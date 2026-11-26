@@ -2,10 +2,21 @@
 titre: Recursive functions
 court: Recursive functions
 chapo: Start from obviously computable functions, and combine them by composition, recursion and search for the least value: the “mathematician’s” approach to computation, and a toolbox used by the whole rest of the manual.
+chapo_clair: Another way of defining computation, without a machine: start from obvious operations (add one, copy, write a fixed number) and combine them according to three recipes. One obtains exactly what Turing machines compute.
 prerequis: bases.html#entiers|Integers ; bases.html#fonctions|Functions and notation
 -->
 
+<clair>
+<p>The previous chapter described computation as a mechanism: a tape, a head, rules. This chapter describes it as a mathematician would: by definitions. We start from three operations that nobody doubts are computable, then allow ourselves three ways of building new functions from old ones. Everything obtained in this way is called a “recursive function”.</p>
+<p>It is a bit like a construction set: a few basic pieces, a few ways of assembling them, and any building can be put up. The surprise, proved in the chapter <a href="equivalence.html">Equivalence</a>, is that this construction set and the Turing machine compute exactly the same functions.</p>
+</clair>
+
 <h2 id="une-approche-mathematique-du-calculable">A mathematical approach to the computable</h2>
+
+<clair>
+<p>Mathematicians have long defined sequences “by recursion”: one gives the first term, then a rule for going from one term to the next. For example, start from 10; if the number is even, divide it by 2, otherwise multiply it by 3 and add 1. One obtains 10, 5, 16, 8, 4, 2, 1, 4, 2, 1… Each term is computed mechanically from the previous one. Recursive functions generalize this idea.</p>
+</clair>
+
 
 <p>The formalism of recursive functions starts from base functions, obviously computable, and adds operators that build more and more elaborate functions. It is a compositional approach: each function is defined from previous ones, as in a library of programs. It should be thought of as a <em>mathematical assembly language</em> into which the usual functions are “compiled”.</p>
 
@@ -19,6 +30,11 @@ $$u_0=X,\qquad u_{n+1}=\begin{cases}u_n/2&\text{if }u_n\text{ is even},\\ 3u_n+1
        if p mod 2 = 0 then p / 2 else 3 * p + 1</code></pre>
 
 <h2 id="fonctions-recursives-primitives">Primitive recursive functions</h2>
+
+<clair>
+<p>The basic pieces are three obvious operations: always writing the same number, adding 1, and keeping one of the data while forgetting the others. We then allow two ways of combining: chaining functions (the result of one serves as input to the other), and repeating an operation a number of times known in advance. With this alone, one rebuilds addition (add 1, as many times as needed), multiplication (add, as many times as needed), power, factorial…</p>
+</clair>
+
 
 <res type="Definition" nom="Primitive recursive functions" id="def-rp">
 <enonce>
@@ -37,7 +53,8 @@ $$f(0,x_2,\dots,x_k)=g(x_2,\dots,x_k),\qquad f(y+1,x_2,\dots,x_k)=h\big(y,\,f(y,
 </ul>
 </enonce>
 <philo>
-<p>These are the functions that can be programmed with loops <code>for i from 1 to n</code> whose number of iterations is known <em>before</em> entering the loop. Such programs always halt. It was long believed that this sufficed to compute everything; it does not (<a href="ackermann.html">Ackermann function</a>), and the diagonal argument of the <a href="motivations.html#diagonale-totale">motivations</a> shows that <em>no</em> language in which everything terminates can suffice.</p>
+<p class="en-clair"><strong>In plain words.</strong> We start from three basic functions: the one that always gives the same number, the one that adds 1, and the one that picks one of its inputs. We are allowed to chain them, and to repeat an operation a number of times known in advance. The functions obtained in this way are called primitive recursive functions.</p>
+<p>In programming, this corresponds to “repeat $n$ times” loops, where one knows, before starting, how many rounds will be made. Such a program necessarily halts. It was long believed that this sufficed to compute everything. It does not: the <a href="ackermann.html">Ackermann function</a> is computable, but not in this way, and the chapter <a href="motivations.html#diagonale-totale">Motivations</a> shows that no language in which all programs halt can compute everything.</p>
 </philo>
 <tech>
 <p>A definition by recursion corresponds exactly to the following program, which shows that every primitive recursive function is computable and total (by induction on its construction):</p>
@@ -59,8 +76,8 @@ return res</code></pre>
 </ol>
 </enonce>
 <philo>
-<p>Not every “definition by recursion” defines a computation. The system $f(0)=1$, $f(n)=f(n+1)\ \mathrm{div}\ (n+1)$ is satisfied by the factorial, but the program it suggests (“to compute $f(n)$, compute $f(n+1)$…”) never terminates: it climbs instead of descending. Kleene defined recursive functions by arbitrary systems of equations, which raises three problems: a system may define a relation rather than a function, it may define a non-computable function, and the computation rule is not always obvious. The primitive recursion scheme imposes the descent $y+1\to y$, which guarantees existence, uniqueness and termination all at once.</p>
-<p>General substitution justifies the “shortcuts” we take constantly, such as writing $h(x,y)=g(y,x,x)$ or $\mathrm{mult}(x+1,y)=\mathrm{add}(y,\mathrm{mult}(x,y))$ without explicitly going through projections. Boitet warns: one often stops the proof once one “sees” that it is trivial, “but… beware of illusions”.</p>
+<p class="en-clair"><strong>In plain words.</strong> A correct definition by recursion (one gives the value at 0, then says how to go from $n$ to $n+1$) does define a function, and only one. And one may freely write formulas such as “$f(x,y)=g(y,x,x)$”: they are legitimate abbreviations.</p>
+<p>Not every “recursion” is a computation. A rule saying “to know $f(n)$, first compute $f(n+1)$” climbs instead of descending, and never stops. The recursion allowed here always descends towards 0, which guarantees both that the function exists and that its computation terminates.</p>
 </philo>
 <tech>
 <p>(1) Existence: by induction on $y$, $f(y,\vec x)$ is defined for all $\vec x$ (case $y=0$ by $g$ total, case $y+1$ by $h$ total). Uniqueness: if $f_1\ne f_2$ satisfy the system, let $y_0$ be the least $y$ such that $f_1(y,\vec x)\ne f_2(y,\vec x)$ for some $\vec x$; $y_0=0$ is impossible (both equal $g(\vec x)$), and if $y_0>0$, $f_1(y_0,\vec x)=h(y_0-1,a,\vec x)=f_2(y_0,\vec x)$ with $a=f_1(y_0-1,\vec x)=f_2(y_0-1,\vec x)$: contradiction.</p>
@@ -73,6 +90,10 @@ return res</code></pre>
 
 <res type="Example" nom="Addition, multiplication, power, factorial, predecessor" id="exemples-rp">
 <enonce><p>The functions $x+y$, $x\times y$, $x^y$, $x!$ and $\mathrm{pred}(x)=x\monus 1$ are primitive recursive.</p></enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Addition, multiplication, power, factorial and “subtract 1” are built from the basic pieces.</p>
+<p>The construction follows what is learned in primary school. Adding $x$ and $y$ is adding 1 to $y$, $x$ times in a row. Multiplying is adding $y$, $x$ times in a row. Raising to a power is multiplying, $y$ times in a row. Each operation is a repetition of the previous one: a ladder whose rungs can be climbed one by one.</p>
+</philo>
 <tech>
 <p>We give the recursion equations; each right-hand side is a composition of functions already obtained.</p>
 <ul>
@@ -100,6 +121,11 @@ t&=\rho\big[1^{(1)},\ \sigma[\mathrm{mult},A^{(3)}_3,A^{(3)}_2]\big],\qquad \mat
 
 <h2 id="bibliotheque">Library of primitive recursive functions</h2>
 
+<clair>
+<p>With these tools alone, one recovers almost all of school arithmetic: division with remainder, the test “is this number prime?”, the list of prime numbers, the greatest common divisor. Each function is built from the previous ones, just as one enriches a library of programs.</p>
+</clair>
+
+
 <p>From now on we use the usual notation ($a+b$ rather than $\mathrm{add}(a,b)$). All the functions and predicates below are primitive recursive; a predicate $P$ is primitive recursive if its <em>characteristic function</em> $\chi_P$ (equal to 1 if $P$ holds, 0 otherwise) is.</p>
 
 <table>
@@ -123,7 +149,10 @@ t&=\rho\big[1^{(1)},\ \sigma[\mathrm{mult},A^{(3)}_3,A^{(3)}_2]\big],\qquad \mat
 
 <res type="Proposition" nom="Bounded minimization, quotient, remainder and primes" id="mu-borne">
 <enonce><p>If $P$ is a primitive recursive predicate, $\mu z<y\,[P(z,\vec x)]$ is primitive recursive. Consequently the quotient, the remainder, primality, the sequence $(p_k)$ of primes and the exponents $(x)_k$ are primitive recursive.</p></enonce>
-<philo><p>A search for which a bound is known in advance is a “for” loop, which always terminates. Only when we do not know how far to search does the risk of never stopping appear. The whole difficulty of computability lies in this difference.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Looking for the first number that fits, <em>when one knows how far to search</em>, is a safe operation: it always halts. From it one derives division, remainder, the primality test, the list of prime numbers.</p>
+<p>To find the quotient of 17 by 5, we try 0, 1, 2, 3 and stop, knowing that there is no point going beyond 17. Only when we do not know how far to search does the risk of never stopping appear. The whole difficulty of computability lies in this difference.</p>
+</philo>
 <tech>
 <p>The product $\prod_{z\le v}(1\monus\chi_P(z,\vec x))$ equals 1 as long as no $z\le v$ satisfies $P$, and 0 afterwards; the sum of these products for $v<y$ therefore counts the $v<y$ that precede the first witness, that is, it equals this witness (or $y$). For the quotient, the bound $x$ suffices since $q=x$ satisfies $x<(x+1)y$ as soon as $y\ge1$. For $p_{k+1}$, the bound $p_k!+1$ is justified by Euclid’s argument: every prime factor of $p_k!+1$ is strictly greater than $p_k$.</p>
 </tech>
@@ -142,7 +171,10 @@ t&=\rho\big[1^{(1)},\ \sigma[\mathrm{mult},A^{(3)}_3,A^{(3)}_2]\big],\qquad \mat
 <li>the predicate “$x$ is prime” and the function $\mathrm{Pr}(n)$ = $n$-th prime: $\mathrm{Pr}(0)=0$, $\mathrm{Pr}(n+1)=\mu y\le \mathrm{Pr}(n)!+1\ [y\text{ prime}\wedge y>\mathrm{Pr}(n)]$, the bound coming from Euclid’s proof (a prime factor of $\mathrm{Pr}(n)!+1$ is greater than $\mathrm{Pr}(n)$). Thus $\mathrm{Pr}(k)=p_k$ for $k\ge1$, with the numbering $p_1=2$, $p_2=3$, … used throughout the manual.</li>
 </ul>
 </enonce>
-<philo><p>This catalogue shows that almost all the functions of elementary arithmetic, and all the tests performed in it, are primitive recursive: they can be programmed with “for” loops whose number of iterations is known in advance. Definition by cases corresponds to the “if… then… else” statement; it requires nothing more than multiplications by 0 or 1.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The distance between two numbers, minimum, maximum, parity, divisibility, the GCD, and many other functions are built in the same way.</p>
+<p>This catalogue shows that almost all of elementary arithmetic, and all the tests performed in it, can be programmed with loops whose number of rounds is known in advance. The functions that require more are rare and often exotic.</p>
+</philo>
 <tech>
 <p>For the remainder: if $R(x,y)+1<y$, the remainder increases by 1; if it reaches $y$, it falls back to 0, and that is when the quotient increases. With the convention $y=0$, we get $R(x,0)=x$ and $\lfloor x/0\rfloor=0$, and we always have $x=y\lfloor x/y\rfloor+R(x,y)$. For the square root: $\overline{\mathrm{sg}}(i^2\monus x)=1$ if and only if $i^2\le x$, and we count the $i\ge1$ satisfying this condition.</p>
 </tech>
@@ -156,8 +188,10 @@ t&=\rho\big[1^{(1)},\ \sigma[\mathrm{mult},A^{(3)}_3,A^{(3)}_2]\big],\qquad \mat
 <li>(J. Robinson, 1950) The total recursive functions of one variable form the smallest class $\mathcal C_2$ containing $S$ and $Q$, closed under addition, composition and <em>inversion of surjective functions</em>: $I[f](x)=\mu y\,[f(y)=x]$, for surjective $f$.</li>
 </ol>
 </enonce>
-<philo><p>All of the computable in one variable can be described without ever speaking of functions of several arguments, with two base functions and three operations. In the second statement, the only “dangerous” operation, unbounded search, appears only in the form of inverting a function that takes all values: the search always succeeds.</p>
-<p>The function $Q$ is the only nonlinear ingredient, and it suffices: since it “resets to zero” at each square, it makes tests possible (“is $x$ a square?”), and by composing it with well-chosen squares one builds subtraction, square root, halving, and then a coding of pairs. With a coding of pairs, one variable is worth as much as several. The proof opposite is long but entirely elementary: it consists of computational tricks with squares.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The construction set can be reduced further: for functions of a single input, two basic functions and three ways of combining suffice.</p>
+<p>This result, due to Raphael Robinson (1947), belongs to the search for maximal economy, like an architect looking for the smallest number of kinds of bricks needed to build everything. One discovers that the complexity of computation does not come from the richness of the bricks, but from the way they are assembled.</p>
+</philo>
 <tech>
 <p>The easy inclusions: $Q$ is primitive recursive (library), and iteration is a special case of primitive recursion ($f(n+1)=h(n,f(n))$ with $h=\sigma[g,A^{(2)}_2]$), so $\mathcal C_1\subseteq\mathrm{RP}^{(1)}$. If $f$ is total recursive and surjective, $I[f]$ is recursive (by minimization) and total, so $\mathcal C_2$ contains only total recursive functions. It remains to show the reverse inclusions. Throughout, “$F\in\mathcal C$” denotes a function of one variable $n$, and an equality such as $F=G^2+3G+1$ reads $F(n)=G(n)^2+3G(n)+1$: it is obtained by addition and composition, as soon as $n\mapsto n^2$ is in the class. The basic fact, used constantly, is
 $$Q(m^2+r)=r\quad\text{if }0\le r\le 2m,\qquad\text{since }m^2\le m^2+r<(m+1)^2.$$</p>
@@ -232,13 +266,21 @@ root = lambda n: D(tau(n), n)</code></pre>
 
 <h2 id="codages">Codings in the integers</h2>
 
+<clair>
+<p>A computer handles only numbers, and yet it processes texts, images, programs. The secret is <em>coding</em>: one agrees on a way of representing each object by a number. This section shows how to represent a pair of numbers, then a list, then a word, by a single number, in such a way that the original object can always be recovered. This is the idea that will allow Gödel to make arithmetic speak about itself, and Turing to design a program that reads other programs.</p>
+</clair>
+
+
 <p>Codings reduce structured objects (pairs, sequences, words, programs) to integers, by primitive recursive functions in both directions.</p>
 
 <res type="Proposition" nom="Cantor pairing function" id="cantor-couple">
 <enonce>
 <p>The function $\langle x,y\rangle=\dfrac{(x+y)(x+y+1)}{2}+x$ is a primitive recursive bijection from $\N^2$ onto $\N$, whose inverses $\pi_1,\pi_2$ (with $\pi_1(\langle x,y\rangle)=x$, $\pi_2(\langle x,y\rangle)=y$) are primitive recursive. Iterating, $\langle x_1,\dots,x_n\rangle=\langle x_1,\langle x_2,\dots,x_n\rangle\rangle$ codes $\N^n$ bijectively.</p>
 </enonce>
-<philo><p>Pairs are arranged in diagonals: $(0,0)$; then $(0,1),(1,0)$; then $(0,2),(1,1),(2,0)$… Each pair receives its rank. An infinite plane fits on a single line: there are no “more” pairs than integers.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> All pairs of numbers, $(0,0)$, $(0,1)$, $(1,0)$, $(0,2)$… can be numbered so that each pair receives a number and each number corresponds to a single pair. A pair of numbers can therefore be replaced by a single number, without losing anything.</p>
+<p>The pairs are arranged in diagonals, as one runs through an infinite table in a zigzag. This arrangement, devised by Georg Cantor, shows that there are “no more” pairs of integers than integers. It also makes it possible to reduce every function of several inputs to a function of a single input.</p>
+</philo>
 <tech>
 <p>Let $w=x+y$ and $T(w)=w(w+1)/2$, the number of pairs with sum $<w$. The pairs with sum $w$ receive the numbers $T(w),T(w)+1,\dots,T(w)+w$, in the order $x=0,\dots,w$; since $T(w)+w<T(w+1)$, we get a bijection. Conversely, for a given $z$, $w=\mu w\le z\,[T(w+1)>z]$, then $\pi_1(z)=z\monus T(w)$ and $\pi_2(z)=w\monus\pi_1(z)$: these are bounded minimizations, hence primitive recursive. Explicitly, $w=\big\lfloor(\sqrt{8z+1}-1)/2\big\rfloor$.</p>
 <p>Remark: $\dfrac{(x+y)(x+y+1)}{2}+x=\dfrac{(x+y)^2+3x+y}{2}$, another common form.</p>
@@ -258,7 +300,10 @@ root = lambda n: D(tau(n), n)</code></pre>
 <li>The Gödel number of a nonempty sequence of nonempty words $M_1,\dots,M_n$ is $\prod_{k=1}^n p_k^{\mathrm{gn}(M_k)}$.</li>
 </ul>
 </enonce>
-<philo><p>This is the idea that allowed Gödel to make arithmetic speak about itself: a statement, a proof, a program become numbers, and syntactic properties (“this is a proof of that”) become arithmetical properties of these numbers. Uniqueness of prime factorization guarantees that one can always decode.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Every word written with a fixed alphabet can be represented by an integer, in such a way that the word can always be recovered from the number. The method uses prime numbers: the first letter is placed in the exponent of 2, the second in the exponent of 3, and so on.</p>
+<p>This simple idea had immense consequences. A mathematical statement, a proof, a program are words; they therefore become numbers, and the mathematics of numbers can speak about statements, proofs and programs. This is how Kurt Gödel was able to build, in 1931, a statement that speaks about itself (see <a href="incompleteness.html">Incompleteness</a>).</p>
+</philo>
 <tech>
 <p>The coding is injective by uniqueness of prime factorization, and decoding is primitive recursive thanks to the functions $(x)_k$ and the length $\ell(x)=\mu k\le x\,[(x)_{k+1}=0]$. A word code has an <em>odd</em> exponent of 2 (the code of a letter), a sequence code an <em>even</em> exponent of 2 (the code of a nonempty word, which is even): the two kinds of codes can therefore be told apart.</p>
 </tech>
@@ -274,18 +319,29 @@ root = lambda n: D(tau(n), n)</code></pre>
 <li>If $\tau$ is a primitive recursive coding of $\N^2$ onto $\N$ (Cantor or binary), $k$-tuples are coded by $\tau^1(x)=x$, $\tau^{k+1}(x_1,\dots,x_{k+1})=\tau(\tau^k(x_1,\dots,x_k),x_{k+1})$, and finite sequences of arbitrary length by $\tau^*(\,)=0$, $\tau^*(x_1,\dots,x_k)=\tau(\tau^k(x_1,\dots,x_k),k\monus1)+1$. One often writes $\langle x_1,\dots,x_k\rangle$ (“bracket” notation).</li>
 </ul>
 </enonce>
-<philo><p>As soon as there is one way to arrange pairs of integers in a single queue, there are infinitely many (it suffices to permute finitely many positions). The choice is a matter of convenience: Cantor’s coding is “dense”, the binary coding is decoded by reading the base-2 expansion of $z+1$ (the number of trailing zeros gives $x$).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> There are many other ways of coding pairs and lists by numbers. All of them are suitable, provided coding and decoding can be done by a computation.</p>
+<p>Choosing a coding is like choosing a file format: a matter of convenience, not of principle. What matters is that a program can go from the object to the number and from the number to the object.</p>
+</philo>
 <tech><p>Every integer $z+1\ge1$ can be written uniquely as $2^x\cdot m$ with $m$ odd, $m=2y+1$, which proves bijectivity. $Q(z)=\exp(1,z+1)$ where $\exp(n,x)$, the exponent of $\mathrm{Pr}(n)$ in $x$, equals $\mu y\le x\,[\neg\,\mathrm{Pr}(n)^{y+1}\mid x]$, primitive recursive. The formulas have been checked by program for all $z<500$, as well as the explicit inversion formulas for Cantor’s coding given above.</p></tech>
 </res>
 
 <res type="Proposition" nom="The primitive recursive functions cannot be enumerated primitive recursively" id="rp-non-enumerable">
 <enonce><p>There is no primitive recursive function $g(n,x)$ such that every primitive recursive function $f$ of one variable can be written $f=g(n,\cdot)$ for some $n$. (There is such a $g$ that is <em>total recursive</em>, but it is not primitive recursive.)</p></enonce>
-<philo><p>This is the same diagonal as for total functions in general (see <a href="motivations.html#diagonale-totale">Motivations</a>): a class of total functions that contained its own interpreter would contradict itself. The evaluation function of programs with “for loops” exists, it is computable and total, but it cannot itself be programmed with “for” loops; the <a href="ackermann.html">Ackermann function</a> gives another illustration.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> One cannot write, with “repeat $n$ times” loops alone, a program able to run all the programs written with these same loops.</p>
+<p>If such an interpreter existed, one could build a program that does the opposite of what each program does on itself, and this program could appear nowhere in the list. This is the diagonal argument, which will come back throughout the manual. It follows that a language in which everything halts cannot contain its own interpreter.</p>
+</philo>
 <tech><p>If $g$ existed, $h(x)=g(x,x)+1$ would be primitive recursive, so $h=g(n,\cdot)$ for some $n$, and $h(n)=g(n,n)+1\ne g(n,n)=h(n)$.</p></tech>
 </res>
 
 
 <h2 id="fonctions-recursives-partielles">Partial recursive functions</h2>
+
+<clair>
+<p>One last recipe is missing, the most important one: <em>search until found</em>. We try 0, then 1, then 2, and stop at the first number that fits. If none fits, we search forever. This recipe is the only one that may fail to stop; it is also the only one that makes it possible to reach everything computable.</p>
+</clair>
+
 
 <res type="Definition" nom="Unbounded minimization and (partial) recursive functions" id="def-mu">
 <enonce>
@@ -294,8 +350,8 @@ $$\mu[g](\vec x)\simeq\text{the least } y \text{ such that } g(\vec x,y)=0 \text
 <p>undefined if no such $y$ exists. The set $\PR$ of <strong>(partial) recursive functions</strong> is the smallest set of partial functions containing the base functions ($m^{(k)}$, $S$, $A^{(k)}_i$) and closed under substitution, primitive recursion <em>and</em> minimization. We write $\mathcal R$ for the set of total recursive functions.</p>
 </enonce>
 <philo>
-<p>This is the <code>while</code> loop: we try $y=0,1,2,\dots$ until we find one. If we never find one, the search does not stop, and the function has no value. This single addition suffices: we shall obtain all computable functions (<a href="equivalence.html">Equivalence</a>).</p>
-<p>Example: division. $\lfloor x/y\rfloor$ is the least $q$ such that $(q+1)\,y>x$. If $y=0$, no $q$ works, the search is infinite, and division by zero has no value. Partiality is not an accident to be avoided; it is the natural manifestation of an endless search.</p>
+<p class="en-clair"><strong>In plain words.</strong> We add one last recipe: look for the smallest number that makes a certain quantity equal to zero, by trying 0, 1, 2… without limit. If it is found, it is the answer; otherwise, the search lasts forever and the function has no value. The functions obtained in this way are the recursive functions.</p>
+<p>In programming, this is the “while” loop: on entering, one does not know how many rounds will be made. With it come both the full power of computation and the risk of never stopping. One cannot have one without the other: it is one of the most important lessons of the manual.</p>
 </philo>
 <tech>
 <p>The condition “$g(\vec x,z)\conv$ for all $z<y$” reflects actual execution: to reach the candidate $y$, the computations of $g(\vec x,0),\dots,g(\vec x,y-1)$ must have terminated. Minimization can be restricted to <em>total</em> functions $g$ (one then speaks of “regular minimization”) without changing the class obtained: this is a consequence of the <a href="equivalence.html#forme-normale">normal form theorem</a>, proved in chapter 6 without using this point, which shows that every recursive function can be written $U(\mu y\,T_n(e,\vec x,y))$ with a single minimization, applied to a primitive recursive function.</p>
@@ -308,10 +364,69 @@ $$\mu[g](\vec x)\simeq\text{the least } y \text{ such that } g(\vec x,y)=0 \text
 </techno>
 </res>
 
+<atelier titre="recursive functions in Python">
+<p>The file <code>recursive.py</code> of the <a href="programs.html">downloadable programs</a> implements exactly the definitions of this chapter. A term is a tree whose nodes are the six constructions; the arity is checked at construction time (an ill-formed term is rejected), and evaluation follows the defining equations. Primitive recursion is a <code>for</code> loop whose number of rounds is fixed before entering; minimization is a <code>while</code> loop.</p>
+<pre><code>def _ev(t, args, fast):
+    if isinstance(t, Const):
+        return t.m                                  # m^(k)
+    if isinstance(t, Succ):
+        return args[0] + 1                          # S
+    if isinstance(t, Proj):
+        return args[t.i - 1]                        # A^(k)_i
+    if isinstance(t, Comp):                         # sigma[g, h1..hk]
+        return _ev(t.g, tuple(_ev(h, args, fast) for h in t.hs), fast)
+    if isinstance(t, Rec):                          # rho[g, h]
+        y, rest = args[0], args[1:]
+        acc = _ev(t.g, rest, fast)
+        for i in range(y):                     # the "for" loop: y rounds, known in advance
+            acc = _ev(t.h, (i, acc) + rest, fast)
+        return acc
+    if isinstance(t, Mu):                           # mu[g]
+        z = 0
+        while True:                            # the "while" loop: number of rounds unknown
+            if _ev(t.g, args + (z,), fast) == 0:
+                return z
+            z += 1</code></pre>
+<p>(Excerpt simplified: the file also unfolds named terms and stops a minimization after a configurable number of attempts.) Terms are written in the syntax of the chapter and read by <code>read_term</code>:</p>
+<pre><code>$ python3 recursive.py "rho[A(1,1), sigma[S, A(3,2)]]" 2 3
+term       : rho[A(1,1), sigma[S, A(3,2)]]
+arity      : 2    size: 5 building blocks
+value      : 5</code></pre>
+<p><strong>The library.</strong> Each function of the library is a named term, defined from the previous ones; the definitions below are those of the file, copied as they are. Note the remainder and the quotient, defined by primitive recursion on the dividend (the remainder increases by 1 and returns to 0 when it reaches the divisor), and Cantor decoding, defined by recursion on the code.</p>
+<pre><code>add       = rho[A(1,1), sigma[S, A(3,2)]]
+mult      = rho[C(1,0), sigma[add, A(3,3), A(3,2)]]
+pred      = rho[C(0,0), A(2,1)]
+minus_inv = rho[A(1,1), sigma[pred, A(3,2)]]          # minus_inv(y, x) = x ∸ y
+monus     = sigma[minus_inv, A(2,2), A(2,1)]
+sg        = rho[C(0,0), C(2,1)]
+sgbar     = rho[C(0,1), C(2,0)]
+dist      = sigma[add, monus, sigma[monus, A(2,2), A(2,1)]]
+eq        = sigma[sgbar, dist]                         # 1 if x = y
+less      = sigma[sg, sigma[monus, A(2,2), A(2,1)]]   # 1 if x &lt; y
+cond      = sigma[add, sigma[mult, A(3,2), sigma[sg, A(3,1)]],
+                       sigma[mult, A(3,3), sigma[sgbar, A(3,1)]]]   # cond(c, a, b)
+rem_inv   = rho[C(1,0), sigma[cond, sigma[eq, sigma[S, A(3,2)], A(3,3)], C(3,0), sigma[S, A(3,2)]]]
+quot_inv  = rho[C(1,0), sigma[add, A(3,2), sigma[eq, sigma[S, sigma[rem_inv, A(3,1), A(3,3)]], A(3,3)]]]
+tri       = rho[C(0,0), sigma[add, A(2,2), sigma[S, A(2,1)]]]        # n(n+1)/2
+pair      = sigma[add, sigma[tri, add], A(2,1)]                       # Cantor
+diag      = rho[C(0,0), sigma[add, A(2,2), sigma[eq, sigma[tri, sigma[S, A(2,2)]], sigma[S, A(2,1)]]]]
+left      = sigma[monus, A(1,1), sigma[tri, diag]]                    # pi_1
+right     = sigma[monus, diag, left]                                  # pi_2</code></pre>
+<p><strong>General substitution, mechanized.</strong> Writing projections by hand quickly becomes tedious. The function <code>function(k, body)</code> applies the second part of the <a href="#existence-unicite">proposition</a>: the body is written as an ordinary expression, and projections and constants are inserted automatically.</p>
+<pre><code>f = function(2, lambda x, y: App(add, y, App(mult, x, x)))      # f(x, y) = y + x·x
+print(f)        # sigma[add, A(2,2), sigma[mult, A(2,1), A(2,1)]]</code></pre>
+<p><strong>Checked speed-up.</strong> Evaluating <code>mult</code> by its definition costs a number of calls proportional to the product of the arguments. Each function of the library therefore also carries a native Python version (for example <code>lambda x, y: x * y</code>), used on request (<code>fast=True</code>); <code>tests.py</code> checks, on grids of arguments, that the native version and the term give the same value. The <code>for</code> and <code>while</code> loops of the terms built by the user are always executed as they are.</p>
+</atelier>
+
+
 <res type="Definition" nom="Recursive sets and predicates" id="ensembles-recursifs">
 <enonce>
 <p>A set $A\subseteq\N^n$ (or a predicate) is <strong>recursive</strong> (resp. <strong>primitive recursive</strong>) if its characteristic function $\chi_A$ is recursive (resp. primitive recursive). For a predicate $P$ of arity $n+1$, we write $\mu y\,P(\vec x,y)\simeq\mu[(\vec x,y)\mapsto 1\monus\chi_P(\vec x,y)]$, the least $y$ making $P$ true.</p>
 </enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A set of numbers is called recursive, or decidable, when a program can answer, for any number, yes or no to the question “is this number in the set?”, and always halt.</p>
+<p>The even numbers, the prime numbers, the squares form decidable sets. The chapter <a href="undecidability.html">Undecidability</a> will show perfectly well-defined sets for which no program can ever answer correctly in all cases.</p>
+</philo>
 <tech><p>“Recursive”, “decidable” and “computable” are synonyms for sets: a set is decidable if a program that always halts answers the question “$x\in A$?”.</p></tech>
 </res>
 <res type="Theorem" nom="Relative recursion; primitive recursion is superfluous" id="relative">
@@ -323,8 +438,8 @@ $$\mu[g](\vec x)\simeq\text{the least } y \text{ such that } g(\vec x,y)=0 \text
 </ol>
 </enonce>
 <philo>
-<p>Relative recursion formalizes the idea of computation “with outside help”: an oracle that answers questions “$n\in A$?”. It allows undecidable problems to be compared with one another (see <a href="undecidability.html#reductibilites">reducibilities</a> and the <a href="arithmetical-hierarchy.html">arithmetical hierarchy</a>); it corresponds exactly to <a href="turing-machines.html#def-oracle">oracle Turing machines</a> (<a href="equivalence.html#relatif">relative equivalence</a>).</p>
-<p>The second point is surprising: recursion is not needed once addition, multiplication and unbounded search are available. Any “for” loop can be replaced by a “while” loop that <em>guesses</em> in one go the whole sequence of intermediate values, coded in a single integer, and then checks it. This is Gödel’s trick, based on the Chinese remainder theorem; it is also what makes it possible to express computation in the language of arithmetic alone (<a href="incompleteness.html#representabilite">incompleteness</a>).</p>
+<p class="en-clair"><strong>In plain words.</strong> One can add to the basic pieces a “black box” that answers a fixed question, and study what can be computed with its help. Moreover, the recipe “repeat $n$ times” is not indispensable: “search until found” suffices to replace it.</p>
+<p>The black box is the oracle of the previous chapter, in another form. The second point shows that the most powerful recipe contains the others: a well-conducted search can simulate a repetition.</p>
 </philo>
 <tech>
 <p>$D^A\subseteq P^A$ is clear. For the converse, the base functions are in $D^A$ ($0^{(n)}=A^{(n)}_1\monus A^{(n)}_1$), and we must show that $D^A$ is closed under primitive recursion. Let $f(0,\vec y)=g(\vec y)$, $f(x+1,\vec y)=h(x,f(x,\vec y),\vec y)$. Suppose we have a function $\Gamma\in D^A$ such that every finite sequence $a_0,\dots,a_n$ is “coded” by some $w$: $\Gamma(i,w)=a_i$ for $i\le n$. Then</p>
@@ -339,6 +454,11 @@ $$\Gamma(i,w)=R\big(\pi_1(w),\ 1+(i+1)\pi_2(w)\big),$$
 </res>
 
 <h2 id="bibliotheque-commune">A library shared by the three models</h2>
+
+<clair>
+<p>The twelve functions of this section (successor, addition, multiplication, power, factorial, comparison, quotient…) are programmed in the three models of the manual. Here, each one is a formula built with the basic pieces. The “Turing” and “λ-calculus” links lead to the two other versions of the same function.</p>
+</clair>
+
 <p>The same twelve functions are defined in the three models of this manual: here by the recursion schemes, in the chapter <a href="turing-machines.html#bibliotheque-commune">Turing machines</a> by machines, in the chapter <a href="lambda-calculus.html#bibliotheque-commune">λ-calculus</a> by terms. For each one, we prove that the definition is correct with respect to its arithmetical specification; each entry links to the two other versions. The proofs follow the shape of the definition: a primitive recursion is checked by induction on the same argument, a minimization by examining the values that precede the first zero.</p>
 <table class="table-trois">
 <tr><th>Function</th><th>Specification</th><th>Recursive</th><th>Turing</th><th>λ-calculus</th></tr>

@@ -1,4 +1,4 @@
-/* Manuel de calculabilité — feuille de style */
+/* Computability manual — stylesheet */
 :root {
   --fond: #fbfaf7;
   --fond-2: #f2efe8;
@@ -48,7 +48,7 @@ body {
 a { color: var(--lien); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 a:hover { text-decoration-thickness: 2px; }
 
-/* ---------- En-tête ---------- */
+/* ---------- Header ---------- */
 .entete {
   position: sticky; top: 0; z-index: 20;
   background: color-mix(in srgb, var(--fond) 92%, transparent);
@@ -72,7 +72,7 @@ a:hover { text-decoration-thickness: 2px; }
 .btn-theme, .btn-menu { font: inherit; border: 1px solid var(--trait); background: var(--carte); color: var(--texte); border-radius: 6px; padding: 4px 9px; cursor: pointer; }
 .btn-menu { display: none; }
 
-/* ---------- Mise en page ---------- */
+/* ---------- Layout ---------- */
 .page { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 40px; padding: 0 16px; }
 .sommaire {
   position: sticky; top: 52px; align-self: start; max-height: calc(100vh - 60px); overflow: auto;
@@ -114,7 +114,7 @@ figcaption { font-family: var(--sans); font-size: 13px; color: var(--texte-2); t
 svg { max-width: 100%; height: auto; }
 hr { border: 0; border-top: 1px solid var(--trait); margin: 30px 0; }
 
-/* ---------- Blocs de résultats ---------- */
+/* ---------- Result blocks ---------- */
 .resultat {
   background: var(--carte); border: 1px solid var(--trait); border-radius: 10px; margin: 22px 0; box-shadow: var(--ombre);
 }
@@ -150,9 +150,11 @@ html.js.tout .niveau[data-niveau="philo"] { background: var(--philo-fond); }
 html.js.tout .niveau[data-niveau="tech"] { background: var(--tech-fond); }
 html.js.tout .niveau[data-niveau="techno"] { background: var(--techno-fond); border-radius: 0 0 10px 10px; }
 
-/* Passages de récit réservés à certains niveaux */
-/* Version 2 : au niveau philosophique, seul le récit écrit pour ce niveau est affiché
-   (titres de sections, récits <clair>, résultats munis d'un niveau philosophique, figures marquées). */
+/* Narrative passages reserved for some levels */
+html.js .seulement { display: none; }
+html.js.n-philo .seulement.philo, html.js.n-tech .seulement.tech, html.js.n-techno .seulement.techno, html.js.tout .seulement { display: block; }
+/* Version 2: at the philosophical level, only the narrative written for that level is shown
+   (section headings, <clair> narratives, results that have a philosophical level, marked figures). */
 html.js.n-philo .contenu:not(.philo-tout) > :not(h1):not(h2):not(.chapo):not(.auteurs):not(.seulement):not(.resultat):not(.nav-chap):not(.pied):not(.philo-aussi):not(.toc-locale) { display: none; }
 html.js.n-philo .contenu:not(.philo-tout) > .resultat.sans-philo, html.js.n-philo .contenu > .pas-philo, html.js.n-philo .contenu > h2#exercices, html.js.n-philo .toc-locale li:has(a[href="#exercices"]) { display: none; }
 html.js .resultat.vue-philo > .enonce { display: none; }
@@ -164,8 +166,6 @@ html.js .resultat.vue-philo > .enonce { display: none; }
 .en-clair { font-weight: 500; }
 .titre-site .version { font-size: 12px; font-weight: 600; border: 1px solid currentColor; border-radius: 9px; padding: 0 6px; margin-left: 6px; opacity: .75; }
 .telechargement { display: inline-block; font-family: var(--sans); font-weight: 650; padding: 8px 14px; border-radius: 8px; background: var(--techno); color: #fff !important; text-decoration: none; }
-html.js .seulement { display: none; }
-html.js.n-philo .seulement.philo, html.js.n-tech .seulement.tech, html.js.n-techno .seulement.techno, html.js.tout .seulement { display: block; }
 
 .definition { border-left: 4px solid var(--texte-2); }
 .theoreme { border-left: 4px solid var(--accent); }
@@ -175,8 +175,8 @@ html.js.n-philo .seulement.philo, html.js.n-tech .seulement.tech, html.js.n-tech
   background: var(--alerte-fond); border-left: 4px solid var(--alerte); border-radius: 6px; padding: 9px 14px; margin: 14px 0;
   font-size: 16px;
 }
-.erreur-ebauche::before { content: "Correction de l’ébauche — "; font-family: var(--sans); font-weight: 650; font-size: 13px; color: var(--alerte); }
-.preuve::before { content: "Démonstration. "; font-style: italic; font-weight: 600; }
+.erreur-ebauche::before { content: "Correction of the draft — "; font-family: var(--sans); font-weight: 650; font-size: 13px; color: var(--alerte); }
+.preuve::before { content: "Proof. "; font-style: italic; font-weight: 600; }
 .preuve::after { content: "∎"; float: right; color: var(--texte-2); }
 .preuve { margin-bottom: 14px; }
 .preuve::after { display: block; text-align: right; float: none; }
@@ -205,13 +205,13 @@ html.js.n-philo .seulement.philo, html.js.n-tech .seulement.tech, html.js.n-tech
 .ok { color: var(--techno); font-weight: 600; } .ko { color: var(--alerte); font-weight: 600; }
 details > summary { cursor: pointer; font-family: var(--sans); font-size: 14px; color: var(--texte-2); }
 
-/* ---------- Navigation bas de page ---------- */
+/* ---------- Bottom navigation ---------- */
 .nav-chap { display: flex; justify-content: space-between; gap: 12px; margin-top: 50px; font-family: var(--sans); font-size: 15px; flex-wrap: wrap; }
 .nav-chap a { border: 1px solid var(--trait); border-radius: 8px; padding: 10px 14px; text-decoration: none; background: var(--carte); max-width: 48%; }
 .nav-chap small { display: block; color: var(--texte-2); font-size: 12px; }
 .pied { font-family: var(--sans); font-size: 13px; color: var(--texte-2); border-top: 1px solid var(--trait); margin-top: 40px; padding-top: 14px; }
 
-/* ---------- Accueil ---------- */
+/* ---------- Home page ---------- */
 .cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 14px 0 24px; }
 .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 10px; padding: 12px 14px; font-family: var(--sans); font-size: 14px; }
 .carte h4 { margin: 0 0 6px; font-size: 15px; }
@@ -243,7 +243,7 @@ details > summary { cursor: pointer; font-family: var(--sans); font-size: 14px; 
   .niveau-titre { display: block !important; }
 }
 
-/* Figures, errata, bibliographie */
+/* Figures, errata, bibliography */
 figure svg { display: block; margin: 0 auto; max-width: min(100%, 560px); height: auto; }
 ol.errata > li { margin: 0 0 18px; padding-left: 4px; }
 ol.errata .contexte { margin: 0 0 4px; font-family: var(--sans); font-size: 14px; font-weight: 600; }
@@ -251,13 +251,13 @@ ol.biblio > li { margin: 0 0 8px; }
 
 .katex .katex-mathml { width: 1px; height: 1px; overflow: hidden; }
 .katex-display { overflow-x: auto; overflow-y: hidden; }
-.erreur-ebauche[data-src="notes"]::before { content: "Correction des notes de cours — "; }
-.erreur-ebauche[data-src="boitet"]::before { content: "Correction du polycopié Boitet — "; }
+.erreur-ebauche[data-src="notes"]::before { content: "Correction of the lecture notes — "; }
+.erreur-ebauche[data-src="boitet"]::before { content: "Correction of Boitet’s notes — "; }
 .widget .aide { margin: 0 0 6px; color: var(--texte-2); }
 .pcp-mots { margin-top: 6px; overflow-x: auto; }
 .trois-vues { font-size: 14px; color: var(--texte-2); margin-top: 8px; }
 
-/* ---------- Exercices ---------- */
+/* ---------- Exercises ---------- */
 .legende-exo { font-family: var(--sans); font-size: 14px; color: var(--texte-2); }
 .exercice { border: 1px solid var(--trait); border-left: 3px solid var(--lien); border-radius: 8px; background: var(--carte); margin: 18px 0; padding: 10px 16px 6px; }
 .entete-exo { font-family: var(--sans); font-weight: 650; font-size: 16px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }

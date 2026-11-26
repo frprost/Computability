@@ -2,10 +2,21 @@
 titre: The λ-calculus
 court: λ-calculus
 chapo: Three constructions, a single computation rule, and yet all of computer science: Church’s model, where everything is a function, numbers included.
+chapo_clair: A language with no numbers, no memory, no loops: only functions applied to other functions. Alonzo Church invented it in 1936, and it too computes everything that is computable.
 prerequis: bases.html#mots|Alphabets and words ; bases.html#fonctions|Function notation
 -->
 
+<clair>
+<p>In secondary school, we write $f(x)=x^2+1$ and compute $f(3)$ by replacing $x$ with 3. The λ-calculus keeps only that: defining a function, and applying it by replacing its parameter with a value. There are not even numbers to begin with; they are made out of functions.</p>
+<p>The American mathematician Alonzo Church proposed this language in 1936, a few months before Turing, to answer the same question: what is a computation? The two answers, one made of mechanics and the other of pure substitution, turned out to be equivalent. The λ-calculus is today the heart of programming languages such as OCaml and Haskell, and of all the “anonymous functions” of Python or JavaScript.</p>
+</clair>
+
 <h2 id="variable-abstraction-application">Variable, abstraction, application</h2>
+
+<clair>
+<p>We write $\lambda x.\,x+1$ for “the function that maps $x$ to $x+1$”, without giving it a name. The Greek letter λ (lambda) simply signals that a function is being defined. Applying this function to the number 3 means writing the two side by side, then replacing $x$ by 3 in the body. The whole language comes down to these three gestures: naming a variable, making a function, applying a function to something.</p>
+</clair>
+
 
 <p>In the 1930s, Alonzo Church was looking for a general theory of functions, initially as a foundation for logic. The λ-calculus that came out of it is one of the first models of computation to give a precise definition of computable functions (λ-definability, 1933–1936), contemporary with the general recursive functions of Herbrand and Gödel (1934) and with Turing machines (1936).</p>
 
@@ -19,6 +30,11 @@ prerequis: bases.html#mots|Alphabets and words ; bases.html#fonctions|Function n
 
 <h2 id="syntaxe-et-regle-de-calcul">Syntax and computation rule</h2>
 
+<clair>
+<p>The only computation rule is the replacement of the parameter by the argument, exactly as when computing $f(3)$. One must only take care not to confuse two variables that bear the same name, just as in English “she” can designate two different people in two neighbouring sentences.</p>
+</clair>
+
+
 <res type="Definition" nom="λ-terms, free and bound variables" id="def-termes">
 <enonce>
 <p>Let $\mathcal V$ be a countably infinite set of variables. The <strong>λ-terms</strong> are defined by the grammar</p>
@@ -29,6 +45,10 @@ $$\begin{aligned}
 \mathrm{BV}(x)&=\emptyset & \mathrm{BV}(M_1M_2)&=\mathrm{BV}(M_1)\cup\mathrm{BV}(M_2) & \mathrm{BV}(\lambda x.M)&=\mathrm{BV}(M)\cup\{x\}
 \end{aligned}$$
 </enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> An expression of the λ-calculus is built with three rules: a variable ($x$) is an expression; “the function that maps $x$ to $M$”, written $\lambda x.M$, is an expression; “$M$ applied to $N$”, written $M\,N$, is an expression.</p>
+<p>A variable is “bound” when it is the parameter of a function that surrounds it, like $x$ in $f(x)=x+1$: its name does not matter, it could be called $t$. It is “free” otherwise, like $a$ in $x+a$, whose value must come from elsewhere. This distinction, commonplace in secondary school, demands precision as soon as we want a machine to compute.</p>
+</philo>
 <tech>
 <p>Notational conventions: application associates to the left ($MNP$ abbreviates $((MN)P)$), the body of an abstraction extends as far to the right as possible, and $\lambda xy.M$ abbreviates $\lambda x.\lambda y.M$.</p>
 </tech>
@@ -47,7 +67,10 @@ x[x:=N]&=N, \qquad y[x:=N]=y\ \ (y\neq x),\qquad (M_1M_2)[x:=N]=(M_1[x:=N]\ M_2[
 <p>Two terms are <strong>α-equivalent</strong> if they differ only in the names of bound variables: $\lambda x.M=_\alpha\lambda z.M[x:=z]$ for $z\notin\mathrm{FV}(M)\cup \mathrm{BV}(M)$, and this relation is closed under passing to subterms. From now on we work modulo $=_\alpha$.</p>
 <p><strong>β-reduction</strong> $\to_\beta$ is the smallest relation such that $(\lambda x.M)\,N\to_\beta M[x:=N]$ and closed under context: if $M\to_\beta M'$, then $MN\to_\beta M'N$, $NM\to_\beta NM'$ and $\lambda x.M\to_\beta\lambda x.M'$. We write $\twoheadrightarrow_\beta$ for its reflexive and transitive closure, and $=_\beta$ for the equivalence relation it generates.</p>
 </enonce>
-<philo><p>A single computation rule: replace the formal parameter by the argument. This is the mechanism learned at school to evaluate $f(4)$. The only subtlety is not to <em>capture</em> a variable: in $\lambda y.x$, replacing $x$ by $y$ must not give $\lambda y.y$ (the identity!) but $\lambda z.y$ (the constant function equal to $y$). Bound variables are internal names, which can be renamed.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To compute “the function $\lambda x.M$ applied to $N$”, we replace $x$ by $N$ in $M$. It is the only computation rule of the language. A parameter can also be renamed without changing the meaning at all.</p>
+<p>This is the gesture made at school to compute $f(4)$. The only subtlety is to avoid name collisions: if $N$ contains a variable with the same name as a bound variable of $M$, the latter is renamed first, so as not to mix two distinct things.</p>
+</philo>
 <tech>
 <p>A subterm of the form $(\lambda x.M)N$ is called a <em>redex</em>. A term without a redex is a <strong>normal form</strong>. A term <em>has a normal form</em> if it reduces to a normal form.</p>
 </tech>
@@ -67,10 +90,16 @@ $$\mathbf2\,\mathbf3\to_\beta\lambda x.\,\mathbf3(\mathbf3\,x)\twoheadrightarrow
 
 <h2 id="confluence">Confluence</h2>
 
+<clair>
+<p>In a complicated expression, we can often choose where to start the computation. Can these choices lead to different results? No: this is the first great theorem of the λ-calculus. On the other hand, some choices may lead to an endless computation where others succeed. Fortunately, there is a strategy that always succeeds when success is possible.</p>
+</clair>
+
+
 <res type="Theorem" nom="Confluence (Church-Rosser, 1936)" id="church-rosser">
 <enonce><p>If $M\twoheadrightarrow_\beta N_1$ and $M\twoheadrightarrow_\beta N_2$, there is $Q$ such that $N_1\twoheadrightarrow_\beta Q$ and $N_2\twoheadrightarrow_\beta Q$. In particular, a term has at most one normal form.</p></enonce>
 <philo>
-<p>Whatever the order in which computations are done, one cannot end up with two different results. As at school: $(2+3)\times(4+1)$ can be computed starting from the left or from the right, and the result is the same. The functional programmer therefore need not worry about evaluation order… for the <em>result</em>. For <em>termination</em>, order matters: $(\lambda x.y)\,(\delta\,\delta)$ gives $y$ if the outer redex is reduced first, and never terminates if one insists on $\delta\,\delta$.</p>
+<p class="en-clair"><strong>In plain words.</strong> Whatever the order in which the replacements are made, one cannot end up with two different final results.</p>
+<p>As at school: to compute $(2+3)\times(4+1)$, we can start from the left or from the right, we always find 25. What is obvious for arithmetic requires a real proof here, because some orders of computation can run forever. The theorem at least guarantees that the result, if it exists, is unique.</p>
 </philo>
 <tech>
 <p>We follow the method of Tait and Martin-Löf. Define <strong>parallel reduction</strong> $\Rightarrow$:</p>
@@ -95,7 +124,10 @@ $$(\lambda y.P)\,Q\,M_1\cdots M_n\ \to_t\ P[y:=Q]\,M_1\cdots M_n\qquad(n\ge0),$$
 <p>and nothing else (it never reduces under a $\lambda$). It is deterministic. A term with no such redex is a <strong>weak head normal form</strong>: it is either an abstraction $\lambda x.P$ or a term $v\,M_1\cdots M_n$ whose head is a variable.</p>
 <p><em>Theorem.</em> If $M\twoheadrightarrow_\beta N$ and $N$ is a weak head normal form, then the weak head reduction of $M$ terminates. In particular, if a closed term has a normal form, its weak head reduction terminates (a closed normal form is an abstraction).</p>
 </enonce>
-<philo><p>To know whether a computation can succeed, it suffices to look at the laziest strategy: the one that works only on what is “at the head”, where the shape of the result is decided. If even this one goes round in circles, no other strategy will find a normal form. This is the tool that makes it possible to <em>prove</em> that a program does not terminate, and not merely to observe it on a reducer.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> To know whether a computation can succeed, it is enough to follow the laziest strategy, which computes only what is immediately needed.</p>
+<p>This is the strategy of working “on demand”: never compute something that is not yet needed. It is used by languages such as Haskell, and it even makes it possible to handle infinite lists of which only the beginning is computed.</p>
+</philo>
 <tech>
 <p>We use parallel reduction $\Rightarrow$ and its substitution lemma, proved for <a href="#church-rosser">confluence</a>. A step $M\Rightarrow N$ is <strong>internal</strong>, written $M\Rightarrow_{\mathrm{int}}N$, if it does not contract the weak head redex, that is, if we are in one of three cases: (i) $M=\lambda x.P$, $N=\lambda x.P'$ with $P\Rightarrow P'$; (ii) $M=v\,M_1\cdots M_n$, $N=v\,N_1\cdots N_n$ with $M_i\Rightarrow N_i$; (iii) $M=(\lambda y.P)\,Q\,M_1\cdots M_n$, $N=(\lambda y.P')\,Q'\,N_1\cdots N_n$ with $P\Rightarrow P'$, $Q\Rightarrow Q'$, $M_i\Rightarrow N_i$.</p>
 <p><strong>Fact 0.</strong> If $M\to_tM'$, then $M[x:=Q]\to_tM'[x:=Q]$ and $M\,R\to_tM'\,R$ (the weak head redex stays at the head). If $M\Rightarrow_{\mathrm{int}}M'$ and $R\Rightarrow R'$, then $M\,R\Rightarrow_{\mathrm{int}}M'\,R'$ (in case (i), $(\lambda x.P)\,R\Rightarrow(\lambda x.P')\,R'$ is of type (iii)). If $M\Rightarrow_{\mathrm{int}}M'$ and $Q\Rightarrow Q'$ and the head of $M$ is not $x$, then $M[x:=Q]\Rightarrow_{\mathrm{int}}M'[x:=Q']$ (substitution lemma, component by component).</p>
@@ -114,6 +146,10 @@ $$(\lambda y.P)\,Q\,M_1\cdots M_n\ \to_t\ P[y:=Q]\,M_1\cdots M_n\qquad(n\ge0),$$
 
 <res type="Theorem" nom="The normal strategy finds the normal form" id="normalisation">
 <enonce><p>If $M$ has a normal form, the strategy that always reduces the leftmost outermost redex (<em>normal order</em>) reaches it.</p></enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> There is a computation strategy, always the same, that finds the final result whenever there is one: always perform the leftmost, outermost replacement.</p>
+<p>Other strategies can get lost in an endless computation, for example by insisting on computing an argument that will never be used. The normal strategy avoids this trap by evaluating an argument only when it is really used. The reducer of the page and the Python program of the manual apply it.</p>
+</philo>
 <tech><p>By induction on the size of the normal form $N$ of $M$. By the <a href="#tete-faible">weak head normalization</a> theorem, the weak head reduction of $M$ terminates on a weak head normal form $L$. As long as a term has a weak head redex, this redex is the leftmost outermost one: normal order therefore begins with these steps, and arrives at $L$. By the second remark following that theorem, there are two cases.</p>
 <ul>
 <li>$N=\lambda x.N_0$ and $L=\lambda x.L_0$ with $L_0\twoheadrightarrow N_0$. The leftmost outermost redex of $\lambda x.L_0$ is that of $L_0$: normal order continues with that of $L_0$, which reaches $N_0$ by the induction hypothesis ($N_0$ is smaller than $N$).</li>
@@ -132,7 +168,10 @@ $$(\lambda y.P)\,Q\,M_1\cdots M_n\ \to_t\ P[y:=Q]\,M_1\cdots M_n\qquad(n\ge0),$$
 <li>(S3) if $M\to_t^*P\,Q$, $P\twoheadrightarrow_sP'$ and $Q\twoheadrightarrow_sQ'$, then $M\twoheadrightarrow_sP'\,Q'$.</li>
 </ul>
 <p>The theorem says: $M\twoheadrightarrow_\beta N$ implies $M\twoheadrightarrow_sN$.</p></enonce>
-<philo><p>Every reduction, however disorderly, can be put back into the order “from left to right and from the outside in”. The result therefore does not depend on the order of work, and a mechanical strategy, fixed in advance, suffices to reach everything.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Every computation, even one carried out in disorder, can be reorganized so as to proceed “from left to right and from the outside in”.</p>
+<p>So a computation can always be put back into a standard order without changing what it produces. It is a technical result used to prove the previous ones.</p>
+</philo>
 <tech>
 <p>The inductive form above is due to Takahashi (1995). Each derivation of $M\twoheadrightarrow_sN$ describes a sequence of reductions: the weak head steps, then (S2) those of $P$ under the $\lambda$, or (S3) those of $P$ followed by those of $Q$. In particular $M\twoheadrightarrow_sN$ implies $M\twoheadrightarrow_\beta N$. We use Fact 0 of <a href="#tete-faible">weak head normalization</a>: if $M\to_tM'$, then $M[x:=Q]\to_tM'[x:=Q]$ and $M\,R\to_tM'\,R$.</p>
 <p><strong>Lemma 1.</strong> $M\twoheadrightarrow_sM$, by induction on $M$, with zero head steps.</p>
@@ -156,6 +195,11 @@ $$(\lambda y.P)\,Q\,M_1\cdots M_n\ \to_t\ P[y:=Q]\,M_1\cdots M_n\qquad(n\ge0),$$
 
 <h2 id="programmer-en-calcul">Programming in the λ-calculus</h2>
 
+<clair>
+<p>How can one compute without numbers? Church’s idea is to represent the number 3 by the action “do three times”. The number 3 becomes the function that takes an operation and applies it three times in a row. With this idea, addition, multiplication, “true or false” tests and even loops are written as functions.</p>
+</clair>
+
+
 <p>The λ-calculus has no data structures: everything must be coded by functions. For computability, it suffices to code the integers. Church’s idea is to see an integer as an <em>iterator</em>: the integer $n$ is “apply $n$ times”.</p>
 
 <res type="Definition" nom="Church numerals and λ-definable functions" id="church">
@@ -166,7 +210,10 @@ $$(\lambda y.P)\,Q\,M_1\cdots M_n\ \to_t\ P[y:=Q]\,M_1\cdots M_n\qquad(n\ge0),$$
 <li>if $f(n_1,\dots,n_k)\ind$, then $F\,\mathbf n_1\cdots\mathbf n_k$ has no normal form.</li>
 </ul>
 </enonce>
-<philo><p>A number is no longer a quantity but an action: “three” means “do three times”. $\mathbf 4\,P\,V\twoheadrightarrow P(P(P(P\,V)))$: this is the loop <code>for i from 1 to 4 do P</code>. The logician reader will recognize Peano’s presentation, where $f$ plays the role of successor and $x$ that of zero.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The number $n$ is represented by the function that applies an operation $n$ times. A function on numbers is “λ-definable” if there is an expression of the λ-calculus that, applied to the representation of $x$, computes to the representation of $f(x)$.</p>
+<p>A number stops being a quantity and becomes an action: “three” is “do three times”. This is in fact how young children learn to count, by repeating a gesture. With this idea, a “repeat $n$ times” loop is nothing other than the number $n$ itself.</p>
+</philo>
 <tech>
 <p>It is proved in the chapter <a href="equivalence.html#lambda">Equivalence</a> that the λ-definable functions are exactly the recursive functions. This result also shows that the choice of Church numerals is not limiting: any other <em>computable</em> coding of the integers (where one passes from one coding to the other by a term) gives the same class. A non-computable coding, on the other hand, could “hide” information in the representation of numbers.</p>
 </tech>
@@ -186,8 +233,8 @@ $$\begin{aligned}
 \end{aligned}$$
 </enonce>
 <philo>
-<p>The combinator $\mathsf Y$ is the key to recursion: it gives a function the means to call itself even though the λ-calculus has no names. $\mathsf Y\,G$ is a <em>fixed point</em> of $G$. This is the same reflexive idea as in <a href="smn-recursion.html#recursion">Kleene’s recursion theorem</a> and in programs that print their own text.</p>
-<p>The predecessor is surprisingly difficult: Church himself did not know how to define it, and it was his student Stephen Kleene who found a solution (at the dentist’s, according to legend). Removing one iteration from an iterator takes a trick.</p>
+<p class="en-clair"><strong>In plain words.</strong> We know how to write in the λ-calculus addition, multiplication, subtraction, true and false, “if… then… else…”, and an expression, called a fixed-point combinator, that allows a function to call itself.</p>
+<p>The λ-calculus has no names: a function cannot say “call me again”. The fixed-point combinator gets around the obstacle by a trick of self-reproduction: it makes a copy of the function and gives it to the function as an argument. It is the same idea as that of programs that print themselves, studied in the chapter <a href="smn-recursion.html">s-m-n and recursion</a>.</p>
 </philo>
 <tech>
 <p>$\mathsf{plus}\,\mathbf m\,\mathbf n\twoheadrightarrow\lambda f.\lambda x.\,\mathbf m\,f\,(\mathbf n\,f\,x)$: $\mathbf n\,f\,x$ applies $f$ to $x$ $n$ times, then $\mathbf m\,f$ applies it $m$ more times. For $\mathsf Y$:</p>
@@ -212,7 +259,47 @@ Y g</pre></div>
 </techno>
 </res>
 
+<atelier titre="a reducer of λ-terms in Python">
+<p>The file <code>lambda_calculus.py</code> of the <a href="programs.html">downloadable programs</a> contains a complete reducer in about 150 lines. Terms are read in the syntax of the pages ($\lambda x\,y.M$ or <code>\x y.M</code>, integers written as digits and translated into Church numerals, definitions <code>NAME = term</code>), then translated into <strong>de Bruijn indices</strong>: each variable is replaced by the number of λs that must be crossed to reach the one that binds it. Thus $\lambda f.\lambda x.f\,(f\,x)$ becomes $\lambda.\lambda.\,1\,(1\,0)$; α-equivalence becomes equality, and no variable capture is possible.</p>
+<p>The substitution $M[0:=N]$ requires shifting the free indices of $N$ when passing under a λ, and decrementing those of $M$ greater than the substituted variable:</p>
+<pre><code>def shift(t, d, c=0):                   # adds d to the free indices (>= c)
+    if t[0] == "V": return ("V", t[1] + d) if t[1] >= c else t
+    if t[0] == "L": return ("L", shift(t[1], d, c + 1))
+    return ("A", shift(t[1], d, c), shift(t[2], d, c))
+
+def substitute(t, j, s):                # t[j := s], then the binder is removed
+    if t[0] == "V":
+        if t[1] == j: return shift(s, j)
+        return ("V", t[1] - 1) if t[1] > j else t
+    if t[0] == "L": return ("L", substitute(t[1], j + 1, s))
+    return ("A", substitute(t[1], j, s), substitute(t[2], j, s))
+
+def normal_step(t):                     # one leftmost-outermost step, None if normal
+    if t[0] == "A":
+        if t[1][0] == "L":              # redex at the head: (λ.M) N -> M[0 := N]
+            return substitute(t[1][1], 0, t[2])
+        f = normal_step(t[1])
+        if f is not None: return ("A", f, t[2])
+        x = normal_step(t[2])
+        return None if x is None else ("A", t[1], x)
+    if t[0] == "L":
+        b = normal_step(t[1])
+        return None if b is None else ("L", b)
+    return None</code></pre>
+<p>Repeating <code>normal_step</code> until <code>None</code> is obtained carries out the normal strategy, which finds the normal form if it exists (<a href="#normalisation">theorem</a>). A normal form $\lambda.\lambda.\,1\,(1\,(\cdots 0))$ is recognized as a Church numeral.</p>
+<pre><code>$ python3 lambda_calculus.py "(λm n f.m (n f)) 2 3"
+normal form: λx0.λx1.x0 (x0 (x0 (x0 (x0 (x0 x1)))))
+(7 steps)   Church numeral: 6</code></pre>
+<p>The same file contains the compiler of recursive functions into the λ-calculus; it is described in the chapter <a href="equivalence.html#lambda">Equivalence</a>.</p>
+</atelier>
+
+
 <h2 id="bibliotheque-commune">A library common to the three models</h2>
+
+<clair>
+<p>The twelve functions common to the three models are written here as functions of functions. They can be tried directly in the page with the built-in reducer: it performs the replacements one by one and displays the result.</p>
+</clair>
+
 <p>The same twelve functions are defined in the three models of this manual (see also the chapters <a href="recursive-functions.html#bibliotheque-commune">Recursive functions</a> and <a href="turing-machines.html#bibliotheque-commune">Turing machines</a>). For each term, we prove that it <a href="#church">λ-defines</a> its specification: applied to Church numerals, it reduces to the Church numeral of the result, and, for the quotient by $0$, it has no normal form. The proofs rest on a single iteration lemma. When it is illuminating, we also give the <em>literal translation</em> of the recursive definition, next to the shortest term. All terms have been checked with the reducer on grids of inputs.</p>
 <table class="table-trois">
 <tr><th>Function</th><th>Specification</th><th>Recursive</th><th>Turing</th><th>λ-calculus</th></tr>
@@ -239,7 +326,10 @@ Y g</pre></div>
 <li>(Pairs) With $\mathsf{pair}=\lambda a.\lambda b.\lambda s.\,s\,a\,b$, $\mathsf{fst}=\lambda p.\,p\,\mathsf{tt}$, $\mathsf{snd}=\lambda p.\,p\,\mathsf{ff}$: $\mathsf{fst}\,(\mathsf{pair}\,M\,N)\twoheadrightarrow M$ and $\mathsf{snd}\,(\mathsf{pair}\,M\,N)\twoheadrightarrow N$. If a term $P$ sends every pair $\mathsf{pair}\,\mathbf k\,\mathbf{v}$ (with $v=f(k)$) to a term that reduces to $\mathsf{pair}\,\mathbf{k+1}\,\mathbf{f(k+1)}$, then $\mathbf y\,P\,(\mathsf{pair}\,\mathbf0\,\mathbf{f(0)})\twoheadrightarrow\mathsf{pair}\,\mathbf y\,\mathbf{f(y)}$.</li>
 </ol>
 </enonce>
-<philo><p>A Church numeral is a “for” loop. A primitive recursion whose step depends only on the previous value is therefore directly a loop: $\mathbf y\,H\,A$. When the step also depends on the counter (factorial, predecessor), the loop runs on a pair (counter, value), exactly as one would do in an imperative language with two variables.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Since a number is a “repeat $n$ times” loop, a definition by recursion translates directly: the step of the recursion is repeated $n$ times. To remember both the counter and the result, a pair of values is carried along.</p>
+<p>It is the technique of the hiker who notes at each stage the number of the stage and the distance covered: with these two numbers, they always know where they are.</p>
+</philo>
 <tech><p>(1) $\mathbf n\,F\,X=(\lambda f.\lambda x.\,f^nx)\,F\,X\to(\lambda x.\,F^nx)\,X\to F^nX$ ($x$ is not free in $F$, renaming if necessary). (2) A single step: $\mathbf n\,F\to\lambda x.\,F^nx$. (3) By (1), $\mathbf y\,H\,A\twoheadrightarrow H^y\,A$; by induction on $y$, $H^y\,A\twoheadrightarrow\mathbf{f(y)}$: this is the hypothesis on $A$ for $y=0$, and $H(H^yA)\twoheadrightarrow H\,\mathbf{f(y)}\twoheadrightarrow\mathbf{h(f(y))}=\mathbf{f(y+1)}$ (the argument is reduced first, which is allowed since $\twoheadrightarrow$ permits reducing any subterm). (4) $\mathsf{fst}\,(\mathsf{pair}\,M\,N)\twoheadrightarrow(\lambda s.\,s\,M\,N)\,\mathsf{tt}\to\mathsf{tt}\,M\,N\twoheadrightarrow M$, and likewise for $\mathsf{snd}$; the second part is (1) followed by an induction on $y$ as in (3).</p></tech>
 </res>
 

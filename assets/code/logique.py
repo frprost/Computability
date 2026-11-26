@@ -1,14 +1,14 @@
-"""Logique et calcul : deux expériences (chapitre « Logique et types »).
+"""Logic and computation: experiments (chapter "Logic and types").
 
-1. Logique monadique : décider la satisfaisabilité d'un énoncé qui n'utilise que des
-   prédicats unaires P1..Pk, en essayant toutes les structures à au plus 2^k éléments.
-2. λ-calcul simplement typé et Système T : la fonction d'Ackermann écrite avec le
-   récurseur de Gödel, à l'ordre supérieur, et comparée à la définition de Péter.
-3. Système F : la même fonction avec les seuls entiers de Church polymorphes, sans
-   récurseur, en itérant au type Nat -> Nat.
+1. Monadic logic: deciding the satisfiability of a sentence that uses only
+   unary predicates P1..Pk, by trying all structures with at most 2^k elements.
+2. Simply typed λ-calculus and System T: the Ackermann function written with
+   Gödel's recursor, at higher order, and compared with Péter's definition.
+3. System F: the same function with polymorphic Church numerals only, without
+   a recursor, by iterating at type Nat -> Nat.
 
-Formules : ('P', i, 'x') atome ; ('non', A) ; ('et', A, B) ; ('ou', A, B) ; ('imp', A, B) ;
-('ex', 'x', A) ; ('tout', 'x', A).
+Formulas: ('P', i, 'x') atom; ('non', A) not; ('et', A, B) and; ('ou', A, B) or;
+('imp', A, B) implies; ('ex', 'x', A) exists; ('tout', 'x', A) for all.
 """
 from itertools import product
 
@@ -39,7 +39,7 @@ def predicats(f):
 
 
 def satisfaisable(f):
-    """Cherche un modèle de taille 1..2^k (k prédicats) : suffisant d'après le théorème."""
+    """Looks for a model of size 1..2^k (k predicates): sufficient by the theorem."""
     ps = sorted(predicats(f))
     k = len(ps)
     for m in range(1, 2 ** k + 1):
@@ -55,7 +55,7 @@ def valide(f):
     return satisfaisable(('non', f)) is None
 
 
-# Système T, simulé en Python : R a g n avec R a g 0 = a, R a g (n+1) = g n (R a g n)
+# System T, simulated in Python: R a g n with R a g 0 = a, R a g (n+1) = g n (R a g n)
 def R(a, g, n):
     acc = a
     for k in range(n):
@@ -68,7 +68,7 @@ def iter_(n, f, a):              # f^n(a) = R a (λk.f) n
 
 
 succ = lambda n: n + 1
-# ack m = R succ (λk.λf.λn. iter (n+1) f 1) m   (récursion au type Nat -> Nat)
+# ack m = R succ (λk.λf.λn. iter (n+1) f 1) m   (recursion at type Nat -> Nat)
 ack = lambda m: R(succ, lambda k, f: (lambda n: iter_(n + 1, f, 1)), m)
 
 
@@ -80,8 +80,8 @@ def peter(m, n):
     return peter(m - 1, peter(m, n - 1))
 
 
-# Système F, simulé en Python : entiers de Church polymorphes Nat = ∀α.(α→α)→α→α.
-# Les types sont effacés ; seule l'itération intégrée aux entiers est utilisée.
+# System F, simulated in Python: polymorphic Church numerals Nat = ∀α.(α→α)→α→α.
+# Types are erased; only the iteration built into the numerals is used.
 def church(n):
     return lambda f: lambda x: x if n == 0 else f(church(n - 1)(f)(x))
 
@@ -92,9 +92,9 @@ def entier(c):
 
 S_F = lambda n: lambda f: lambda x: f(n(f)(x))          # S : Nat → Nat
 UN = church(1)
-# H : (Nat→Nat) → Nat → Nat,  H f n = (S n) [Nat] f 1   (f itérée n+1 fois sur 1)
+# H : (Nat→Nat) → Nat → Nat,  H f n = (S n) [Nat] f 1   (f iterated n+1 times on 1)
 H = lambda f: lambda n: S_F(n)(f)(UN)
-# ack : Nat → Nat → Nat,  ack m = m [Nat→Nat] H S   (itération au type Nat→Nat)
+# ack : Nat → Nat → Nat,  ack m = m [Nat→Nat] H S   (iteration at type Nat→Nat)
 ack_F = lambda m: m(H)(S_F)
 
 
@@ -106,14 +106,14 @@ if __name__ == "__main__":
     deux = ('et', ('ex', 'x', ('P', P, 'x')), ('ex', 'x', ('non', ('P', P, 'x'))))
     faux_ami = ('imp', ('et', ('ex', 'x', ('P', P, 'x')), ('ex', 'x', ('P', Q, 'x'))),
                 ('ex', 'x', ('et', ('P', P, 'x'), ('P', Q, 'x'))))
-    print("1. logique monadique")
-    print("   syllogisme (Barbara) valide :", valide(syllogisme))
-    print("   « un P et un non-P » : modèle", satisfaisable(deux), "; valide :", valide(deux))
-    print("   « un P et un Q, donc un P et Q » valide :", valide(faux_ami),
-          "; contre-modèle :", satisfaisable(('non', faux_ami)))
-    print("2. Ackermann dans le Système T")
+    print("1. monadic logic")
+    print("   syllogism (Barbara) valid:", valide(syllogisme))
+    print("   \"a P and a non-P\": model", satisfaisable(deux), "; valid:", valide(deux))
+    print("   \"a P and a Q, hence a P and Q\" valid:", valide(faux_ami),
+          "; countermodel:", satisfaisable(('non', faux_ami)))
+    print("2. Ackermann in System T")
     ok = all(ack(m)(n) == peter(m, n) for m in range(4) for n in range(5))
-    print("   accord avec la définition de Péter pour m < 4, n < 5 :", ok, "; ack(3)(3) =", ack(3)(3))
-    print("3. Ackermann dans le Système F (entiers de Church, sans récurseur)")
+    print("   agrees with Péter's definition for m < 4, n < 5:", ok, "; ack(3)(3) =", ack(3)(3))
+    print("3. Ackermann in System F (Church numerals, no recursor)")
     okF = all(entier(ack_F(church(m))(church(n))) == peter(m, n) for m in range(4) for n in range(4))
-    print("   accord avec Péter pour m < 4, n < 4 :", okF, "; ack 3 3 =", entier(ack_F(church(3))(church(3))))
+    print("   agrees with Péter for m < 4, n < 4:", okF, "; ack 3 3 =", entier(ack_F(church(3))(church(3))))

@@ -1,5 +1,5 @@
-/* Automates cellulaires élémentaires (Wolfram) : diagramme espace-temps sur un canevas.
-   Bord : la ligne est un anneau (les deux extrémités sont voisines). */
+/* Elementary cellular automata (Wolfram): space-time diagram on a canvas.
+   Boundary: the row is a ring (the two ends are neighbours). */
 (function () {
   'use strict';
   function pas(ligne, regle) {
@@ -30,11 +30,11 @@
     var mode0 = el.getAttribute('data-depart') || 'droite';
     el.classList.add('widget');
     el.innerHTML =
-      '<h5>' + (el.getAttribute('data-titre') || 'Automate cellulaire élémentaire') + '</h5>' +
-      '<div class="ligne"><label>Règle (0 à 255) <input type="text" size="4" class="ac-regle" value="' + regle0 + '"></label>' +
-      '<label>Départ <select class="ac-depart"><option value="droite">une cellule à droite</option>' +
-      '<option value="centre">une cellule au centre</option><option value="hasard">au hasard</option></select></label>' +
-      '<button type="button" class="principal ac-go">Dessiner</button></div>' +
+      '<h5>' + (el.getAttribute('data-titre') || 'Elementary cellular automaton') + '</h5>' +
+      '<div class="ligne"><label>Rule (0 to 255) <input type="text" size="4" class="ac-regle" value="' + regle0 + '"></label>' +
+      '<label>Start <select class="ac-depart"><option value="droite">one cell on the right</option>' +
+      '<option value="centre">one cell in the centre</option><option value="hasard">random</option></select></label>' +
+      '<button type="button" class="principal ac-go">Draw</button></div>' +
       '<div class="ac-table" style="font-size:13px"></div>' +
       '<canvas class="ac-canvas" width="640" height="400" style="width:100%;height:auto;display:block;margin-top:8px;image-rendering:pixelated;border:1px solid var(--trait);border-radius:6px"></canvas>' +
       '<div class="ac-info" style="font-size:13px;color:var(--texte-2);margin-top:4px"></div>';
@@ -42,7 +42,7 @@
     var cv = el.querySelector('.ac-canvas'), ctx = cv.getContext('2d');
     function dessiner() {
       var regle = parseInt(el.querySelector('.ac-regle').value, 10);
-      if (!(regle >= 0 && regle <= 255)) { el.querySelector('.ac-info').textContent = 'La règle doit être un entier de 0 à 255.'; return; }
+      if (!(regle >= 0 && regle <= 255)) { el.querySelector('.ac-info').textContent = 'The rule must be an integer from 0 to 255.'; return; }
       var mode = el.querySelector('.ac-depart').value;
       var n = 160, t = 100, c = 4;
       cv.width = n * c; cv.height = t * c;
@@ -54,8 +54,8 @@
         for (var x = 0; x < n; x++) if (l[x]) { ctx.fillRect(x * c, y * c, c, c); vivantes++; }
         l = pas(l, regle);
       }
-      el.querySelector('.ac-table').innerHTML = 'Table de la règle ' + regle + ' (gauche, centre, droite → nouvelle valeur) : ' + tableHTML(regle);
-      el.querySelector('.ac-info').textContent = n + ' cellules (sur un anneau), ' + t + ' pas ; le temps s’écoule vers le bas. ' + vivantes + ' cellules à 1 dessinées.';
+      el.querySelector('.ac-table').innerHTML = 'Table of rule ' + regle + ' (left, centre, right → new value): ' + tableHTML(regle);
+      el.querySelector('.ac-info').textContent = n + ' cells (on a ring), ' + t + ' steps; time flows downwards. ' + vivantes + ' cells equal to 1 drawn.';
     }
     el.querySelector('.ac-go').addEventListener('click', dessiner);
     el.querySelector('.ac-regle').addEventListener('keydown', function (e) { if (e.key === 'Enter') dessiner(); });

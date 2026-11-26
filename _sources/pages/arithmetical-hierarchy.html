@@ -2,12 +2,23 @@
 titre: The arithmetical hierarchy
 court: Arithmetical hierarchy
 chapo: Counting the alternations of the quantifiers “there exists” and “for all” measures exactly the degree of undecidability of a problem.
+chapo_clair: Impossible problems are not all impossible to the same degree. They can be arranged on an infinite ladder, by counting how many times their statement alternates “there exists” and “for all”.
 prerequis: semi-decidability.html|Semi-decidability ; turing-machines.html#def-oracle|Oracle machines ; equivalence.html#relatif|Relative equivalence
 -->
+
+<clair>
+<p>The halting problem cannot be solved by a program. But there are problems that are harder still: even an oracle that knew all the answers about halting would not be enough to solve them. And above them, still others. This chapter describes this infinite ladder of difficulties.</p>
+<p>The surprise is that the position of a problem on the ladder can be read off from the way it is stated. “There is a number such that…” is confirmed by finding the number: this is the first rung. “For every number, there is a number such that…” is harder: this is the second. Each alternation between “there exists” and “for all” climbs one rung.</p>
+</clair>
 
 <p>Two simple facts about semi-decidable sets serve as a starting point: they are exactly the <em>projections</em> of decidable relations ($x\in A\iff\exists y\,R(x,y)$), and the complement of a semi-decidable, non-decidable set is not semi-decidable. By alternating projections and complements, that is, quantifiers $\exists$ and $\forall$, we build more and more complicated sets. Sets are thus classified by the complexity of their logical <em>description</em>; Post’s theorem will show that this classification coincides with the one given by <em>oracles</em>.</p>
 
 <h2 id="definition">Definition</h2>
+
+<clair>
+<p>Statements are classified by the number of alternations between “there exists” and “for all” needed to write them, starting from a simple check. A “there exists…” statement is at level 1 on the “there exists” side; a “for all…” statement at level 1 on the “for all” side; and so on.</p>
+</clair>
+
 
 <p>Decidable sets are defined by a formula with no unbounded quantifier; semi-decidable sets, by a formula $\exists y\,R$. What happens with more quantifiers?</p>
 
@@ -18,8 +29,8 @@ $$x\in A\iff\exists y_1\,\forall y_2\,\exists y_3\cdots Q y_n\ R(x,y_1,\dots,y_n
 <p>($n$ alternating quantifiers starting with $\exists$). It is $\Pi_n$ if the formula starts with $\forall$. It is $\Delta_n$ if it is both $\Sigma_n$ and $\Pi_n$. We set $\Sigma_0=\Pi_0=\Delta_0$ = the decidable sets. A set is <strong>arithmetical</strong> if it belongs to one of these classes.</p>
 </enonce>
 <philo>
-<p>Each alternation of quantifiers adds a level of ignorance. A $\Sigma_1$ statement (“there is a witness”) is confirmed by finding the witness. A $\Pi_1$ statement (“for all $x$, …”) is refuted by finding a counterexample: Goldbach’s conjecture is of this kind. A $\Pi_2$ statement (“for all $x$ there is $y$…”, such as “this program halts on every input”) can be neither confirmed nor refuted by a finite observation.</p>
-<p>Most of the great conjectures sit at a precise level: Goldbach and the Riemann hypothesis are $\Pi_1$; the twin prime conjecture (“for all $n$ there are twin primes beyond $n$”) is $\Pi_2$.</p>
+<p class="en-clair"><strong>In plain words.</strong> A problem is at level $n$ if it can be stated with $n$ alternations of “there exists” and “for all” in front of a simple check. The levels on the “there exists” side and on the “for all” side are written $\Sigma_n$ and $\Pi_n$.</p>
+<p>Each alternation adds a degree of ignorance. “There is a number that…” is confirmed by finding that number. “For every number…” is refuted by finding a counterexample, but is never confirmed by trial. “For every number, there is a number that…” is neither confirmed nor refuted by any finite trial. Goldbach’s conjecture is of the second type; the question “are there infinitely many twin primes?” is of the third.</p>
 </philo>
 <tech>
 <p><strong>Contraction of quantifiers.</strong> Two consecutive quantifiers of the same kind contract into one thanks to the <a href="recursive-functions.html#cantor-couple">pairing function</a>: $\exists y\,\exists z\,R(x,y,z)\iff\exists w\,R(x,\pi_1w,\pi_2w)$, and likewise for $\forall$, the relation $R(x,\pi_1w,\pi_2w)$ remaining decidable. More generally, blocks of quantifiers of the same kind, $\exists y_1\cdots\exists y_k\,\forall z_1\cdots\forall z_l\cdots$, reduce to a strict alternation by coding each block by a single integer. Arbitrary blocks may therefore be allowed in the definition: only the number of <em>alternations</em> matters. One may also replace $x$ by a $k$-tuple, coded by an integer, which defines $\Sigma_n$ and $\Pi_n$ relations of any arity.</p>
@@ -39,7 +50,10 @@ $$x\in A\iff\exists y_1\,\forall y_2\,\exists y_3\cdots Q y_n\ R(x,y_1,\dots,y_n
 <li>The classes are closed under bounded quantification: if $R$ is $\Sigma_n$, the relations $\exists z<y\,R(x,y,z)$ and $\forall z<y\,R(x,y,z)$ are $\Sigma_n$ (likewise for $\Pi_n$, $\Delta_n$).</li>
 </ol>
 </enonce>
-<philo><p>These rules are the “grammar” of the hierarchy: they let one read off the level of a set from its definition without computing anything. The connectives $\vee,\wedge$ and bounded quantifiers are free; only unbounded quantifiers, and more precisely their alternations, cost a level. The last rule is the least obvious: a “for all $z<y$” in front of a “there exists” costs nothing, because the finite list of all the witnesses can be guessed in one go.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Combining two problems of one level by “and” or “or” does not climb a level; taking the negation moves from the “there exists” side to the “for all” side.</p>
+<p>These rules let us read the level of a problem in its definition, as one reads the difficulty of a trail on a map.</p>
+</philo>
 <tech>
 <p>For (3), (5) and (6), it suffices to treat $\Sigma_n$ and $\Pi_n$: the case of $\Delta_n=\Sigma_n\cap\Pi_n$ follows.</p>
 <p>(1) If $x\in A\iff\exists y_1\forall y_2\cdots Qy_n\,R(x,\vec y)$, negating gives $x\in\overline A\iff\forall y_1\exists y_2\cdots\overline Q y_n\,\neg R(x,\vec y)$, and $\neg R$ is decidable. The converse is identical.</p>
@@ -60,6 +74,11 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 
 <h2 id="relatif">Relative computation, jump and one-one reductions</h2>
 
+<clair>
+<p>To compare impossible problems, we imagine machines equipped with oracles, and we say that a problem is “easier” than another if an oracle for the second makes it possible to solve the first. The “jump” of a problem is the halting problem for machines that have this problem as an oracle: it is always one step above.</p>
+</clair>
+
+
 <p>We use machines equipped with an oracle (<a href="turing-machines.html#def-oracle">definition</a>) and their equivalence with relative recursive functions (<a href="equivalence.html#relatif">relative equivalence</a>). We write $\varphi^A_e$ for the $e$-th $A$-computable function, $W^A_e$ for its domain, and we say that a set is <strong>semi-decidable in $A$</strong> (or $A$-r.e.) if it is of the form $W^A_e$.</p>
 
 <res type="Definition" nom="Turing reducibility, degrees" id="def-turing">
@@ -72,7 +91,10 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 <li>(Transitivity) If $A\le_TB$ and $B\le_TC$, then $A\le_TC$; if $X$ is semi-decidable in $B$ and $B\le_TC$, then $X$ is semi-decidable in $C$. In particular $\le_T$ is a preorder, and $A\equiv_T\overline A$.</li>
 </ol>
 </enonce>
-<philo><p>These are the properties of decidable and semi-decidable sets, relativized: they remain true when all machines are given the same black box. Almost all of computability relativizes in this way, word for word. The Turing degree groups together problems that are “as hard as each other”: each one is solved if one knows how to solve the other.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A problem A reduces to a problem B if a program that could query an oracle for B would be able to solve A. Two problems that reduce to each other have the same “degree” of difficulty.</p>
+<p>This is the most liberal way of comparing: we are allowed to ask the oracle as many questions as we like, and to adapt our questions to the previous answers.</p>
+</philo>
 <tech>
 <p>(1) This is the <a href="equivalence.html#relatif">relative normal form</a>: $\varphi^A_e(x)\simeq U(\mu y\,T^A_1(\eta^\ast(e),x,y))$, so $x\in W^A_e\iff\exists y\,T^A_1(\eta^\ast(e),x,y)$ (we write $e$ for $\eta^\ast(e)$).</p>
 <p>(2) If $X=W^A_e$, take $R(x,y)\iff T^A_1(e,x,y)$. Conversely, $x\mapsto\mu y\,[c_R(x,y)=1]$ is in $P^A$ and has domain $X$.</p>
@@ -83,7 +105,6 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 
 <res type="Lemma" nom="Injective s-m-n (padding)" id="smn-injectif">
 <enonce><p>In the <a href="smn-recursion.html#smn">s-m-n theorem</a>, relativized or not, $s^m_n$ can be chosen injective, and even strictly increasing in $\langle e,\vec y\rangle$.</p></enonce>
-<philo><p>The same program has infinitely many different texts: it can always be “padded” with useless lines. We use this here so that two different specializations always receive two different numbers, which turns a many-one reduction into a one-one reduction.</p></philo>
 <tech><p>The <a href="universality.html">padding lemma</a> provides a primitive recursive function $\mathrm{pad}(i,k)$, strictly increasing in $k$, such that $\varphi^A_{\mathrm{pad}(i,k)}=\varphi^A_i$ for all $A$ (add $k$ quadruples on a state that is never reached; they ask the oracle nothing). Write $s(w)$ for $s^m_n(e,\vec y)$ with $w=\langle e,\vec y\rangle$, and set $s'(0)=s(0)$, $s'(w+1)=\mathrm{pad}\big(s(w+1),k\big)$ for the least $k$ such that this number exceeds $s'(w)$ (it exists, since $\mathrm{pad}$ is strictly increasing in $k$). Then $s'$ is computable, strictly increasing hence injective, and $\varphi^A_{s'(w)}=\varphi^A_{s(w)}$.</p></tech>
 </res>
 
@@ -92,7 +113,6 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 <p>$A\le_1B$ if there is a total computable <em>injective</em> $f$ such that $x\in A\iff f(x)\in B$ (see the <a href="undecidability.html#reductibilites">hierarchy of reducibilities</a>: $A\le_1B\Rightarrow A\le_mB\Rightarrow A\le_TB$). We write $A\equiv_1B$ if $A\le_1B$ and $B\le_1A$; $\le_1$ is reflexive and transitive (the composite of two injections is an injection), so $\equiv_1$ is an equivalence.</p>
 <p>Let $\mathcal C$ be a class of sets ($\Sigma_n$, $\Pi_n$, the sets semi-decidable in $A$…). A set $A$ is <strong>$\mathcal C$-complete</strong> if $A\in\mathcal C$ and $B\le_1A$ for every $B\in\mathcal C$.</p>
 </enonce>
-<philo><p>We require one-one rather than many-one reductions here because it is the notion that characterizes relative semi-decidability (next proposition), and because it has a strong geometric meaning: two one-one equivalent sets are, up to a computable renaming, the same set (Myhill’s theorem below).</p></philo>
 </res>
 
 <res type="Proposition" nom="The jump is complete; the jump characterizes ≤T" id="saut-complet">
@@ -105,7 +125,10 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 <li>$A<_TA'$: $A\le_TA'$ but $A'\not\le_TA$.</li>
 </ol>
 </enonce>
-<philo><p>The jump is the halting problem for machines equipped with the oracle $A$. Up to one-one equivalence, it depends only on the degree of $A$ (point 3), and it is always strictly harder than $A$ (point 4): each oracle has its own halting problem, beyond its reach.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The “jump” of a problem is the halting problem for machines that have this problem as an oracle. It is always strictly harder than the problem we started from.</p>
+<p>This is Turing’s argument repeated at each floor: whatever oracle we have, an impossible question remains, that of the halting of the machines that use this oracle. The impossible has no ceiling.</p>
+</philo>
 <tech>
 <p>(1) $A'$ is semi-decidable in $A$ (the domain of $e\mapsto\varphi^A_e(e)$), and the sets semi-decidable in $A$ are closed under $\le_m$ (if $x\in B\iff f(x)\in A'$, then $B$ is the domain of $x\mapsto\varphi^A_{f(x)}(f(x))$). Conversely, let $B=W^A_a$. The function $\psi(x,z)\simeq\varphi^A_a(x)$ is in $P^A$; by the relativized <a href="#smn-injectif">injective s-m-n</a>, there is an injective primitive recursive $f$ such that $\varphi^A_{f(x)}(z)\simeq\varphi^A_a(x)$ for all $z$. Then $f(x)\in A'\iff\varphi^A_{f(x)}(f(x))\conv\iff\varphi^A_a(x)\conv\iff x\in B$. This is the proof of the <a href="semi-decidability.html#k-complet">completeness of $K$</a>, relativized.</p>
 <p>(2) $B$ and $\overline B$ are decidable, a fortiori semi-decidable, in $B$; apply (1) with $A=B$.</p>
@@ -117,12 +140,10 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 <res type="Lemma" nom="Variants of the halting problem" id="k0">
 <enonce><p>$K_0=\{\langle x,y\rangle:y\in W_x\}$ is one-one equivalent to $K=\{x:x\in W_x\}$. More generally, $\{\langle x,y\rangle:y\in W^A_x\}\equiv_1A'$.</p></enonce>
 <tech><p>Let $K^A_0=\{\langle x,y\rangle:y\in W^A_x\}$. On the one hand $A'\le_1K^A_0$ via $x\mapsto\langle x,x\rangle$, injective. On the other hand $K^A_0$ is semi-decidable in $A$ (the domain of $\langle x,y\rangle\mapsto\varphi^A_x(y)$), so $K^A_0\le_1A'$ by the <a href="#saut-complet">previous proposition</a>. With $A=\emptyset$, we get $K_0\equiv_1K$.</p></tech>
-<philo><p>Whether one asks “does program $x$ halt on $x$?” or “on $y$?”, it is the same problem, up to a coding. One therefore uses either form, whichever is more convenient.</p></philo>
 </res>
 
 <res type="Theorem" nom="Myhill’s isomorphism theorem" id="myhill">
 <enonce><p>$A\equiv_1B$ if and only if there is a <strong>computable permutation</strong> $h$ of $\N$ such that $h(A)=B$ (one says that $A$ and $B$ are <em>recursively isomorphic</em>, $A\equiv B$).</p></enonce>
-<philo><p>This is an effective analogue of the Cantor–Bernstein theorem: two injections, one in each direction, suffice to build a bijection. Here the injections are computable and respect the two sets, and so does the bijection obtained. Two one-one equivalent sets therefore differ only in the way the integers are named. For example, all $\Sigma_1$-complete sets are renamed copies of the halting problem.</p></philo>
 <tech>
 <p>If $h$ exists, $h$ and $h^{-1}$ (computable: $h^{-1}(y)=\mu x\,[h(x)=y]$) are one-one reductions. Conversely, let $f:A\le_1B$ and $g:B\le_1A$. We build in stages an increasing sequence of finite bijections $p_s$, with $x\in A\iff p_s(x)\in B$ for all $x\in\mathrm{dom}\,p_s$, by a <em>back-and-forth</em> argument.</p>
 <ul>
@@ -152,6 +173,11 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 
 <h2 id="post-section">Post’s theorem</h2>
 
+<clair>
+<p>Post’s theorem links the two ways of measuring difficulty: counting the alternations of quantifiers, and counting how many “jumps” above halting are needed to solve the problem. The two measures coincide.</p>
+</clair>
+
+
 <p>We write $\emptyset'=K$ (since $\emptyset$ is decidable, $\varphi^\emptyset_e=\varphi_e$), $\emptyset''=K'$, and in general $\emptyset^{(n)}$ for the $n$-th jump of the empty set.</p>
 
 <res type="Theorem" nom="Post’s theorem (hierarchy and oracles)" id="post">
@@ -164,8 +190,8 @@ $$\forall z<y\ \exists u\ S(x,y,z,u)\iff\exists\sigma\ \forall z<y\ S\big(x,y,z,
 </ol>
 </enonce>
 <philo>
-<p>The undecidable has floors, and each floor is the halting problem of the floor below. The theorem connects two ways of measuring difficulty: the complexity of the <em>description</em> (how many $\exists\forall$ alternations) and the power of the <em>oracle</em> required (how many jumps). One more $\forall$ quantifier is exactly one more question to the halting problem of the floor below.</p>
-<p>Even a being able to solve the halting problem would have its own halting problem, which it could not solve. There is no top.</p>
+<p class="en-clair"><strong>In plain words.</strong> A problem is at level $n+1$ on the “there exists” side exactly when it can be confirmed with the help of an oracle located $n$ jumps above the decidable.</p>
+<p>Two measures of difficulty, one logical (counting the alternations), the other mechanical (counting the stacked oracles), give the same result. This kind of coincidence is the sign that a natural notion has been found.</p>
 </philo>
 <tech>
 <p>We prove four facts in turn, then conclude.</p>
@@ -185,7 +211,10 @@ $$x\in B\iff\exists y\ \exists w\ \Big[\hat T(e,x,y,w)\ \wedge\ w=\textstyle\pro
 <p>For all $n\ge1$, $\emptyset^{(n)}\in\Sigma_n\setminus\Pi_n$ and $\overline{\emptyset^{(n)}}\in\Pi_n\setminus\Sigma_n$. Consequently</p>
 $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_n,\qquad\Sigma_n\cup\Pi_n\subsetneq\Delta_{n+1}.$$
 </enonce>
-<philo><p>Each step really is a step: there are always problems of the form “there exists… for all…” (with $n$ alternations) that no formula with $n$ alternations starting with the other quantifier describes. A consequence in logic: no formula of fixed level defines the arithmetical truth of all formulas (see <a href="incompleteness.html">incompleteness</a>).</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> Each rung of the ladder is really higher than the previous one: at each level, there are problems that no formula of a lower level expresses.</p>
+<p>The ladder of the impossible is infinite, and none of its rungs is superfluous.</p>
+</philo>
 <tech>
 <p>$\emptyset^{(n)}\in\Sigma_n$ by Post (2). If it were $\Pi_n$, it would be $\Delta_n$, hence decidable in $\emptyset^{(n-1)}$ by Post (3), which contradicts $\emptyset^{(n-1)}<_T\emptyset^{(n)}$ (<a href="#saut-complet">jump</a>, point 4). The complement follows by duality. Thus $\Sigma_n\not\subseteq\Pi_n$ and $\Pi_n\not\subseteq\Sigma_n$, whence the first three inequalities. For the last one, $\emptyset^{(n)}\oplus\overline{\emptyset^{(n)}}=\{2x:x\in\emptyset^{(n)}\}\cup\{2x+1:x\notin\emptyset^{(n)}\}$ is $\Delta_{n+1}$ (decidable in $\emptyset^{(n)}$) but is neither $\Sigma_n$ nor $\Pi_n$, since $\emptyset^{(n)}$ and its complement reduce to it via $x\mapsto2x$ and $x\mapsto2x+1$ (<a href="#clotures">closure under $\le_m$</a>).</p>
 </tech>
@@ -215,6 +244,11 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 
 <h2 id="complets">Complete sets</h2>
 
+<clair>
+<p>Natural questions about programs can be placed precisely on the ladder. “Does this program halt on this input?” is on the first rung. “Does this program halt on all inputs?” is on the second. “Does this program compute a decidable set?” is on the third.</p>
+</clair>
+
+
 <p>Bounding the level of a set from above is usually easy: write down its definition and apply the <a href="#clotures">closure rules</a>. Bounding it from below is harder: one shows that it is <em>complete</em> for a level, which, by the <a href="#hierarchie-stricte">corollary</a>, excludes it from the lower levels. The most natural examples are <strong>index sets</strong> $\{x:\varphi_x\in\mathcal C\}$, undecidable as soon as the class $\mathcal C$ is nontrivial (<a href="undecidability.html#rice-theoreme">Rice’s theorem</a>).</p>
 
 <res type="Proposition" nom="Classified examples" id="exemples-hierarchie">
@@ -232,7 +266,10 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 <tr><td>$\mathrm{Comp}=\{e:W_e\equiv_TK\}$</td><td>is its domain as hard as the halting problem?</td><td>$\Sigma_4$-complete</td></tr>
 </table>
 </enonce>
-<philo><p>“Does this program always answer?” (totality) is strictly harder than “does this program answer on this input?” (halting). It is the question one asks about any software that is supposed never to hang: it has a higher degree of undecidability. And “is the domain of this program decidable?” is harder still: one has to guess another program, then check infinitely many things about it.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> We know how to place natural questions about programs exactly on the ladder: does it halt here? (level 1); does it halt everywhere? (level 2); does it compute a decidable set? (level 3); is its halting problem as hard as halting in general? (level 4).</p>
+<p>“Does this program always answer?” is strictly harder than “does this program answer on this input?”. It is the question a customer asks a software vendor: “does your program work in all cases?”. It is out of reach of every automatic tool, and even of every tool equipped with an oracle for halting.</p>
+</philo>
 <tech>
 <p><strong>Upper bounds.</strong> They are read off the formulas, with the <a href="#clotures">closure rules</a> ($y\in W_e$ is $\Sigma_1$, $y\notin W_e$ is $\Pi_1$):</p>
 <ul>
@@ -250,7 +287,10 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 
 <res type="Proposition" nom="Fin is Σ₂-complete, Tot and Inf are Π₂-complete" id="fin-tot">
 <enonce><p>For every $A\in\Sigma_2$, there is a total computable injective $f$ such that $x\in A\Rightarrow W_{f(x)}$ is finite and $x\notin A\Rightarrow W_{f(x)}=\N$. Consequently $A\le_1\mathrm{Fin}$, and $\overline A\le_1\mathrm{Tot}$, $\overline A\le_1\mathrm{Inf}$ via the same function: $\mathrm{Fin}$ is $\Sigma_2$-complete, $\mathrm{Tot}$ and $\mathrm{Inf}$ are $\Pi_2$-complete.</p></enonce>
-<philo><p>For each $x$, we build a program that “keeps working as long as it has no reason to stop working”. If $x\in A$, a witness eventually blocks the program, which then answers only finitely many inputs; otherwise it answers everything. The two extremes, “almost nothing” and “everything”, suffice to code any problem of the second level.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> “Does this program halt on only finitely many inputs?” and “does it halt on all inputs?” are exactly on the second rung.</p>
+<p>These two questions cannot be settled either by watching the programs, or even with a halting oracle: one would need an oracle for the halting of machines equipped with the halting oracle.</p>
+</philo>
 <tech>
 <p>Let $x\in A\iff\exists y\,\forall z\,R(x,y,z)$ with $R$ decidable. The relation $Q(x,u)\iff\forall y\le u\ \exists z\ \neg R(x,y,z)$ is $\Sigma_1$ (bounded quantification), so the function $\psi(x,u)=0$ if $Q(x,u)$, undefined otherwise, is computable. By the <a href="#smn-injectif">injective s-m-n</a>, there is an injective $f$ with $\varphi_{f(x)}(u)\simeq\psi(x,u)$, that is, $W_{f(x)}=\{u:Q(x,u)\}$.</p>
 <ul>
@@ -283,7 +323,6 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 <li>$x\in A\iff W_{k(x)}$ is decidable.</li>
 </ul>
 <p>With the upper bounds above, $\mathrm{Cof}$ and $\mathrm{Rec}$ are $\Sigma_3$-complete (for $\le_1$), and their complements $\Pi_3$-complete.</p></enonce>
-<philo><p>Both constructions use <em>movable markers</em>: we follow the elements of the complement of a set being enumerated, and look at which ones eventually settle. That a marker moves infinitely often is a piece of information of level $\Pi_2$; that from some rank on all the markers move infinitely often is one of level $\Sigma_3$.</p></philo>
 <tech>
 <p><strong>Preliminary.</strong> Let $x\in A\iff\exists n\,P(x,n)$ with $P\in\Pi_2$. The <a href="#fin-tot">previous proposition</a>, applied to the complement of $\{\langle x,n\rangle:P(x,n)\}$, which is $\Sigma_2$, gives a total computable $g$ with: $W_{g(x,n)}$ is infinite if $P(x,n)$, finite otherwise. Fix $x$ and write $V_n=W_{g(x,n)}$, $V_{n,s}$ for the set of elements enumerated in fewer than $s$ steps. We say that $V_n$ <em>grows</em> at step $s+1$ if $V_{n,s+1}\ne V_{n,s}$: this happens infinitely often if and only if $P(x,n)$.</p>
 <p>The sets built below are enumerated by an algorithm uniform in $x$; by the <a href="#smn-injectif">injective s-m-n</a>, we obtain injective functions $h$, $k$.</p>
@@ -308,7 +347,6 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 
 <res type="Proposition" nom="Comp is Σ₄-complete (Yates)" id="comp-complet">
 <enonce><p>For every $A\in\Sigma_4$, there is a total computable injective function $f$ such that $x\in A\iff W_{f(x)}\equiv_TK$. With the upper bound above, $\mathrm{Comp}$ is $\Sigma_4$-complete; in particular it is not $\Sigma_3$.</p></enonce>
-<philo><p>This is an <em>infinite-injury</em> priority argument: some requirements are disturbed infinitely often, and survive only by <em>guessing</em> the behaviour at infinity of the higher-priority requirements. These guesses are organized into a tree, and one shows that along a “true path” all the guesses are eventually right.</p></philo>
 <tech>
 <p><strong>Setting up.</strong> Let $x\in A\iff\exists n\,Q(x,n)$ with $Q\in\Pi_3$. By the <a href="#cof-rec">previous proposition</a> applied to the complement of $Q$, there is a computable $h$ with: $Q(x,n)\iff W_{h(x,n)}$ is co-infinite. Fix $x$, write $C_n=W_{h(x,n)}$, and $a^n_y[s]$ for the $y$-th element of the complement of $C_{n,s}$. As in the previous proposition: if $C_n$ is co-infinite, each $a^n_y[s]$ changes only finitely often; if its complement has $N$ elements, $a^n_y[s]$ settles for $y<N$ and changes infinitely often for $y\ge N$. We build, uniformly in $x$, two semi-decidable sets $W$ and $E$ such that: if $x\in A$, $K\le_TW$; if $x\notin A$, $E\not\le_TW$, hence $K\not\le_TW$ (since $E\le_TK$). As always $W\le_TK$, we shall have $x\in A\iff W\equiv_TK$, and the injective s-m-n gives $f$.</p>
 <p><strong>The tree.</strong> The nodes are the finite sequences of integers. A node $\beta$ of length $2n$ is a <em>coding</em> node for $C_n$; its successors are the $\beta\,o$, $o\in\N$ (outcome $o$ guesses “the complement of $C_n$ has $o$ elements”). A node $\alpha$ of length $2e+1$ is an <em>incompleteness</em> node for the requirement $P_e:\ c_E\ne\varphi^W_e$; it has a single successor $\alpha\,0$. Nodes are ordered by: $\gamma<\delta$ if $\gamma$ is a proper prefix of $\delta$ or if $\gamma$ is to the left of $\delta$ (at the first index where they differ, $\gamma$ has the smaller outcome). Each coding node $\beta$ has its column $\{\langle\beta,z\rangle:z\in\N\}$ of $W$ (coding $\beta$ by an integer), and <em>markers</em> $\gamma^\beta_y$, positions in its column. To <em>initialize</em> a node is to erase its markers (without enumerating anything) or its witness; a node that needs them chooses <em>fresh</em> markers or a fresh witness, larger than any number seen so far.</p>
@@ -331,7 +369,6 @@ $$\Delta_n\subsetneq\Sigma_n,\qquad\Delta_n\subsetneq\Pi_n,\qquad\Sigma_n\ne\Pi_
 
 <res type="Proposition" nom="The weak jump" id="saut-faible">
 <enonce><p>For $A\subseteq\N$, let $H_A=\{x:W_x\cap A\ne\emptyset\}$. If $A\in\Pi_n$ ($n\ge1$), then $H_A\in\Sigma_{n+1}$; if $A$ is $\Pi_n$-complete, $H_A$ is $\Sigma_{n+1}$-complete. For example $H_{\overline K}=\{x:W_x\not\subseteq K\}$ is $\Sigma_2$-complete, and by iterating ($A\mapsto H_{\overline{H_A}}$…) one obtains a complete set at each level.</p></enonce>
-<philo><p>“Does program $x$ halt on at least one element of $A$?” adds a “there exists” in front of the question “$y\in A$?”. If the latter is the hardest of its level, the new one is the hardest of the next level: we climb one floor just by adding a search.</p></philo>
 <tech>
 <p><em>Upper bound.</em> $x\in H_A\iff\exists y\,(y\in W_x\wedge y\in A)$: the parenthesis is the intersection of a $\Sigma_1$ and a $\Pi_n$, both $\Sigma_{n+1}$ by cumulativity, and the whole is $\Sigma_{n+1}$.</p>
 <p><em>Completeness.</em> Let $C\in\Sigma_{n+1}$: $x\in C\iff\exists y\,R(x,y)$ with $R\in\Pi_n$, that is, $\{\langle x,y\rangle:R(x,y)\}\in\Pi_n$. Since $A$ is $\Pi_n$-complete, there is a computable $f$ with $R(x,y)\iff f(\langle x,y\rangle)\in A$. By the <a href="#smn-injectif">injective s-m-n</a>, there is an injective $g$ with $\varphi_{g(x)}(z)\simeq\mu y\,[f(\langle x,y\rangle)=z]$, so $W_{g(x)}=\{f(\langle x,y\rangle):y\in\N\}$. Then</p>
@@ -342,11 +379,19 @@ $$x\in C\iff\exists y\ f(\langle x,y\rangle)\in A\iff W_{g(x)}\cap A\ne\emptyset
 
 <res type="Theorem" nom="Limit lemma (Shoenfield)" id="limite">
 <enonce><p>A set $A$ is $\Delta_2$ if and only if its characteristic function is the limit of a computable sequence of functions: there is a total computable $g$ such that, for all $x$, $\chi_A(x)=\lim_{s\to\infty}g(x,s)$ (the sequence $g(x,0),g(x,1),\dots$ changes value only finitely often).</p></enonce>
-<philo><p>A $\Delta_2$ set is a set that can be <em>learned in the limit</em>: one makes a sequence of conjectures, gets things wrong and corrects them, but from some moment on one has the right answer, without ever knowing that this moment has come. This is a model of learning and of empirical science (E. M. Gold, 1967): one converges to the truth without being able to certify that one has reached it.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The problems of level $\Delta_2$ are exactly those that can be “learned in the limit”: a program proposes a sequence of answers, corrects itself finitely many times, and ends up giving the right answer forever, without ever knowing that it has finished correcting itself.</p>
+<p>This is a good image of experimental science: we put forward hypotheses, revise them in the light of new observations, and may end up being right without being able to be certain that we will never change our minds again.</p>
+</philo>
 <tech><p>If $A\le_T K$ via a machine $M$ (Post (3)), let $g(x,s)$ be the result of $M$ on $x$ when the oracle $K$ is replaced by its approximation $K_s=\{e:\varphi_e(e)\text{ halts in fewer than }s\text{ steps}\}$ (and 0 if this computation has not finished within $s$ steps). The actual computation queries only finitely many values of $K$, and the $K_s$ are eventually correct on these values, so $g(x,s)$ stabilizes on $\chi_A(x)$. Conversely, if $\chi_A=\lim_s g$, then $x\in A\iff\exists s\,\forall t>s\ g(x,t)=1$ ($\Sigma_2$) and likewise $x\notin A$ is $\Sigma_2$, so $A\in\Delta_2$.</p></tech>
 </res>
 
 <h2 id="au-dela">Beyond</h2>
+
+<clair>
+<p>The ladder does not stop at statements about numbers: by speaking of infinite sets of numbers, we obtain even harder problems. And similar ladders exist in complexity, to measure no longer the impossible, but the very costly.</p>
+</clair>
+
 
 <p>The whole hierarchy can be <strong>relativized</strong>: starting from the sets decidable in $A$ instead of the decidable sets, we obtain classes $\Sigma^A_n$, $\Pi^A_n$, and Post’s theorem holds with $A^{(n)}$ in place of $\emptyset^{(n)}$, with the same proofs. The <strong>analytical hierarchy</strong> also allows quantifiers over <em>sets</em> of integers (second-order logic); all arithmetical sets are at its first level, and not conversely (<a href="#analytique">proposition below</a>). At the other end, the <strong>polynomial hierarchy</strong> of complexity theory ($\mathsf P$, $\mathsf{NP}$, $\mathsf{coNP}$, $\Sigma^p_2$…) follows exactly the same pattern, with polynomially bounded quantifiers and polynomial-time oracles, to classify decidable sets according to the time needed to decide them (<a href="three-approaches.html">Three approaches to computation</a>). The analogue of Post’s theorem is proved there <a href="#hierarchie-polynomiale">below</a>.</p>
 

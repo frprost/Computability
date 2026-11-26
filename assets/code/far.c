@@ -1,9 +1,9 @@
-/* far.c : meme critere que castors_far.py (gauche abstraite par un automate fini deterministe D,
-   droite exacte comme une pile, saturation post*), reecrit en C pour essayer des automates plus grands.
-   Entree : une machine par ligne, 8 transitions "1RB" ou "---" (non definie = arret possible).
-   Usage : ./castors_tnf 4 1000 30 5000 | grep UNKNOWN | sed "s/UNKNOWN: //" | ./far 5
-   puis ./far 6 6 sur les machines restantes (NON DECIDE). NMIN (2e argument, facultatif)
-   est la plus petite taille d automate essayee. */
+/* far.c: same criterion as castors_far.py (left half abstracted by a deterministic finite automaton D,
+   right half exact as a stack, post* saturation), rewritten in C to try larger automata.
+   Input: one machine per line, 8 transitions "1RB" or "---" (undefined = possible halt).
+   Usage: ./castors_tnf 4 1000 30 5000 | grep UNKNOWN | sed "s/UNKNOWN: //" | ./far 5
+   then ./far 6 6 on the remaining machines (UNDECIDED). NMIN (2nd argument, optional)
+   is the smallest automaton size tried. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +12,7 @@
 #define MAXST 1200
 #define WORDS ((MAXST+63)/64)
 typedef unsigned long long u64;
-int nf; int TW[NS][2],TM[NS][2],TN[NS][2],TD[NS][2]; /* TD=1 si defini */
+int nf; int TW[NS][2],TM[NS][2],TN[NS][2],TD[NS][2]; /* TD=1 if defined */
 int nq; int dl[MAXQ][2];
 static u64 tr[MAXST][4][WORDS]; /* 0,1,2=BOT,3=EPS */
 int nstates, FIN;
@@ -51,7 +51,7 @@ int check(){
     if(r==0){ reach(ctl(q,f),2,out); for(int w=0;w<WORDS;w++) if(out[w]) return 0; } }
   return 1;
 }
-/* automates canoniques : delta(0,0)=0, etats numerotes par ordre de decouverte en largeur */
+/* canonical automata: delta(0,0)=0, states numbered in breadth-first discovery order */
 int canon(){ int ord[MAXQ],seen[MAXQ]={0},k=1,h=0; ord[0]=0; seen[0]=1;
   while(h<k){ int x=ord[h++]; for(int b=0;b<2;b++){ int y=dl[x][b]; if(!seen[y]){ if(y!=k) return 0; seen[y]=1; ord[k++]=y; } } }
   return k==nq; }
@@ -69,8 +69,8 @@ int main(int argc,char**argv){
       for(int i=0;i<8;i++){int s=i/2,r=i%2; TD[s][r]=t[i][0]!='-'; if(!TD[s][r]) continue; TW[s][r]=t[i][0]-'0'; TM[s][r]=(t[i][1]=='R')^mir; TN[s][r]=t[i][2]-'A';}
       nq=n; if(trydfas()){res=n;side=mir;}
     }
-    printf("%s %s %s %s %s %s %s %s -> %s\n",t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7],res?(side?"prouvee (miroir)":"prouvee"):"NON DECIDE"); fflush(stdout);
+    printf("%s %s %s %s %s %s %s %s -> %s\n",t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7],res?(side?"proved (mirror)":"proved"):"UNDECIDED"); fflush(stdout);
     if(!res) nd++;
   }
-  printf("%d machines, %d prouvees sans arret, %d non decidees\n",tot,tot-nd,nd);
+  printf("%d machines, %d proved non-halting, %d undecided\n",tot,tot-nd,nd);
 }

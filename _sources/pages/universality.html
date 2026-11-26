@@ -2,10 +2,21 @@
 titre: Universal functions and enumeration
 court: Universality
 chapo: A single machine can simulate all the others, provided it is given their description. This is the mathematical version of the computer.
+chapo_clair: A single machine can do the work of all the others, provided it is given their instructions for use. This is the idea of the computer, discovered on paper ten years before one was built.
 prerequis: equivalence.html#forme-normale|Kleene normal form
 -->
 
+<clair>
+<p>Before the 1940s, a calculating machine did a single thing: an adding machine added, a cipher machine enciphered. To change tasks, one had to change machines, or at least rewire them. In 1936, Turing proved on paper that there is a machine, which he called <em>universal</em>, able to imitate any other: it is given the description of the machine to imitate, written on its tape, and it behaves exactly like it.</p>
+<p>This is the idea of the modern computer. Your phone is not a calculator, a camera and a music player: it is a single universal machine, to which different programs are given. This chapter also shows the limit of the idea: a universal machine must accept to simulate programs that do not halt.</p>
+</clair>
+
 <h2 id="lidee-de-fonction-universelle">The idea of a universal function</h2>
+
+<clair>
+<p>A universal function takes two inputs: the number of a program and an input for that program. It returns what the program would return on that input. It is an interpreter: a program that reads and runs other programs.</p>
+</clair>
+
 
 <p>Three forms of universality can be distinguished. <em>External</em> universality: reasonably changing the machine model does not change what it computes (see <a href="turing-machines.html#variantes">Variants of the model</a>). <em>Internal</em> universality, the subject of this chapter: a single machine can simulate all the others, if it is given their description. Universality <em>in terms of models of computation</em>: all reasonable models compute the same functions (<a href="church-turing-thesis.html">Church-Turing thesis</a>).</p>
 
@@ -22,20 +33,27 @@ prerequis: equivalence.html#forme-normale|Kleene normal form
 </ol>
 <p>We say that $u$ <strong>enumerates</strong> $\mathcal C$, and that an $e$ as in (1) is an <strong>index</strong> of $g$.</p>
 </enonce>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> A function is universal for a family of functions if, by giving it a number in addition to the input, it can be made to play the role of any function of the family.</p>
+<p>This is the mathematical definition of a programmable device. The number plays the role of the program, the input that of what it is asked to process.</p>
+</philo>
 <tech><p>The restriction to arity 1 is inessential, thanks to the <a href="recursive-functions.html#cantor-couple">coding of $n$-tuples</a>. The two conditions say that the “sections” $u(e,\cdot)$ are exactly the elements of $\mathcal C$.</p></tech>
 </res>
 
 <res type="Theorem" nom="Total computable functions have no computable universal function" id="pas-universelle-totale">
 <enonce><p>There is no <em>total</em> computable function $u:\N^2\to\N$ universal for the class $\mathcal R$ of total computable functions.</p></enonce>
-<philo><p>A “computer” that could only run programs that always halt, and that could run all of them, cannot exist. If we want a universal machine, it must be able, on some programs, never to halt. Universality and the certainty of termination are incompatible.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> One cannot build a programmable device that runs only programs that always halt, and that can run all of them.</p>
+<p>If such a device existed, we could build a program that, on the number $n$, does “the opposite” of program number $n$ (for example, adds 1 to its answer). This program always halts, so it has a number; but it differs from every program in the list, itself included. Contradiction. If we want a universal machine, we must accept that it may not halt.</p>
+</philo>
 <tech><p>If $u$ were such a function, $g(x)=u(x,x)+1$ would be computable and total, hence equal to $u(e,\cdot)$ for some $e$; then $u(e,e)=g(e)=u(e,e)+1$, a contradiction. This is the argument from the <a href="motivations.html#diagonale-totale">motivations</a>, now stated precisely.</p></tech>
 </res>
 
 <res type="Theorem" nom="Universal function for the computable functions" id="universelle">
 <enonce><p>The partial function $u(z,x)\simeq U\big(\mu y\ T_1(z,x,y)\big)$ is computable and universal for the class of (partial) computable functions of one variable. Hence there is a Turing machine $\mathcal U$ such that, for every machine $Z$ with Gödel number $z$ and every $x$: $\Psi^{(2)}_{\mathcal U}(z,x)\simeq\Psi^{(1)}_Z(x)$.</p></enonce>
 <philo>
-<p>A single machine, called <em>universal</em>, suffices: it is given as input the description of a machine and a datum, and it behaves like the machine described. The program has become a piece of data like any other. There is no longer any need to build one machine per function: a universal machine and a text are enough. This is exactly what a computer is: a fixed device to which programs are supplied.</p>
-<p>Among register machine models one distinguishes the RAM model, in which the program is outside the memory, and the RASP model (<em>random access stored program</em>), in which it is stored in memory like the data. Real computers follow the latter, the so-called “von Neumann architecture” (1945), although the idea is already entirely present in Turing in 1936.</p>
+<p class="en-clair"><strong>In plain words.</strong> There is a machine, and a single formula, that simulates all machines: it is given the number of a machine and an input, and it returns what that machine would return.</p>
+<p>Turing proved it ten years before the first stored-program computers were built, and his paper directly inspired their designers, among them John von Neumann. The program and the data are made of the same material: numbers laid on a tape, or bytes in a memory. This is why an application can be downloaded instead of buying a new device.</p>
 </philo>
 <tech>
 <p>The normal form theorem gives, for every machine $Z$ with code $z$, $\Psi^{(1)}_Z(x)\simeq U(\mu y\,T_1(z,x,y))=u(z,x)$, whence condition (1). Condition (2) follows from the fact that $u$ is recursive, hence so is each $u(z,\cdot)$; if $z$ does not encode a machine, $T_1(z,x,y)$ is always false and $u(z,\cdot)$ is the nowhere-defined function, which is computable. Finally $u$ is recursive, hence Turing-computable: some machine $\mathcal U$ computes it.</p>
@@ -46,7 +64,33 @@ prerequis: equivalence.html#forme-normale|Kleene normal form
 </techno>
 </res>
 
+<atelier titre="a universal function, then a universal machine">
+<p>The file <code>universal.py</code> of the <a href="programs.html">downloadable programs</a> carries out the proof in two stages.</p>
+<p><strong>1. The universal function as a term.</strong> We take up the translation machine → recursive function of the chapter <a href="equivalence.html#forme-normale">Equivalence</a>, but the machine is no longer fixed: its table is read from an argument $e$. A machine with $b$ symbols and $k$ states is coded by $e=\langle b,\langle k,\mathrm{table}\rangle\rangle$, where $\mathrm{table}$ is an integer written in base $N=(b+2)k+1$ whose digit of rank $i\,b+s$ is $0$ if no quadruple begins with $(q_i,s)$, and $a\,k+i'+1$ for the quadruple $(q_i,s,a,q_{i'})$ (action $a$: $0=L$, $1=R$, $2+j$ = write the symbol $j$). Looking up the applicable quadruple is then an arithmetical operation, without a loop:</p>
+$$\mathrm{lookup}(e,i,s)=\big(\mathrm{table}\ \mathrm{div}\ N^{\,i\,b+s}\big)\bmod N.$$
+<p>(A coding by lists of nested Cantor pairs would do in theory, but the length of the numbers doubles with each quadruple: more than three million binary digits for a machine of sixteen quadruples.)</p>
+<inclure fichier="assets/programs/universal.py" de="# --- reading the code of the machine" a="def code_machine(m):" titre="The term U, built function by function" ouvert="1"/>
+<pre><code>$ python3 universal.py
+term U: 134610 building blocks once unfolded
+identity (erases a stroke)           U(code, x) for x = 0..3: [0, 1, 2, 3]
+successor                            U(code, x) for x = 0..3: [1, 2, 3, 4]
+round trip (identity, 7 quadruples)  U(code, x) for x = 0..3: [0, 1, 2, 3]
+predecessor                          U(code, x) for x = 0..3: [0, 0, 1, 2]</code></pre>
+<p><strong>2. The universal machine.</strong> The term $U$ contains only $C$, $S$, $A$, $\sigma$, $\rho$ and one $\mu$: the <a href="equivalence.html#rec-turing">compiler</a> therefore turns it into a Turing machine $U_{TM}$, which, started on $(e,x)$, computes $\Psi_Z(x)$ for the machine $Z$ coded by $e$.</p>
+<pre><code>$ python3 universal.py --machine
+term U: 134610 building blocks once unfolded, a single unbounded minimization
+universal machine: 29689934 quadruples, 19224525 states, symbols B, 1, X</code></pre>
+<p>Nearly thirty million quadruples, produced in a minute and a half, without a single one having been written by hand: it is an explicit universal machine, every instruction of which is known. It is useless in practice (it handles in unary codes of several thousand digits), but it exists, and the path that leads to it is entirely mechanical. Universal machines of a few dozen quadruples are known, written by hand with much ingenuity; the size of ours measures the price of a systematic construction, without shared subroutines.</p>
+<inclure fichier="assets/programs/universal.py"/>
+</atelier>
+
+
 <h2 id="numerotation-standard-des-fonctions-calculables">Standard numbering of the computable functions</h2>
+
+<clair>
+<p>Since a machine is coded by a number, all machines can be arranged in a numbered list: machine number 0, machine number 1, and so on. Every possible program appears in it (and even infinitely many times, in different writings). Speaking of “program number $e$” becomes as natural as speaking of the number $e$.</p>
+</clair>
+
 
 <p>Gödel coding leaves many integers meaningless (not all of them encode a machine). It is more convenient for <em>every</em> integer to be a program.</p>
 
@@ -56,7 +100,10 @@ prerequis: equivalence.html#forme-normale|Kleene normal form
 $$\varphi^{(k)}_e=\Psi^{(k)}_{Z}\quad\text{where } Z \text{ is the machine encoded by }\eta(e),$$
 <p>and $\varphi_e=\varphi^{(1)}_e$. For an oracle $A$, we similarly write $\varphi^{A,(k)}_e$. The integer $e$ is an <strong>index</strong> (or a <em>program</em>) of $\varphi^{(k)}_e$. We write $W_e=\{x:\varphi_e(x)\conv\}$ for the domain of $\varphi_e$.</p>
 </enonce>
-<philo><p>From now on “program number $e$” has a precise meaning, for every integer $e$. One can speak of “the set of programs that halt”, of “two equivalent programs”, and ask mathematical questions about programs.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> We write $\varphi_e$ for the function computed by program number $e$. The list $\varphi_0,\varphi_1,\varphi_2,\dots$ contains all computable functions.</p>
+<p>From now on “program number $e$” has a precise meaning. We can speak of “the set of programs that halt” or of “two programs that compute the same thing” as we speak of sets of numbers: questions about programs become questions of arithmetic.</p>
+</philo>
 <tech>
 <ul>
 <li>$\eta$ is recursive, strictly increasing, and so is its inverse (on its image): going from a Gödel code to an index is effective in both directions. It is even primitive recursive, since the search can be explicitly bounded (between two consecutive machine codes the gap is bounded by a primitive recursive function of $\eta(n)$).</li>
@@ -73,7 +120,10 @@ $$\varphi^{(k)}_e=\Psi^{(k)}_{Z}\quad\text{where } Z \text{ is the machine encod
 <p>For every $n\ge1$ (and every oracle $A$), there is an index $z_n$ such that, for all $e,x_1,\dots,x_n$:</p>
 $$\varphi^{(n+1)}_{z_n}(e,x_1,\dots,x_n)\simeq\varphi^{(n)}_e(x_1,\dots,x_n).$$
 </enonce>
-<philo><p>The universal machine itself has a number, and it appears in the list of all machines. It is this self-reference, a list that contains the program able to read the list, that makes possible both computers and the paradoxes of the chapter <a href="undecidability.html">Undecidability</a>.</p></philo>
+<philo>
+<p class="en-clair"><strong>In plain words.</strong> The universal function is itself computable: so it has a number, and it appears in the list of all computable functions.</p>
+<p>An interpreter is a program like any other; it can interpret itself. It is this self-reference, a list that contains the program able to read the whole list, that will make possible the diagonal arguments of the following chapters.</p>
+</philo>
 <tech><p>$\Phi(e,\vec x)\simeq U(\mu y\,T_n(\eta(e),\vec x,y))$ is recursive (a composition of recursive functions and a minimization), hence Turing-computable, hence equal to $\varphi^{(n+1)}_{z_n}$ for some index $z_n$. With an oracle, the same proof works by adding to Kleene’s predicate the case of oracle quadruples, which consults $\chi_A$.</p></tech>
 </res>
 
