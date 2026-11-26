@@ -1,82 +1,89 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="author" content="Frédéric Prost and Claude">
-<title>Cantor’s diagonal argument · Computability</title>
+<meta name="author" content="Frédéric Prost et Claude">
+<title>L’argument diagonal de Cantor · Calculabilité</title>
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <header class="entete"><div class="entete-int">
-  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
-  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
-  <span class="selecteur-legende">Reading level:</span>
-  <div class="selecteur" role="group" aria-label="Reading level">
-    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
-    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
-    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
-    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  <button type="button" class="btn-menu" aria-label="Sommaire">☰ Sommaire</button>
+  <a class="titre-site" href="index.html">Calculabilité <span>·</span> un manuel à trois niveaux <span class="version">version 2</span></a>
+  <span class="selecteur-legende">Niveau de lecture :</span>
+  <div class="selecteur" role="group" aria-label="Niveau de lecture">
+    <button type="button" data-niveau="philo" title="Sens et implications">Philosophique</button>
+    <button type="button" data-niveau="tech" title="Preuves mathématiques">Technique</button>
+    <button type="button" data-niveau="techno" title="Constructions complètes, machines de Turing">Technologique</button>
+    <button type="button" data-niveau="tout" title="Afficher les trois niveaux">Tout</button>
   </div>
-  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+  <button type="button" class="btn-theme" aria-label="Changer de thème" title="Clair / sombre">◐</button>
 </div></header>
 <div class="page">
-<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html" aria-current="page">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<nav class="sommaire" aria-label="Sommaire"><ul><li><a href="index.html">Accueil et mode d’emploi</a></li></ul><h2>Entrer dans le sujet</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="trois-approches.html"><span class="num">2</span>Trois approches du calcul</a></li></ol><h2>Modèles de calcul</h2><ol><li><a href="machines-turing.html"><span class="num">3</span>Machines de Turing</a></li><li><a href="fonctions-recursives.html"><span class="num">4</span>Fonctions récursives</a></li><li><a href="lambda-calcul.html"><span class="num">5</span>λ-calcul</a></li><li><a href="equivalence.html"><span class="num">6</span>Équivalence des modèles</a></li><li><a href="these-church.html"><span class="num">7</span>Thèse de Church-Turing</a></li></ol><h2>Théorèmes fondamentaux</h2><ol><li><a href="universalite.html"><span class="num">8</span>Universalité</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n et récursion</a></li></ol><h2>Limites du calcul</h2><ol><li><a href="indecidabilite.html"><span class="num">10</span>Indécidabilité</a></li><li><a href="semi-decidabilite.html"><span class="num">11</span>Semi-décidabilité</a></li><li><a href="hierarchie-arithmetique.html"><span class="num">12</span>Hiérarchie arithmétique</a></li><li><a href="incompletude.html"><span class="num">13</span>Incomplétude</a></li><li><a href="equations-diophantiennes.html"><span class="num">14</span>Équations diophantiennes</a></li><li><a href="logique-types.html"><span class="num">15</span>Logique et types</a></li><li><a href="theories-decidables.html"><span class="num">16</span>Théories décidables</a></li><li><a href="mathematiques-indecidables.html"><span class="num">17</span>Mathématiques ordinaires</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov et Ω</a></li><li><a href="langages.html"><span class="num">19</span>Langages et grammaires</a></li></ol><h2>Complexité</h2><ol><li><a href="complexite.html"><span class="num">20</span>Complexité</a></li><li><a href="hasard-quantique.html"><span class="num">21</span>Hasard et quantique</a></li></ol><h2>Études de cas</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Fonction d’Ackermann</a></li><li><a href="castors-affaires.html"><span class="num">23</span>Castors affairés</a></li><li><a href="calculabilite-ia.html"><span class="num">24</span>Calculabilité et IA</a></li><li><a href="autres-modeles.html"><span class="num">25</span>Autres modèles</a></li></ol><h2>Annexes</h2><ol><li><a href="parcours.html">Parcours de lecture</a></li><li><a href="cantor.html" aria-current="page">Diagonale de Cantor</a></li><li><a href="bases.html">Notions de base</a></li><li><a href="leibniz.html">Leibniz et le binaire</a></li><li><a href="programmes.html">Programmes Python</a></li><li><a href="bibliographie.html">Bibliographie</a></li></ol></nav>
 <main class="contenu">
-<h1>Cantor’s diagonal argument</h1>
-<p class="chapo">There are “more” real numbers than integers. The technique of the proof, diagonalization, is the main weapon of all of computability theory.</p>
-<div class="prerequis"><strong>Prerequisites</strong><a href="bases.html#fonctions">Injections, surjections, bijections</a></div>
+<h1>L’argument diagonal de Cantor</h1>
+<p class="chapo pas-philo">Il y a « plus » de nombres réels que d’entiers. La technique de la preuve, la diagonalisation, est l’arme principale de toute la calculabilité.</p><p class="chapo seulement philo">Il y a « plus » de nombres à virgule que de nombres entiers : on ne peut pas les numéroter tous. La méthode de la démonstration, la diagonale, est l’arme principale de toute la calculabilité.</p>
+<div class="prerequis"><strong>Pré-requis</strong><a href="bases.html#fonctions">Injections, surjections, bijections</a></div>
 
 
 
-<h2 id="les-reels-ne-sont-pas-denombrables">The reals are not countable</h2>
+<h2 id="les-reels-ne-sont-pas-denombrables">Les réels ne sont pas dénombrables</h2>
 
-<div class="resultat theoreme" id="cantor-reels"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Uncountability of ℝ (Cantor, 1891)</div></div>
-<div class="enonce"><p>There is no bijection between $\N$ and $\R$ (not even a surjection from $\N$ onto $\R$).</p></div>
+<div class="seulement philo clair">
+<p>Supposons qu’on ait numéroté tous les nombres compris entre 0 et 1, écrits avec leurs décimales. Fabriquons un nouveau nombre : sa première décimale diffère de celle du premier nombre de la liste, sa deuxième de celle du deuxième, et ainsi de suite. Ce nouveau nombre diffère de chaque nombre de la liste : la liste n’était pas complète. On ne peut donc pas numéroter tous les réels. Le même argument, appliqué aux programmes, montre qu’il existe des fonctions qu’aucun programme ne calcule.</p>
+</div>
+
+
+<div class="resultat theoreme" id="cantor-reels"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Non-dénombrabilité de ℝ (Cantor, 1891)</div></div>
+<div class="enonce"><p>Il n’existe pas de bijection entre $\N$ et $\R$ (ni même de surjection de $\N$ sur $\R$).</p></div>
 <div class="niveau" data-niveau="philo">
-<p>Infinity comes in sizes. One can number the integers, the fractions, the words, the programs: these sets are “countable”. One cannot number the real numbers: every list misses some. The proof is a very simple construction, the <em>diagonal</em>: one builds a number that differs from the first one in the list in its first decimal digit, from the second one in its second digit, and so on.</p>
-<p>This device, which looks like a game, is the engine behind almost all the impossibility results of this manual: existence of non-computable functions, undecidability of halting, incompleteness, the Ackermann function, the arithmetical hierarchy.</p>
+<p class="en-clair"><strong>En clair.</strong> On ne peut pas faire une liste numérotée de tous les nombres réels (les nombres à virgule, avec autant de décimales qu’on veut). Il y en a strictement plus que de nombres entiers.</p>
+<p>L’infini n’a pas qu’une seule taille. On peut numéroter les entiers, les fractions, les mots d’un dictionnaire, les programmes : on dit que ces ensembles sont <em>dénombrables</em>. Les réels, eux, ne le sont pas : toute liste en oublie.</p>
+<p>La preuve tient en une idée, la <em>diagonale</em>. Supposons qu’on ait une liste de nombres entre 0 et 1. On fabrique un nouveau nombre en changeant la première décimale du premier, la deuxième décimale du deuxième, la troisième du troisième, et ainsi de suite. Ce nombre n’est égal à aucun de ceux de la liste, puisqu’il diffère de chacun en au moins une décimale. La liste était donc incomplète.</p>
+<p>Ce petit procédé, qui ressemble à un jeu, est le moteur de presque toutes les impossibilités de ce manuel : l’existence de fonctions qu’aucun programme ne calcule, le problème de l’arrêt, les théorèmes d’incomplétude de Gödel.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p>It suffices to show that no sequence $(x_i)_{i\ge0}$ of reals in $]0,1[$ contains all of them, since $]0,1[$ is in bijection with $\R$: $t\mapsto\tan\big(\pi(t-\tfrac12)\big)$ is a bijection from $]0,1[$ onto $\R$ (the composite of $t\mapsto\pi(t-\frac12)$, a bijection from $]0,1[$ onto $]-\frac\pi2,\frac\pi2[$, and of the tangent, a bijection from $]-\frac\pi2,\frac\pi2[$ onto $\R$ whose inverse is the arctangent).</p>
-<p>Write each $x_i=0.x_{i,1}x_{i,2}x_{i,3}\dots$ in decimal, choosing the proper expansion (the one that does not end with infinitely many 9s). Define $y=0.y_1y_2y_3\dots$ by</p>
-$$y_j=\begin{cases}5&\text{if }x_{j-1,j}\neq5,\\ 4&\text{if }x_{j-1,j}=5.\end{cases}$$
-<p>The number $y$ lies in $]0,1[$ and its expansion, made of 4s and 5s, is the only expansion of $y$ (it contains neither 0 nor 9). For every $i$, $y$ differs from $x_i$ in the $(i+1)$<sup>th</sup> decimal digit; since the expansions are unique, $y\ne x_i$. Hence $y$ is not in the sequence.</p>
-<p><strong>Why 4s and 5s?</strong> The most commonly quoted version takes $y_j=9-x_{j-1,j}$. It requires some care: a real number may have two expansions ($0.1000\ldots=0.0999\ldots$), and the $y$ so constructed could be, under its other expansion, one of the $x_i$. For example, if $x_0=0.2\ldots$, $x_1=0.8000\ldots$, and all diagonal digits from the second one on are $0$, one gets $y=0.7999\ldots=0.8=x_1$: the constructed number does appear in the list, under its proper expansion, although its digits differ from those of every $x_i$. The argument can be repaired by treating this case separately, but the simplest fix is to choose digits other than $0$ and $9$: an expansion with neither $0$ nor $9$ is the only way of writing the number.</p>
+<p>Il suffit de montrer qu’aucune suite $(x_i)_{i\ge0}$ de réels de $]0,1[$ ne les contient tous, car $]0,1[$ est en bijection avec $\R$ : $t\mapsto\tan\big(\pi(t-\tfrac12)\big)$ est une bijection de $]0,1[$ sur $\R$ (composée de $t\mapsto\pi(t-\frac12)$, bijection de $]0,1[$ sur $]-\frac\pi2,\frac\pi2[$, et de la tangente, bijection de $]-\frac\pi2,\frac\pi2[$ sur $\R$, dont la réciproque est l’arc tangente).</p>
+<p>Écrivons chaque $x_i=0{,}x_{i,1}x_{i,2}x_{i,3}\dots$ en décimal, en choisissant le développement propre (qui ne se termine pas par une infinité de 9). Définissons $y=0{,}y_1y_2y_3\dots$ par</p>
+$$y_j=\begin{cases}5&\text{si }x_{j-1,j}\neq5,\\ 4&\text{si }x_{j-1,j}=5.\end{cases}$$
+<p>Le nombre $y$ est dans $]0,1[$ et son développement, formé de 4 et de 5, est l’unique développement de $y$ (il ne contient ni 0 ni 9). Pour tout $i$, $y$ diffère de $x_i$ par la $(i+1)$<sup>e</sup> décimale ; comme les développements sont uniques, $y\ne x_i$. Donc $y$ n’est pas dans la suite.</p>
+<p><strong>Pourquoi des 4 et des 5 ?</strong> La version la plus souvent citée prend $y_j=9-x_{j-1,j}$. Elle demande une précaution : un réel peut avoir deux développements ($0{,}1000\ldots=0{,}0999\ldots$), et le $y$ ainsi construit pourrait être, sous son autre écriture, l’un des $x_i$. Par exemple, si $x_0=0{,}2\ldots$, $x_1=0{,}8000\ldots$, et si toutes les décimales diagonales à partir de la deuxième valent $0$, on obtient $y=0{,}7999\ldots=0{,}8=x_1$ : le nombre construit figure bien dans la liste, sous son développement propre, alors que ses chiffres diffèrent de ceux de chaque $x_i$. On peut réparer l’argument en traitant à part ce cas, mais le plus simple est de choisir des chiffres différents de $0$ et de $9$ : un développement sans $0$ ni $9$ est l’unique écriture du nombre.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>The same diagonal, on binary sequences: if $h_0,h_1,h_2,\dots$ are functions from $\N$ to $\{0,1\}$, the function $h(n)=1-h_n(n)$ is none of the $h_n$.</p>
+<p>La même diagonale, sur des suites binaires : si $h_0,h_1,h_2,\dots$ sont des fonctions de $\N$ dans $\{0,1\}$, la fonction $h(n)=1-h_n(n)$ n’est aucune des $h_n$.</p>
 <table><tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th><th>…</th></tr>
 <tr><th>$h_0$</th><td><b>0</b></td><td>1</td><td>1</td><td>0</td><td></td></tr>
 <tr><th>$h_1$</th><td>1</td><td><b>1</b></td><td>0</td><td>0</td><td></td></tr>
 <tr><th>$h_2$</th><td>0</td><td>0</td><td><b>0</b></td><td>1</td><td></td></tr>
 <tr><th>$h_3$</th><td>1</td><td>0</td><td>1</td><td><b>1</b></td><td></td></tr>
 <tr><th>$h$</th><td>1</td><td>0</td><td>1</td><td>0</td><td>…</td></tr></table>
-<p>When the $h_n$ are the functions computed by the successive programs, $h$ is computed by no program: this is the proof that non-computable functions exist. When the diagonal is itself computable, as in the <a href="undecidability.html#arret">halting problem</a>, one gets a contradiction, hence an impossibility.</p>
+<p>Lorsque les $h_n$ sont les fonctions calculées par les programmes successifs, $h$ n’est calculée par aucun programme : c’est la preuve d’existence de fonctions non calculables. Lorsque la diagonale est elle-même calculable, comme dans le <a href="indecidabilite.html#arret">problème de l’arrêt</a>, on obtient une contradiction, donc une impossibilité.</p>
 </div>
 </div>
 
-<h2 id="theorie-du-tout">Is a theory of everything possible?</h2>
+<h2 id="theorie-du-tout">Une théorie du tout est-elle possible ?</h2>
 
-<p>One sometimes meets a philosophical argument, which we reproduce and discuss, because it illustrates well the reach and the limits of diagonalization outside mathematics.</p>
+<p>On rencontre parfois un argument philosophique, que nous reproduisons en le discutant, car il illustre bien la portée et les limites de la diagonalisation hors des mathématiques.</p>
 
-<div class="resultat theoreme" id="argument-theorie"><div class="entete-res"><div class="type">Argument</div><div class="nom">There are more phenomena than explanations</div></div>
-<div class="enonce"><p>Every explanation can be written down, so explanations form a countable set. If the phenomena to be explained form an uncountable set, some phenomena have no explanation.</p></div>
+<div class="resultat theoreme" id="argument-theorie"><div class="entete-res"><div class="type">Argument</div><div class="nom">Il y a plus de phénomènes que d’explications</div></div>
+<div class="enonce"><p>Toute explication s’écrit, donc les explications forment un ensemble dénombrable. Si les phénomènes à expliquer forment un ensemble non dénombrable, certains phénomènes n’ont pas d’explication.</p></div>
 <div class="niveau" data-niveau="philo">
-<p>The argument rests on two premises. (1) An explanation is a finite text tied to the phenomenon it explains: Newtonian mechanics is instantiated differently for the fall of each object. (2) An explanation is itself a phenomenon of the world: it is written on paper, spoken, stored in a memory. Since explanations are countable, one can speak of “explanation number $n$”, and ask questions such as “is there a link between explanation $i$ and the set of explanations $E$?”, for every subset $E\subseteq\N$. These questions, uncountably many, are phenomena; hence there are more phenomena than explanations.</p>
-<p><strong>Discussion.</strong> The argument does show that <em>a theory explaining each individual fact by a text of its own</em> is impossible if the facts are uncountably many. But two objections weaken it:</p>
+<p class="en-clair"><strong>En clair.</strong> Une explication s’écrit avec un alphabet, en un texte fini. On peut donc numéroter toutes les explications possibles. Si les phénomènes à expliquer sont plus nombreux que les entiers, certains n’auront jamais d’explication.</p>
+<p>L’argument a de l’allure, mais il faut le discuter. Deux objections l’affaiblissent.</p>
 <ul>
-<li>There is an internal tension: if every question is a phenomenon inscribed in the world (premise 2), it can itself be written as a finite text, and the questions are then countable. The “questions” indexed by arbitrary subsets $E\subseteq\N$ are, for the most part, not formulable: they cannot be asked.</li>
-<li>A scientific theory does not explain phenomena one by one: a finite law covers infinitely many cases, even uncountably many (the law of falling bodies holds for every real value of the height). The cardinality argument does not apply as such.</li>
+<li>Une question qu’on ne peut même pas formuler n’est pas vraiment une question. Or les questions que l’on peut poser s’écrivent, elles aussi, en textes finis : elles sont donc en nombre dénombrable, comme les explications.</li>
+<li>Une loi scientifique n’explique pas les faits un par un. La loi de la chute des corps tient en une ligne et vaut pour toutes les hauteurs possibles, qui sont en nombre infini et même non dénombrable.</li>
 </ul>
-<p>A sturdier version goes through computability rather than cardinality: if a theory is a formal system (its predictions are derived mechanically), then there are questions <em>formulable</em> in its language, for instance about the halting of certain processes, that it cannot answer (<a href="incompleteness.html#godel1">incompleteness theorem</a>). Physicists have exhibited questions of this kind for specific physical systems: Cubitt, Pérez-García and Wolf (2015) showed that the existence of a “spectral gap” for certain quantum models is undecidable.</p>
+<p>Une version plus solide de l’idée passe par le calcul plutôt que par le nombre. Si une théorie est un système dont on tire les prédictions de façon mécanique, il existe des questions qu’on peut <em>écrire</em> dans son langage et auxquelles elle ne pourra jamais répondre : c’est le <a href="incompletude.html#godel1">théorème d’incomplétude</a>. Ce n’est pas qu’une curiosité de logicien : en 2015, trois physiciens (Cubitt, Pérez-García et Wolf) ont montré qu’une question précise sur certains matériaux quantiques n’a pas de réponse calculable.</p>
 </div>
 </div>
 
-<nav class="nav-chap"><a href="reading-paths.html"><small>← Previous</small>Reading paths</a><a href="bases.html" style="text-align:right"><small>Next →</small>Basic notions</a></nav>
-<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+<nav class="nav-chap"><a href="parcours.html"><small>← Précédent</small>Parcours de lecture</a><a href="bases.html" style="text-align:right"><small>Suivant →</small>Notions de base</a></nav>
+<footer class="pied">Calculabilité — manuel à trois niveaux de lecture. Auteurs : Frédéric Prost et Claude. Texte sous licence <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license">CC BY-SA 4.0</a>, code sous licence MIT. Les mathématiques sont rendues par KaTeX (licence MIT), embarqué localement : le site se lit sans connexion.</footer>
 </main>
 </div>
 <script src="assets/katex/katex.min.js"></script>

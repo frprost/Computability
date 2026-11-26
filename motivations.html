@@ -1,168 +1,180 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="author" content="Frédéric Prost and Claude">
-<title>Motivations and preliminary remarks · Computability</title>
+<meta name="author" content="Frédéric Prost et Claude">
+<title>Motivations et remarques préliminaires · Calculabilité</title>
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <header class="entete"><div class="entete-int">
-  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
-  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
-  <span class="selecteur-legende">Reading level:</span>
-  <div class="selecteur" role="group" aria-label="Reading level">
-    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
-    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
-    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
-    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  <button type="button" class="btn-menu" aria-label="Sommaire">☰ Sommaire</button>
+  <a class="titre-site" href="index.html">Calculabilité <span>·</span> un manuel à trois niveaux <span class="version">version 2</span></a>
+  <span class="selecteur-legende">Niveau de lecture :</span>
+  <div class="selecteur" role="group" aria-label="Niveau de lecture">
+    <button type="button" data-niveau="philo" title="Sens et implications">Philosophique</button>
+    <button type="button" data-niveau="tech" title="Preuves mathématiques">Technique</button>
+    <button type="button" data-niveau="techno" title="Constructions complètes, machines de Turing">Technologique</button>
+    <button type="button" data-niveau="tout" title="Afficher les trois niveaux">Tout</button>
   </div>
-  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+  <button type="button" class="btn-theme" aria-label="Changer de thème" title="Clair / sombre">◐</button>
 </div></header>
 <div class="page">
-<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html" aria-current="page"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
+<nav class="sommaire" aria-label="Sommaire"><ul><li><a href="index.html">Accueil et mode d’emploi</a></li></ul><h2>Entrer dans le sujet</h2><ol><li><a href="motivations.html" aria-current="page"><span class="num">1</span>Motivations</a></li><li><a href="trois-approches.html"><span class="num">2</span>Trois approches du calcul</a></li></ol><h2>Modèles de calcul</h2><ol><li><a href="machines-turing.html"><span class="num">3</span>Machines de Turing</a></li><li><a href="fonctions-recursives.html"><span class="num">4</span>Fonctions récursives</a></li><li><a href="lambda-calcul.html"><span class="num">5</span>λ-calcul</a></li><li><a href="equivalence.html"><span class="num">6</span>Équivalence des modèles</a></li><li><a href="these-church.html"><span class="num">7</span>Thèse de Church-Turing</a></li></ol><h2>Théorèmes fondamentaux</h2><ol><li><a href="universalite.html"><span class="num">8</span>Universalité</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n et récursion</a></li></ol><h2>Limites du calcul</h2><ol><li><a href="indecidabilite.html"><span class="num">10</span>Indécidabilité</a></li><li><a href="semi-decidabilite.html"><span class="num">11</span>Semi-décidabilité</a></li><li><a href="hierarchie-arithmetique.html"><span class="num">12</span>Hiérarchie arithmétique</a></li><li><a href="incompletude.html"><span class="num">13</span>Incomplétude</a></li><li><a href="equations-diophantiennes.html"><span class="num">14</span>Équations diophantiennes</a></li><li><a href="logique-types.html"><span class="num">15</span>Logique et types</a></li><li><a href="theories-decidables.html"><span class="num">16</span>Théories décidables</a></li><li><a href="mathematiques-indecidables.html"><span class="num">17</span>Mathématiques ordinaires</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov et Ω</a></li><li><a href="langages.html"><span class="num">19</span>Langages et grammaires</a></li></ol><h2>Complexité</h2><ol><li><a href="complexite.html"><span class="num">20</span>Complexité</a></li><li><a href="hasard-quantique.html"><span class="num">21</span>Hasard et quantique</a></li></ol><h2>Études de cas</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Fonction d’Ackermann</a></li><li><a href="castors-affaires.html"><span class="num">23</span>Castors affairés</a></li><li><a href="calculabilite-ia.html"><span class="num">24</span>Calculabilité et IA</a></li><li><a href="autres-modeles.html"><span class="num">25</span>Autres modèles</a></li></ol><h2>Annexes</h2><ol><li><a href="parcours.html">Parcours de lecture</a></li><li><a href="cantor.html">Diagonale de Cantor</a></li><li><a href="bases.html">Notions de base</a></li><li><a href="leibniz.html">Leibniz et le binaire</a></li><li><a href="programmes.html">Programmes Python</a></li><li><a href="bibliographie.html">Bibliographie</a></li></ol></nav>
 <main class="contenu">
-<h1>Motivations and preliminary remarks</h1>
-<p class="chapo">Before any formal definition, a few remarks are enough to see that the notion of computation is subtler than it looks: we shall have to encode, accept partiality, and give up computing everything.</p>
+<h1>Motivations et remarques préliminaires</h1>
+<p class="chapo pas-philo">Avant toute définition formelle, quelques remarques suffisent à voir que la notion de calcul est plus subtile qu’il n’y paraît : il faudra coder, accepter la partialité, et renoncer à tout calculer.</p><p class="chapo seulement philo">Avant de définir quoi que ce soit, trois remarques montrent que l’idée de « calcul » est plus subtile qu’il n’y paraît : savoir qu’une réponse existe n’est pas savoir la calculer, un langage où tout programme s’arrête ne peut pas tout calculer, et il existe forcément des fonctions qu’aucun programme ne calcule.</p>
 
 
 
 
-<h2 id="pourquoi-une-theorie-du-calcul">Why a theory of computation?</h2>
+<h2 id="pourquoi-une-theorie-du-calcul">Pourquoi une théorie du calcul ?</h2>
 
-<p>Even though mathematics may seem obscure, even magical, part of mathematical activity can be automated and requires neither imagination nor creativity. Counting boards, the abacus, the mechanical calculators of Schickard (1623), Pascal (1642) or Leibniz (1673) are successive refinements of objects whose purpose is to compute. The question then naturally arises: <em>is there a limit to what can be computed automatically, and if so, what is it?</em></p>
+<div class="seulement philo clair">
+<p>Nous savons tous, depuis l’école primaire, ce qu’est un calcul : une suite d’opérations faites selon des règles, sans réfléchir, jusqu’à obtenir un résultat. Les ordinateurs ne font rien d’autre, à une vitesse prodigieuse. Il est naturel de se demander s’il y a des questions auxquelles aucun calcul ne peut répondre. Pour y répondre, il faut d’abord dire précisément ce qu’est un calcul ; c’est l’objet de la calculabilité.</p>
+</div>
 
-<p>This question, which might seem narrow, led, through many detours, to the invention of the computer. The computer is a singular object: it has no natural equivalent, and it was not invented to solve a physical problem (like the car, which moves people from one place to another) but to answer questions of a logical and philosophical nature about truth and proof. The first computers were limited for technological reasons; their <em>principle</em>, however, has not changed since: a computer from 1950 and a phone of today compute exactly the same functions, only the speed differs. The computer is the human product that comes closest to being the embodiment of an idea.</p>
 
-<p>The question of computability as we conceive it today is recent. At the International Congress in Paris, in 1900, David Hilbert proposed a list of 23 problems; the second asked for a proof of the consistency of arithmetic, and the tenth for a method to decide whether a Diophantine equation has solutions (see the chapter <a href="diophantine-equations.html">Diophantine equations</a>). In 1928, Hilbert and Ackermann explicitly formulated the <em>decision problem</em> (<em>Entscheidungsproblem</em>): find a mechanical procedure that decides whether a logical statement is universally valid. To answer <em>no</em> to such a question, one first had to define precisely what a mechanical procedure is: this is what Alonzo Church and Alan Turing did in 1936.</p>
+<p>Même si les mathématiques peuvent paraître obscures, voire magiques, une partie de l’activité mathématique est automatisable et ne demande ni imagination ni créativité. Les abaques, les bouliers, les machines à calculer mécaniques de Schickard (1623), de Pascal (1642) ou de Leibniz (1673) sont des perfectionnements successifs d’objets dont le but est de calculer. La question se pose alors naturellement : <em>existe-t-il une limite à ce qui est calculable automatiquement, et si oui, laquelle ?</em></p>
 
-<p>The problem existed, in fact, before it was posed. The scientific method, which consists in observing, building a model and comparing its predictions with experiment, presupposes that the computations within the model <em>can be carried out</em>. Yet defining a function is not enough to know how to compute it, and, as Turing showed, some computations cannot be carried out by any machine, independently of any technological consideration.</p>
+<p>Cette question, qui pourrait sembler étroite, a débouché, à la faveur de nombreux détours, sur l’invention de l’ordinateur. L’ordinateur est un objet singulier : il n’a pas d’équivalent naturel, et il n’a pas été inventé pour résoudre un problème physique (comme l’automobile, qui déplace des personnes d’un point à un autre) mais pour répondre à des interrogations de nature logique et philosophique sur la vérité et la preuve. Les premiers ordinateurs étaient limités pour des raisons technologiques ; leur <em>principe</em>, lui, n’a pas changé depuis : un ordinateur de 1950 et un téléphone d’aujourd’hui calculent exactement les mêmes fonctions, seule la vitesse diffère. C’est que l’ordinateur est le produit humain le plus proche de l’incarnation d’une idée.</p>
 
-<p>Note finally that all scientific output can be seen as the result of a single piece of software: a text editor. Books, videos, recordings can be digitized, that is, turned into a sequence of 0s and 1s. Science thus finds itself embedded inside a part of itself, computer science. This remark is not unrelated to the proof of Gödel’s incompleteness theorems, which rest on this technique of <em>internalizing</em> mathematics within itself by means of arithmetization (see the chapter <a href="incompleteness.html">Incompleteness</a>). It suggests that the limits of computability apply to any structured discourse, hence to all sciences.</p>
+<p>La question de la calculabilité telle qu’on la conçoit aujourd’hui est récente. Au congrès international de Paris, en 1900, David Hilbert proposa une liste de 23 problèmes ; le deuxième demandait de prouver la cohérence de l’arithmétique, et le dixième de trouver une méthode pour décider si une équation diophantienne a des solutions (voir le chapitre <a href="equations-diophantiennes.html">Équations diophantiennes</a>). En 1928, Hilbert et Ackermann formulèrent explicitement le <em>problème de la décision</em> (<em>Entscheidungsproblem</em>) : trouver une procédure mécanique qui décide si un énoncé logique est universellement valide. Pour répondre <em>non</em> à une telle question, il fallait d’abord définir précisément ce qu’est une procédure mécanique : c’est ce que firent, en 1936, Alonzo Church et Alan Turing.</p>
 
-<h2 id="notion-intuitive-dalgorithme">The intuitive notion of algorithm</h2>
+<p>Le problème existait d’ailleurs avant d’être posé. La méthode scientifique, qui consiste à observer, construire un modèle et comparer ses prévisions à l’expérience, présuppose que les calculs dans le modèle <em>peuvent être faits</em>. Or définir une fonction ne suffit pas à savoir la calculer, et, comme Turing l’a montré, certains calculs ne sont réalisables par aucune machine, indépendamment de toute considération technologique.</p>
 
-<p>Before studying what can be computed automatically, we must specify what is meant by an “unambiguous and effective method”. Without formalizing anything yet, four remarks already frame the future definition.</p>
+<p>Remarquons enfin que toute production scientifique peut être vue comme le résultat d’un seul logiciel : un éditeur de texte. Livres, vidéos, enregistrements peuvent être numérisés, c’est-à-dire transformés en une suite de 0 et de 1. La science se retrouve ainsi plongée à l’intérieur d’une partie d’elle-même, l’informatique. Cette remarque n’est pas sans rapport avec la démonstration des théorèmes d’incomplétude de Gödel, qui reposent sur cette technique d’<em>internalisation</em> des mathématiques en elles-mêmes au moyen de l’arithmétisation (voir le chapitre <a href="incompletude.html">Incomplétude</a>). Elle suggère que les limites de la calculabilité s’imposent à tout discours structuré, donc à toutes les sciences.</p>
 
-<h3 id="manipulations-de-symboles">Symbol manipulation</h3>
+<h2 id="notion-intuitive-dalgorithme">Notion intuitive d’algorithme</h2>
 
-<p>A machine does nothing but manipulate symbols, which we interpret. Numbers are an abstraction that does not exist as such in the material world: we represent the number seventeen by the symbols <code>17</code>, the Romans by <code>XVII</code>, a computer by <code>10001</code>. There must therefore always be an <strong>encoding</strong> of the inputs and an <strong>interpretation</strong> of the results.</p>
+<div class="seulement philo clair">
+<p>Un algorithme est une recette : une suite finie d’instructions précises, qu’on peut suivre sans rien comprendre, et qui produit un résultat. La recette de la division posée en est un. Les exemples qui suivent montrent que cette idée simple cache des pièges.</p>
+</div>
 
-<p>Encoding requires an <em>alphabet</em>, the set of available symbols, and since the model must be concrete, this alphabet is <strong>finite</strong>: 26 Latin letters, 128 ASCII codes, a few tens of thousands of Chinese characters. But in the end every text stored in a memory is only a sequence of just two symbols, as Leibniz had shown (see the appendix <a href="leibniz.html">Leibniz and binary</a>). Mathematically, one can therefore always reduce to the integers by means of an encoding, and restricting attention to functions from $\N^n$ to $\N$ does not arbitrarily narrow the field of the computable.</p>
 
-<p>Ch. Boitet’s lecture notes sum up this situation in a diagram: the function $f$ we want to compute lives in the world of abstract objects; the machine, for its part, transforms words. Computing $f$ means finding a transformation of words $M$ such that encoding, transforming and then interpreting gives the same result as applying $f$:</p>
+<p>Avant d’étudier ce qui est calculable de manière automatique, il faut préciser ce qu’on entend par une « méthode non ambiguë et effective ». Sans rien formaliser encore, quatre remarques encadrent déjà la future définition.</p>
+
+<h3 id="manipulations-de-symboles">Manipulations de symboles</h3>
+
+<p>Une machine ne fait que manipuler des symboles, que nous interprétons. Les nombres sont une abstraction qui n’existe pas en tant que telle dans le monde matériel : nous représentons le nombre dix-sept par les symboles <code>17</code>, les Romains par <code>XVII</code>, un ordinateur par <code>10001</code>. Il faut donc toujours un <strong>codage</strong> des entrées et une <strong>interprétation</strong> des résultats.</p>
+
+<p>Le codage impose un <em>alphabet</em>, ensemble des symboles disponibles, et comme le modèle doit être concret, cet alphabet est <strong>fini</strong> : 26 lettres latines, 128 codes ASCII, quelques dizaines de milliers de sinogrammes. Mais au bout du compte tout texte enregistré dans une mémoire n’est qu’une suite de deux symboles seulement, comme l’avait montré Leibniz (voir l’annexe <a href="leibniz.html">Leibniz et le binaire</a>). Mathématiquement, on peut donc toujours se ramener aux entiers moyennant un codage, et se limiter aux fonctions de $\N^n$ dans $\N$ ne restreint pas arbitrairement le champ du calculable.</p>
+
+<p>Le polycopié de Ch. Boitet résume cette situation par un diagramme : la fonction $f$ que l’on veut calculer vit dans le monde des objets abstraits ; la machine, elle, transforme des mots. Calculer $f$, c’est trouver une transformation de mots $M$ telle que coder, transformer, puis interpréter donne le même résultat qu’appliquer $f$ :</p>
 $$\begin{array}{ccc}
 x & \xrightarrow{\quad f\quad} & f(x)\\
-{\scriptstyle\text{encoding}}\downarrow & & \uparrow{\scriptstyle\text{interpretation}}\\
+{\scriptstyle\text{codage}}\downarrow & & \uparrow{\scriptstyle\text{interprétation}}\\
 \overline{x} & \xrightarrow[\text{machine}]{\quad M\quad} & M(\overline{x})
 \end{array}$$
-<p>The diagram “commutes”: the two paths from $x$ to $f(x)$ give the same result. The choice of encoding is not innocent: with a bad encoding (for example one that wrote the answer in advance into the code of $x$), everything would become “computable”. We therefore require the encoding and the interpretation to be themselves simple and fixed once and for all, independently of $f$.</p>
+<p>Le diagramme « commute » : les deux chemins de $x$ à $f(x)$ donnent le même résultat. Le choix du codage n’est pas anodin : avec un mauvais codage (par exemple un codage qui inscrirait d’avance la réponse dans le code de $x$), tout deviendrait « calculable ». On exige donc que le codage et l’interprétation soient eux-mêmes simples et fixés une fois pour toutes, indépendamment de $f$.</p>
 
-<p>Likewise, nothing must be “magic”: each step must follow clear rules that can be carried out mechanically. This is the notion of a <strong>program</strong>. Whatever model is chosen, one will have to explain how computations are done, by a text, which can itself be encoded by an integer. It is therefore possible to <strong>number the programs</strong> (for instance by length, then in alphabetical order): program number 0, number 1, etc. A fundamental idea on which this whole manual rests thus appears: <em>programs and data are of the same nature</em>, they are integers.</p>
+<p>De même, rien ne doit être « magique » : chaque étape doit suivre des règles claires et mécaniquement réalisables. C’est la notion de <strong>programme</strong>. Quel que soit le modèle choisi, il faudra expliquer comment les calculs se font, par un texte, qui peut lui-même être codé par un entier. Il est donc possible de <strong>numéroter les programmes</strong> (par exemple par longueur, puis par ordre alphabétique) : programme numéro 0, numéro 1, etc. Apparaît ainsi une idée fondamentale sur laquelle tout ce manuel repose : <em>programmes et données sont de même nature</em>, ce sont des entiers.</p>
 
-<p>This remark, harmless in appearance, is crucial. In old calculating machines, program and data were physically distinct. In the Pascaline (1642), designed to help Pascal’s father with his tax computations in Upper Normandy, the data were entered by wheels, the results appeared in windows, and the “program” was realized by toothed wheels driving one another; the machine added and subtracted, and multiplications and divisions were obtained by repetition. To do something else, another machine was needed. A computer, on the contrary, does not change its physical structure when an application is loaded: data are downloaded, which are then <em>interpreted</em> as a program. This is what makes it special: it is a machine that can simulate all the others (see <a href="universality.html">Universality</a>).</p>
+<p>Cette remarque, anodine en apparence, est cruciale. Dans les machines à calculer anciennes, programme et données étaient physiquement distincts. Dans la Pascaline (1642), conçue pour aider le père de Pascal dans ses calculs fiscaux en Haute-Normandie, les données s’entraient par des roues, les résultats apparaissaient dans des fenêtres, et le « programme » était réalisé par des roues crantées s’entraînant les unes les autres ; la machine additionnait et soustrayait, et l’on obtenait multiplications et divisions par répétition. Pour faire autre chose, il fallait une autre machine. Un ordinateur, au contraire, ne change pas de structure physique lorsqu’on charge une application : on télécharge des données, qui sont ensuite <em>interprétées</em> comme un programme. C’est ce qui fait sa spécificité : c’est une machine qui peut simuler toutes les autres (voir <a href="universalite.html">Universalité</a>).</p>
 
-<h3 id="finitude-non-bornee">Unbounded finiteness</h3>
+<h3 id="finitude-non-bornee">Finitude non bornée</h3>
 
-<p>Every computation must take a finite time: one cannot pass to the limit. Analysis establishes that $\sum_{i=0}^{\infty} (1/2)^i = 2$, but no machine performs an infinite sum in finite time. Likewise the working space (sheet of paper, memory, wheels) must be finite at every moment, as must the alphabet and the program.</p>
-<p>The working space must moreover be <em>discrete</em>: a real number contains an infinite amount of information (the sequence of its digits is infinite), and a memory cell that could hold an arbitrary real would hold an infinite “oracle”.</p>
-<p>These limits must not, however, exclude a definition on the grounds that it would be hard to implement today. The power of a late-1970s supercomputer now fits in a pocket. This is why <strong>no bound is fixed</strong>: the available memory is “as large as one wishes”, which is different from “infinite”. At each moment it is finite, but more can always be added.</p>
+<p>Tout calcul doit se faire en un temps fini : on ne peut pas passer à la limite. L’analyse établit que $\sum_{i=0}^{\infty} (1/2)^i = 2$, mais aucune machine n’effectue une somme infinie en un temps fini. De même l’espace de travail (feuille, mémoire, roues) doit être fini à chaque instant, ainsi que l’alphabet et le programme.</p>
+<p>L’espace de travail doit de plus être <em>discret</em> : un nombre réel contient une quantité infinie d’information (la suite de ses décimales est infinie), et une case de mémoire qui contiendrait un réel arbitraire contiendrait un « oracle » infini.</p>
+<p>Ces limites ne doivent cependant pas exclure une définition sous prétexte qu’elle serait difficile à mettre en œuvre aujourd’hui. La puissance d’un supercalculateur de la fin des années 1970 tient désormais dans une poche. C’est pourquoi <strong>aucune borne n’est fixée</strong> : la mémoire disponible est « aussi grande qu’on le souhaite », ce qui est différent d’« infinie ». À chaque instant elle est finie, mais on peut toujours en ajouter.</p>
 
-<h3 id="fonctions-definissables-et-fonctions-calculables">Definable functions and computable functions</h3>
+<h3 id="fonctions-definissables-et-fonctions-calculables">Fonctions définissables et fonctions calculables</h3>
 
-<p>Historically, operations were introduced through the way of carrying them out: to speak of addition, one must know how to add. But this is true only up to a point: <strong>defining a function does not always give a way of computing it</strong>.</p>
+<p>Historiquement, les opérations ont été introduites par la manière de les effectuer : pour parler d’addition, il faut savoir additionner. Mais ce n’est vrai que jusqu’à un certain point : <strong>définir une fonction ne donne pas toujours une manière de la calculer</strong>.</p>
 
-<div class="resultat definition" id="pi"><div class="entete-res"><div class="type">Example</div><div class="nom">Two functions defined from the digits of π</div></div>
+<div class="resultat definition" id="pi"><div class="entete-res"><div class="type">Exemple</div><div class="nom">Deux fonctions définies à partir des décimales de π</div></div>
 <div class="enonce">
-<p>Let $d_1 d_2 d_3\dots$ be the decimal digits of $\pi = 3.14159\dots$ Define, for $x\ge 1$:</p>
-$$f_1(x)=\begin{cases}1 &\text{if the digits of }\pi\text{ contain a block of exactly } x \text{ consecutive 5s (with no 5 on the left or right)},\\ 0&\text{otherwise,}\end{cases}$$
-$$f_2(x)=\begin{cases}1 &\text{if the digits of }\pi\text{ contain a block of at least } x \text{ consecutive 5s},\\ 0&\text{otherwise.}\end{cases}$$
-<p>It is not known today whether $f_1$ is computable. On the other hand, <strong>$f_2$ is computable</strong>, although nobody knows how to compute it.</p>
+<p>Notons $d_1 d_2 d_3\dots$ les décimales de $\pi = 3{,}14159\dots$ On définit, pour $x\ge 1$ :</p>
+$$f_1(x)=\begin{cases}1 &\text{si les décimales de }\pi\text{ contiennent un bloc d’exactement } x \text{ chiffres 5 consécutifs (sans 5 à gauche ni à droite)},\\ 0&\text{sinon,}\end{cases}$$
+$$f_2(x)=\begin{cases}1 &\text{si les décimales de }\pi\text{ contiennent un bloc d’au moins } x \text{ chiffres 5 consécutifs},\\ 0&\text{sinon.}\end{cases}$$
+<p>On ne sait pas aujourd’hui si $f_1$ est calculable. En revanche, <strong>$f_2$ est calculable</strong>, bien que personne ne sache la calculer.</p>
 </div>
 <div class="niveau" data-niveau="philo">
-<p>These two functions are perfectly well defined: for each $x$, the answer exists, written in the digits of $\pi$. Some values can even be computed: $f_1(1)=1$ because the fourth digit is a 5 surrounded by a 1 and a 9; $f_1(2)=1$ because the block “55” appears at digits 130 and 131 (<code>…44609<u>55</u>05822…</code>), and $f_1(3)=1$ thanks to the block “555” at digits 177 to 179 (<code>…2110<u>555</u>96446…</code>).</p>
-<p>The case of $f_2$ is dizzying. One can <em>prove</em> that there exists a very simple program that computes it, but one cannot say which. There is a distinction here that everyday life knows well: knowing that an answer exists is not knowing it. A detective may be certain that the culprit is one of the three people present without knowing which one.</p>
-<p>Computability therefore does not measure our current knowledge, but the existence of a method. And the example already shows a deep link between computation and logic: knowing how to compute $f_2$ <em>effectively</em> amounts exactly to proving a theorem about the digits of $\pi$.</p>
+<p class="en-clair"><strong>En clair.</strong> On fabrique deux fonctions à partir des décimales du nombre π (3,14159…). Pour chaque nombre entier, leur valeur est bien fixée, une fois pour toutes. Pourtant, pour l’une d’elles, on sait qu’un programme très court la calcule, sans savoir lequel.</p>
+<p>Prenons la question : « trouve-t-on quelque part dans les décimales de π une suite d’au moins dix 5 à la suite ? ». La réponse est oui ou non, même si personne ne la connaît. Pour certains cas, on a vérifié : un 5 isolé apparaît dès la quatrième décimale, deux 5 côte à côte apparaissent vers la cent-trentième, trois 5 vers la cent-soixante-dix-septième.</p>
+<p>Le raisonnement sur la seconde fonction est étonnant. Ou bien il existe dans π des suites de 5 aussi longues qu’on veut, et alors la réponse est toujours « oui » ; ou bien il existe une longueur maximale, et alors la réponse est « oui » jusqu’à cette longueur puis « non » ensuite. Dans les deux cas, un programme de quelques lignes donne la bonne réponse. Mais on ne sait pas lequel de ces programmes est le bon.</p>
+<p>C’est la différence entre <em>savoir qu’une réponse existe</em> et <em>connaître la réponse</em>. Un enquêteur peut être sûr que le coupable est l’une des trois personnes présentes dans la pièce sans savoir laquelle. La calculabilité s’intéresse à l’existence d’une méthode, pas à ce que nous savons aujourd’hui. Et l’exemple montre déjà que calculer et démontrer sont liés : pour savoir quel programme est le bon, il faudrait démontrer un théorème sur π.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p>Only two cases are possible.</p>
+<p>Deux cas seulement sont possibles.</p>
 <ol>
-<li>The blocks of consecutive 5s in the digits of $\pi$ have unbounded length. Then for every $x$ there is a block of length $\ge x$ and $f_2$ is the constant function equal to 1.</li>
-<li>There is a maximal length $k$ (possibly $k=0$). Then $f_2(x)=1$ if $x\le k$ and $0$ otherwise.</li>
+<li>Les blocs de 5 consécutifs dans les décimales de $\pi$ sont de longueur non bornée. Alors pour tout $x$ il existe un bloc de longueur $\ge x$ et $f_2$ est la fonction constante égale à 1.</li>
+<li>Il existe une longueur maximale $k$ (éventuellement $k=0$). Alors $f_2(x)=1$ si $x\le k$ et $0$ sinon.</li>
 </ol>
-<p>In both cases $f_2$ is computed by a trivial program: “answer 1”, or “compare $x$ with the constant $k$”. The proof of computability is <em>non-constructive</em>: it uses the excluded middle (case 1 or case 2) without saying which one holds, nor, in the second case, the value of $k$.</p>
-<p>For $f_1$, the argument fails: knowing that $\pi$ contains blocks of length 7 says nothing about the existence of a block of length <em>exactly</em> 6. We know that $f_1$ is <em>semi-computable</em> on the value 1 (the block is eventually found if it exists); its computability is open. It would follow, for instance, from the normality of $\pi$ (conjectured, not proved), which would make $f_1$ constantly equal to 1.</p>
+<p>Dans les deux cas $f_2$ est calculée par un programme trivial : « répondre 1 », ou « comparer $x$ à la constante $k$ ». La preuve de calculabilité est <em>non constructive</em> : elle utilise le tiers exclu (cas 1 ou cas 2) sans dire lequel est vrai, ni, dans le second cas, la valeur de $k$.</p>
+<p>Pour $f_1$, l’argument ne marche pas : savoir que $\pi$ contient des blocs de longueur 7 ne dit rien sur l’existence d’un bloc de longueur <em>exactement</em> 6. On sait que $f_1$ est <em>semi-calculable</em> sur les valeurs 1 (on finit par trouver le bloc s’il existe) ; sa calculabilité est ouverte. Elle découlerait par exemple de la normalité de $\pi$ (conjecturée, non démontrée), qui rendrait $f_1$ constante égale à 1.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>The two candidate programs for $f_2$, written in an ordinary language:</p>
-<pre><code>// case 1                      // case 2, for some unknown constant K
-f2(x) = 1                      f2(x) = if x ≤ K then 1 else 0</code></pre>
-<p>And here is a program that <em>semi-computes</em> $f_1$: it halts with answer 1 if a block of exactly $x$ fives exists, and searches forever otherwise. It uses a generator of the digits of $\pi$ (the “spigot” algorithm of Rabinowitz and Wagon, which produces the digits one by one using integers only).</p>
-<pre><code>search(x) :
-  block := 0
-  for each digit d of π (in order) :
-    if d = 5 then block := block + 1
-    else
-      if block = x then answer 1 and halt
-      block := 0</code></pre>
-<p>The distinction between these two programs, one that always terminates, the other that may search forever, is the subject of the chapter <a href="semi-decidability.html">Semi-decidability</a>.</p>
+<p>Les deux programmes candidats pour $f_2$, écrits dans un langage ordinaire :</p>
+<pre><code>// cas 1                       // cas 2, pour une certaine constante K inconnue
+f2(x) = 1                      f2(x) = si x ≤ K alors 1 sinon 0</code></pre>
+<p>Et voici un programme qui <em>semi-calcule</em> $f_1$ : il s’arrête avec la réponse 1 si un bloc d’exactement $x$ cinq existe, et cherche indéfiniment sinon. Il utilise un générateur de décimales de $\pi$ (algorithme « compte-gouttes » de Rabinowitz et Wagon, qui produit les décimales une à une avec des entiers seulement).</p>
+<pre><code>chercher(x) :
+  bloc := 0
+  pour chaque décimale d de π (dans l'ordre) :
+    si d = 5 alors bloc := bloc + 1
+    sinon
+      si bloc = x alors répondre 1 et s'arrêter
+      bloc := 0</code></pre>
+<p>La distinction entre ces deux programmes, l’un qui termine toujours, l’autre qui peut chercher éternellement, est le sujet du chapitre <a href="semi-decidabilite.html">Semi-décidabilité</a>.</p>
 </div>
 </div>
 
-<p>Conversely, not knowing how to define something does not always prevent one from realizing it: intelligence or consciousness are very hard to define precisely, and yet they are passed on and developed, through education, without anyone being able to write down their definition. The relation between <em>defining</em> and <em>realizing</em> is simple in neither direction.</p>
+<p>Inversement, ne pas savoir définir quelque chose n’empêche pas toujours de le réaliser : l’intelligence ou la conscience sont très difficiles à définir précisément, et pourtant elles se transmettent et se forment, par l’éducation, sans que personne sache en écrire la définition. Le rapport entre <em>définir</em> et <em>réaliser</em> n’est simple dans aucun des deux sens.</p>
 
-<h3 id="la-partialite-est-inevitable">Partiality is unavoidable</h3>
+<h3 id="la-partialite-est-inevitable">La partialité est inévitable</h3>
 
-<p>Some intuitively computable functions are partial: division is undefined when the divisor is zero. One might think of circumventing the problem as mathematicians often do, by adding to the codomain a special value “no result”, and considering only programs that always halt. A very general argument shows that this is impossible.</p>
+<p>Certaines fonctions intuitivement calculables sont partielles : la division n’est pas définie quand le diviseur est nul. On pourrait penser contourner le problème comme le font souvent les mathématiciens, en ajoutant au codomaine une valeur spéciale « pas de résultat », et ne considérer que des programmes qui s’arrêtent toujours. Un argument très général montre que c’est impossible.</p>
 
-<div class="resultat theoreme" id="diagonale-totale"><div class="entete-res"><div class="type">Proposition</div><div class="nom">No language in which all programs halt captures everything computable</div></div>
+<div class="resultat theoreme" id="diagonale-totale"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Aucun langage où tous les programmes s’arrêtent ne capture tout le calculable</div></div>
 <div class="enonce">
-<p>Consider a formalism of programs $P_0, P_1, P_2,\dots$ that can be effectively enumerated, each of which computes a <em>total</em> function $f_n:\N\to\N$, and such that $P_n$ can be run on any given input. Then the function $g(n)=f_n(n)+1$ is intuitively computable and total, but is computed by no $P_i$.</p>
+<p>Soit un formalisme de programmes $P_0, P_1, P_2,\dots$ énumérables effectivement, dont chacun calcule une fonction <em>totale</em> $f_n:\N\to\N$, et tel qu’on puisse exécuter $P_n$ sur une entrée donnée. Alors la fonction $g(n)=f_n(n)+1$ est intuitivement calculable et totale, mais n’est calculée par aucun $P_i$.</p>
 </div>
 <div class="niveau" data-niveau="philo">
-<p>This is a mathematical version of the liar paradox (“I am lying”): one builds an object that contradicts its own description. If one draws up the list of all functions computable by programs that always halt, one can always build a new one that differs from the first at one point, from the second at another point, and so on: it is nowhere in the list.</p>
-<p>The lesson is surprising: a <em>safe</em> programming language, in which every program terminates, is necessarily <em>incomplete</em>. To compute everything computable, one must accept programs that sometimes do not halt. This is the price of completeness. General-purpose programming languages accept this price; some proof assistants (Coq, now Rocq, Agda, Lean) make the opposite choice: all their programs terminate, and they therefore give up expressing certain computable functions.</p>
-<p>“Having no answer” then becomes a category in its own right, and it is asymmetric: if a program halts, we eventually find out; if it does not halt, we may wait without ever knowing. Legal life knows this asymmetry: it is up to the prosecution to establish guilt, and in the absence of proof the default outcome is innocence. If the lack of an alibi sufficed to convict, ignorance would become an absolute weapon. The excluded middle (“either true or false”) leaves no room for this absence of answer; computability shows that it is a central phenomenon of all structured thought.</p>
-<p>It can be put another way: <em>knowledge does not commute with negation</em>. “Knowing that the program does not halt” and “not knowing that it halts” are two very different states. The second is the normal situation of someone waiting for a result; the first requires a proof, which nothing guarantees can be found. The whole rest of the manual, from the <a href="undecidability.html#arret">halting problem</a> to <a href="semi-decidability.html">semi-decidable sets</a>, makes this difference precise.</p>
+<p class="en-clair"><strong>En clair.</strong> Imaginons un langage de programmation où tout programme finit toujours par s’arrêter. Il existe alors forcément une fonction qu’on sait calculer à la main mais qu’aucun programme de ce langage ne calcule. Pour pouvoir tout calculer, il faut accepter des programmes qui, parfois, tournent sans fin.</p>
+<p>Le raisonnement ressemble au paradoxe du menteur. Faisons la liste de tous les programmes du langage : le premier, le deuxième, le troisième… Fabriquons une nouvelle fonction ainsi : pour le nombre 1, on fait tourner le premier programme et on ajoute 1 à sa réponse ; pour le nombre 2, on fait tourner le deuxième et on ajoute 1 ; et ainsi de suite. Cette fonction se calcule sans difficulté, puisque chaque programme s’arrête. Mais elle diffère du premier programme en 1, du deuxième en 2, du troisième en 3 : elle ne figure nulle part dans la liste.</p>
+<p>La leçon est surprenante : un langage <em>sûr</em>, où rien ne peut tourner en rond, est forcément <em>incomplet</em>. Les langages de programmation courants (Python, C, Java) acceptent le risque de la boucle infinie pour pouvoir tout calculer. Certains logiciels qui vérifient des démonstrations, comme Rocq (ancien Coq), Agda ou Lean, font le choix inverse : tous leurs programmes s’arrêtent, et ils renoncent à certaines fonctions.</p>
+<p>Il apparaît alors une troisième réponse, à côté de « oui » et de « non » : « pas encore de réponse ». Elle n’est pas symétrique. Si un programme s’arrête, on finit par le voir ; s’il ne s’arrête pas, on peut attendre éternellement sans jamais en être sûr. La justice connaît cette dissymétrie : on doit prouver la culpabilité, et faute de preuve on reste présumé innocent. Ne pas savoir qu’une chose est vraie n’est pas la même chose que savoir qu’elle est fausse. Toute la suite du manuel, du <a href="indecidabilite.html#arret">problème de l’arrêt</a> aux <a href="semi-decidabilite.html">ensembles semi-décidables</a>, explore cette différence.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p>$g$ is computable: to compute $g(n)$, enumerate the programs until $P_n$ is obtained (it is the $(n+1)$<sup>th</sup> in the list, since numbering starts at 0), run it on $n$ (it halts by hypothesis) and add 1. It is total.</p>
-<p>Suppose $g=f_i$ for some index $i$, that is, $g(n)=f_i(n)$ for <em>all</em> $n$. At $n=i$: $f_i(i)=g(i)=f_i(i)+1$, a contradiction.</p>
-<p>If, on the other hand, the formalism contains programs that do not terminate, the argument breaks down at the right place: $g(n)=f_n(n)+1$ is no longer necessarily defined, and for the index $i$ of a program computing $g$, the equation $f_i(i)\simeq f_i(i)+1$ simply says that $f_i(i)$ is undefined. No contradiction.</p>
+<p>$g$ est calculable : pour calculer $g(n)$, on énumère les programmes jusqu’à obtenir $P_n$ (c’est le $(n+1)$<sup>e</sup> de la liste, puisque la numérotation commence à 0), on l’exécute sur $n$ (il s’arrête par hypothèse) et on ajoute 1. Elle est totale.</p>
+<p>Supposons $g=f_i$ pour un indice $i$, c’est-à-dire $g(n)=f_i(n)$ pour <em>tout</em> $n$. En $n=i$ : $f_i(i)=g(i)=f_i(i)+1$, contradiction.</p>
+<p>Si en revanche le formalisme contient des programmes qui ne terminent pas, l’argument s’effondre au bon endroit : $g(n)=f_n(n)+1$ n’est plus nécessairement définie, et pour l’indice $i$ d’un programme calculant $g$, l’égalité $f_i(i)\simeq f_i(i)+1$ dit simplement que $f_i(i)$ est indéfini. Pas de contradiction.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>Concretely, take as total formalism the language of <a href="recursive-functions.html">primitive recursive functions</a>: each term is a program that terminates, and the terms can be enumerated and evaluated. The diagonal function $g(n)=f_n(n)+1$ is then computable by an ordinary program containing a “while” loop (the term evaluator), but by no primitive recursive term. The <a href="ackermann.html">Ackermann function</a> is an explicit example of the same phenomenon, obtained by a finer diagonalization.</p>
-<p>The simulator below runs a machine that never halts on any input: it computes the nowhere-defined function, which a complete formalism must be able to express.</p>
-<div class="tm-widget" data-titre="A machine that never halts" data-args="2" data-max="5000"><pre class="src">q0 1 R q0
+<p>Concrètement, prenons pour formalisme total le langage des <a href="fonctions-recursives.html">fonctions récursives primitives</a> : chaque terme est un programme qui termine, et l’on peut énumérer les termes et les évaluer. La fonction diagonale $g(n)=f_n(n)+1$ est alors calculable par un programme ordinaire contenant une boucle « tant que » (l’évaluateur de termes), mais par aucun terme récursif primitif. La <a href="ackermann.html">fonction d’Ackermann</a> est un exemple explicite du même phénomène, obtenu par une diagonalisation plus fine.</p>
+<p>Le simulateur ci-dessous exécute une machine qui ne s’arrête jamais sur aucune entrée : c’est la fonction partout indéfinie, qu’un formalisme complet doit pouvoir exprimer.</p>
+<div class="tm-widget" data-titre="Machine qui ne s’arrête jamais" data-args="2" data-max="5000"><pre class="src">q0 1 R q0
 q0 B R q0</pre></div>
 </div>
 </div>
 
-<h3 id="il-existe-des-fonctions-non-calculables">Non-computable functions exist</h3>
+<h3 id="il-existe-des-fonctions-non-calculables">Il existe des fonctions non calculables</h3>
 
-<div class="resultat theoreme" id="non-calculables"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Existence of non-computable functions</div></div>
-<div class="enonce"><p>Whatever formalism of programs is adopted (finite alphabet, finite programs), there are functions from $\N$ to $\N$, and even from $\N$ to $\{0,1\}$, that are computed by no program.</p></div>
+<div class="resultat theoreme" id="non-calculables"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Existence de fonctions non calculables</div></div>
+<div class="enonce"><p>Quel que soit le formalisme de programmes retenu (alphabet fini, programmes finis), il existe des fonctions de $\N$ dans $\N$, et même de $\N$ dans $\{0,1\}$, qui ne sont calculées par aucun programme.</p></div>
 <div class="niveau" data-niveau="philo">
-<p>This is a matter of size, not of technique. There are “as many” programs as integers, but there are “many more” functions. No technological progress will close this gap: it does not depend on machines, but on what a finite description is.</p>
-<p>The argument is non-constructive: it proves that non-computable functions exist without showing one. The chapter <a href="undecidability.html">Undecidability</a> will exhibit one, a very natural one: deciding whether a program halts.</p>
+<p class="en-clair"><strong>En clair.</strong> Il existe des fonctions qu’aucun programme, écrit dans n’importe quel langage, ne sait calculer. La raison est simple : il y a beaucoup plus de fonctions que de programmes.</p>
+<p>Un programme est un texte fini. On peut ranger tous les textes possibles dans une liste : d’abord ceux d’une lettre, puis ceux de deux lettres, et ainsi de suite. Les programmes se numérotent donc comme les entiers 1, 2, 3… En revanche, les fonctions qui à chaque entier associent 0 ou 1 sont des suites infinies de 0 et de 1, et Cantor a montré qu’on ne peut pas les numéroter toutes (voir l’<a href="cantor.html">annexe sur Cantor</a>). Il reste donc forcément des fonctions sans programme.</p>
+<p>C’est une affaire de nombre, pas de technique : aucun progrès des ordinateurs ne comblera cet écart, car il vient de ce qu’est une description finie. Le raisonnement prouve que de telles fonctions existent sans en montrer une seule. Le chapitre <a href="indecidabilite.html">Indécidabilité</a> en donnera une très concrète : savoir si un programme finira par s’arrêter.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p>A program is a finite word over a finite alphabet $\Sigma$. The set $\Sigma^*$ of words is countable: words are enumerated by increasing length, and among words of equal length in alphabetical order. The set of computable functions is therefore at most countable.</p>
-<p>The set $\{0,1\}^{\N}$ of functions from $\N$ to $\{0,1\}$ is not countable (<a href="cantor.html">Cantor’s diagonal argument</a>): if $(h_n)$ is a sequence of such functions, $h(n)=1-h_n(n)$ differs from each $h_n$ at $n$. Hence non-computable functions exist; “almost all” functions are non-computable, in the sense that the computable functions form a countable part of an uncountable set.</p>
+<p>Un programme est un mot fini sur un alphabet fini $\Sigma$. L’ensemble $\Sigma^*$ des mots est dénombrable : on énumère les mots par longueur croissante, et à longueur égale par ordre alphabétique. L’ensemble des fonctions calculables est donc au plus dénombrable.</p>
+<p>L’ensemble $\{0,1\}^{\N}$ des fonctions de $\N$ dans $\{0,1\}$ n’est pas dénombrable (<a href="cantor.html">argument diagonal de Cantor</a>) : si $(h_n)$ est une suite de telles fonctions, $h(n)=1-h_n(n)$ diffère de chaque $h_n$ en $n$. Il existe donc des fonctions non calculables ; « presque toutes » le sont, au sens où les fonctions calculables forment une partie dénombrable d’un ensemble non dénombrable.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>The enumeration of words by length and then alphabetical order is an explicit bijection between $\Sigma^*$ and $\N$. For the alphabet $\{a,b\}$:</p>
-<table><tr><th>rank</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>…</td></tr>
-<tr><th>word</th><td>ε</td><td>a</td><td>b</td><td>aa</td><td>ab</td><td>ba</td><td>bb</td><td>aaa</td><td>…</td></tr></table>
-<p>For an alphabet with $k$ letters $a_1,\dots,a_k$, the rank of the word $a_{i_1}\cdots a_{i_m}$ is $\sum_{j=1}^m i_j\,k^{m-j}$ (“bijective” base-$k$ notation, without a zero digit). The chapter <a href="recursive-functions.html#codages">Encodings</a> gives other encodings, better suited to proofs.</p>
+<p>L’énumération des mots par longueur puis ordre alphabétique est une bijection explicite entre $\Sigma^*$ et $\N$. Pour l’alphabet $\{a,b\}$ :</p>
+<table><tr><th>rang</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>…</td></tr>
+<tr><th>mot</th><td>ε</td><td>a</td><td>b</td><td>aa</td><td>ab</td><td>ba</td><td>bb</td><td>aaa</td><td>…</td></tr></table>
+<p>Pour un alphabet à $k$ lettres $a_1,\dots,a_k$, le rang du mot $a_{i_1}\cdots a_{i_m}$ est $\sum_{j=1}^m i_j\,k^{m-j}$ (écriture « bijective » en base $k$, sans chiffre zéro). Le chapitre <a href="fonctions-recursives.html#codages">Codages</a> donne d’autres codages, mieux adaptés aux preuves.</p>
 </div>
 </div>
 
-<nav class="nav-chap"><a href="index.html"><small>← Previous</small>Computability</a><a href="three-approaches.html" style="text-align:right"><small>Next →</small>Three approaches to computation: imperative, functional, logical</a></nav>
-<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+<nav class="nav-chap"><a href="index.html"><small>← Précédent</small>Calculabilité</a><a href="trois-approches.html" style="text-align:right"><small>Suivant →</small>Trois approches du calcul : actionnelle, fonctionnelle, logique</a></nav>
+<footer class="pied">Calculabilité — manuel à trois niveaux de lecture. Auteurs : Frédéric Prost et Claude. Texte sous licence <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license">CC BY-SA 4.0</a>, code sous licence MIT. Les mathématiques sont rendues par KaTeX (licence MIT), embarqué localement : le site se lit sans connexion.</footer>
 </main>
 </div>
 <script src="assets/katex/katex.min.js"></script>

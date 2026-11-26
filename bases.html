@@ -1,229 +1,229 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="author" content="Frédéric Prost and Claude">
-<title>Basic notions · Computability</title>
+<meta name="author" content="Frédéric Prost et Claude">
+<title>Notions de base · Calculabilité</title>
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <header class="entete"><div class="entete-int">
-  <button type="button" class="btn-menu" aria-label="Contents">☰ Contents</button>
-  <a class="titre-site" href="index.html">Computability <span>·</span> a manual with three reading levels</a>
-  <span class="selecteur-legende">Reading level:</span>
-  <div class="selecteur" role="group" aria-label="Reading level">
-    <button type="button" data-niveau="philo" title="Meaning and implications">Philosophical</button>
-    <button type="button" data-niveau="tech" title="Mathematical proofs">Technical</button>
-    <button type="button" data-niveau="techno" title="Complete constructions, Turing machines">Technological</button>
-    <button type="button" data-niveau="tout" title="Show all three levels">All</button>
+  <button type="button" class="btn-menu" aria-label="Sommaire">☰ Sommaire</button>
+  <a class="titre-site" href="index.html">Calculabilité <span>·</span> un manuel à trois niveaux <span class="version">version 2</span></a>
+  <span class="selecteur-legende">Niveau de lecture :</span>
+  <div class="selecteur" role="group" aria-label="Niveau de lecture">
+    <button type="button" data-niveau="philo" title="Sens et implications">Philosophique</button>
+    <button type="button" data-niveau="tech" title="Preuves mathématiques">Technique</button>
+    <button type="button" data-niveau="techno" title="Constructions complètes, machines de Turing">Technologique</button>
+    <button type="button" data-niveau="tout" title="Afficher les trois niveaux">Tout</button>
   </div>
-  <button type="button" class="btn-theme" aria-label="Change theme" title="Light / dark">◐</button>
+  <button type="button" class="btn-theme" aria-label="Changer de thème" title="Clair / sombre">◐</button>
 </div></header>
 <div class="page">
-<nav class="sommaire" aria-label="Contents"><ul><li><a href="index.html">Home and how to use this manual</a></li></ul><h2>Getting started</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="three-approaches.html"><span class="num">2</span>Three approaches to computation</a></li></ol><h2>Models of computation</h2><ol><li><a href="turing-machines.html"><span class="num">3</span>Turing machines</a></li><li><a href="recursive-functions.html"><span class="num">4</span>Recursive functions</a></li><li><a href="lambda-calculus.html"><span class="num">5</span>λ-calculus</a></li><li><a href="equivalence.html"><span class="num">6</span>Equivalence of models</a></li><li><a href="church-turing-thesis.html"><span class="num">7</span>Church-Turing thesis</a></li></ol><h2>Fundamental theorems</h2><ol><li><a href="universality.html"><span class="num">8</span>Universality</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n and recursion</a></li></ol><h2>Limits of computation</h2><ol><li><a href="undecidability.html"><span class="num">10</span>Undecidability</a></li><li><a href="semi-decidability.html"><span class="num">11</span>Semi-decidability</a></li><li><a href="arithmetical-hierarchy.html"><span class="num">12</span>Arithmetical hierarchy</a></li><li><a href="incompleteness.html"><span class="num">13</span>Incompleteness</a></li><li><a href="diophantine-equations.html"><span class="num">14</span>Diophantine equations</a></li><li><a href="logic-and-types.html"><span class="num">15</span>Logic and types</a></li><li><a href="decidable-theories.html"><span class="num">16</span>Decidable theories</a></li><li><a href="undecidable-mathematics.html"><span class="num">17</span>Ordinary mathematics</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov and Ω</a></li><li><a href="languages.html"><span class="num">19</span>Languages and grammars</a></li></ol><h2>Complexity</h2><ol><li><a href="complexity.html"><span class="num">20</span>Complexity</a></li><li><a href="randomness-quantum.html"><span class="num">21</span>Randomness and quantum</a></li></ol><h2>Case studies</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Ackermann function</a></li><li><a href="busy-beavers.html"><span class="num">23</span>Busy beavers</a></li><li><a href="computability-ai.html"><span class="num">24</span>Computability and AI</a></li><li><a href="other-models.html"><span class="num">25</span>Other models</a></li></ol><h2>Appendices</h2><ol><li><a href="reading-paths.html">Reading paths</a></li><li><a href="cantor.html">Cantor’s diagonal</a></li><li><a href="bases.html" aria-current="page">Basic notions</a></li><li><a href="leibniz.html">Leibniz and binary</a></li><li><a href="bibliography.html">Bibliography</a></li></ol></nav>
-<main class="contenu">
-<h1>Basic notions</h1>
-<p class="chapo">The elementary definitions and results used in the manual: natural numbers up to prime factorization, words and languages, sets and functions, predicate logic.</p>
+<nav class="sommaire" aria-label="Sommaire"><ul><li><a href="index.html">Accueil et mode d’emploi</a></li></ul><h2>Entrer dans le sujet</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="trois-approches.html"><span class="num">2</span>Trois approches du calcul</a></li></ol><h2>Modèles de calcul</h2><ol><li><a href="machines-turing.html"><span class="num">3</span>Machines de Turing</a></li><li><a href="fonctions-recursives.html"><span class="num">4</span>Fonctions récursives</a></li><li><a href="lambda-calcul.html"><span class="num">5</span>λ-calcul</a></li><li><a href="equivalence.html"><span class="num">6</span>Équivalence des modèles</a></li><li><a href="these-church.html"><span class="num">7</span>Thèse de Church-Turing</a></li></ol><h2>Théorèmes fondamentaux</h2><ol><li><a href="universalite.html"><span class="num">8</span>Universalité</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n et récursion</a></li></ol><h2>Limites du calcul</h2><ol><li><a href="indecidabilite.html"><span class="num">10</span>Indécidabilité</a></li><li><a href="semi-decidabilite.html"><span class="num">11</span>Semi-décidabilité</a></li><li><a href="hierarchie-arithmetique.html"><span class="num">12</span>Hiérarchie arithmétique</a></li><li><a href="incompletude.html"><span class="num">13</span>Incomplétude</a></li><li><a href="equations-diophantiennes.html"><span class="num">14</span>Équations diophantiennes</a></li><li><a href="logique-types.html"><span class="num">15</span>Logique et types</a></li><li><a href="theories-decidables.html"><span class="num">16</span>Théories décidables</a></li><li><a href="mathematiques-indecidables.html"><span class="num">17</span>Mathématiques ordinaires</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov et Ω</a></li><li><a href="langages.html"><span class="num">19</span>Langages et grammaires</a></li></ol><h2>Complexité</h2><ol><li><a href="complexite.html"><span class="num">20</span>Complexité</a></li><li><a href="hasard-quantique.html"><span class="num">21</span>Hasard et quantique</a></li></ol><h2>Études de cas</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Fonction d’Ackermann</a></li><li><a href="castors-affaires.html"><span class="num">23</span>Castors affairés</a></li><li><a href="calculabilite-ia.html"><span class="num">24</span>Calculabilité et IA</a></li><li><a href="autres-modeles.html"><span class="num">25</span>Autres modèles</a></li></ol><h2>Annexes</h2><ol><li><a href="parcours.html">Parcours de lecture</a></li><li><a href="cantor.html">Diagonale de Cantor</a></li><li><a href="bases.html" aria-current="page">Notions de base</a></li><li><a href="leibniz.html">Leibniz et le binaire</a></li><li><a href="programmes.html">Programmes Python</a></li><li><a href="bibliographie.html">Bibliographie</a></li></ol></nav>
+<main class="contenu philo-tout">
+<h1>Notions de base</h1>
+<p class="chapo">Les définitions et résultats élémentaires utilisés dans le manuel : entiers naturels jusqu’à la décomposition en facteurs premiers, mots et langages, ensembles et fonctions, logique des prédicats.</p>
 
-<nav class="toc-locale" aria-label="In this chapter"><strong>In this chapter</strong><ol><li><a href="#entiers">Natural numbers</a></li><li><a href="#mots">Alphabets, words, languages</a></li><li><a href="#fonctions">Sets, relations and functions</a></li><li><a href="#logique">Predicate logic</a></li></ol></nav>
+<nav class="toc-locale" aria-label="Dans ce chapitre"><strong>Dans ce chapitre</strong><ol><li><a href="#entiers">Entiers naturels</a></li><li><a href="#mots">Alphabets, mots, langages</a></li><li><a href="#fonctions">Ensembles, relations et fonctions</a></li><li><a href="#logique">Logique des prédicats</a></li></ol></nav>
 
 
-<h2 id="entiers">Natural numbers</h2>
+<h2 id="entiers">Entiers naturels</h2>
 
-<div class="resultat definition" id="peano"><div class="entete-res"><div class="type">Definition</div><div class="nom">Peano axioms</div></div>
+<div class="resultat definition sans-philo" id="peano"><div class="entete-res"><div class="type">Définition</div><div class="nom">Axiomes de Peano</div></div>
 <div class="enonce">
-<p>The set $\N$ of natural numbers comes with an element $0$ and a successor map $S:\N\to\N$ such that:</p>
+<p>L’ensemble $\N$ des entiers naturels est muni d’un élément $0$ et d’une application successeur $S:\N\to\N$ telles que :</p>
 <ol>
-<li>$0$ is not the successor of any number;</li>
-<li>$S$ is injective: if $S(n)=S(m)$ then $n=m$;</li>
-<li>(induction) every subset of $\N$ containing $0$ and closed under $S$ is equal to $\N$.</li>
+<li>$0$ n’est le successeur d’aucun entier ;</li>
+<li>$S$ est injective : si $S(n)=S(m)$ alors $n=m$ ;</li>
+<li>(récurrence) toute partie de $\N$ contenant $0$ et stable par $S$ est égale à $\N$.</li>
 </ol>
-<p>We write $1=S(0)$, $2=S(1)$, etc. Addition and multiplication are defined by recursion on the second argument: $n+0=n$, $n+S(m)=S(n+m)$; $n\times0=0$, $n\times S(m)=(n\times m)+n$.</p>
+<p>On note $1=S(0)$, $2=S(1)$, etc. L’addition et la multiplication sont définies par récurrence sur le second argument : $n+0=n$, $n+S(m)=S(n+m)$ ; $n\times0=0$, $n\times S(m)=(n\times m)+n$.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p>From these definitions one proves by induction that $+$ and $\times$ are associative and commutative, that $0$ and $1$ are neutral elements, that $\times$ distributes over $+$, and that $a+b=a+b'\Rightarrow b=b'$. For example, associativity $(a+b)+c=a+(b+c)$ is proved by induction on $c$: for $c=0$ both sides equal $a+b$; and $(a+b)+S(c)=S((a+b)+c)=S(a+(b+c))=a+S(b+c)=a+(b+S(c))$. Commutativity requires two lemmas, $0+n=n$ and $S(m)+n=S(m+n)$, each by induction on $n$.</p>
+<p>À partir de ces définitions, on démontre par récurrence que $+$ et $\times$ sont associatives et commutatives, que $0$ et $1$ sont neutres, que $\times$ est distributive sur $+$, et que $a+b=a+b'\Rightarrow b=b'$. Par exemple, l’associativité $(a+b)+c=a+(b+c)$ se prouve par récurrence sur $c$ : pour $c=0$ les deux membres valent $a+b$ ; et $(a+b)+S(c)=S((a+b)+c)=S(a+(b+c))=a+S(b+c)=a+(b+S(c))$. La commutativité demande deux lemmes, $0+n=n$ et $S(m)+n=S(m+n)$, chacun par récurrence sur $n$.</p>
 </div>
 </div>
 
-<div class="resultat theoreme" id="ordre"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Order, subtraction and rules of computation</div></div>
+<div class="resultat theoreme" id="ordre"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Ordre, soustraction et règles de calcul</div></div>
 <div class="enonce">
-<p>Set $a\le b$ if there is $c\in\N$ with $b=a+c$; this $c$ is then unique, and we write it $b-a$. We write $a&lt;b$ if $a\le b$ and $a\ne b$, that is, if $b\ge a+1$. Then:</p>
+<p>On pose $a\le b$ s’il existe $c\in\N$ tel que $b=a+c$ ; cet entier $c$ est alors unique, on le note $b-a$. On écrit $a&lt;b$ si $a\le b$ et $a\ne b$, c’est-à-dire si $b\ge a+1$. Alors :</p>
 <ol>
-<li>$\le$ is a total order on $\N$, with least element $0$;</li>
-<li>it is compatible with the operations: $a\le b\Rightarrow a+c\le b+c$ and $ac\le bc$;</li>
-<li>cancellation rules: $a+c=b+c\Rightarrow a=b$; if $ab=0$ then $a=0$ or $b=0$; if $ac=bc$ and $c\ne0$ then $a=b$; if $ac&lt;bc$ then $a&lt;b$.</li>
-</ol>
-</div>
-<div class="niveau" data-niveau="philo"><p>These are the rules one applies without thinking from primary school on. Proving them from the Peano axioms alone shows that nothing is hidden in them: everything follows from “start at $0$ and add $1$”. It is the same approach as that of computability, which rebuilds everything computable from a few elementary operations.</p></div>
-<div class="niveau" data-niveau="tech">
-<p><strong>Uniqueness of $c$</strong>: this is the cancellation $a+c=a+c'\Rightarrow c=c'$, established from Peano by induction on $a$ (if $S(a)+c=S(a)+c'$ then $S(a+c)=S(a+c')$, and injectivity of $S$ gives $a+c=a+c'$).</p>
-<p><strong>(1)</strong> Reflexivity: $a=a+0$. Transitivity: $b=a+c$ and $d=b+c'$ give $d=a+(c+c')$. Antisymmetry: if $b=a+c$ and $a=b+c'$, then $a=a+(c+c')$, hence $c+c'=0$ by cancellation; if $c'\ne0$, $c'=S(c'')$ and $c+c'=S(c+c'')\ne0$; hence $c=c'=0$. Totality, by induction on $b$ for fixed $a$: $0\le a$ since $a=0+a$; if $a\le b$ then $a\le S(b)$; if $b\le a$, either $b=a$ and $a\le S(b)$, or $a=b+c$ with $c=S(c')$, whence $a=S(b)+c'$ and $S(b)\le a$.</p>
-<p><strong>(2)</strong> If $b=a+d$ then $b+c=(a+c)+d$ and $bc=ac+dc$.</p>
-<p><strong>(3)</strong> The first rule has already been proved. If $a\ne0$ and $b\ne0$, write $b=S(b')$: $ab=ab'+a\ne0$ since $a\ne0$. For cancellation by $c\ne0$: if $a\ne b$, say $a&lt;b$, then $b=a+d$ with $d\ne0$, and $bc=ac+dc$ with $dc\ne0$, so $bc\ne ac$. Finally if $ac&lt;bc$ we cannot have $b\le a$, since then $bc\le ac$ by (2).</p>
-</div>
-</div>
-
-<div class="resultat theoreme" id="bon-ordre"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Well-ordering and strong induction</div></div>
-<div class="enonce">
-<ol>
-<li>(Well-ordering) Every nonempty subset of $\N$ has a least element.</li>
-<li>(Strong induction) If a property $P$ satisfies “for every $n$, if $P(m)$ holds for all $m&lt;n$, then $P(n)$ holds”, then $P(n)$ holds for every $n$.</li>
+<li>$\le$ est un ordre total sur $\N$, de plus petit élément $0$ ;</li>
+<li>il est compatible avec les opérations : $a\le b\Rightarrow a+c\le b+c$ et $ac\le bc$ ;</li>
+<li>règles de simplification : $a+c=b+c\Rightarrow a=b$ ; si $ab=0$ alors $a=0$ ou $b=0$ ; si $ac=bc$ et $c\ne0$ alors $a=b$ ; si $ac&lt;bc$ alors $a&lt;b$.</li>
 </ol>
 </div>
-<div class="niveau" data-niveau="philo"><p>There is no infinite strictly decreasing sequence of natural numbers: one always hits bottom eventually. This is the argument guaranteeing that an algorithm which decreases an integer at each step halts, and it is how the termination of Euclid’s algorithm will be proved.</p></div>
+<div class="niveau" data-niveau="philo"><p>Ce sont les règles que l’on applique sans y penser dès l’école primaire. Les démontrer à partir des seuls axiomes de Peano montre que rien n’y est caché : tout découle de « commencer à $0$ et ajouter $1$ ». C’est la même démarche que celle de la calculabilité, qui reconstruit tout ce qui est calculable à partir de quelques opérations élémentaires.</p></div>
 <div class="niveau" data-niveau="tech">
-<p>(1) Let $A\subseteq\N$ have no least element; we show that $A$ is empty. Let $B=\{n:\ \forall m\le n,\ m\notin A\}$. We have $0\in B$, otherwise $0$ would be the least element of $A$. If $n\in B$, then $n+1\notin A$ (otherwise, every smaller element being $\le n$ and hence outside $A$, $n+1$ would be the least element of $A$), and since the $m\le n+1$ are the $m\le n$ together with $n+1$, we have $n+1\in B$. By the induction axiom, $B=\N$, hence $A=\emptyset$.</p>
-<p>(2) If $P$ did not always hold, the set of $n$ for which $P(n)$ fails would have a least element $n_0$; $P$ would hold for all $m&lt;n_0$, hence for $n_0$ by hypothesis: a contradiction.</p>
+<p><strong>Unicité de $c$</strong> : c’est la simplification $a+c=a+c'\Rightarrow c=c'$, établie à partir de Peano par récurrence sur $a$ (si $S(a)+c=S(a)+c'$ alors $S(a+c)=S(a+c')$, et l’injectivité de $S$ donne $a+c=a+c'$).</p>
+<p><strong>(1)</strong> Réflexivité : $a=a+0$. Transitivité : $b=a+c$ et $d=b+c'$ donnent $d=a+(c+c')$. Antisymétrie : si $b=a+c$ et $a=b+c'$, alors $a=a+(c+c')$, donc $c+c'=0$ par simplification ; si $c'\ne0$, $c'=S(c'')$ et $c+c'=S(c+c'')\ne0$ ; donc $c=c'=0$. Totalité, par récurrence sur $b$ à $a$ fixé : $0\le a$ car $a=0+a$ ; si $a\le b$ alors $a\le S(b)$ ; si $b\le a$, ou bien $b=a$ et $a\le S(b)$, ou bien $a=b+c$ avec $c=S(c')$, d’où $a=S(b)+c'$ et $S(b)\le a$.</p>
+<p><strong>(2)</strong> Si $b=a+d$ alors $b+c=(a+c)+d$ et $bc=ac+dc$.</p>
+<p><strong>(3)</strong> La première règle est déjà démontrée. Si $a\ne0$ et $b\ne0$, écrivons $b=S(b')$ : $ab=ab'+a\ne0$ car $a\ne0$. Pour la simplification par $c\ne0$ : si $a\ne b$, par exemple $a&lt;b$, alors $b=a+d$ avec $d\ne0$, et $bc=ac+dc$ avec $dc\ne0$, donc $bc\ne ac$. Enfin si $ac&lt;bc$ on ne peut avoir $b\le a$, car alors $bc\le ac$ par (2).</p>
 </div>
 </div>
 
-<div class="resultat theoreme" id="division"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Euclidean division</div></div>
-<div class="enonce"><p>For all $a\in\N$ and $b\ge1$, there is a unique pair $(q,r)$ such that $a=bq+r$ and $0\le r&lt;b$. We write $q=\lfloor a/b\rfloor$ (quotient) and $r=a\bmod b$ (remainder).</p></div>
-<div class="niveau" data-niveau="philo"><p>Sharing $a$ objects into packets of $b$: there is only one way to do it if we require that less than one packet remains. This operation, with Euclid’s algorithm which derives from it, is the oldest algorithm still in daily use: among other things, it is used to encrypt communications on the Internet.</p></div>
+<div class="resultat theoreme" id="bon-ordre"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Bon ordre et récurrence forte</div></div>
+<div class="enonce">
+<ol>
+<li>(Bon ordre) Toute partie non vide de $\N$ a un plus petit élément.</li>
+<li>(Récurrence forte) Si une propriété $P$ vérifie « pour tout $n$, si $P(m)$ est vraie pour tous les $m&lt;n$, alors $P(n)$ est vraie », alors $P(n)$ est vraie pour tout $n$.</li>
+</ol>
+</div>
+<div class="niveau" data-niveau="philo"><p>Il n’existe pas de suite infinie strictement décroissante d’entiers naturels : on finit toujours par toucher le fond. C’est l’argument qui garantit qu’un algorithme qui fait décroître un entier à chaque étape s’arrête, et c’est ainsi que l’on prouvera la terminaison de l’algorithme d’Euclide.</p></div>
 <div class="niveau" data-niveau="tech">
-<p><strong>Existence</strong>, by strong induction on $a$. If $a&lt;b$, take $q=0$ and $r=a$. If $a\ge b$, then $a-b&lt;a$ (since $b\ge1$), and by the induction hypothesis $a-b=bq'+r$ with $r&lt;b$; hence $a=b(q'+1)+r$. This yields the equations $\lfloor a/b\rfloor=\lfloor (a-b)/b\rfloor+1$ and $a\bmod b=(a-b)\bmod b$ for $a\ge b$.</p>
-<p><strong>Uniqueness.</strong> If $bq+r=bq'+r'$ with $r,r'&lt;b$ and, say, $q&lt;q'$, then $q'=q+d$ with $d\ge1$, and $r=bd+r'\ge b$: a contradiction. Hence $q=q'$, then $r=r'$ by cancellation.</p>
+<p>(1) Soit $A\subseteq\N$ sans plus petit élément ; montrons que $A$ est vide. Soit $B=\{n:\ \forall m\le n,\ m\notin A\}$. On a $0\in B$, sinon $0$ serait le plus petit élément de $A$. Si $n\in B$, alors $n+1\notin A$ (sinon, tout élément plus petit étant $\le n$ donc hors de $A$, $n+1$ serait le plus petit élément de $A$), et comme les $m\le n+1$ sont les $m\le n$ et $n+1$, on a $n+1\in B$. Par l’axiome de récurrence, $B=\N$, donc $A=\emptyset$.</p>
+<p>(2) Si $P$ n’était pas toujours vraie, l’ensemble des $n$ tels que $P(n)$ est fausse aurait un plus petit élément $n_0$ ; $P$ serait vraie pour tous les $m&lt;n_0$, donc pour $n_0$ par hypothèse : contradiction.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="division"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Division euclidienne</div></div>
+<div class="enonce"><p>Pour tous $a\in\N$ et $b\ge1$, il existe un unique couple $(q,r)$ tel que $a=bq+r$ et $0\le r&lt;b$. On note $q=\lfloor a/b\rfloor$ (quotient) et $r=a\bmod b$ (reste).</p></div>
+<div class="niveau" data-niveau="philo"><p>Partager $a$ objets en paquets de $b$ : il y a une seule façon de le faire si l’on exige qu’il reste moins d’un paquet. Cette opération, avec l’algorithme d’Euclide qui en découle, est le plus ancien algorithme encore utilisé quotidiennement : il sert, entre autres, au chiffrement des communications sur Internet.</p></div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Existence</strong>, par récurrence forte sur $a$. Si $a&lt;b$, on prend $q=0$ et $r=a$. Si $a\ge b$, alors $a-b&lt;a$ (car $b\ge1$), et par hypothèse de récurrence $a-b=bq'+r$ avec $r&lt;b$ ; donc $a=b(q'+1)+r$. On en tire les équations $\lfloor a/b\rfloor=\lfloor (a-b)/b\rfloor+1$ et $a\bmod b=(a-b)\bmod b$ pour $a\ge b$.</p>
+<p><strong>Unicité.</strong> Si $bq+r=bq'+r'$ avec $r,r'&lt;b$ et, par exemple, $q&lt;q'$, alors $q'=q+d$ avec $d\ge1$, et $r=bd+r'\ge b$ : contradiction. Donc $q=q'$, puis $r=r'$ par simplification.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>The existence proof is a program: subtract $b$ as long as possible, counting the subtractions.</p>
+<p>La preuve d’existence est un programme : soustraire $b$ tant que c’est possible, en comptant les soustractions.</p>
 <pre><code>division(a, b) :        // b ≥ 1
     q := 0 ; r := a
-    while r ≥ b :
+    tant que r ≥ b :
         r := r - b ; q := q + 1
-    return (q, r)</code></pre>
-<p>The loop terminates because $r$ strictly decreases (well-ordering). It performs $q$ iterations, which is slow for large numbers; school long division computes the same pair digit by digit, in a number of steps proportional to the number of digits. Both functions are primitive recursive (see <a href="recursive-functions.html#mu-borne">bounded minimization</a>).</p>
+    renvoyer (q, r)</code></pre>
+<p>La boucle termine parce que $r$ décroît strictement (bon ordre). Elle fait $q$ tours, ce qui est lent pour de grands nombres ; la division posée de l’école calcule le même couple chiffre par chiffre, en un nombre d’étapes proportionnel au nombre de chiffres. Les deux fonctions sont récursives primitives (voir <a href="fonctions-recursives.html#mu-borne">minimisation bornée</a>).</p>
 </div>
 </div>
 
-<div class="resultat definition" id="divisibilite"><div class="entete-res"><div class="type">Definition</div><div class="nom">Divisibility</div></div>
-<div class="enonce"><p>We say that $d$ divides $a$, written $d\mid a$, if there is $k\in\N$ with $a=dk$; we also say that $d$ is a divisor of $a$, or that $a$ is a multiple of $d$. For $d\ge1$, $d\mid a$ if and only if $a\bmod d=0$.</p>
-<p>Properties: $1\mid a$, $a\mid a$ and $a\mid0$; if $d\mid a$ and $a\mid b$ then $d\mid b$; if $d\mid a$ and $a\mid d$ then $a=d$; if $d\mid a$ and $d\mid b$ then $d\mid a+b$, $d\mid a-b$ (for $a\ge b$) and $d\mid ka$; if $d\mid a$ and $a\ne0$ then $d\le a$.</p></div>
+<div class="resultat definition sans-philo" id="divisibilite"><div class="entete-res"><div class="type">Définition</div><div class="nom">Divisibilité</div></div>
+<div class="enonce"><p>On dit que $d$ divise $a$, noté $d\mid a$, s’il existe $k\in\N$ tel que $a=dk$ ; on dit aussi que $d$ est un diviseur de $a$, ou $a$ un multiple de $d$. Pour $d\ge1$, $d\mid a$ si et seulement si $a\bmod d=0$.</p>
+<p>Propriétés : $1\mid a$, $a\mid a$ et $a\mid0$ ; si $d\mid a$ et $a\mid b$ alors $d\mid b$ ; si $d\mid a$ et $a\mid d$ alors $a=d$ ; si $d\mid a$ et $d\mid b$ alors $d\mid a+b$, $d\mid a-b$ (pour $a\ge b$) et $d\mid ka$ ; si $d\mid a$ et $a\ne0$ alors $d\le a$.</p></div>
 <div class="niveau" data-niveau="tech">
-<p>Transitivity: $a=dk$ and $b=al$ give $b=d(kl)$. Antisymmetry: if $a=dk$ and $d=al$, then $a=a(lk)$; if $a=0$ then $d=0$; otherwise $lk=1$ by cancellation, hence $k=l=1$ (if $k\ge2$ or $l\ge2$, or if one of them is zero, the product is not $1$). Combinations: $dk+dl=d(k+l)$ and, for $dk\ge dl$, $dk-dl=d(k-l)$ (we have $k\ge l$ by the last cancellation rule). If $a=dk\ne0$ then $k\ge1$ and $a=d+d(k-1)\ge d$. The equivalence with the remainder comes from the uniqueness of division: $a=dk+0$.</p>
+<p>Transitivité : $a=dk$ et $b=al$ donnent $b=d(kl)$. Antisymétrie : si $a=dk$ et $d=al$, alors $a=a(lk)$ ; si $a=0$ alors $d=0$ ; sinon $lk=1$ par simplification, donc $k=l=1$ (si $k\ge2$ ou $l\ge2$, ou si l’un est nul, le produit n’est pas $1$). Combinaisons : $dk+dl=d(k+l)$ et, pour $dk\ge dl$, $dk-dl=d(k-l)$ (on a $k\ge l$ par la dernière règle de simplification). Si $a=dk\ne0$ alors $k\ge1$ et $a=d+d(k-1)\ge d$. L’équivalence avec le reste vient de l’unicité de la division : $a=dk+0$.</p>
 </div>
 </div>
 
-<div class="resultat definition" id="premiers"><div class="entete-res"><div class="type">Definition</div><div class="nom">Prime numbers</div></div>
-<div class="enonce"><p>An integer $p$ is prime if it has exactly two divisors, $1$ and $p$; in other words if $p\ge2$ and its only divisors are $1$ and $p$. The first primes are $2,3,5,7,11,13,17,19,23,29,\dots$ An integer $n\ge2$ that is not prime is called composite: it can be written $n=ab$ with $1&lt;a,b&lt;n$.</p></div>
-<div class="niveau" data-niveau="philo"><p>Prime numbers are the “atoms” of multiplication: they cannot be broken into a product of smaller numbers. The fundamental theorem of arithmetic, below, says that every integer is made of these atoms, in only one way. Neither $0$ nor $1$ is prime: $1$ is the neutral element (the “empty product”), and excluding it is exactly what makes factorization unique.</p></div>
+<div class="resultat definition" id="premiers"><div class="entete-res"><div class="type">Définition</div><div class="nom">Nombres premiers</div></div>
+<div class="enonce"><p>Un entier $p$ est premier s’il a exactement deux diviseurs, $1$ et $p$ ; autrement dit si $p\ge2$ et si ses seuls diviseurs sont $1$ et $p$. Les premiers nombres premiers sont $2,3,5,7,11,13,17,19,23,29,\dots$ Un entier $n\ge2$ qui n’est pas premier est dit composé : il s’écrit $n=ab$ avec $1&lt;a,b&lt;n$.</p></div>
+<div class="niveau" data-niveau="philo"><p>Les nombres premiers sont les « atomes » de la multiplication : on ne peut pas les casser en produit de nombres plus petits. Le théorème fondamental de l’arithmétique, ci-dessous, dit que tout entier est fait de ces atomes, d’une seule manière. Ni $0$ ni $1$ ne sont premiers : $1$ est l’élément neutre (le « produit vide »), et l’exclure est exactement ce qui rend la décomposition unique.</p></div>
 </div>
 
-<div class="resultat theoreme" id="infinite-premiers"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Prime divisor and infinitude of the primes (Euclid)</div></div>
+<div class="resultat theoreme" id="infinite-premiers"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Diviseur premier et infinité des nombres premiers (Euclide)</div></div>
 <div class="enonce"><ol>
-<li>Every integer $n\ge2$ has at least one prime divisor: its least divisor $d>1$ is prime. If $n$ is composite, this divisor satisfies $d^2\le n$.</li>
-<li>There are infinitely many prime numbers.</li>
+<li>Tout entier $n\ge2$ a au moins un diviseur premier : son plus petit diviseur $d>1$ est premier. Si $n$ est composé, ce diviseur vérifie $d^2\le n$.</li>
+<li>Il existe une infinité de nombres premiers.</li>
 </ol></div>
-<div class="niveau" data-niveau="philo"><p>Euclid’s proof (<em>Elements</em>, Book IX, Proposition 20, around 300 BCE) is one of the oldest mathematical arguments that have come down to us, and one of the shortest: give me a finite list of primes, and I will build a number divisible by none of them. It is constructive: it provides an algorithm that, from $k$ primes, finds a new one.</p></div>
+<div class="niveau" data-niveau="philo"><p>La preuve d’Euclide (<em>Éléments</em>, livre IX, proposition 20, vers 300 avant notre ère) est l’un des plus anciens raisonnements mathématiques qui nous soient parvenus, et l’un des plus courts : donnez-moi une liste finie de nombres premiers, je fabrique un nombre qui n’est divisible par aucun d’eux. Elle est constructive : elle fournit un algorithme qui, à partir de $k$ nombres premiers, en trouve un nouveau.</p></div>
 <div class="niveau" data-niveau="tech">
-<p>(1) The set of divisors of $n$ greater than $1$ contains $n$, so it is nonempty and has a least element $d$ (well-ordering). If $d$ were not prime, it would have a divisor $e$ with $1&lt;e&lt;d$, and $e\mid d\mid n$ would contradict the minimality of $d$. If $n$ is composite, $n=de$ with $e>1$ another divisor, so $e\ge d$ and $n=de\ge d^2$.</p>
-<p>(2) Let $p_1,\dots,p_k$ be primes and $N=p_1p_2\cdots p_k+1\ge2$. By (1), $N$ has a prime divisor $p$. If $p$ were one of the $p_i$, it would divide $N$ and $p_1\cdots p_k$, hence their difference $1$, which is impossible since $p\ge2$. So no finite list contains all the primes.</p>
+<p>(1) L’ensemble des diviseurs de $n$ supérieurs à $1$ contient $n$, il est donc non vide et a un plus petit élément $d$ (bon ordre). Si $d$ n’était pas premier, il aurait un diviseur $e$ avec $1&lt;e&lt;d$, et $e\mid d\mid n$ contredirait la minimalité de $d$. Si $n$ est composé, $n=de$ avec $e>1$ un autre diviseur, donc $e\ge d$ et $n=de\ge d^2$.</p>
+<p>(2) Soient $p_1,\dots,p_k$ des nombres premiers et $N=p_1p_2\cdots p_k+1\ge2$. Par (1), $N$ a un diviseur premier $p$. Si $p$ était l’un des $p_i$, il diviserait $N$ et $p_1\cdots p_k$, donc leur différence $1$, ce qui est impossible puisque $p\ge2$. Aucune liste finie ne contient donc tous les nombres premiers.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>Point (1) gives the method of trial division: to know whether $n$ is prime, it suffices to try the divisors $d$ with $d^2\le n$. Point (2) provides the bound $p_{k+1}\le p_1\cdots p_k+1\le p_k!+1$ which makes the sequence of primes <a href="recursive-functions.html#mu-borne">primitive recursive</a>. The tool below factors an integer by trial division (try $360$, $2^{31}-1=2147483647$, which is prime, or $1001$).</p>
-<div class="arith-widget" data-mode="facteurs" data-titre="Prime factorization" data-args="360"></div>
+<p>Le point (1) donne la méthode des divisions d’essai : pour savoir si $n$ est premier, il suffit d’essayer les diviseurs $d$ tels que $d^2\le n$. Le point (2) fournit la borne $p_{k+1}\le p_1\cdots p_k+1\le p_k!+1$ qui rend la suite des nombres premiers <a href="fonctions-recursives.html#mu-borne">récursive primitive</a>. L’outil ci-dessous décompose un entier par divisions d’essai (essayez $360$, $2^{31}-1=2147483647$, qui est premier, ou $1001$).</p>
+<div class="arith-widget" data-mode="facteurs" data-titre="Décomposition en facteurs premiers" data-args="360"></div>
 </div>
 </div>
 
-<div class="resultat theoreme" id="lemme-euclide"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Euclid’s lemma</div></div>
-<div class="enonce"><p>If a prime $p$ divides a product $ab$, then $p\mid a$ or $p\mid b$. More generally, if $p\mid a_1a_2\cdots a_k$, then $p$ divides one of the $a_i$.</p></div>
-<div class="niveau" data-niveau="philo"><p>This is the property that makes primes genuine atoms. It is false for composite numbers: $6$ divides $4\times9=36$ without dividing either $4$ or $9$. It is not obvious at all: why would a number that “sees” neither $a$ nor $b$ see their product? The proof below rests on Euclidean division, that is, ultimately, on an algorithm.</p></div>
+<div class="resultat theoreme" id="lemme-euclide"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Lemme d’Euclide</div></div>
+<div class="enonce"><p>Si un nombre premier $p$ divise un produit $ab$, alors $p\mid a$ ou $p\mid b$. Plus généralement, si $p\mid a_1a_2\cdots a_k$, alors $p$ divise l’un des $a_i$.</p></div>
+<div class="niveau" data-niveau="philo"><p>C’est la propriété qui fait des nombres premiers de vrais atomes. Elle est fausse pour les nombres composés : $6$ divise $4\times9=36$ sans diviser ni $4$ ni $9$. Elle n’a rien d’évident : pourquoi un nombre qui ne « voit » ni $a$ ni $b$ verrait-il leur produit ? La preuve ci-dessous repose sur la division euclidienne, c’est-à-dire, au fond, sur un algorithme.</p></div>
 <div class="niveau" data-niveau="tech">
-<p>Suppose $p\nmid a$ and let us show $p\mid b$. Let $E=\{n\ge1:\ p\mid na\}$. We have $p\in E$, and $b\in E$ if $b\ne0$ (if $b=0$, $p\mid b$ and there is nothing to prove). Let $m$ be the least element of $E$ (well-ordering).</p>
-<p><em>$m$ divides every element of $E$.</em> Let $n\in E$; divide: $n=qm+r$ with $r&lt;m$. Then $na=q(ma)+ra$, and $p$ divides $na$ and $q(ma)$, hence their difference $ra$. If $r\ne0$, $r$ would be an element of $E$ smaller than $m$: impossible. So $r=0$ and $m\mid n$.</p>
-<p>In particular $m\mid p$, so $m=1$ or $m=p$ since $p$ is prime. If $m=1$, then $p\mid a$, contrary to the hypothesis. So $m=p$, and since $m\mid b$, we have $p\mid b$.</p>
-<p>The case of $k$ factors follows by induction on $k$: if $p\mid(a_1\cdots a_{k-1})\,a_k$, then $p\mid a_k$ or $p\mid a_1\cdots a_{k-1}$.</p>
+<p>Supposons $p\nmid a$ et montrons $p\mid b$. Soit $E=\{n\ge1:\ p\mid na\}$. On a $p\in E$, et $b\in E$ si $b\ne0$ (si $b=0$, $p\mid b$ et il n’y a rien à démontrer). Soit $m$ le plus petit élément de $E$ (bon ordre).</p>
+<p><em>$m$ divise tout élément de $E$.</em> Soit $n\in E$ ; divisons : $n=qm+r$ avec $r&lt;m$. Alors $na=q(ma)+ra$, et $p$ divise $na$ et $q(ma)$, donc leur différence $ra$. Si $r\ne0$, $r$ serait un élément de $E$ plus petit que $m$ : impossible. Donc $r=0$ et $m\mid n$.</p>
+<p>En particulier $m\mid p$, donc $m=1$ ou $m=p$ puisque $p$ est premier. Si $m=1$, alors $p\mid a$, contrairement à l’hypothèse. Donc $m=p$, et comme $m\mid b$, on a $p\mid b$.</p>
+<p>Le cas de $k$ facteurs s’en déduit par récurrence sur $k$ : si $p\mid(a_1\cdots a_{k-1})\,a_k$, alors $p\mid a_k$ ou $p\mid a_1\cdots a_{k-1}$.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>One more often finds a proof through Bézout’s identity: if $p\nmid a$, then $\gcd(a,p)=1$, and the extended Euclidean algorithm provides integers $u,v$ (possibly negative) with $au+pv=1$, whence $b=abu+pbv$, divisible by $p$. The following tool runs Euclid’s algorithm and displays the Bézout coefficients; the algorithm terminates because the remainders strictly decrease, and the last nonzero remainder is the gcd, since $\gcd(a,b)=\gcd(b,a\bmod b)$ (an integer divides $a$ and $b$ if and only if it divides $b$ and $a-qb$).</p>
-<div class="arith-widget" data-mode="euclide" data-titre="Euclid’s algorithm and Bézout’s identity" data-args="1071, 462"></div>
+<p>On trouve plus souvent une preuve par l’identité de Bézout : si $p\nmid a$, alors $\mathrm{pgcd}(a,p)=1$, et l’algorithme d’Euclide étendu fournit des entiers relatifs $u,v$ avec $au+pv=1$, d’où $b=abu+pbv$, divisible par $p$. L’outil suivant exécute l’algorithme d’Euclide et affiche les coefficients de Bézout ; l’algorithme termine parce que les restes décroissent strictement, et le dernier reste non nul est le pgcd, puisque $\mathrm{pgcd}(a,b)=\mathrm{pgcd}(b,a\bmod b)$ (un entier divise $a$ et $b$ si et seulement s’il divise $b$ et $a-qb$).</p>
+<div class="arith-widget" data-mode="euclide" data-titre="Algorithme d’Euclide et identité de Bézout" data-args="1071, 462"></div>
 </div>
 </div>
 
-<div class="resultat theoreme" id="decomposition"><div class="entete-res"><div class="type">Theorem</div><div class="nom">Fundamental theorem of arithmetic</div></div>
-<div class="enonce"><p>Every integer $n\ge1$ can be written as a product of primes
+<div class="resultat theoreme" id="decomposition"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Théorème fondamental de l’arithmétique</div></div>
+<div class="enonce"><p>Tout entier $n\ge1$ s’écrit comme un produit de nombres premiers
 $$n=p_1p_2\cdots p_k\qquad(k\ge0,\ p_1\le p_2\le\cdots\le p_k),$$
-and this expression is unique (for $n=1$, it is the empty product, $k=0$). Grouping equal factors: $n=\prod_{i\ge1}\mathrm{Pr}(i)^{e_i}$, where $\mathrm{Pr}(i)$ is the $i$-th prime and the exponents $e_i\in\N$, almost all zero, are determined by $n$.</p></div>
+et cette écriture est unique (pour $n=1$, c’est le produit vide, $k=0$). En regroupant les facteurs égaux : $n=\prod_{i\ge1}\mathrm{Pr}(i)^{e_i}$, où $\mathrm{Pr}(i)$ est le $i$-ième nombre premier et où les exposants $e_i\in\N$, presque tous nuls, sont déterminés par $n$.</p></div>
 <div class="niveau" data-niveau="philo">
-<p>Every integer has a unique “identity card”: the list of its prime factors. The <a href="recursive-functions.html#godel">Gödel numbering</a> used throughout this manual rests on this theorem: a sequence $(a_1,\dots,a_k)$ is encoded by the integer $2^{a_1}3^{a_2}\cdots$, and uniqueness of factorization guarantees that the sequence can always be read back. Without this theorem, one could not turn programs into numbers, nor numbers into programs.</p>
-<p>Actually finding the factorization is another matter. It is computable (it suffices to try divisors), but no known algorithm quickly factors very large numbers on a classical computer, and the security of RSA encryption rests on this difficulty. The existence of an algorithm says nothing about its efficiency: this is the boundary between computability and complexity.</p>
+<p>Chaque entier a une « carte d’identité » unique : la liste de ses facteurs premiers. C’est sur ce théorème que repose la <a href="fonctions-recursives.html#godel">numérotation de Gödel</a> utilisée dans tout ce manuel : on code une suite $(a_1,\dots,a_k)$ par l’entier $2^{a_1}3^{a_2}\cdots$, et l’unicité de la décomposition garantit qu’on peut toujours relire la suite. Sans ce théorème, on ne pourrait pas faire de programmes des nombres, ni des nombres des programmes.</p>
+<p>Trouver effectivement la décomposition est une autre affaire. Elle est calculable (il suffit d’essayer les diviseurs), mais aucun algorithme connu ne factorise rapidement les très grands nombres sur un ordinateur classique, et c’est sur cette difficulté que repose la sécurité du chiffrement RSA. L’existence d’un algorithme ne dit rien de son efficacité : c’est la frontière entre calculabilité et complexité.</p>
 </div>
 <div class="niveau" data-niveau="tech">
-<p><strong>Existence</strong>, by strong induction on $n$. For $n=1$, take the empty product. If $n\ge2$ is prime, $n=n$ works. Otherwise $n=ab$ with $1&lt;a,b&lt;n$; by the induction hypothesis $a$ and $b$ are products of primes, hence so is $n$ (sort the factors in increasing order).</p>
-<p><strong>Uniqueness</strong>, by strong induction on $n$. Suppose $n=p_1\cdots p_k=q_1\cdots q_l$, two ordered expressions. If $n=1$, then $k=l=0$, since a nonempty product of primes is at least $2$. Otherwise $k,l\ge1$; $p_1$ divides $q_1\cdots q_l$, hence, by Euclid’s lemma, divides some $q_j$; since $q_j$ is prime and $p_1\ne1$, $p_1=q_j\ge q_1$. Symmetrically $q_1\ge p_1$, so $p_1=q_1$. Cancelling $p_1\ne0$: $p_2\cdots p_k=q_2\cdots q_l=n/p_1&lt;n$, and by the induction hypothesis $k=l$ and $p_i=q_i$ for all $i$.</p>
-<p><strong>Consequences.</strong> $d\mid n$ if and only if each exponent of $d$ is at most the corresponding exponent of $n$; the exponents of a product add up; and the exponent of $\mathrm{Pr}(i)$ in $n$, written $(n)_i$, is a primitive recursive function of $(n,i)$: it is the largest $e\le n$ such that $\mathrm{Pr}(i)^e\mid n$.</p>
+<p><strong>Existence</strong>, par récurrence forte sur $n$. Pour $n=1$, on prend le produit vide. Si $n\ge2$ est premier, $n=n$ convient. Sinon $n=ab$ avec $1&lt;a,b&lt;n$ ; par hypothèse de récurrence $a$ et $b$ sont des produits de nombres premiers, donc $n$ aussi (on range les facteurs par ordre croissant).</p>
+<p><strong>Unicité</strong>, par récurrence forte sur $n$. Supposons $n=p_1\cdots p_k=q_1\cdots q_l$, deux écritures ordonnées. Si $n=1$, alors $k=l=0$, car un produit non vide de nombres premiers vaut au moins $2$. Sinon $k,l\ge1$ ; $p_1$ divise $q_1\cdots q_l$, donc, par le lemme d’Euclide, divise un $q_j$ ; comme $q_j$ est premier et $p_1\ne1$, $p_1=q_j\ge q_1$. Symétriquement $q_1\ge p_1$, donc $p_1=q_1$. En simplifiant par $p_1\ne0$ : $p_2\cdots p_k=q_2\cdots q_l=n/p_1&lt;n$, et par hypothèse de récurrence $k=l$ et $p_i=q_i$ pour tout $i$.</p>
+<p><strong>Conséquences.</strong> $d\mid n$ si et seulement si chaque exposant de $d$ est inférieur ou égal à l’exposant correspondant de $n$ ; les exposants d’un produit s’additionnent ; et l’exposant de $\mathrm{Pr}(i)$ dans $n$, noté $(n)_i$, est une fonction récursive primitive de $(n,i)$ : c’est le plus grand $e\le n$ tel que $\mathrm{Pr}(i)^e\mid n$.</p>
 </div>
 <div class="niveau" data-niveau="techno">
-<p>The factorization program follows the existence proof, replacing “$n=ab$” by the search for the least divisor, which is prime:</p>
-<pre><code>factorize(n) :          // n ≥ 1
-    factors := [] ; d := 2
-    while d × d ≤ n :
-        if n mod d = 0 : append d to factors ; n := n / d
-        else : d := d + 1
-    if n > 1 : append n to factors
-    return factors</code></pre>
-<p>The factors come out in increasing order, and each one is prime: when $d\mid n$ is found, no integer between $2$ and $d-1$ divides $n$ any longer. When $d^2>n$, what remains is $1$ or prime, by point (1) of Euclid’s proposition. Uniqueness guarantees that any other correct algorithm will give the same list. These programs, like the functions $(n)_i$ and $\mathrm{Pr}(i)$, are exactly those that the <a href="recursive-functions.html#codages-suites">primitive recursive library</a> needs in order to decode Gödel numbers.</p>
+<p>Le programme de décomposition suit la preuve d’existence, en remplaçant « $n=ab$ » par la recherche du plus petit diviseur, qui est premier :</p>
+<pre><code>décomposer(n) :         // n ≥ 1
+    facteurs := [] ; d := 2
+    tant que d × d ≤ n :
+        si n mod d = 0 : ajouter d à facteurs ; n := n / d
+        sinon : d := d + 1
+    si n > 1 : ajouter n à facteurs
+    renvoyer facteurs</code></pre>
+<p>Les facteurs sortent dans l’ordre croissant, et chacun est premier : quand on trouve $d\mid n$, aucun entier entre $2$ et $d-1$ ne divise plus $n$. Quand $d^2>n$, ce qui reste est $1$ ou premier, par le point (1) de la proposition d’Euclide. L’unicité garantit que tout autre algorithme correct donnera la même liste. Ces programmes, comme les fonctions $(n)_i$ et $\mathrm{Pr}(i)$, sont exactement ceux dont la <a href="fonctions-recursives.html#codages-suites">bibliothèque récursive primitive</a> a besoin pour décoder les nombres de Gödel.</p>
 </div>
 </div>
 
-<h2 id="mots">Alphabets, words, languages</h2>
+<h2 id="mots">Alphabets, mots, langages</h2>
 
-<div class="resultat definition" id="def-mots"><div class="entete-res"><div class="type">Definition</div><div class="nom">Words and languages</div></div>
+<div class="resultat definition sans-philo" id="def-mots"><div class="entete-res"><div class="type">Définition</div><div class="nom">Mots et langages</div></div>
 <div class="enonce">
 <ul>
-<li>An <strong>alphabet</strong> $\Sigma$ is a finite nonempty set of <em>letters</em>.</li>
-<li>A <strong>word</strong> is a finite sequence of letters; $\Sigma^*$ is the set of words, $\varepsilon$ the empty word, $|u|$ the length of $u$.</li>
-<li><strong>Concatenation</strong> $u\cdot v$ (or $uv$) puts $v$ after $u$: $u\cdot\varepsilon=u$ and $u\cdot(va)=(u\cdot v)a$ for $a\in\Sigma$. It is associative, with neutral element $\varepsilon$, and not commutative. We write $u^n=u\cdots u$ ($n$ times), $u^0=\varepsilon$.</li>
-<li>A <strong>language</strong> is a subset of $\Sigma^*$. For languages $L,L'$: $LL'=\{uu':u\in L,u'\in L'\}$, $L^0=\{\varepsilon\}$, $L^{n+1}=LL^n$, $L^*=\bigcup_n L^n$ (Kleene star), $L^+=LL^*$.</li>
-<li>The <strong>regular languages</strong> form the smallest set of languages containing $\emptyset$, $\{\varepsilon\}$ and the $\{a\}$ ($a\in\Sigma$), and closed under union, concatenation and star.</li>
+<li>Un <strong>alphabet</strong> $\Sigma$ est un ensemble fini non vide de <em>lettres</em>.</li>
+<li>Un <strong>mot</strong> est une suite finie de lettres ; $\Sigma^*$ est l’ensemble des mots, $\varepsilon$ le mot vide, $|u|$ la longueur de $u$.</li>
+<li>La <strong>concaténation</strong> $u\cdot v$ (ou $uv$) met $v$ à la suite de $u$ : $u\cdot\varepsilon=u$ et $u\cdot(va)=(u\cdot v)a$ pour $a\in\Sigma$. Elle est associative, d’élément neutre $\varepsilon$, et non commutative. On note $u^n=u\cdots u$ ($n$ fois), $u^0=\varepsilon$.</li>
+<li>Un <strong>langage</strong> est une partie de $\Sigma^*$. Pour des langages $L,L'$ : $LL'=\{uu':u\in L,u'\in L'\}$, $L^0=\{\varepsilon\}$, $L^{n+1}=LL^n$, $L^*=\bigcup_n L^n$ (étoile de Kleene), $L^+=LL^*$.</li>
+<li>Les <strong>langages réguliers</strong> sont le plus petit ensemble de langages contenant $\emptyset$, $\{\varepsilon\}$ et les $\{a\}$ ($a\in\Sigma$), et clos par union, concaténation et étoile.</li>
 </ul>
 </div>
 </div>
 
-<h2 id="fonctions">Sets, relations and functions</h2>
+<h2 id="fonctions">Ensembles, relations et fonctions</h2>
 
-<div class="resultat definition" id="def-fonctions"><div class="entete-res"><div class="type">Definition</div><div class="nom">Sets, relations, partial functions</div></div>
+<div class="resultat definition sans-philo" id="def-fonctions"><div class="entete-res"><div class="type">Définition</div><div class="nom">Ensembles, relations, fonctions partielles</div></div>
 <div class="enonce">
 <ul>
-<li>$\mathcal P(E)$ is the set of subsets of $E$; $E\times F=\{(x,y):x\in E\text{ and }y\in F\}$ is the Cartesian product.</li>
-<li>A <strong>relation</strong> between $E$ and $F$ is a subset of $E\times F$. A relation $R$ on $E$ is reflexive, symmetric, antisymmetric, transitive according to the usual definitions; a <em>preorder</em> is reflexive and transitive, an <em>order</em> is an antisymmetric preorder, an <em>equivalence</em> is a symmetric preorder.</li>
-<li>A <strong>partial function</strong> $f$ from $E$ to $F$ is a relation such that for every $x$ there is <em>at most</em> one $y$ with $(x,y)\in f$; we then write $f(x)=y$ and $f(x)\conv$, and $f(x)\ind$ if there is none. It is <strong>total</strong> if $f(x)\conv$ for every $x\in E$. $F^E$ denotes the set of total functions from $E$ to $F$.</li>
-<li>A total function $f:E\to F$ is <strong>injective</strong> if two distinct elements have distinct images, <strong>surjective</strong> if every $y\in F$ has at least one preimage, <strong>bijective</strong> if it is both. $E$ is <strong>countable</strong> if it is in bijection with a subset of $\N$.</li>
-<li>Anonymous notation: $x\mapsto e$ (or $\lambda x.e$) denotes the function mapping $x$ to the value of the expression $e$.</li>
+<li>$\mathcal P(E)$ est l’ensemble des parties de $E$ ; $E\times F=\{(x,y):x\in E\text{ et }y\in F\}$ est le produit cartésien.</li>
+<li>Une <strong>relation</strong> entre $E$ et $F$ est une partie de $E\times F$. Une relation $R$ sur $E$ est réflexive, symétrique, antisymétrique, transitive selon les définitions usuelles ; un <em>préordre</em> est réflexif et transitif, un <em>ordre</em> est un préordre antisymétrique, une <em>équivalence</em> est un préordre symétrique.</li>
+<li>Une <strong>fonction partielle</strong> $f$ de $E$ dans $F$ est une relation telle que pour tout $x$ il existe <em>au plus</em> un $y$ avec $(x,y)\in f$ ; on écrit alors $f(x)=y$ et $f(x)\conv$, et $f(x)\ind$ s’il n’y en a pas. Elle est <strong>totale</strong> si $f(x)\conv$ pour tout $x\in E$. $F^E$ désigne l’ensemble des fonctions totales de $E$ dans $F$.</li>
+<li>Une fonction totale $f:E\to F$ est <strong>injective</strong> si deux éléments distincts ont des images distinctes, <strong>surjective</strong> si tout $y\in F$ a au moins un antécédent, <strong>bijective</strong> si elle est les deux. $E$ est <strong>dénombrable</strong> s’il est en bijection avec une partie de $\N$.</li>
+<li>Notation anonyme : $x\mapsto e$ (ou $\lambda x.e$) désigne la fonction qui à $x$ associe la valeur de l’expression $e$.</li>
 </ul>
 </div>
 <div class="niveau" data-niveau="tech"></div>
 </div>
 
-<h2 id="logique">Predicate logic</h2>
+<h2 id="logique">Logique des prédicats</h2>
 
-<div class="resultat definition" id="def-logique"><div class="entete-res"><div class="type">Definition</div><div class="nom">Formulas and truth</div></div>
+<div class="resultat definition sans-philo" id="def-logique"><div class="entete-res"><div class="type">Définition</div><div class="nom">Formules et vérité</div></div>
 <div class="enonce">
-<p>The <strong>terms</strong> of arithmetic are built from variables and the constants $0,1$ by $+$ and $\times$. The <strong>formulas</strong> are built from equations $t_1=t_2$ by $\neg$, $\wedge$, $\vee$, $\Rightarrow$, $\exists x$, $\forall x$. Given a valuation $\sigma$ (a function from variables to $\N$), the value $\llbracket t\rrbracket_\sigma$ of a term and the truth $\sigma\models\phi$ of a formula are defined by induction:</p>
+<p>Les <strong>termes</strong> de l’arithmétique sont construits à partir des variables et des constantes $0,1$ par $+$ et $\times$. Les <strong>formules</strong> sont construites à partir des égalités $t_1=t_2$ par $\neg$, $\wedge$, $\vee$, $\Rightarrow$, $\exists x$, $\forall x$. Étant donnée une valuation $\sigma$ (une fonction des variables dans $\N$), la valeur $\llbracket t\rrbracket_\sigma$ d’un terme et la vérité $\sigma\models\phi$ d’une formule sont définies par induction :</p>
 $$\begin{aligned}
 &\llbracket x\rrbracket_\sigma=\sigma(x),\quad \llbracket t_1+t_2\rrbracket_\sigma=\llbracket t_1\rrbracket_\sigma+\llbracket t_2\rrbracket_\sigma,\quad \llbracket t_1\times t_2\rrbracket_\sigma=\llbracket t_1\rrbracket_\sigma\times\llbracket t_2\rrbracket_\sigma,\\
-&\sigma\models t_1=t_2 \iff \llbracket t_1\rrbracket_\sigma=\llbracket t_2\rrbracket_\sigma,\qquad \sigma\models\neg\phi\iff\sigma\not\models\phi,\qquad \sigma\models\phi\wedge\psi\iff\sigma\models\phi\text{ and }\sigma\models\psi,\\
-&\sigma\models\exists x\,\phi\iff\text{there is }n\in\N\text{ such that }\sigma[x\mapsto n]\models\phi,\qquad \sigma\models\forall x\,\phi\iff\text{for every }n,\ \sigma[x\mapsto n]\models\phi.
+&\sigma\models t_1=t_2 \iff \llbracket t_1\rrbracket_\sigma=\llbracket t_2\rrbracket_\sigma,\qquad \sigma\models\neg\phi\iff\sigma\not\models\phi,\qquad \sigma\models\phi\wedge\psi\iff\sigma\models\phi\text{ et }\sigma\models\psi,\\
+&\sigma\models\exists x\,\phi\iff\text{il existe }n\in\N\text{ tel que }\sigma[x\mapsto n]\models\phi,\qquad \sigma\models\forall x\,\phi\iff\text{pour tout }n,\ \sigma[x\mapsto n]\models\phi.
 \end{aligned}$$
-<p>The <strong>bounded</strong> quantifiers $\exists x&lt;t\,\phi$ and $\forall x&lt;t\,\phi$ abbreviate $\exists x\,(x&lt;t\wedge\phi)$ and $\forall x\,(x&lt;t\Rightarrow\phi)$, where $x&lt;t$ abbreviates $\exists z\,(x+z+1=t)$.</p>
+<p>Les quantificateurs <strong>bornés</strong> $\exists x&lt;t\,\phi$ et $\forall x&lt;t\,\phi$ abrègent $\exists x\,(x&lt;t\wedge\phi)$ et $\forall x\,(x&lt;t\Rightarrow\phi)$, où $x&lt;t$ abrège $\exists z\,(x+z+1=t)$.</p>
 </div>
-<div class="niveau" data-niveau="tech"><p>Exponentiation is not needed in the language: it is definable from $+$ and $\times$ (thanks to Gödel’s $\beta$ function, see <a href="incompleteness.html#representabilite">Incompleteness</a>).</p></div>
+<div class="niveau" data-niveau="tech"><p>L’exponentiation n’est pas nécessaire dans le langage : elle est définissable à partir de $+$ et $\times$ (grâce à la fonction $\beta$ de Gödel, voir <a href="incompletude.html#representabilite">Incomplétude</a>).</p></div>
 </div>
 
-<div class="resultat definition" id="zfc"><div class="entete-res"><div class="type">Definition</div><div class="nom">The set theory ZFC</div></div>
+<div class="resultat definition" id="zfc"><div class="entete-res"><div class="type">Définition</div><div class="nom">La théorie des ensembles ZFC</div></div>
 <div class="enonce">
-<p><strong>ZFC</strong> (Zermelo-Fraenkel with the axiom of choice) is a first-order theory in a language with only one relation symbol, membership $\in$. Its axioms assert extensionality (two sets with the same elements are equal), the existence of the empty set, of the pair $\{a,b\}$, of the union $\bigcup a$, of the power set $\mathcal P(a)$ and of an infinite set, foundation (no infinite sequence $a_1\ni a_2\ni\cdots$) and choice; to these are added two <em>schemes</em>: separation (for every formula $\phi$, $\{x\in a:\phi(x)\}$ exists) and replacement (the image of a set under a functional relation defined by a formula is a set).</p>
-<p>The integers are encoded in von Neumann’s way: $0=\varnothing$, $n+1=n\cup\{n\}$, and $\mathbb N$ is the smallest set containing $0$ and closed under $x\mapsto x\cup\{x\}$. Addition and multiplication are defined by recursion on $\mathbb N$.</p>
-<p>Two facts are used in this manual: (1) the set of axioms of ZFC is primitive recursive (a formula is an axiom if it is one of the eight axioms or an instance of one of the two schemes, which is checked by traversing the formula); (2) ZFC proves the translation, for von Neumann integers, of each axiom of <a href="incompleteness.html#def-peano">Peano arithmetic</a>, hence of each of its theorems.</p>
+<p><strong>ZFC</strong> (Zermelo-Fraenkel avec l’axiome du choix) est une théorie du premier ordre dans un langage qui n’a qu’un symbole de relation, l’appartenance $\in$. Ses axiomes affirment l’extensionnalité (deux ensembles qui ont les mêmes éléments sont égaux), l’existence de l’ensemble vide, de la paire $\{a,b\}$, de la réunion $\bigcup a$, de l’ensemble des parties $\mathcal P(a)$ et d’un ensemble infini, la fondation (pas de suite infinie $a_1\ni a_2\ni\cdots$) et le choix ; s’y ajoutent deux <em>schémas</em> : la compréhension (pour toute formule $\phi$, $\{x\in a:\phi(x)\}$ existe) et le remplacement (l’image d’un ensemble par une relation fonctionnelle définie par une formule est un ensemble).</p>
+<p>On y code les entiers à la manière de von Neumann : $0=\varnothing$, $n+1=n\cup\{n\}$, et $\mathbb N$ est le plus petit ensemble qui contient $0$ et qui est clos par $x\mapsto x\cup\{x\}$. Addition et multiplication se définissent par récurrence sur $\mathbb N$.</p>
+<p>Deux faits sont utilisés dans ce manuel : (1) l’ensemble des axiomes de ZFC est récursif primitif (une formule est un axiome si elle est l’un des huit axiomes ou une instance de l’un des deux schémas, ce qu’on vérifie par un parcours de la formule) ; (2) ZFC démontre la traduction, pour les entiers de von Neumann, de chacun des axiomes de l’<a href="incompletude.html#def-peano">arithmétique de Peano</a>, donc de chacun de ses théorèmes.</p>
 </div>
-<div class="niveau" data-niveau="philo"><p>ZFC is the theory in which, in principle, almost all of mathematics is written: a published proof can, with much patience, be translated into a formal proof in ZFC. To say that a statement is “not provable in ZFC” is to say that it escapes the usual methods of mathematicians. Since ZFC contains Peano arithmetic and its axioms are decidable, the incompleteness theorems apply to it.</p></div>
-<div class="niveau" data-niveau="tech"><p><strong>Point (2).</strong> The axiom of infinity and separation yield $\mathbb N$, the intersection of the inductive sets contained in a given inductive set. Hence the induction principle for every formula: if $\phi(0)$ and $\forall n\,(\phi(n)\Rightarrow\phi(n+1))$, the set $\{n\in\mathbb N:\phi(n)\}$ is inductive, hence equal to $\mathbb N$. The successor is never $\varnothing$ (it contains $n$), and it is injective: if $n\cup\{n\}=m\cup\{m\}$ with $n\ne m$, then $n\in m$ and $m\in n$, which foundation forbids. The recursion theorem (which uses replacement) provides $+$ and $\times$ with their defining equations. Each Peano axiom thus becomes a theorem of ZFC; since the deduction rules are the same, so does every theorem of PA.</p></div>
+<div class="niveau" data-niveau="philo"><p>ZFC est la théorie dans laquelle se rédige, en principe, presque toute la mathématique : une démonstration publiée peut, avec beaucoup de patience, être traduite en une démonstration formelle dans ZFC. Dire qu’un énoncé n’est « pas démontrable dans ZFC », c’est dire qu’il échappe aux méthodes usuelles des mathématiciens. Comme ZFC contient l’arithmétique de Peano et que ses axiomes sont décidables, les théorèmes d’incomplétude s’y appliquent.</p></div>
+<div class="niveau" data-niveau="tech"><p><strong>Le point (2).</strong> L’axiome de l’infini et la compréhension donnent $\mathbb N$, intersection des ensembles inductifs contenus dans un ensemble inductif donné. D’où le principe de récurrence pour toute formule : si $\phi(0)$ et $\forall n\,(\phi(n)\Rightarrow\phi(n+1))$, l’ensemble $\{n\in\mathbb N:\phi(n)\}$ est inductif, donc égal à $\mathbb N$. Le successeur ne vaut jamais $\varnothing$ (il contient $n$), et il est injectif : si $n\cup\{n\}=m\cup\{m\}$ avec $n\ne m$, alors $n\in m$ et $m\in n$, ce que la fondation interdit. Le théorème de définition par récurrence (qui utilise le remplacement) fournit $+$ et $\times$ avec leurs équations de définition. Chaque axiome de Peano devient ainsi un théorème de ZFC ; comme les règles de déduction sont les mêmes, tout théorème de PA aussi.</p></div>
 </div>
 
-<nav class="nav-chap"><a href="cantor.html"><small>← Previous</small>Cantor’s diagonal argument</a><a href="leibniz.html" style="text-align:right"><small>Next →</small>Leibniz and binary arithmetic</a></nav>
-<footer class="pied">Computability — a manual with three reading levels. Authors: Frédéric Prost and Claude. Text licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, code under the MIT licence. Mathematics is rendered by KaTeX (MIT licence), bundled locally: the site can be read offline.</footer>
+<nav class="nav-chap"><a href="cantor.html"><small>← Précédent</small>L’argument diagonal de Cantor</a><a href="leibniz.html" style="text-align:right"><small>Suivant →</small>Leibniz et l’arithmétique binaire</a></nav>
+<footer class="pied">Calculabilité — manuel à trois niveaux de lecture. Auteurs : Frédéric Prost et Claude. Texte sous licence <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license">CC BY-SA 4.0</a>, code sous licence MIT. Les mathématiques sont rendues par KaTeX (licence MIT), embarqué localement : le site se lit sans connexion.</footer>
 </main>
 </div>
 <script src="assets/katex/katex.min.js"></script>

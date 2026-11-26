@@ -1,7 +1,7 @@
-# castor4_dernieres.py: checks the lemmas of the three hand proofs for the 4-state machines
-# left undecided by the automatic criteria (busy-beavers.html, technological level).
-# Prints: departs 291 8 12 lemmes True   (start times of the three machines; all lemmas hold)
-# A configuration is written (word left of the head, state, word from the head on), the rest blank.
+# castor4_dernieres.py : verifie les lemmes des trois preuves a la main pour les machines a 4 etats
+# laissees indecises par les criteres automatiques (castors-affaires.html, niveau technologique).
+# Affiche : departs 291 8 12 lemmes True
+# Une configuration s'ecrit (mot a gauche de la tete, etat, mot a partir de la tete), le reste vide.
 def mk(m):
     T={}
     for i,x in enumerate(m.split()):
@@ -30,7 +30,7 @@ def atteint(T,c,cible,maxt=10**6):
         if norm(*c)==cib: return t
     return None
 ok=True
-# Machine 1: L(a,b) = 1^a [A] 1 1 (01)^b
+# Machine 1 : L(a,b) = 1^a [A] 1 1 (01)^b
 M1=mk("1RB 1LD 1RC 0LC 1LA 1RA --- 0RB")
 for a in range(2,20):
     for b in range(8): ok&=lemme(M1,('1'*a,'A','11'+'01'*b),4,('1'*(a-2),'A','11'+'01'*(b+1)))
@@ -39,7 +39,7 @@ for c in range(8): ok&=lemme(M1,('1'*c,'A','0101'),6,('1'*(c+4),'A',''))
 for c in range(8): ok&=lemme(M1,('1'*c,'A',''),3,('1'*(c+1),'A','11'))
 d1=atteint(M1,conf('','A',''),('1'*25,'A','11'))
 for a in range(1,200,4): ok&= atteint(M1,conf('1'*a,'A','11'),('1'*(a+4),'A','11')) is not None
-# Machine 2: Q(j,m) = 1^j 0 [A] 0 0 1^m
+# Machine 2 : Q(j,m) = 1^j 0 [A] 0 0 1^m
 M2=mk("1RB 0RB 1LB 0LC 0LD --- 1RD 0RA")
 for j in range(1,15):
     for m in range(8): ok&=lemme(M2,('1'*j+'0','A','00'+'1'*m),5,('1'*(j-1)+'0','A','00'+'1'*(m+1)))
@@ -48,7 +48,7 @@ for k in range(8):
     for m in range(3,12): ok&=lemme(M2,('1'*k+'0','A','1'*m),7,('1'*(k+3)+'0','A','1'*(m-3)))
 d2=atteint(M2,conf('','A',''),('1110','A',''))
 for k in range(3,200,3): ok&= atteint(M2,conf('1'*k+'0','A',''),('1'*(k+3)+'0','A','')) is not None
-# Machine 3: X(j,m) = 1^j [A] 1 0 1^m
+# Machine 3 : X(j,m) = 1^j [A] 1 0 1^m
 M3=mk("1RB 1LB 1RC 0RD 1LD 1RB --- 0LA")
 for j in range(1,15):
     for m in range(8): ok&=lemme(M3,('1'*j,'A','10'+'1'*m),7,('1'*(j-1),'A','10'+'1'*(m+1)))

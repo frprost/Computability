@@ -1,11 +1,11 @@
-# castors_far.py: non-halting proofs for the machines left undecided by castors.c.
-# Usage: ./castors 3 200 30 3000 | python3 castors_far.py
-# Criterion (sound): the left half of the tape is abstracted by a finite automaton D
-# (at most 3 states, D(0)=0 reads the leading 0s), the right half is kept exactly,
-# as a stack. The abstract system is a pushdown system; the set of its reachable
-# configurations is regular and computed exactly by saturation (post*).
-# If it contains no halting configuration, the machine does not halt.
-# We also try the mirror machine (left and right exchanged).
+# castors_far.py : preuves de non-arret pour les machines laissees indecises par castors.c.
+# Usage : ./castors 3 200 30 3000 | python3 castors_far.py
+# Critere (correct) : la moitie gauche de la bande est abstraite par un automate fini D
+# (au plus 3 etats, D(0)=0 lit les 0 de tete), la moitie droite est gardee exactement,
+# comme une pile. Le systeme abstrait est un systeme a pile ; l'ensemble de ses
+# configurations accessibles est regulier et calcule exactement par saturation (post*).
+# S'il ne contient aucune configuration d'arret, la machine ne s'arrete pas.
+# On essaie aussi la machine miroir (gauche et droite echangees).
 import itertools, sys
 BOT='#'
 def parse(m):
@@ -86,6 +86,6 @@ if __name__=='__main__':
     nd=0
     for m in ms:
         r=decide(m,3)
-        print(m,'->',r if r else 'UNDECIDED')
+        print(m,'->',r if r else 'NON DECIDE')
         nd+= r is None
-    print(len(ms),'machines,',len(ms)-nd,'proved non-halting,',nd,'undecided')
+    print(len(ms),'machines,',len(ms)-nd,'prouvees sans arret,',nd,'non decidees')

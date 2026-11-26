@@ -1,23 +1,20 @@
-Computability — a manual with three reading levels
-Frédéric Prost and Claude, 2026
+Calculabilité — manuel à trois niveaux de lecture
+Frédéric Prost et Claude, 2026
 
-This repository is distributed under two licences.
+Ce dépôt est distribué sous deux licences.
 
-1. The text of the manual, its figures and its exercises (the *.html pages and
-   their sources _sources/pages/*.html) are licensed under the
-   Creative Commons Attribution-ShareAlike 4.0 International licence
-   (CC BY-SA 4.0).
-   Summary: https://creativecommons.org/licenses/by-sa/4.0/
-   Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+1. Le texte du manuel, ses figures et ses exercices (les pages *.html et
+   leurs sources _sources/pages/*.html) sont placés sous la licence
+   Creative Commons Attribution - Partage dans les mêmes conditions 4.0
+   International (CC BY-SA 4.0).
+   Résumé : https://creativecommons.org/licenses/by-sa/4.0/deed.fr
+   Texte juridique : https://creativecommons.org/licenses/by-sa/4.0/legalcode.fr
 
-2. The code (assets/code/, assets/*.js, assets/style.css, _sources/build.py)
-   is licensed under the MIT licence, whose text is in LICENSE-CODE.
+2. Le code (assets/code/, assets/*.js, assets/style.css, _sources/build.py)
+   est placé sous la licence MIT, dont le texte figure dans LICENSE-CODE.
 
-3. KaTeX (assets/katex/) is third-party software, distributed under its own
-   MIT licence: see assets/katex/LICENSE.
+3. KaTeX (assets/katex/) est un logiciel tiers, distribué sous sa propre
+   licence MIT : voir assets/katex/LICENSE.
 
-To reuse the text, cite: "Frédéric Prost and Claude, Computability — a manual
-with three reading levels, CC BY-SA 4.0".
-
-This English edition is a translation of the French edition, "Calculabilité —
-manuel à trois niveaux de lecture", by the same authors and under the same licences.
+Pour réutiliser le texte, citer : « Frédéric Prost et Claude, Calculabilité —
+manuel à trois niveaux de lecture, CC BY-SA 4.0 ».

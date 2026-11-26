@@ -1,51 +1,51 @@
-# Computability — a manual with three reading levels
+# Calculabilité — manuel à trois niveaux de lecture
 
-Authors: **Frédéric Prost and Claude**.
+Auteurs : **Frédéric Prost et Claude**.
 
-What a machine can compute, what no machine will ever be able to compute, and why this concerns all of us. The manual is a static HTML site: each result has a statement and can be read at three levels: philosophical (meaning and implications), technical (mathematical proofs) and technological (complete constructions, executable machines), with programs and interactive simulations.
+**Version 2.** Les trois niveaux sont plus contrastés : le niveau philosophique est un récit autonome lisible avec le bac (il remplace les énoncés formels), le niveau technique est inchangé, et le niveau technologique contient des « ateliers » avec les constructions complètes et des programmes Python téléchargeables (`assets/programmes/`, archive `assets/programmes.zip`). C’est la version principale du manuel. Elle ajoute les automates à deux piles, les machines à deux compteurs (bande codée dans deux nombres) et la réduction des machines de Turing aux dominos de Post, puis à la logique avec une relation et une fonction binaires.
 
-This is the English edition of *Calculabilité — manuel à trois niveaux de lecture*. The mathematical notation is the same in both editions.
+Ce qu’une machine peut calculer, ce qu’aucune ne pourra jamais calculer, et pourquoi cela nous concerne tous. Le manuel est un site HTML statique : chaque résultat se lit à trois niveaux (l’énoncé, une explication intuitive, la démonstration complète), avec des programmes et des simulations exécutables.
 
-## Reading the manual
+## Lire le manuel
 
-Open `index.html` in a browser. No server or network connection is needed: KaTeX is bundled in `assets/katex/`. The site can also be published as is, for example with GitHub Pages (main branch, root folder).
+Ouvrir `index.html` dans un navigateur. Aucun serveur ni connexion n’est nécessaire : KaTeX est embarqué dans `assets/katex/`. Le site peut aussi être publié tel quel, par exemple avec GitHub Pages (branche principale, dossier racine).
 
-## Contents
+## Contenu
 
-- 25 chapters, from Turing machines to complexity, randomness and quantum computing, followed by case studies (the Ackermann function, busy beavers, computability and AI, other models of computation);
-- appendices: reading paths, Cantor’s argument, basic notions, Leibniz, bibliography;
-- exercises with solutions at the end of each chapter;
-- the programs cited in the text, in `assets/code/`; each Python file runs with `python3 file.py` and checks what it claims (the C files give their compilation and usage instructions in their header).
+- 25 chapitres, de la machine de Turing à la complexité, au hasard et au calcul quantique, puis des études de cas (fonction d’Ackermann, castors affairés, calculabilité et IA, autres modèles de calcul) ;
+- des annexes : parcours de lecture, argument de Cantor, notions de base, Leibniz, bibliographie ;
+- des exercices corrigés à la fin de chaque chapitre ;
+- les programmes du niveau technologique, dans `assets/programmes/` : simulateur de machines de Turing, fonctions récursives, compilateur des fonctions récursives vers les machines de Turing, traduction inverse (forme normale de Kleene), λ-calcul, fonction et machine universelles, s-m-n et point fixe, argument diagonal ; `python3 tests.py` vérifie l’ensemble ;
+- les programmes de vérification des autres chapitres, dans `assets/code/` ; chacun s’exécute avec `python3 fichier.py` et vérifie ce qu’il affirme.
 
-Results stated without proof are marked “quoted for information”.
+Les résultats énoncés sans démonstration sont signalés « cité pour information ».
 
-## File layout
+## Organisation des fichiers
 
-| Path | Role |
+| Chemin | Rôle |
 |---|---|
-| `*.html` | generated pages (do not edit by hand) |
-| `_sources/pages/*.html` | page sources, with a header (title, table-of-contents label, prerequisites) |
-| `_sources/build.py` | assembly: template, table of contents, numbering, previous/next links |
-| `assets/style.css` | layout (light and dark themes) |
-| `assets/*.js` | interactive simulators (Turing machines, λ-calculus, Post correspondence, cellular automata) |
-| `assets/code/` | verification programs |
+| `*.html` | pages produites (à ne pas modifier à la main) |
+| `_sources/pages/*.html` | sources des pages, avec un en-tête (titre, sommaire, prérequis) |
+| `_sources/build.py` | assemblage : gabarit, sommaire, numérotation, liens précédent/suivant |
+| `assets/style.css` | mise en page (thème clair et sombre) |
+| `assets/*.js` | simulateurs interactifs (machines de Turing, λ-calcul, Post, automates cellulaires) |
+| `assets/programmes/` | programmes Python du niveau technologique (archive produite par le build : `assets/programmes.zip`) |
+| `assets/code/` | programmes de vérification |
 
-Page sources use the same tags as the French edition (`<res>`, `<enonce>`, `<philo>`, `<tech>`, `<techno>`, `<exo>`, `<corrige>`), and the anchors (`id`) are those of the French edition, so that a link from one edition can be carried over to the other by changing only the file name.
+## Reconstruire le site
 
-## Rebuilding the site
-
-From the root of the repository:
+Depuis la racine du dépôt :
 
 ```
 python3 _sources/build.py
 ```
 
-To produce a copy in another folder: `python3 _sources/build.py --out FOLDER`, then copy `assets/` into `FOLDER`.
+Pour produire une copie dans un autre dossier : `python3 _sources/build.py --diffusion DOSSIER`, puis copier `assets/` dans `DOSSIER`.
 
 ## Licence
 
-- Text, figures and exercises: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (Creative Commons Attribution-ShareAlike 4.0 International).
-- Code (`assets/code/`, `assets/*.js`, `assets/style.css`, `_sources/build.py`): MIT licence, see [`LICENSE-CODE`](LICENSE-CODE).
-- KaTeX (`assets/katex/`) keeps its own MIT licence, see `assets/katex/LICENSE`.
+- Texte, figures et exercices : [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.fr) (Creative Commons Attribution - Partage dans les mêmes conditions 4.0 International).
+- Code (`assets/code/`, `assets/*.js`, `assets/style.css`, `_sources/build.py`) : licence MIT, voir [`LICENSE-CODE`](LICENSE-CODE).
+- KaTeX (`assets/katex/`) garde sa propre licence MIT, voir `assets/katex/LICENSE`.
 
-Details are in [`LICENSE`](LICENSE).
+Le détail est dans [`LICENSE`](LICENSE).

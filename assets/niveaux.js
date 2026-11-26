@@ -1,15 +1,15 @@
-/* niveaux.js — reading levels, tabs, theme, math rendering */
+/* niveaux.js — niveaux de lecture, onglets, thème, rendu des mathématiques */
 (function () {
   'use strict';
   var doc = document.documentElement;
   doc.classList.add('js');
-  var NOMS = { philo: 'Philosophical', tech: 'Technical', techno: 'Technological' };
+  var NOMS = { philo: 'Philosophique', tech: 'Technique', techno: 'Technologique' };
   var ORDRE = ['philo', 'tech', 'techno'];
 
   function lire(cle, defaut) { try { return localStorage.getItem(cle) || defaut; } catch (e) { return defaut; } }
-  function ecrire(cle, v) { try { localStorage.setItem(cle, v); } catch (e) { /* storage unavailable */ } }
+  function ecrire(cle, v) { try { localStorage.setItem(cle, v); } catch (e) { /* stockage indisponible */ } }
 
-  // Apply the theme as early as possible
+  // Thème appliqué au plus tôt
   var theme = lire('calc-theme', '');
   if (theme) doc.setAttribute('data-theme', theme);
 
@@ -25,10 +25,12 @@
   function choisir(res, n) {
     var dispo = Array.prototype.map.call(res.querySelectorAll(':scope > .niveau'), function (d) { return d.dataset.niveau; });
     if (!n || dispo.indexOf(n) < 0) {
-      // level missing: take the closest one (technical by default)
+      // niveau absent : on prend le plus proche (technique par défaut)
       n = dispo.indexOf('tech') >= 0 ? 'tech' : dispo[0];
     }
     res.querySelectorAll(':scope > .niveau').forEach(function (d) { d.classList.toggle('actif', d.dataset.niveau === n); });
+    // au niveau philosophique, le récit en clair remplace l'énoncé formel
+    res.classList.toggle('vue-philo', n === 'philo' && !doc.classList.contains('tout'));
     res.querySelectorAll(':scope > .onglets button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.niveau === n ? 'true' : 'false'); });
   }
 
@@ -44,7 +46,7 @@
         if (!d) return;
         var t = document.createElement('div');
         t.className = 'niveau-titre';
-        t.textContent = NOMS[n] + ' level';
+        t.textContent = 'Niveau ' + NOMS[n].toLowerCase();
         d.insertBefore(t, d.firstChild);
         var b = document.createElement('button');
         b.type = 'button'; b.dataset.niveau = n; b.setAttribute('role', 'tab');
@@ -63,7 +65,7 @@
       b.addEventListener('click', function () { ecrire('calc-niveau', b.dataset.niveau); appliquerGlobal(b.dataset.niveau); });
     });
     appliquerGlobal(n);
-    // Open the tab targeted by an anchor (#id-techno)
+    // Ouvrir l'onglet visé par une ancre (#id-niveau-techno)
     var h = location.hash.match(/^#(.+)-(philo|tech|techno)$/);
     if (h) { var r = document.getElementById(h[1]); if (r) { choisir(r, h[2]); r.scrollIntoView(); } }
 

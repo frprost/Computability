@@ -1,9 +1,9 @@
-/* castors.c: exhaustive enumeration of the Turing machines with n states (n<=3), 2 symbols.
-   Usage: ./castors n 200 30 3000
-   Each machine is simulated for 200 steps; if it does not halt, we look for a proof of
-   non-halting (no halting transition, backward reasoning, cycler, translated cycler,
-   closed set of n-grams). The remaining machines are printed (UNKNOWN) for
-   castors_far.py. The 200-step limit is only used for sorting: no value of S is assumed. */
+/* castors.c : enumeration exhaustive des machines de Turing a n etats (n<=3), 2 symboles.
+   Usage : ./castors n 200 30 3000
+   Chaque machine est simulee 200 pas ; si elle ne s arrete pas, on cherche une preuve de
+   non-arret (pas de transition d arret, raisonnement arriere, cycle, cycle translate,
+   ensemble ferme de n-grammes). Les machines restantes sont ecrites (UNKNOWN) pour
+   castors_far.py. La limite de 200 pas ne sert qu a trier : aucune valeur de S n est supposee. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

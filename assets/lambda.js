@@ -1,8 +1,8 @@
-/* lambda.js — λ-term reducer (normal order, leftmost-outermost)
-   for the computability manual. Browser (window.Lambda) and Node.
-   Syntax: λx.M or \x.M; λx y.M abbreviates λx.λy.M; application is left-associative;
-   the integers 0, 1, 2, ... denote Church numerals;
-   definitions "NAME = term" may precede the expression.                    */
+/* lambda.js — réducteur de λ-termes (stratégie normale, gauche-externe)
+   pour le manuel de calculabilité. Navigateur (window.Lambda) et Node.
+   Syntaxe : λx.M ou \x.M ; λx y.M abrège λx.λy.M ; application à gauche ;
+   les entiers 0, 1, 2, ... désignent les entiers de Church ;
+   des définitions « NOM = terme » peuvent précéder l'expression.          */
 (function (root) {
   'use strict';
 
@@ -15,12 +15,12 @@
       if (c === '(' || c === ')' || c === '.') { toks.push(c); i++; continue; }
       if (c === '\\' || c === 'λ') { toks.push('λ'); i++; continue; }
       var m = /^[A-Za-z0-9_'?+*\-]+/.exec(s.slice(i));
-      if (!m) throw new Error('Unexpected character: ' + c);
+      if (!m) throw new Error('Caractère inattendu : ' + c);
       toks.push(m[0]); i += m[0].length;
     }
     return toks;
   }
-  // named AST : {k:'v', n} | {k:'l', n, b} | {k:'a', f, x}
+  // AST nommé : {k:'v', n} | {k:'l', n, b} | {k:'a', f, x}
   function parse(s) {
     var toks = tokenize(s), p = 0;
     function peek() { return toks[p]; }
@@ -29,7 +29,7 @@
         p++;
         var names = [];
         while (peek() && peek() !== '.') names.push(toks[p++]);
-        if (peek() !== '.' || names.length === 0) throw new Error('Malformed abstraction');
+        if (peek() !== '.' || names.length === 0) throw new Error('Abstraction mal formée');
         p++;
         var body = term();
         for (var i = names.length - 1; i >= 0; i--) body = { k: 'l', n: names[i], b: body };
@@ -44,7 +44,7 @@
     }
     function atom() {
       var t = toks[p];
-      if (t === '(') { p++; var e = term(); if (toks[p] !== ')') throw new Error('Missing parenthesis'); p++; return e; }
+      if (t === '(') { p++; var e = term(); if (toks[p] !== ')') throw new Error('Parenthèse manquante'); p++; return e; }
       if (t === undefined || t === ')' || t === '.') throw new Error('Terme attendu');
       p++;
       return { k: 'v', n: t };
@@ -61,10 +61,10 @@
   }
 
   // ---------- Indices de de Bruijn ----------
-  // {k:'b', i} bound variable; {k:'f', n} free variable ; {k:'l', n, b} ; {k:'a', f, x}
+  // {k:'b', i} variable liée ; {k:'f', n} variable libre ; {k:'l', n, b} ; {k:'a', f, x}
   function toDB(t, env, defs, depth) {
     depth = depth || 0;
-    if (depth > 200) throw new Error('Recursive definitions?');
+    if (depth > 200) throw new Error('Définitions récursives ?');
     switch (t.k) {
       case 'v': {
         var i = env.lastIndexOf(t.n);
@@ -95,7 +95,7 @@
   }
   function beta(lam, arg) { return subst(lam.b, 0, arg); }
 
-  // One normal-order reduction step; returns null if in normal form
+  // Un pas de réduction en ordre normal ; renvoie null si forme normale
   function stepNormal(t) {
     if (t.k === 'a') {
       if (t.f.k === 'l') return beta(t.f, t.x);
@@ -145,15 +145,15 @@
     }
     return go(t, [], 0);
   }
-  // Recognizes a Church numeral or a Boolean
+  // Reconnaît un entier de Church ou un booléen
   function recognize(t) {
     var out = [];
     if (t.k === 'l' && t.b.k === 'l') {
       var b = t.b.b, n = 0;
       while (b.k === 'a' && b.f.k === 'b' && b.f.i === 1) { n++; b = b.x; }
-      if (b.k === 'b' && b.i === 0) out.push('Church numeral ' + n);
-      if (t.b.b.k === 'b' && t.b.b.i === 1) out.push('Boolean tt (true)');
-      if (t.b.b.k === 'b' && t.b.b.i === 0) out.push('Boolean ff (false)');
+      if (b.k === 'b' && b.i === 0) out.push('entier de Church ' + n);
+      if (t.b.b.k === 'b' && t.b.b.i === 1) out.push('booléen tt (vrai)');
+      if (t.b.b.k === 'b' && t.b.b.i === 0) out.push('booléen ff (faux)');
     }
     return out;
   }
@@ -167,7 +167,7 @@
       if (m) defs[m[1]] = parse(m[2]);
       else expr = expr === null ? line : expr + ' ' + line;
     });
-    if (expr === null) throw new Error('No expression to reduce');
+    if (expr === null) throw new Error('Aucune expression à réduire');
     return toDB(parse(expr), [], defs);
   }
   function normalize(t, maxSteps, maxSize, trace) {
@@ -178,9 +178,9 @@
       if (!n) return { term: t, steps: steps, normal: true, trace: tr };
       t = n; steps++;
       if (tr && tr.length < 60) tr.push(print(t));
-      if (size(t) > maxSize) return { term: t, steps: steps, normal: false, reason: 'term too large', trace: tr };
+      if (size(t) > maxSize) return { term: t, steps: steps, normal: false, reason: 'terme trop gros', trace: tr };
     }
-    return { term: t, steps: steps, normal: false, reason: 'step limit reached', trace: tr };
+    return { term: t, steps: steps, normal: false, reason: 'limite de pas atteinte', trace: tr };
   }
   function equalDB(a, b) {
     if (a.k !== b.k) return false;

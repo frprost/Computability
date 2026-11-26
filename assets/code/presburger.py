@@ -1,18 +1,18 @@
-"""Deciding Presburger arithmetic with automata (chapter "Decidable theories").
+"""Décider l'arithmétique de Presburger avec des automates (chapitre « Théories décidables »).
 
-A tuple of integers is written in binary, least significant bit first: the k-th letter
-of the word is the tuple of the k-th bits. Each formula becomes a deterministic finite automaton
-that recognizes exactly the encodings of the tuples satisfying it (trailing zeros included).
+Un n-uplet d'entiers est écrit en binaire, bit de poids faible en tête : la k-ième lettre
+du mot est le n-uplet des k-ièmes bits. Chaque formule devient un automate fini déterministe
+qui reconnaît exactement les écritures des n-uplets qui la satisfont (zéros finals compris).
 
-Formulas: ('eq', {x: a, y: b, ...}, c) for a*x + b*y + ... = c (integer coefficients);
-('le', {...}, c) for a*x + ... <= c; ('non', A) not; ('et', A, B) and; ('ou', A, B) or;
-('imp', A, B) implies; ('ex', x, A) exists; ('tout', x, A) for all.
+Formules : ('eq', {x: a, y: b, ...}, c) pour a*x + b*y + ... = c (coefficients entiers) ;
+('le', {...}, c) pour a*x + ... <= c ; ('non', A) ; ('et', A, B) ; ('ou', A, B) ;
+('imp', A, B) ; ('ex', x, A) ; ('tout', x, A).
 """
 from itertools import product
 
 
 class AFD:
-    """Complete deterministic automaton over the alphabet {0,1}^len(vars)."""
+    """Automate déterministe complet sur l'alphabet {0,1}^len(vars)."""
     def __init__(self, vars_, init, delta, acc):
         self.vars, self.init, self.delta, self.acc = tuple(vars_), init, delta, acc
 
@@ -21,7 +21,7 @@ class AFD:
 
 
 def explorer(vars_, init, pas, accepte):
-    """Builds the reachable automaton from a transition function."""
+    """Construit l'automate accessible à partir d'une fonction de transition."""
     lettres = list(product((0, 1), repeat=len(vars_)))
     delta, acc, a_voir = {}, set(), [init]
     vus = {init}
@@ -47,8 +47,8 @@ def atome(coefs, c, egal):
             return None
         s = q - sum(ai * bi for ai, bi in zip(a, l))
         if egal:
-            return s // 2 if s % 2 == 0 else None     # None: sink state
-        return s // 2                                  # floor
+            return s // 2 if s % 2 == 0 else None     # None : état puits
+        return s // 2                                  # partie entière inférieure
 
     def accepte(q):
         return q is not None and (q == 0 if egal else q >= 0)
@@ -56,7 +56,7 @@ def atome(coefs, c, egal):
 
 
 def etendre(A, vars_):
-    """Same automaton, read on more tracks (the extra tracks are ignored)."""
+    """Même automate, lu sur plus de pistes (les pistes en plus sont ignorées)."""
     pos = [vars_.index(v) for v in A.vars]
     return explorer(vars_, A.init,
                     lambda q, l: A.delta[q, tuple(l[i] for i in pos)],
@@ -76,9 +76,9 @@ def complement(A):
 
 
 def projeter(A, x):
-    """Automaton for ∃x A: erase track x (subset construction), then also accept
-    the sets from which zero letters lead to acceptance (the witness x may
-    have more bits than the other variables)."""
+    """Automate de ∃x A : on efface la piste x (sous-ensembles), puis on accepte aussi
+    les ensembles d'où des lettres nulles mènent à l'acceptation (le témoin x peut
+    avoir plus de bits que les autres variables)."""
     if x not in A.vars:
         return A
     i = A.vars.index(x)
@@ -120,12 +120,12 @@ def automate(f):
 
 def vrai(enonce):
     A = automate(enonce)
-    assert A.vars == (), "the sentence has free variables"
+    assert A.vars == (), "l'énoncé a des variables libres"
     return A.init in A.acc
 
 
 def accepte(A, valeurs):
-    """Does the automaton accept the binary encoding of the tuple (in the order of A.vars)?"""
+    """L'automate accepte-t-il l'écriture binaire du n-uplet (dans l'ordre de A.vars) ?"""
     q, n = A.init, max([v.bit_length() for v in valeurs] + [0])
     for k in range(n):
         q = A.delta[q, tuple((v >> k) & 1 for v in valeurs)]
@@ -134,7 +134,7 @@ def accepte(A, valeurs):
 
 if __name__ == "__main__":
     import random
-    # 1. check the automata for atoms and connectives against direct computation
+    # 1. contrôle des automates d'atomes et des connecteurs contre un calcul direct
     random.seed(1)
     for _ in range(300):
         a, b, c, d = (random.randint(-3, 3) for _ in range(4))
@@ -145,22 +145,22 @@ if __name__ == "__main__":
                 env = {'x': x, 'y': y}
                 attendu = (a * x + b * y == c) or not (b * x + d * y <= a)
                 assert accepte(A, [env[v] for v in A.vars]) == attendu
-    print("1. automata for quantifier-free formulas: agree with direct computation")
-    # 2. a few sentences
+    print("1. automates des formules sans quantificateur : conformes au calcul direct")
+    # 2. quelques énoncés
     pair_ou_impair = ('tout', 'x', ('ex', 'y', ('ou', ('eq', {'x': 1, 'y': -2}, 0),
                                                  ('eq', {'x': 1, 'y': -2}, 1))))
-    print("2. every integer is even or odd:", vrai(pair_ou_impair))
+    print("2. tout entier est pair ou impair :", vrai(pair_ou_impair))
 
-    def monnaie(s):           # every n >= s can be written 3a + 5b
+    def monnaie(s):           # tout n >= s s'écrit 3a + 5b
         return ('tout', 'n', ('imp', ('le', {'n': -1}, -s),
                               ('ex', 'a', ('ex', 'b', ('eq', {'n': 1, 'a': -3, 'b': -5}, 0)))))
-    print("   every n >= 8 can be written 3a+5b:", vrai(monnaie(8)), "; every n >= 7:", vrai(monnaie(7)))
-    print("   there is x with 2x = 5:", vrai(('ex', 'x', ('eq', {'x': 2}, 5))))
-    print("   no largest integer:", vrai(('tout', 'x', ('ex', 'y', ('le', {'x': 1, 'y': -1}, -1)))))
-    # 3. a sanity check: 3 | x and 5 | x  <=>  15 | x
+    print("   tout n >= 8 s'écrit 3a+5b :", vrai(monnaie(8)), "; tout n >= 7 :", vrai(monnaie(7)))
+    print("   il existe x avec 2x = 5 :", vrai(('ex', 'x', ('eq', {'x': 2}, 5))))
+    print("   pas de plus grand entier :", vrai(('tout', 'x', ('ex', 'y', ('le', {'x': 1, 'y': -1}, -1)))))
+    # 3. une contrainte de contrôle : 3 | x et 5 | x  <=>  15 | x
     div = lambda m, v, w: ('ex', w, ('eq', {v: 1, w: -m}, 0))
-    print("3. (3 | x and 5 | x) <=> 15 | x:", vrai(('tout', 'x', ('et',
+    print("3. (3 | x et 5 | x) <=> 15 | x :", vrai(('tout', 'x', ('et',
           ('imp', ('et', div(3, 'x', 'u'), div(5, 'x', 'v')), div(15, 'x', 'w')),
           ('imp', div(15, 'x', 'w'), ('et', div(3, 'x', 'u'), div(5, 'x', 'v')))))))
     A = automate(('ex', 'y', ('eq', {'x': 1, 'y': -3}, 0)))
-    print("   automaton for the multiples of 3:", len({q for q, _ in A.delta}), "states")
+    print("   automate des multiples de 3 :", len({q for q, _ in A.delta}), "états")

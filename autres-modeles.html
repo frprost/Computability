@@ -1,0 +1,1452 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Frédéric Prost et Claude">
+<title>Autres modèles de calcul · Calculabilité</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var t=localStorage.getItem('calc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="entete"><div class="entete-int">
+  <button type="button" class="btn-menu" aria-label="Sommaire">☰ Sommaire</button>
+  <a class="titre-site" href="index.html">Calculabilité <span>·</span> un manuel à trois niveaux <span class="version">version 2</span></a>
+  <span class="selecteur-legende">Niveau de lecture :</span>
+  <div class="selecteur" role="group" aria-label="Niveau de lecture">
+    <button type="button" data-niveau="philo" title="Sens et implications">Philosophique</button>
+    <button type="button" data-niveau="tech" title="Preuves mathématiques">Technique</button>
+    <button type="button" data-niveau="techno" title="Constructions complètes, machines de Turing">Technologique</button>
+    <button type="button" data-niveau="tout" title="Afficher les trois niveaux">Tout</button>
+  </div>
+  <button type="button" class="btn-theme" aria-label="Changer de thème" title="Clair / sombre">◐</button>
+</div></header>
+<div class="page">
+<nav class="sommaire" aria-label="Sommaire"><ul><li><a href="index.html">Accueil et mode d’emploi</a></li></ul><h2>Entrer dans le sujet</h2><ol><li><a href="motivations.html"><span class="num">1</span>Motivations</a></li><li><a href="trois-approches.html"><span class="num">2</span>Trois approches du calcul</a></li></ol><h2>Modèles de calcul</h2><ol><li><a href="machines-turing.html"><span class="num">3</span>Machines de Turing</a></li><li><a href="fonctions-recursives.html"><span class="num">4</span>Fonctions récursives</a></li><li><a href="lambda-calcul.html"><span class="num">5</span>λ-calcul</a></li><li><a href="equivalence.html"><span class="num">6</span>Équivalence des modèles</a></li><li><a href="these-church.html"><span class="num">7</span>Thèse de Church-Turing</a></li></ol><h2>Théorèmes fondamentaux</h2><ol><li><a href="universalite.html"><span class="num">8</span>Universalité</a></li><li><a href="smn-recursion.html"><span class="num">9</span>s-m-n et récursion</a></li></ol><h2>Limites du calcul</h2><ol><li><a href="indecidabilite.html"><span class="num">10</span>Indécidabilité</a></li><li><a href="semi-decidabilite.html"><span class="num">11</span>Semi-décidabilité</a></li><li><a href="hierarchie-arithmetique.html"><span class="num">12</span>Hiérarchie arithmétique</a></li><li><a href="incompletude.html"><span class="num">13</span>Incomplétude</a></li><li><a href="equations-diophantiennes.html"><span class="num">14</span>Équations diophantiennes</a></li><li><a href="logique-types.html"><span class="num">15</span>Logique et types</a></li><li><a href="theories-decidables.html"><span class="num">16</span>Théories décidables</a></li><li><a href="mathematiques-indecidables.html"><span class="num">17</span>Mathématiques ordinaires</a></li><li><a href="kolmogorov-omega.html"><span class="num">18</span>Kolmogorov et Ω</a></li><li><a href="langages.html"><span class="num">19</span>Langages et grammaires</a></li></ol><h2>Complexité</h2><ol><li><a href="complexite.html"><span class="num">20</span>Complexité</a></li><li><a href="hasard-quantique.html"><span class="num">21</span>Hasard et quantique</a></li></ol><h2>Études de cas</h2><ol><li><a href="ackermann.html"><span class="num">22</span>Fonction d’Ackermann</a></li><li><a href="castors-affaires.html"><span class="num">23</span>Castors affairés</a></li><li><a href="calculabilite-ia.html"><span class="num">24</span>Calculabilité et IA</a></li><li><a href="autres-modeles.html" aria-current="page"><span class="num">25</span>Autres modèles</a></li></ol><h2>Annexes</h2><ol><li><a href="parcours.html">Parcours de lecture</a></li><li><a href="cantor.html">Diagonale de Cantor</a></li><li><a href="bases.html">Notions de base</a></li><li><a href="leibniz.html">Leibniz et le binaire</a></li><li><a href="programmes.html">Programmes Python</a></li><li><a href="bibliographie.html">Bibliographie</a></li></ol></nav>
+<main class="contenu">
+<h1>Autres modèles de calcul</h1>
+<p class="chapo pas-philo">Deux compteurs, des dominos, des fractions, une règle locale à deux états : l’universalité surgit dans des systèmes d’une simplicité déconcertante. Et une pile ne suffit pas.</p><p class="chapo seulement philo">Deux compteurs, des dominos, des fractions, une rangée de cases qui changent de couleur selon leurs voisines : la capacité de tout calculer surgit dans des systèmes d’une simplicité déconcertante.</p>
+<div class="prerequis"><strong>Pré-requis</strong><a href="equivalence.html">Équivalence des modèles</a> · <a href="indecidabilite.html">Indécidabilité</a> · <a href="langages.html">Langages et grammaires</a></div>
+<nav class="toc-locale" aria-label="Dans ce chapitre"><strong>Dans ce chapitre</strong><ol><li><a href="#machines-a-compteurs">Machines à compteurs</a></li><li><a href="#automates-a-pile">Automates à pile</a></li><li><a href="#probleme-de-correspondance-de-post">Problème de correspondance de Post</a></li><li><a href="#diophantiennes">Équations diophantiennes</a></li><li><a href="#systemes-multiplicatifs-fractran">Systèmes multiplicatifs : FRACTRAN</a></li><li><a href="#automates-cellulaires">Automates cellulaires</a></li><li><a href="#exercices">Exercices</a></li></ol></nav>
+
+
+
+
+<div class="seulement philo clair">
+<p>La machine de Turing n’est pas le seul dispositif capable de tout calculer. Ce chapitre présente des systèmes beaucoup plus pauvres en apparence qui en sont aussi capables : une machine qui ne dispose que de deux compteurs qu’elle peut augmenter, diminuer et tester ; une liste de fractions qu’on multiplie ; une rangée de cases noires et blanches qui changent selon une règle locale.</p>
+<p>Le phénomène est général : dès qu’un système permet de stocker une quantité arbitraire d’information et de la transformer selon des règles conditionnelles, il devient universel. C’est pourquoi on trouve de l’universalité, et donc de l’indécidabilité, un peu partout, jusque dans des jeux et des modèles physiques.</p>
+</div>
+
+<h2 id="machines-a-compteurs">Machines à compteurs</h2>
+
+<div class="seulement philo clair">
+<p>Une machine à compteurs a quelques compteurs, comme des bouliers, qu’elle peut augmenter de 1, diminuer de 1, ou tester à zéro. Avec deux compteurs seulement, elle peut tout calculer, à condition de coder les données de façon astucieuse.</p>
+</div>
+
+
+<div class="resultat theoreme" id="compteurs"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Universalité des machines à deux compteurs (Minsky, 1961)</div></div>
+<div class="enonce">
+<p>Une <strong>machine à compteurs</strong> possède un nombre fini de registres contenant des entiers naturels et un programme fait d’instructions numérotées de deux sortes : $\mathrm{INC}(r,j)$ (ajouter 1 au registre $r$, aller à l’instruction $j$) et $\mathrm{DEC}(r,j,k)$ (si $r>0$, retirer 1 et aller en $j$ ; sinon aller en $k$). Toute fonction calculable est calculable par une machine à compteurs, et même par une machine à <em>deux</em> compteurs, à condition de coder l’entrée $x$ par $2^x$ et la sortie $y$ par $2^y$.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Une machine qui n’a que deux compteurs, qu’elle peut augmenter de 1, diminuer de 1 et comparer à zéro, peut calculer tout ce qu’une machine de Turing calcule. Il faut seulement coder les données de façon astucieuse dans les compteurs.</p>
+<p>Imaginons deux boîtes de cailloux. On sait seulement ajouter un caillou, en retirer un, et regarder si une boîte est vide. Cela suffit à tout calculer ! La mémoire n’a pas besoin d’être bien rangée, avec des cases et des adresses ; il suffit qu’elle soit sans limite.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Étape 1 : un nombre quelconque de compteurs.</strong> Une machine à compteurs $M$ <em>calcule</em> $f:\N^n\rightharpoonup\N$ si, lancée sur l’instruction $1$ avec $x_1,\dots,x_n$ dans les compteurs $r_1,\dots,r_n$ et $0$ dans les autres, elle atteint l’instruction d’arrêt si et seulement si $f(\vec x)$ est défini, et alors $r_0$ contient $f(\vec x)$ (les autres compteurs contiennent n’importe quoi). On programme d’abord quelques fragments, qui s’enchaînent en remplaçant leur « fin » par l’instruction suivante :</p>
+<ul>
+<li>$\mathrm{CLR}(r)$, qui met $r$ à zéro : l’instruction $\mathrm{DEC}(r,\text{elle-même},\text{fin})$ ;</li>
+<li>$\mathrm{COPY}(r,s;t)$, qui copie $r$ dans $s$ sans détruire $r$, à l’aide d’un compteur auxiliaire $t$ : $\mathrm{CLR}(s)$, $\mathrm{CLR}(t)$, puis tant que $\mathrm{DEC}(r)$ réussit, $\mathrm{INC}(s)$ et $\mathrm{INC}(t)$ ; puis tant que $\mathrm{DEC}(t)$ réussit, $\mathrm{INC}(r)$.</li>
+</ul>
+<p>Une machine n’utilise qu’un nombre fini de compteurs ; on peut renommer ceux d’une machine $G$ pour qu’ils soient distincts de tous ceux d’un programme donné, et l’on note « lancer $G$ sur $u_1,\dots,u_p$ » le fragment qui met à zéro tous les compteurs de $G$, copie $u_1,\dots,u_p$ dans ses compteurs d’entrée, puis exécute $G$ en remplaçant son arrêt par un saut vers la suite ; il se termine si et seulement si $G$ s’arrête, et le compteur de sortie de $G$ contient alors le résultat. On montre alors, par induction sur la <a href="fonctions-recursives.html#def-mu">définition des fonctions récursives</a>, que toute fonction récursive est calculée par une machine à compteurs :</p>
+<ul>
+<li>fonctions de base : $\mathrm{CLR}(r_0)$ suivi de $m$ fois $\mathrm{INC}(r_0)$ pour la constante $m$ ; $\mathrm{COPY}(r_1,r_0;t)$ puis $\mathrm{INC}(r_0)$ pour le successeur ; $\mathrm{COPY}(r_i,r_0;t)$ pour la projection ;</li>
+<li>substitution $\sigma[g,h_1,\dots,h_k]$ : lancer successivement $H_1,\dots,H_k$ sur $\vec x$, puis $G$ sur leurs $k$ sorties, et copier la sortie de $G$ dans $r_0$. Si un $h_i(\vec x)$ n’est pas défini, $H_i$ ne s’arrête pas, et la machine non plus ;</li>
+<li>récursion $\rho[g,h]$, l’argument de récurrence étant dans $r_1$ et les autres dans $r_2,\dots$ : lancer $G$ sur $r_2,\dots$ et copier sa sortie dans un compteur $a$ ; mettre $i$ à zéro et copier $r_1$ dans $c$ ; puis tant que $\mathrm{DEC}(c)$ réussit : lancer $H$ sur $(i,a,r_2,\dots)$, copier sa sortie dans $a$, $\mathrm{INC}(i)$. À la fin, $a$ contient $f(r_1,\dots)$ par récurrence sur le nombre de tours ;</li>
+<li>minimisation $\mu[g]$ : mettre $y$ à zéro ; répéter : lancer $G$ sur $(\vec x,y)$ ; si $\mathrm{DEC}$ du compteur de sortie échoue (la valeur est $0$), copier $y$ dans $r_0$ et s’arrêter, sinon $\mathrm{INC}(y)$ et recommencer. La machine essaie $y=0,1,2,\dots$ dans l’ordre, et ne s’arrête que si toutes les valeurs $g(\vec x,z)$, $z&lt;y$, sont définies et non nulles et $g(\vec x,y)=0$ : c’est la définition de $\mu$.</li>
+</ul>
+<p>Comme les fonctions calculables sont les fonctions récursives (<a href="equivalence.html#classe-calculable">équivalence des modèles</a>), toute fonction calculable est calculée par une machine à compteurs. Quitte à ajouter un fragment final, on suppose aussi qu’à l’arrêt, le résultat est dans $r_1$ et tous les autres compteurs sont nuls (copier $r_0$ dans $r_1$, puis vider les autres).</p>
+<p><strong>Étape 2 : deux compteurs.</strong> Soit $M$ une telle machine, à compteurs $r_1,\dots,r_k$, et $p_1=2,p_2=3,\dots,p_k$ les $k$ premiers nombres premiers. On code le contenu $(c_1,\dots,c_k)$ de ses compteurs par le seul nombre $N=p_1^{c_1}\cdots p_k^{c_k}$, rangé dans un compteur $A$, l’autre compteur $B$ valant $0$. Chaque instruction de $M$ est remplacée par un fragment qui part et arrive avec $B=0$ :</p>
+<ul>
+<li>$\mathrm{INC}(r,j)$, avec $p=p_r$ : tant que $\mathrm{DEC}(A)$ réussit, faire $p$ fois $\mathrm{INC}(B)$ ; puis tant que $\mathrm{DEC}(B)$ réussit, $\mathrm{INC}(A)$ ; aller au fragment $j$. On obtient $A=pN$, c’est-à-dire $c_r+1$.</li>
+<li>$\mathrm{DEC}(r,j,k)$, avec $p=p_r$ : on divise $A$ par $p$ avec $p$ instructions $d_1,\dots,d_p$ ; $d_i$ est $\mathrm{DEC}(A,d_{i+1},R_{i-1})$, et après le succès de $d_p$ on fait $\mathrm{INC}(B)$ et l’on retourne en $d_1$. Quand un $\mathrm{DEC}$ échoue en $d_i$, $B$ contient le quotient $\lfloor N/p\rfloor$ et l’état $R_{i-1}$ connaît le reste $\rho=i-1$. Si $\rho=0$, $p$ divise $N$, donc $c_r>0$ : on transfère $B$ dans $A$, ce qui donne $A=N/p$ ($c_r-1$), et l’on va au fragment $j$. Si $\rho>0$, alors $c_r=0$ : on refait $A=pB+\rho$ ($\rho$ fois $\mathrm{INC}(A)$, puis tant que $\mathrm{DEC}(B)$ réussit, $p$ fois $\mathrm{INC}(A)$), c’est-à-dire $A=N$, et l’on va au fragment $k$.</li>
+<li>l’arrêt reste l’arrêt.</li>
+</ul>
+<p>Chaque fragment transforme donc le code de la configuration de $M$ avant l’instruction en le code de la configuration après. La machine à deux compteurs obtenue, lancée sur $(2^x,0)$, c’est-à-dire sur le code de $(x,0,\dots,0)$, s’arrête si et seulement si $M$ s’arrête, et alors sur $(2^{f(x)},0)$. Le codage exponentiel des entrées et des sorties est indispensable : c’est le <a href="#schroeppel">théorème de Schroeppel</a> ci-dessous.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>Addition $r_0:=r_0+r_1$ avec deux instructions :</p>
+<pre><code>0 : DEC(r1, 1, 2)     // si r1 > 0 : r1--, aller en 1 ; sinon fin
+1 : INC(r0, 0)        // r0++, retour en 0
+2 : (arrêt)</code></pre>
+</div>
+</div>
+
+<div class="resultat theoreme" id="schroeppel"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Deux compteurs ne calculent pas 2^x (Schroeppel, 1972)</div></div>
+<div class="enonce"><p>Soit une machine à deux compteurs qui, lancée sur $(x,0)$, s’arrête pour tout $x$, avec $f(x)$ dans son premier compteur, où $f$ est injective. Alors il existe des entiers $x_0\ge0$, $L\ge1$ et $G\ge0$ tels que $f(x_0+kL)=f(x_0)+kG$ pour tout $k\ge0$. En particulier, aucune machine à deux compteurs ne calcule $x\mapsto2^x$, ni $x\mapsto x^2$, sur l’entrée $x$ codée directement.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Avec deux compteurs, si l’on donne le nombre de départ tel quel, on ne peut pas calculer 2 multiplié par lui-même ce nombre de fois. Le codage astucieux des données est donc indispensable.</p>
+<p>Avec deux boîtes de cailloux, l’une est presque toujours vide quand l’autre est pleine : la machine ne garde vraiment en tête qu’un seul nombre. Tout ce qu’elle sait en faire, à la longue, c’est le multiplier par une fraction fixe et lui ajouter une quantité fixe. Elle ne peut pas fabriquer elle-même une croissance très rapide ; il faut la lui fournir dès le départ, dans la façon d’écrire l’entrée.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Les instructions sont numérotées $1,\dots,m$ et une configuration est un triplet $(i,a,b)$. Elle est <em>nulle</em> si $a=0$ ou $b=0$.</p>
+<p><strong>Lemme des phases.</strong> Pour chaque instruction $i$, il existe des entiers $T_i$ et $d_i\ge1$ tels que l’une des deux choses suivantes ait lieu pour tous les $n\ge T_i$ : (α) le calcul issu de $(i,n,0)$ n’atteint jamais, après au moins un pas, de configuration nulle ni d’arrêt ; (β) il en atteint une première, $C(n)$, d’instruction $i'$ indépendante de $n$, et il existe $(u,v)\in\N^2$ indépendants de $n$ tels que $C(n+d_i)=C(n)+(0,u,v)$, avec $u=0$ si le premier compteur de $C(n)$ est nul et $v=0$ si le second l’est. Il en va de même, symétriquement, en partant de $(i,0,n)$.</p>
+<p><em>Preuve.</em> On part de $(i,n,0)$ avec $n\ge2$. Si l’instruction $i$ est $\mathrm{INC}(a)$, $\mathrm{DEC}(a)$ ou $\mathrm{DEC}(b)$ (qui échoue), ou l’arrêt, la configuration suivante est nulle ou d’arrêt, de la forme $(i',n+c,0)$ avec $c\in\{-1,0,1\}$ : (β) vaut avec $d_i=1$ et $(u,v)=(1,0)$. Reste le cas $\mathrm{INC}(b)$, qui mène à $(j,n,1)$. Tant que les deux compteurs restent positifs, chaque $\mathrm{DEC}$ réussit : la suite des instructions $j=j_0,j_1,j_2,\dots$ ne dépend que de $j$, et après $s$ pas les compteurs valent $n+A(s)$ et $1+B(s)$, où $A(s)$ et $B(s)$ ne dépendent pas de $n$ et vérifient $|A(s)|\le s$. Si cette suite atteint l’arrêt, notons $s_h$ le pas où cela se produit ; si $1+B(s)$ s’annule, notons $s_b$ le premier pas où cela se produit. Ces nombres ne dépendent pas de $n$.</p>
+<ul>
+<li>Si $s_h$ ou $s_b$ existe, soit $s^*$ le plus petit des deux. Pour $n>s^*$, le compteur $a$ ne s’est pas annulé avant $s^*$, donc $C(n)$ est la configuration au pas $s^*$, $(j_{s^*},n+A(s^*),1+B(s^*))$ : (β) avec $d_i=1$, $(u,v)=(1,0)$.</li>
+<li>Sinon, la suite $(j_s)$ est infinie et, n’ayant que $m$ valeurs possibles, elle est ultimement périodique : il existe $p$ et $\ell\ge1$ tels que $j_{s+\ell}=j_s$ pour $s\ge p$. Les variations des compteurs sur une période sont donc constantes : $A(s+\ell)=A(s)+A_c$ et $B(s+\ell)=B(s)+B_c$ pour $s\ge p$. Comme $1+B(s)$ ne s’annule jamais, $B_c\ge0$. Si $A_c\ge0$, alors $A(s)\ge-(p+\ell)$ pour tout $s$, et pour $n>p+\ell$ le compteur $a$ ne s’annule jamais non plus : c’est (α). Si $A_c<0$, posons $d_i=-A_c$, et prenons $n>p+\ell$ ; soit $h(n)$ le premier pas où $n+A(s)=0$ (il existe, car $A(s)\to-\infty$), de sorte que $h(n)\ge p+\ell$. Pour $n'=n+d_i$ : aux pas $s&lt;p+\ell$, $n'+A(s)\ge n'-(p+\ell)>0$ ; aux pas $s+\ell$ avec $s\ge p$, $n'+A(s+\ell)=n+A(s)$. Le premier zéro de $a$ pour $n'$ est donc au pas $h(n)+\ell$, avec la même instruction $j_{h(n)+\ell}=j_{h(n)}$, et $b$ y vaut $1+B(h(n))+B_c$. C’est (β) avec $(u,v)=(0,B_c)$.</li>
+</ul>
+<p>On prend $T_i$ plus grand que $2$, $s^*$ et $p+\ell$. Par récurrence, $C(n+t\,d_i)=C(n)+t\,(0,u,v)$ pour tout $t\ge0$. $\square$</p>
+<p><strong>Preuve du théorème.</strong> Soit $D$ un multiple commun de tous les $d_i$ (pour les deux côtés) et $T$ le plus grand des $T_i$. Appelons <em>petite</em> une configuration nulle dont les deux compteurs sont $&lt;T$ ; il y en a un nombre fini. Si le calcul issu de $(1,x,0)$ passe par une petite configuration, la suite du calcul, donc $f(x)$, est déterminée par cette configuration : ces $x$ n’ont qu’un nombre fini de valeurs $f(x)$, et comme $f$ est injective, ils sont en nombre fini. Choisissons $x_0\ge T$ dont le calcul ne passe par aucune petite configuration. Ce calcul s’arrête ; notons $C_0=(1,x_0,0)$, puis $C_1,\dots,C_N$ ses configurations nulles successives, et $C_{N+1}$ sa configuration d’arrêt. Chaque $C_j$, $j\le N$, a un compteur nul et l’autre, noté $n_j$, au moins égal à $T$ ; et $C_{j+1}$ est la première configuration nulle ou d’arrêt qui suit $C_j$.</p>
+<p>Posons $L=D^{N+2}$ et $x_k=x_0+kL$. Montrons par récurrence sur $j\le N+1$ que la $j$-ième configuration nulle (ou d’arrêt) du calcul issu de $x_k$ est $C_j+k\,g_j\,e_j$, où $e_j$ est un vecteur fixe à coordonnées entières positives, nul sur le compteur nul de $C_j$, et où $g_j$ est un entier divisible par $D^{N+2-j}$. Pour $j=0$, $g_0=L$ et $e_0=(0,1,0)$. Si c’est vrai pour $j\le N$, la valeur non nulle $n_j+kg_j$ est $\ge T$, et $kg_j$ est un multiple de $d_{i_j}$ ; le lemme des phases, appliqué $kg_j/d_{i_j}$ fois, donne la configuration suivante $C_{j+1}+k\,(g_j/d_{i_j})\,(0,u,v)$, et $g_j/d_{i_j}$ est divisible par $D^{N+1-j}$. Pour $j=N+1$, on obtient que le calcul issu de $x_k$ s’arrête, avec un premier compteur égal à $f(x_0)+kG$, où $G\ge0$ ne dépend pas de $k$.</p>
+<p>Pour $f(x)=2^x$, on aurait $2^{x_0+2L}-2^{x_0}=2\,(2^{x_0+L}-2^{x_0})$, soit $(2^L-1)^2=0$, impossible pour $L\ge1$. Pour $f(x)=x^2$, on aurait $4x_0L+4L^2=4x_0L+2L^2$, impossible aussi. Schroeppel a donné le premier résultat de ce type en 1972 ; la preuve ci-dessus montre plus généralement que la suite $k\mapsto f(x_0+kL)$ est affine.</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="compteurs-bande"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Deux compteurs simulent directement une bande (Minsky, 1961)</div></div>
+<div class="enonce">
+<p>Soit $Z$ une machine de Turing dont l’alphabet a $b\ge2$ symboles, numérotés de $0$ à $b-1$, le blanc portant le numéro $0$. Si la tête est en $p$ sur la bande $\tau$, posons</p>
+$$d=\sum_{i\ge0}c\big(\tau(p+i)\big)\,b^i,\qquad g=\sum_{i\ge0}c\big(\tau(p-1-i)\big)\,b^i,$$
+<p>où $c(s)$ est le numéro du symbole $s$ (ces sommes sont finies). On peut construire, à partir de $Z$, une machine à trois compteurs $g,d,t$ qui, partant de $(g,d,t)=(g_0,d_0,0)$, s’arrête si et seulement si $Z$ s’arrête à partir de la configuration correspondante, et alors avec $(g,d)$ égal au codage de la configuration finale et $t=0$. Puis une machine à deux compteurs qui, partant de $(2^{g_0}3^{d_0},0)$, fait de même avec $(2^g3^d,0)$.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Le ruban d’une machine de Turing peut être rangé dans deux nombres : l’un pour ce qui est à gauche de la tête, l’autre pour la case lue et ce qui est à sa droite. Une machine qui ne sait qu’ajouter 1, retirer 1 et tester zéro peut alors imiter la machine de Turing pas à pas.</p>
+<p>L’idée est celle de l’écriture des nombres. Un ruban qui ne contient que des blancs et des barres s’écrit comme une suite de 0 et de 1, c’est-à-dire comme un nombre en binaire. Le chiffre des unités du nombre de droite est la case lue : pour la lire, il suffit de savoir si le nombre est pair ou impair. Avancer la tête d’une case vers la droite, c’est retirer ce chiffre au nombre de droite (le diviser par 2) et l’ajouter au nombre de gauche (le multiplier par 2 et ajouter le chiffre). Diviser et multiplier par 2 se font avec des additions et des soustractions de 1 répétées, en s’aidant d’un troisième compteur pour le brouillon.</p>
+<p>Il reste à passer de trois compteurs à deux. On range les trois nombres dans un seul, grâce aux nombres premiers : le triplet (5, 2, 0) devient 2<sup>5</sup> × 3<sup>2</sup> × 5<sup>0</sup> = 288. Ajouter 1 au deuxième nombre, c’est multiplier par 3 ; tester s’il est nul, c’est regarder si 288 est divisible par 3. Le second compteur sert de brouillon pour ces multiplications et divisions. Le prix est vertigineux : pour additionner 2 et 1, la machine à deux compteurs fait un nombre de pas de 28 chiffres.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>On écrit des <em>fragments</em> : des morceaux de programme qui commencent à une étiquette et finissent par un saut vers une étiquette « fin ». Un saut inconditionnel vers $j$ s’écrit $\mathrm{DEC}(z,j,j)$ sur un compteur $z$ jamais modifié, qui vaut toujours $0$.</p>
+<ul>
+<li>$\mathrm{TRANS}(x,y,m)$, qui fait $y:=y+m\,x$ et $x:=0$ : l’instruction $\mathrm{DEC}(x,\cdot,\text{fin})$ suivie de $m$ fois $\mathrm{INC}(y)$, avec retour au $\mathrm{DEC}$.</li>
+<li>$\mathrm{AJOUT}(x,r)$, qui fait $x:=x+r$ pour une constante $r$ : $r$ instructions $\mathrm{INC}(x)$.</li>
+<li>$\mathrm{DIV}(x,y,b)$, qui fait $y:=y+\lfloor x/b\rfloor$, $x:=0$, et sort vers l’une de $b$ étiquettes selon le reste : les instructions $D_1,\dots,D_b$, où $D_k=\mathrm{DEC}(x,D_{k+1},R_{k-1})$ et où $D_{b+1}$ est $\mathrm{INC}(y)$ suivi d’un retour en $D_1$. Si $x=qb+r$ avec $r&lt;b$, la machine fait $q$ tours complets, puis le $\mathrm{DEC}$ de $D_{r+1}$ échoue et l’on sort en $R_r$.</li>
+</ul>
+<p><strong>Trois compteurs.</strong> Pour chaque état $q$ de $Z$, le fragment $\mathrm{Lire}_q$ est $\mathrm{DIV}(d,t,b)$ : à la sortie $R_r$, la case lue est le symbole $s$ de numéro $r$, $d=0$ et $t$ contient le reste de la bande à droite, $\lfloor d/b\rfloor$. Selon le quadruplet qui commence par $q\,s$ :</p>
+<table>
+<tr><th>quadruplet</th><th>fragment (après $\mathrm{Lire}_q$, sortie $R_r$)</th><th>effet</th></tr>
+<tr><td>$q\,s\,s'\,q'$</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{AJOUT}(d,c(s'))$, aller à $\mathrm{Lire}_{q'}$</td><td>$d:=b\lfloor d/b\rfloor+c(s')$</td></tr>
+<tr><td>$q\,s\,R\,q'$</td><td>$\mathrm{TRANS}(g,d,b)$, $\mathrm{AJOUT}(d,r)$, $\mathrm{TRANS}(d,g,1)$, $\mathrm{TRANS}(t,d,1)$</td><td>$g:=bg+r$, $d:=\lfloor d/b\rfloor$</td></tr>
+<tr><td>$q\,s\,L\,q'$</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{AJOUT}(d,r)$ ; $\mathrm{DIV}(g,t,b)$, sortie $R_{r'}$ ; $\mathrm{TRANS}(t,g,1)$, $\mathrm{TRANS}(d,t,b)$, $\mathrm{AJOUT}(t,r')$, $\mathrm{TRANS}(t,d,1)$</td><td>$g:=\lfloor g/b\rfloor$, $d:=bd+(g\bmod b)$</td></tr>
+<tr><td>aucun</td><td>$\mathrm{TRANS}(t,d,b)$, $\mathrm{AJOUT}(d,r)$, arrêt</td><td>$d$ est rétabli</td></tr>
+</table>
+<p>Chaque ligne transforme le codage $(g,d)$ de la configuration en celui de la configuration suivante, avec $t=0$ avant et après : aller à droite retire le chiffre des unités de $d$ et le place en unités de $g$, ce qui décale la bande d’une case ; aller à gauche fait l’inverse ; écrire change le chiffre des unités de $d$. Comme le blanc vaut $0$, les blancs ajoutés aux bords ne changent pas les nombres. La machine à trois compteurs (plus $z$) s’arrête donc exactement quand $Z$ s’arrête, avec le codage de la configuration finale. Pour une machine dont l’alphabet est $\{B,1\}$, on a $b=2$ : $g$ et $d$ sont les deux moitiés de la bande lues comme des nombres en binaire.</p>
+<p><strong>Deux compteurs.</strong> On applique à cette machine l’<a href="#compteurs">étape 2</a> du théorème précédent : le contenu $(g,d,t,z)$ est rangé dans $A=2^g3^d5^t7^z$, $B$ valant $0$ entre deux fragments ; $\mathrm{INC}$ d’un compteur devient une multiplication de $A$ par le nombre premier correspondant, $\mathrm{DEC}$ une division avec examen du reste. Les sauts $\mathrm{DEC}(z,j,j)$ deviennent simplement $\mathrm{DEC}(B,j,j)$, puisque $B=0$. Comme $z$ et $t$ valent $0$ au départ et à l’arrêt, la machine part de $2^{g_0}3^{d_0}$ et s’arrête sur $2^g3^d$.</p>
+<p><strong>Coût.</strong> Un pas de $Z$ coûte un nombre de pas proportionnel à $g+d$, donc exponentiel en la longueur de la bande, pour trois compteurs ; un $\mathrm{INC}$ à trois compteurs coûte un nombre de pas proportionnel à $A$ pour deux compteurs, d’où une seconde exponentielle. C’est le prix du codage, et le <a href="#schroeppel">théorème de Schroeppel</a> montre qu’on ne peut pas s’en passer.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>Pour l’addition $2+1$ (bande $111B11$, donc $d_0=1+2+4+16+32=55$ en binaire lu à partir de la case $0$) :</p>
+<pre><code>$ python3 compteurs.py exemples/addition.tm 2 1
+Machine de Turing : 5 quadruplets, 6 pas, résultat 3.
+Trois compteurs (base 2) : 83 instructions ; départ (g, d, t) = (0, 55, 0) ; 492 pas.
+Deux compteurs : 902 instructions ; départ A = 2^0 3^55 (27 chiffres) ; 3163345499250309688368905610 pas (28 chiffres).
+Les trois exécutions donnent la même bande finale.</code></pre>
+</div>
+</div>
+
+<div class="seulement techno atelier"><div class="atelier-titre">Atelier technologique — deux compteurs, en Python</div>
+<p>Le fichier <code>compteurs.py</code> des <a href="programmes.html">programmes à télécharger</a> réalise les deux étapes. Une classe <code>Assembleur</code> écrit un programme à étiquettes ; ses méthodes <code>transferer</code>, <code>ajouter</code> et <code>diviser</code> sont les fragments TRANS, AJOUT et DIV du niveau technique.</p>
+<details class="source" open><summary>Les fragments (33 lignes) · <a href="assets/programmes/compteurs.py" download>télécharger le fichier</a></summary><pre><code># ---- fragments : chacun commence à l'étiquette donnée et saute à « fin »
+def transferer(self, src, dst, facteur, debut, fin):
+    """dst += facteur * src ; src := 0."""
+    self.ici(debut)
+    corps = [self.neuf() for _ in range(facteur)]
+    self.dec(src, corps[0] if facteur else debut, fin)
+    for k, e in enumerate(corps):
+        self.ici(e)
+        self.inc(dst, corps[k + 1] if k + 1 &lt; facteur else debut)
+
+def ajouter(self, r, n, debut, fin):
+    """r += n (n constant)."""
+    if n == 0:
+        self.ici(debut)
+        self.dec_nulle(fin)
+        return
+    etiq = [debut] + [self.neuf() for _ in range(n - 1)] + [fin]
+    for k in range(n):
+        self.ici(etiq[k])
+        self.inc(r, etiq[k + 1])
+
+def dec_nulle(self, fin):
+    # « aller en fin » : on simule un saut par une instruction sur un compteur réservé, toujours nul
+    self.dec(Z, fin, fin)
+
+def diviser(self, src, quot, b, debut, sorties):
+    """quot += src // b ; src := 0 ; saute à sorties[reste]."""
+    etapes = [debut] + [self.neuf() for _ in range(b)]
+    for k in range(b):
+        self.ici(etapes[k])
+        self.dec(src, etapes[k + 1], sorties[k])
+    self.ici(etapes[b])
+    self.inc(quot, debut)</code></pre></details>
+<p>La traduction d’une machine de Turing en trois compteurs suit le tableau ligne par ligne :</p>
+<details class="source" open><summary>Machine de Turing → trois compteurs (56 lignes) · <a href="assets/programmes/compteurs.py" download>télécharger le fichier</a></summary><pre><code>def trois_compteurs(machine):
+    """Traduit une machine de Turing en machine à compteurs g, d, t (plus Z, toujours nul).
+    Renvoie (programme, codes des symboles, base b)."""
+    codes = codes_symboles(machine)
+    b = max(2, len(codes))
+    symb = {c: s for s, c in codes.items()}
+    a = Assembleur()
+    etats = sorted(machine.etats())
+    debut = {q: "lire_" + q for q in etats}
+    a.dec_nulle(debut[machine.etat_initial])                  # instruction 0 : aller à l'état initial
+    for q in etats:
+        # lire : t := d // b, d := 0, et l'on sait le reste r = case lue
+        sorties = [a.neuf("lu") for _ in range(b)]
+        a.diviser(D, T, b, debut[q], sorties)
+        for r in range(b):
+            s = symb.get(r, BLANC)
+            regle = machine.table.get((q, s))
+            a.ici(sorties[r])
+            e1, e2, e3, e4 = (a.neuf() for _ in range(4))
+            if regle is None:
+                # arrêt : on remet d = b*t + r, puis STOP
+                a.dec_nulle(e1)
+                a.transferer(T, D, b, e1, e2)
+                arret = a.neuf("arret")
+                a.ajouter(D, r, e2, arret)
+                a.ici(arret)
+                a.stop()
+                continue
+            action, q2 = regle[2], regle[3]
+            a.dec_nulle(e1)
+            if action == "R":
+                # g := b*g + r (en passant par d, qui vaut 0), puis d := t
+                a.transferer(G, D, b, e1, e2)
+                a.ajouter(D, r, e2, e3)
+                a.transferer(D, G, 1, e3, e4)
+                a.transferer(T, D, 1, e4, debut[q2])
+            elif action == "L":
+                # d := b*t + r ; t := g // b ; g := t ; d := b*d + (reste de g)
+                e5 = a.neuf()
+                a.transferer(T, D, b, e1, e2)
+                a.ajouter(D, r, e2, e3)
+                rg = [a.neuf("g") for _ in range(b)]
+                a.diviser(G, T, b, e3, rg)
+                for r2 in range(b):
+                    f1, f2, f3, f4 = (a.neuf() for _ in range(4))
+                    a.ici(rg[r2])
+                    a.dec_nulle(f1)
+                    a.transferer(T, G, 1, f1, f2)
+                    a.transferer(D, T, b, f2, f3)
+                    a.ajouter(T, r2, f3, f4)
+                    a.transferer(T, D, 1, f4, debut[q2])
+            else:
+                # écrire : d := b*t + code(action)
+                a.transferer(T, D, b, e1, e2)
+                a.ajouter(D, codes[action], e2, debut[q2])
+    return a.assembler(), codes, b</code></pre></details>
+<p>Puis le passage à deux compteurs, par les nombres premiers :</p>
+<details class="source" open><summary>Trois compteurs → deux compteurs (33 lignes) · <a href="assets/programmes/compteurs.py" download>télécharger le fichier</a></summary><pre><code>def deux_compteurs(programme, k):
+    """Traduit un programme à k compteurs en programme à deux compteurs A, B :
+    le contenu (c_0, ..., c_{k-1}) est rangé dans A = 2^c0 3^c1 5^c2 ..., B valant 0 entre deux fragments."""
+    a = Assembleur()
+    deb = ["i%d" % n for n in range(len(programme))]
+    for n, ins in enumerate(programme):
+        if ins[0] == "STOP":
+            a.ici(deb[n])
+            a.stop()
+            continue
+        if ins[0] == "DEC" and ins[2] == ins[3]:
+            # simple saut : B vaut 0, donc DEC(B) échoue toujours
+            a.ici(deb[n])
+            a.dec(B, deb[ins[2]], deb[ins[2]])
+            continue
+        p = PREMIERS[ins[1]]
+        if ins[0] == "INC":
+            # A := p*A : on vide A dans B en multipliant par p, puis B dans A
+            m = a.neuf()
+            a.transferer(A, B, p, deb[n], m)
+            a.transferer(B, A, 1, m, deb[ins[2]])
+            continue
+        # DEC : B := A // p ; le reste rho est connu par l'instruction où la division s'arrête
+        restes = [a.neuf("rho") for _ in range(p)]
+        a.diviser(A, B, p, deb[n], restes)
+        # reste 0 : le compteur était &gt; 0 ; A := A / p, puis succès
+        a.transferer(B, A, 1, restes[0], deb[ins[2]])
+        for r in range(1, p):
+            # reste r &gt; 0 : le compteur valait 0 ; on reconstitue A = p*B + r, puis échec
+            e = a.neuf()
+            a.ajouter(A, r, restes[r], e)
+            a.transferer(B, A, p, e, deb[ins[3]])
+    return a.assembler()</code></pre></details>
+<h4>Exécuter une machine qui fait 10<sup>27</sup> pas</h4>
+<p>Une machine à deux compteurs passe presque tout son temps dans de petites boucles : « tant que A n’est pas nul, retirer 1 à A et ajouter 3 à B ». L’interpréteur reconnaît ces boucles (une suite de <code>DEC</code> d’un même compteur et d’<code>INC</code> d’autres compteurs qui revient à son point de départ) et en exécute tous les tours d’un coup, par une division et une multiplication. Le résultat est exactement celui de l’exécution pas à pas, et le nombre de pas compté est le vrai. La fonction <code>comparer</code> exécute la machine de Turing, la machine à trois compteurs et la machine à deux compteurs, et vérifie que les trois bandes finales coïncident ; <code>tests.py</code> le fait pour les onze machines d’exemple.</p>
+<details class="source"><summary>Code complet de <code>compteurs.py</code> (359 lignes) · <a href="assets/programmes/compteurs.py" download>télécharger le fichier</a></summary><pre><code>"""compteurs.py : machines à compteurs, et traduction d'une machine de Turing en machine à deux compteurs.
+
+Une machine à compteurs a des compteurs (des entiers naturels) et un programme numéroté :
+    ("INC", r, j)      ajouter 1 au compteur r, aller à l'instruction j ;
+    ("DEC", r, j, k)   si r &gt; 0, retirer 1 et aller en j ; sinon aller en k ;
+    ("STOP",)          s'arrêter.
+
+La traduction se fait en deux étapes (chapitre « Autres modèles ») :
+
+ 1. Machine de Turing -&gt; trois compteurs g, d, t. La bande est vue comme deux nombres écrits
+    en base b (b = nombre de symboles, le blanc valant le chiffre 0) : d contient la case lue
+    (chiffre des unités) et les cases à sa droite, g les cases à gauche de la tête (la plus proche
+    aux unités). Lire la case, c'est calculer le reste de d par b ; aller à droite, c'est retirer
+    ce chiffre de d et l'ajouter à g ; t est un compteur auxiliaire pour multiplier et diviser par b.
+ 2. Trois compteurs -&gt; deux compteurs A, B : on range (g, d, t) dans le seul nombre 2^g 3^d 5^t
+    (compteur A), B servant d'auxiliaire ; INC et DEC deviennent des multiplications et des divisions.
+
+Une machine à deux compteurs fait un nombre astronomique de pas (chaque INC de l'étape 1 multiplie A
+par 3, une instruction après l'autre). L'interpréteur ci-dessous exécute donc les petites boucles
+d'un seul coup (« accélération ») : le résultat est exactement celui de l'exécution pas à pas, et le
+nombre de pas affiché est le vrai nombre de pas de la machine.
+
+    python3 compteurs.py                     # addition 2 + 1, sur trois puis sur deux compteurs
+    python3 compteurs.py exemples/successeur.tm 4
+
+Licence MIT. Auteurs : Frédéric Prost et Claude.
+"""
+import sys
+
+from machines import Machine, BLANC, BARRE, bande_initiale
+
+
+# --------------------------------------------------------------------------- interpréteur
+class MachineCompteurs:
+    def __init__(self, programme, compteurs):
+        self.programme = programme
+        self.compteurs = list(compteurs)
+        self._cycles = {}
+
+    def __len__(self):
+        return len(self.programme)
+
+    def _cycle(self, i):
+        """Si l'instruction i = DEC(X, ...) commence une boucle « simple » (en suivant les succès :
+        uniquement des DEC du même compteur X et des INC d'autres compteurs, retour en i),
+        renvoie (nombre de DEC par tour, variations des autres compteurs, longueur du tour)."""
+        if i in self._cycles:
+            return self._cycles[i]
+        X = self.programme[i][1]
+        j, ndec, delta, longueur, res = i, 0, {}, 0, None
+        for _ in range(200):
+            ins = self.programme[j]
+            longueur += 1
+            if ins[0] == "DEC" and ins[1] == X:
+                ndec += 1
+                j = ins[2]
+            elif ins[0] == "INC" and ins[1] != X:
+                delta[ins[1]] = delta.get(ins[1], 0) + 1
+                j = ins[2]
+            else:
+                break
+            if j == i:
+                res = (ndec, delta, longueur)
+                break
+        self._cycles[i] = res
+        return res
+
+    def executer(self, valeurs, max_pas_reels=10**7, accelerer=True):
+        """Renvoie (valeurs finales, nombre de pas de la machine, nombre d'itérations de l'interpréteur)."""
+        v = list(valeurs)
+        i, pas, iterations = 0, 0, 0
+        while True:
+            iterations += 1
+            if iterations &gt; max_pas_reels:
+                raise RuntimeError("trop long")
+            ins = self.programme[i]
+            if ins[0] == "STOP":
+                return v, pas, iterations
+            if ins[0] == "INC":
+                v[ins[1]] += 1
+                i = ins[2]
+                pas += 1
+                continue
+            X = ins[1]
+            if accelerer:
+                cyc = self._cycle(i)
+                if cyc is not None and v[X] &gt;= cyc[0]:
+                    tours = v[X] // cyc[0]
+                    v[X] -= tours * cyc[0]
+                    for r, dv in cyc[1].items():
+                        v[r] += tours * dv
+                    pas += tours * cyc[2]
+                    continue
+            if v[X] &gt; 0:
+                v[X] -= 1
+                i = ins[2]
+            else:
+                i = ins[3]
+            pas += 1
+
+
+class Assembleur:
+    """Écrit un programme à étiquettes : chaque instruction reçoit un numéro, les sauts sont résolus à la fin."""
+
+    def __init__(self):
+        self.code, self.etiquettes, self.n = [], {}, 0
+
+    def neuf(self, prefixe="e"):
+        self.n += 1
+        return "%s%d" % (prefixe, self.n)
+
+    def ici(self, etiquette):
+        self.etiquettes[etiquette] = len(self.code)
+
+    def inc(self, r, suivant):
+        self.code.append(["INC", r, suivant])
+
+    def dec(self, r, si_oui, si_non):
+        self.code.append(["DEC", r, si_oui, si_non])
+
+    def stop(self):
+        self.code.append(["STOP"])
+
+    def assembler(self):
+        def res(x):
+            return self.etiquettes[x] if isinstance(x, str) else x
+        prog = []
+        for ins in self.code:
+            if ins[0] == "INC":
+                prog.append(("INC", ins[1], res(ins[2])))
+            elif ins[0] == "DEC":
+                prog.append(("DEC", ins[1], res(ins[2]), res(ins[3])))
+            else:
+                prog.append(("STOP",))
+        return prog
+
+    # ---- fragments : chacun commence à l'étiquette donnée et saute à « fin »
+    def transferer(self, src, dst, facteur, debut, fin):
+        """dst += facteur * src ; src := 0."""
+        self.ici(debut)
+        corps = [self.neuf() for _ in range(facteur)]
+        self.dec(src, corps[0] if facteur else debut, fin)
+        for k, e in enumerate(corps):
+            self.ici(e)
+            self.inc(dst, corps[k + 1] if k + 1 &lt; facteur else debut)
+
+    def ajouter(self, r, n, debut, fin):
+        """r += n (n constant)."""
+        if n == 0:
+            self.ici(debut)
+            self.dec_nulle(fin)
+            return
+        etiq = [debut] + [self.neuf() for _ in range(n - 1)] + [fin]
+        for k in range(n):
+            self.ici(etiq[k])
+            self.inc(r, etiq[k + 1])
+
+    def dec_nulle(self, fin):
+        # « aller en fin » : on simule un saut par une instruction sur un compteur réservé, toujours nul
+        self.dec(Z, fin, fin)
+
+    def diviser(self, src, quot, b, debut, sorties):
+        """quot += src // b ; src := 0 ; saute à sorties[reste]."""
+        etapes = [debut] + [self.neuf() for _ in range(b)]
+        for k in range(b):
+            self.ici(etapes[k])
+            self.dec(src, etapes[k + 1], sorties[k])
+        self.ici(etapes[b])
+        self.inc(quot, debut)
+
+
+G, D, T, Z = 0, 1, 2, 3          # compteurs de l'étape 1 (Z : compteur toujours nul, pour les sauts)
+
+
+def codes_symboles(machine):
+    """Le blanc vaut 0 (une infinité de blancs = des zéros non écrits), la barre 1, les autres 2, 3, ..."""
+    autres = sorted(machine.symboles() - {BLANC, BARRE})
+    codes = {BLANC: 0, BARRE: 1}
+    for k, s in enumerate(autres):
+        codes[s] = k + 2
+    return codes
+
+
+def trois_compteurs(machine):
+    """Traduit une machine de Turing en machine à compteurs g, d, t (plus Z, toujours nul).
+    Renvoie (programme, codes des symboles, base b)."""
+    codes = codes_symboles(machine)
+    b = max(2, len(codes))
+    symb = {c: s for s, c in codes.items()}
+    a = Assembleur()
+    etats = sorted(machine.etats())
+    debut = {q: "lire_" + q for q in etats}
+    a.dec_nulle(debut[machine.etat_initial])                  # instruction 0 : aller à l'état initial
+    for q in etats:
+        # lire : t := d // b, d := 0, et l'on sait le reste r = case lue
+        sorties = [a.neuf("lu") for _ in range(b)]
+        a.diviser(D, T, b, debut[q], sorties)
+        for r in range(b):
+            s = symb.get(r, BLANC)
+            regle = machine.table.get((q, s))
+            a.ici(sorties[r])
+            e1, e2, e3, e4 = (a.neuf() for _ in range(4))
+            if regle is None:
+                # arrêt : on remet d = b*t + r, puis STOP
+                a.dec_nulle(e1)
+                a.transferer(T, D, b, e1, e2)
+                arret = a.neuf("arret")
+                a.ajouter(D, r, e2, arret)
+                a.ici(arret)
+                a.stop()
+                continue
+            action, q2 = regle[2], regle[3]
+            a.dec_nulle(e1)
+            if action == "R":
+                # g := b*g + r (en passant par d, qui vaut 0), puis d := t
+                a.transferer(G, D, b, e1, e2)
+                a.ajouter(D, r, e2, e3)
+                a.transferer(D, G, 1, e3, e4)
+                a.transferer(T, D, 1, e4, debut[q2])
+            elif action == "L":
+                # d := b*t + r ; t := g // b ; g := t ; d := b*d + (reste de g)
+                e5 = a.neuf()
+                a.transferer(T, D, b, e1, e2)
+                a.ajouter(D, r, e2, e3)
+                rg = [a.neuf("g") for _ in range(b)]
+                a.diviser(G, T, b, e3, rg)
+                for r2 in range(b):
+                    f1, f2, f3, f4 = (a.neuf() for _ in range(4))
+                    a.ici(rg[r2])
+                    a.dec_nulle(f1)
+                    a.transferer(T, G, 1, f1, f2)
+                    a.transferer(D, T, b, f2, f3)
+                    a.ajouter(T, r2, f3, f4)
+                    a.transferer(T, D, 1, f4, debut[q2])
+            else:
+                # écrire : d := b*t + code(action)
+                a.transferer(T, D, b, e1, e2)
+                a.ajouter(D, codes[action], e2, debut[q2])
+    return a.assembler(), codes, b
+
+
+def valeurs_initiales(codes, b, args):
+    bande = bande_initiale(args)
+    d = sum(codes[s] * b ** i for i, s in bande.items())
+    return [0, d, 0, 0]
+
+
+def bande_depuis_compteurs(g, d, b, codes):
+    symb = {c: s for s, c in codes.items()}
+    bande, i = {}, 0
+    while d:
+        d, r = divmod(d, b)
+        if r:
+            bande[i] = symb[r]
+        i += 1
+    i = -1
+    while g:
+        g, r = divmod(g, b)
+        if r:
+            bande[i] = symb[r]
+        i -= 1
+    return bande
+
+
+# --------------------------------------------------------------------------- étape 2
+PREMIERS = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+A, B = 0, 1
+
+
+def deux_compteurs(programme, k):
+    """Traduit un programme à k compteurs en programme à deux compteurs A, B :
+    le contenu (c_0, ..., c_{k-1}) est rangé dans A = 2^c0 3^c1 5^c2 ..., B valant 0 entre deux fragments."""
+    a = Assembleur()
+    deb = ["i%d" % n for n in range(len(programme))]
+    for n, ins in enumerate(programme):
+        if ins[0] == "STOP":
+            a.ici(deb[n])
+            a.stop()
+            continue
+        if ins[0] == "DEC" and ins[2] == ins[3]:
+            # simple saut : B vaut 0, donc DEC(B) échoue toujours
+            a.ici(deb[n])
+            a.dec(B, deb[ins[2]], deb[ins[2]])
+            continue
+        p = PREMIERS[ins[1]]
+        if ins[0] == "INC":
+            # A := p*A : on vide A dans B en multipliant par p, puis B dans A
+            m = a.neuf()
+            a.transferer(A, B, p, deb[n], m)
+            a.transferer(B, A, 1, m, deb[ins[2]])
+            continue
+        # DEC : B := A // p ; le reste rho est connu par l'instruction où la division s'arrête
+        restes = [a.neuf("rho") for _ in range(p)]
+        a.diviser(A, B, p, deb[n], restes)
+        # reste 0 : le compteur était &gt; 0 ; A := A / p, puis succès
+        a.transferer(B, A, 1, restes[0], deb[ins[2]])
+        for r in range(1, p):
+            # reste r &gt; 0 : le compteur valait 0 ; on reconstitue A = p*B + r, puis échec
+            e = a.neuf()
+            a.ajouter(A, r, restes[r], e)
+            a.transferer(B, A, p, e, deb[ins[3]])
+    return a.assembler()
+
+
+# --------------------------------------------------------------------------- vérification
+def deux_compteurs_depuis_turing(machine):
+    prog3, codes, b = trois_compteurs(machine)
+    prog2 = deux_compteurs(prog3, 4)
+    return prog3, prog2, codes, b
+
+
+def comparer(machine, *args, deux=True):
+    """Exécute la machine de Turing, la machine à trois compteurs et la machine à deux compteurs,
+    et vérifie que la bande finale est la même. Renvoie un dictionnaire de mesures."""
+    c = machine.executer(*args)
+    attendu = {i - c.position: s for i, s in c.bande.items() if s != BLANC}
+    prog3, codes, b = trois_compteurs(machine)
+    v0 = valeurs_initiales(codes, b, args)
+    m3 = MachineCompteurs(prog3, v0)
+    v3, pas3, _ = m3.executer(v0)
+    assert v3[T] == 0 and v3[Z] == 0
+    assert bande_depuis_compteurs(v3[G], v3[D], b, codes) == attendu, "trois compteurs : bande différente"
+    res = {"pas_turing": c.pas, "barres": c.nombre_de_barres(), "instr3": len(prog3), "pas3": pas3,
+           "base": b, "depart3": v0}
+    if deux:
+        prog2 = deux_compteurs(prog3, 4)
+        a0 = 2 ** v0[G] * 3 ** v0[D] * 5 ** v0[T] * 7 ** v0[Z]
+        v2, pas2, it2 = MachineCompteurs(prog2, [a0, 0]).executer([a0, 0])
+        assert v2[1] == 0
+        A_final, e = v2[0], [0, 0, 0, 0]
+        for k, p in enumerate(PREMIERS[:4]):
+            while A_final % p == 0:
+                A_final //= p
+                e[k] += 1
+        assert A_final == 1 and e == v3, "deux compteurs : contenu différent"
+        res.update({"instr2": len(prog2), "pas2": pas2, "iterations2": it2, "depart2": a0})
+    return res
+
+
+def _principal(argv):
+    import os
+    if len(argv) &gt;= 2:
+        machine = Machine.depuis_fichier(argv[1])
+        args = [int(x) for x in argv[2:]]
+    else:
+        machine = Machine.depuis_fichier(os.path.join(os.path.dirname(os.path.abspath(__file__)), "exemples", "addition.tm"))
+        args = [2, 1]
+    r = comparer(machine, *args)
+    print("Machine de Turing : %d quadruplets, %d pas, résultat %d." % (len(machine), r["pas_turing"], r["barres"]))
+    print("Trois compteurs (base %d) : %d instructions ; départ (g, d, t) = (%d, %d, %d) ; %d pas."
+          % (r["base"], r["instr3"], r["depart3"][0], r["depart3"][1], r["depart3"][2], r["pas3"]))
+    p2 = str(r["pas2"])
+    print("Deux compteurs : %d instructions ; départ A = 2^%d 3^%d (%d chiffres) ; %s pas (%d chiffres)."
+          % (r["instr2"], r["depart3"][0], r["depart3"][1], len(str(r["depart2"])), p2 if len(p2) &lt; 30 else p2[:12] + "…", len(p2)))
+    print("Les trois exécutions donnent la même bande finale.")
+
+
+if __name__ == "__main__":
+    _principal(sys.argv)</code></pre></details>
+</div>
+
+<h2 id="automates-a-pile">Automates à pile</h2>
+
+<div class="seulement philo clair">
+<p>Un automate qui dispose d’une seule pile, où il ne peut lire que l’élément du dessus, ne peut pas tout calculer. Avec deux piles, il le peut : les deux piles jouent le rôle des deux moitiés du ruban d’une machine de Turing.</p>
+</div>
+
+
+<div class="resultat theoreme" id="piles"><div class="entete-res"><div class="type">Proposition</div><div class="nom">Une pile ne suffit pas, deux piles suffisent</div></div>
+<div class="enonce"><p>Les automates à une pile (automate fini muni d’une pile) reconnaissent exactement les langages algébriques (hors contexte) ; ils ne sont pas universels : par exemple le langage $\{a^nb^nc^n:n\ge0\}$, évidemment décidable, n’est reconnu par aucun automate à pile. En revanche, un automate fini muni de <em>deux</em> piles simule une machine de Turing.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Un automate muni d’une seule pile ne peut pas tout calculer. Avec deux piles, il le peut.</p>
+<p>Une pile est une mémoire dont on ne voit que le dessus, comme une pile d’assiettes. Elle suffit pour vérifier des parenthèses, pas pour comparer trois quantités. Deux piles placées dos à dos forment un ruban de Turing : ce qui est à gauche de la tête est dans la première pile, ce qui est à droite dans la seconde, et déplacer la tête revient à faire passer une assiette d’une pile à l’autre. La frontière de l’universalité passe entre « une » et « deux ».</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p><strong>Automates à deux piles.</strong> Un tel automate est donné par un ensemble fini d’états $Q$, un état initial $q_0$, un alphabet de pile $\Gamma$ et une table <em>partielle</em> $\delta$ qui, à un triplet $(q,g,d)\in Q\times(\Gamma\cup\{\bot\})^2$ (l’état et les sommets des piles $G$ et $D$, $\bot$ désignant une pile vide), associe $(\pi_G,\pi_D,w_G,w_D,q')$ : dépiler ou non $G$, dépiler ou non $D$ (seulement si elle n’est pas vide), empiler le mot $w_G$ sur $G$ et $w_D$ sur $D$, passer dans l’état $q'$. L’automate s’arrête quand $\delta$ n’est pas définie.</p>
+<p><strong>Construction.</strong> Soit $Z$ une machine à quadruplets, d’alphabet $\Gamma\ni B$. L’automate $A_Z$ a les états de $Z$ et, pour chaque quadruplet $q\,s\,a\,q'$, chaque $g\in\Gamma\cup\{\bot\}$ et chaque $d\in\{s\}$ (ou $d\in\{B,\bot\}$ si $s=B$, une pile vide se lisant comme un blanc), la transition $\delta(q,g,d)$ suivante, où $\pi_D$ signifie « dépiler $D$ si $d\ne\bot$ » :</p>
+<table>
+<tr><th>quadruplet</th><th>action sur les piles</th></tr>
+<tr><td>$q\,s\,s'\,q'$ (écrire)</td><td>$\pi_D$, empiler $s'$ sur $D$</td></tr>
+<tr><td>$q\,s\,R\,q'$</td><td>$\pi_D$, empiler $s$ sur $G$ (sauf si $s=B$ et $g=\bot$)</td></tr>
+<tr><td>$q\,s\,L\,q'$</td><td>dépiler $G$ si $g\ne\bot$ ; $\pi_D$ ; empiler sur $D$ le mot $s\,\hat g$, où $\hat g=g$ si $g\ne\bot$ et $\hat g=B$ sinon (le $s$ est omis si $s=B$ et $d=\bot$)</td></tr>
+</table>
+<p><strong>Invariant.</strong> Disons que $(q,G,D)$ <em>représente</em> la configuration de $Z$ d’état $q$, de bande $\tau$ et de tête en $p$ si, lue depuis le sommet et complétée par des blancs, $D$ est la suite $\tau(p),\tau(p+1),\dots$ et $G$ la suite $\tau(p-1),\tau(p-2),\dots$. La configuration initiale de $Z$ est représentée par $(q_0,\varnothing,D_0)$, où $D_0$ contient la bande, la case $0$ au sommet. Supposons que $(q,G,D)$ représente $(q,\tau,p)$. Le sommet de $D$ est $\tau(p)$, ou $\bot$ si $\tau(p)=B$ et que $D$ est vide ; donc $\delta(q,g,d)$ est définie si et seulement si $Z$ a un quadruplet commençant par $q\,\tau(p)$, et les deux s’arrêtent ensemble. Sinon, on vérifie cas par cas que le résultat représente la configuration suivante : écrire remplace le sommet de $D$ ; aller à droite fait passer $\tau(p)$ du sommet de $D$ au sommet de $G$, et le nouveau sommet de $D$ est $\tau(p+1)$ ; aller à gauche ramène $\tau(p-1)$ (le sommet de $G$, ou un blanc) au-dessus de $\tau(p)$ sur $D$. Par récurrence, l’automate fait un pas pour chaque pas de $Z$, et s’arrête avec la même bande. Il a au plus $2(|\Gamma|+1)$ transitions par quadruplet.</p>
+<p><strong>Une pile ne suffit pas.</strong> Un automate à une pile qui lit son entrée de gauche à droite reconnaît exactement les langages hors-contexte (<a href="langages.html#automates-pile">démonstration</a>), et le <a href="langages.html#lemme-etoile">lemme de l’étoile</a> montre que $\{a^nb^nc^n\}$ n’en est pas un. Avec deux piles, on recopie d’abord l’entrée sur $D$, puis l’on simule une machine de Turing qui décide ce langage. Les problèmes sur les automates à pile restent en partie décidables (le vide d’un langage hors-contexte l’est, <a href="langages.html#decidables-grammaires">proposition</a>), mais l’équivalence de deux automates à pile non déterministes est <a href="langages.html#indecidables-2">indécidable</a>.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>Trace de l’automate traduit de l’addition (<code>exemples/addition.tm</code>), sur l’entrée $1+1$. La pile $G$ est écrite de bas en haut, son sommet contre la barre verticale ; la pile $D$ de haut en bas, son sommet contre l’autre barre. La case lue est donc toujours juste à droite du milieu.</p>
+<pre><code>$ python3 piles.py exemples/addition.tm 1 1 --trace
+Machine de Turing : 5 quadruplets ; automate à deux piles : 21 transitions.
+  q0     G = [|   |1 1 B 1 1] = D
+  q1     G = [|   |B 1 B 1 1] = D
+  q2     G = [|   |1 B 1 1] = D
+  q2     G = [1|   |B 1 1] = D
+  q3     G = [1 B|   |1 1] = D
+  q4     G = [1 B|   |B 1] = D
+Entrée [1, 1] : les deux exécutions coïncident pendant 5 pas ; résultat 2 barres, soit 2.</code></pre>
+</div>
+</div>
+
+<div class="seulement techno atelier"><div class="atelier-titre">Atelier technologique — la traduction en automate à deux piles, en Python</div>
+<p>Le fichier <code>piles.py</code> contient un interpréteur d’automates à deux piles et la traduction du niveau technique. Une pile est une liste Python dont le dernier élément est le sommet.</p>
+<details class="source" open><summary>Machine de Turing → automate à deux piles (22 lignes) · <a href="assets/programmes/piles.py" download>télécharger le fichier</a></summary><pre><code>def depuis_turing(machine):
+    """Traduit une machine de Turing à quadruplets en automate à deux piles qui fait un pas
+    pour chaque pas de la machine. Le blanc n'est jamais empilé inutilement : une pile vide vaut des blancs."""
+    sommets = sorted(machine.symboles()) + [VIDE]
+    trans = {}
+    for (q, s, action, q2) in machine.quadruplets:
+        lus_d = [s, VIDE] if s == BLANC else [s]          # sur D, un blanc peut être une pile vide
+        for d in lus_d:
+            depile_d = d != VIDE
+            for g in sommets:
+                if action == "R":
+                    # la case lue passe sur G ; la case suivante devient le sommet de D
+                    emp_g = () if (s == BLANC and g == VIDE) else (s,)
+                    trans[(q, g, d)] = (False, depile_d, emp_g, (), q2)
+                elif action == "L":
+                    # le sommet de G (ou un blanc) revient sur D, au-dessus de la case lue
+                    emp_d = ((s,) if depile_d or s != BLANC else ()) + (g if g != VIDE else BLANC,)
+                    trans[(q, g, d)] = (g != VIDE, depile_d, (), emp_d, q2)
+                else:
+                    # écrire : on remplace le sommet de D
+                    trans[(q, g, d)] = (False, depile_d, (), (action,), q2)
+    return AutomateDeuxPiles(trans, machine.etat_initial)</code></pre></details>
+<p>La fonction <code>comparer</code> fait avancer côte à côte la machine et l’automate, et vérifie après chaque pas que la bande reconstituée à partir des deux piles est celle de la machine : c’est l’invariant de la démonstration, contrôlé à chaque pas.</p>
+<details class="source"><summary>Code complet de <code>piles.py</code> (153 lignes) · <a href="assets/programmes/piles.py" download>télécharger le fichier</a></summary><pre><code>"""piles.py : automates à deux piles, et traduction d'une machine de Turing en automate à deux piles.
+
+Un automate à deux piles a un ensemble fini d'états et deux piles G (gauche) et D (droite).
+À chaque pas, il regarde son état et les sommets des deux piles (VIDE si une pile est vide),
+puis il peut dépiler chacune des deux piles, empiler un mot sur chacune, et changer d'état.
+S'il n'a pas de transition pour ce qu'il voit, il s'arrête.
+
+Simulation d'une bande (chapitre « Autres modèles ») : la pile D contient la case lue (au sommet)
+et toutes les cases à sa droite ; la pile G contient les cases à gauche de la tête, la plus proche
+au sommet. Une pile vide se lit comme une infinité de blancs.
+
+    python3 piles.py                    # traduit l'addition et compare les deux exécutions
+    python3 piles.py exemples/addition.tm 2 3 --trace
+
+Licence MIT. Auteurs : Frédéric Prost et Claude.
+"""
+import sys
+
+from machines import Machine, BLANC, BARRE, bande_initiale
+
+VIDE = "⊥"
+
+
+class AutomateDeuxPiles:
+    """Transitions : (état, sommet de G, sommet de D) -&gt; (dépiler G, dépiler D, mot empilé sur G,
+    mot empilé sur D, nouvel état). Les mots empilés sont des tuples, le dernier élément au sommet."""
+
+    def __init__(self, transitions, etat_initial):
+        self.transitions = dict(transitions)
+        self.etat_initial = etat_initial
+
+    def __len__(self):
+        return len(self.transitions)
+
+    def pas(self, etat, G, D):
+        """Effectue un pas (G et D sont des listes, sommet à la fin). Renvoie le nouvel état, ou None à l'arrêt."""
+        cle = (etat, G[-1] if G else VIDE, D[-1] if D else VIDE)
+        t = self.transitions.get(cle)
+        if t is None:
+            return None
+        dep_g, dep_d, emp_g, emp_d, suivant = t
+        if dep_g:
+            G.pop()
+        if dep_d:
+            D.pop()
+        G.extend(emp_g)
+        D.extend(emp_d)
+        return suivant
+
+    def executer(self, G, D, max_pas=10**7, trace=None):
+        etat, n = self.etat_initial, 0
+        while True:
+            if trace:
+                trace(etat, G, D)
+            nouveau = self.pas(etat, G, D)
+            if nouveau is None:
+                return etat, G, D, n
+            etat, n = nouveau, n + 1
+            if n &gt;= max_pas:
+                raise RuntimeError("pas d'arrêt après %d pas" % n)
+
+
+def depuis_turing(machine):
+    """Traduit une machine de Turing à quadruplets en automate à deux piles qui fait un pas
+    pour chaque pas de la machine. Le blanc n'est jamais empilé inutilement : une pile vide vaut des blancs."""
+    sommets = sorted(machine.symboles()) + [VIDE]
+    trans = {}
+    for (q, s, action, q2) in machine.quadruplets:
+        lus_d = [s, VIDE] if s == BLANC else [s]          # sur D, un blanc peut être une pile vide
+        for d in lus_d:
+            depile_d = d != VIDE
+            for g in sommets:
+                if action == "R":
+                    # la case lue passe sur G ; la case suivante devient le sommet de D
+                    emp_g = () if (s == BLANC and g == VIDE) else (s,)
+                    trans[(q, g, d)] = (False, depile_d, emp_g, (), q2)
+                elif action == "L":
+                    # le sommet de G (ou un blanc) revient sur D, au-dessus de la case lue
+                    emp_d = ((s,) if depile_d or s != BLANC else ()) + (g if g != VIDE else BLANC,)
+                    trans[(q, g, d)] = (g != VIDE, depile_d, (), emp_d, q2)
+                else:
+                    # écrire : on remplace le sommet de D
+                    trans[(q, g, d)] = (False, depile_d, (), (action,), q2)
+    return AutomateDeuxPiles(trans, machine.etat_initial)
+
+
+def piles_initiales(*args):
+    """La bande initiale q0 1^{x1+1} B ... : G vide, D contient la bande, la première case au sommet."""
+    bande = bande_initiale(args)
+    n = max(bande) + 1 if bande else 0
+    return [], [bande.get(i, BLANC) for i in reversed(range(n))]
+
+
+def bande_depuis_piles(G, D):
+    """Reconstitue (dictionnaire des cases non blanches, position de la tête = 0)."""
+    bande = {}
+    for i, s in enumerate(reversed(D)):
+        if s != BLANC:
+            bande[i] = s
+    for i, s in enumerate(reversed(G)):
+        if s != BLANC:
+            bande[-1 - i] = s
+    return bande
+
+
+def comparer(machine, *args, max_pas=10**6):
+    """Exécute la machine et l'automate côte à côte et vérifie, pas à pas, que la bande et l'état
+    sont les mêmes. Renvoie (nombre de pas, nombre de barres)."""
+    auto = depuis_turing(machine)
+    c = machine.configuration_initiale(*args)
+    G, D = piles_initiales(*args)
+    etat = auto.etat_initial
+    while True:
+        bande = {i - c.position: s for i, s in c.bande.items() if s != BLANC}
+        assert bande == bande_depuis_piles(G, D), "bandes différentes au pas %d" % c.pas
+        assert etat == c.etat
+        continue_m = machine.pas(c)
+        nouveau = auto.pas(etat, G, D)
+        assert (nouveau is None) == (not continue_m), "arrêts différents au pas %d" % c.pas
+        if nouveau is None:
+            return c.pas, c.nombre_de_barres()
+        etat = nouveau
+        if c.pas &gt; max_pas:
+            raise RuntimeError("trop long")
+
+
+def afficher(etat, G, D):
+    gauche = " ".join(G) if G else ""
+    droite = " ".join(reversed(D)) if D else ""
+    print("  %-6s G = [%s|   |%s] = D" % (etat, gauche, droite))
+
+
+def _principal(argv):
+    trace = "--trace" in argv
+    argv = [a for a in argv if a != "--trace"]
+    if len(argv) &gt;= 2:
+        machine = Machine.depuis_fichier(argv[1])
+        args = [int(a) for a in argv[2:]]
+    else:
+        import os
+        machine = Machine.depuis_fichier(os.path.join(os.path.dirname(os.path.abspath(__file__)), "exemples", "addition.tm"))
+        args = [2, 3]
+    auto = depuis_turing(machine)
+    print("Machine de Turing : %d quadruplets ; automate à deux piles : %d transitions." % (len(machine), len(auto)))
+    if trace:
+        G, D = piles_initiales(*args)
+        auto.executer(G, D, trace=afficher)
+    pas, barres = comparer(machine, *args)
+    print("Entrée %s : les deux exécutions coïncident pendant %d pas ; résultat %d barres, soit %d." % (args, pas, barres, barres))
+
+
+if __name__ == "__main__":
+    _principal(sys.argv)</code></pre></details>
+</div>
+
+
+<h2 id="probleme-de-correspondance-de-post">Problème de correspondance de Post</h2>
+
+<div class="seulement philo clair">
+<p>Le jeu de dominos de Post, déjà rencontré au chapitre <a href="langages.html">Langages</a>, peut imiter n’importe quel calcul ; c’est pourquoi on ne peut pas décider s’il a une solution.</p>
+</div>
+
+
+<div class="resultat theoreme" id="pcp"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Indécidabilité du problème de correspondance de Post (1946)</div></div>
+<div class="enonce">
+<p>Une <strong>instance</strong> est une liste finie de dominos $\frac{u_1}{v_1},\dots,\frac{u_k}{v_k}$, où les $u_i,v_i$ sont des mots. Une <strong>solution</strong> est une suite non vide d’indices $i_1,\dots,i_m$ (avec répétitions permises) telle que $u_{i_1}\cdots u_{i_m}=v_{i_1}\cdots v_{i_m}$. Il n’existe pas d’algorithme qui décide si une instance a une solution.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> On a un jeu de dominos, chacun portant un mot en haut et un mot en bas. On ne peut pas décider en général si l’on peut les aligner (en réutilisant chaque domino autant qu’on veut) pour lire le même mot en haut et en bas.</p>
+<p>Un jeu qu’un enfant comprend, et aucun programme ne peut dire en général s’il a une solution. Ce jeu, inventé par Post en 1946, est l’outil favori pour montrer que des questions sur les grammaires et les langages sont indécidables, parce qu’il ne parle que de mots. Il sert aussi pour les <a href="mathematiques-indecidables.html#matrices-post">produits de matrices</a>. Le simulateur de la page permet de chercher des solutions et de constater qu’elles peuvent être très longues.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>La preuve complète est donnée au chapitre <a href="langages.html#post-langages">Langages et grammaires</a> : on réduit le problème du mot d’un système semi-thuéen, lui-même indécidable par une réduction de l’arrêt, au problème de Post modifié (dont la solution doit commencer par un domino imposé), puis celui-ci au problème de Post. Les dominos sont conçus pour que la seule manière d’égaliser le haut et le bas soit d’écrire, en haut, la suite des mots d’une dérivation, le bas ayant toujours un mot d’avance ; le rattrapage n’est possible que si la dérivation atteint le mot cherché. Le problème est semi-décidable (on essaie toutes les suites par longueur croissante), donc $\Sigma_1$-complet. Il est décidable pour deux dominos, indécidable à partir de cinq (Neary, 2015).</p></div>
+<div class="niveau" data-niveau="techno">
+<p>Exemple : dominos $\frac{a}{baa}$, $\frac{ab}{aa}$, $\frac{bba}{bb}$. La suite $3,2,3,1$ donne en haut $bba\cdot ab\cdot bba\cdot a=bbaabbbaa$ et en bas $bb\cdot aa\cdot bb\cdot baa=bbaabbbaa$ : c’est une solution.</p>
+<div class="pcp-widget" data-titre="L’exemple"><pre class="src">a/baa
+ab/aa
+bba/bb</pre></div>
+</div>
+</div>
+
+<div class="resultat theoreme" id="pcp-turing"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Des machines de Turing aux dominos de Post</div></div>
+<div class="enonce">
+<p>À toute machine $Z$ (à quadruplets) et toute entrée $\vec x$, on associe effectivement une liste de dominos $\mathcal D_{Z,\vec x}$ qui a une solution si et seulement si $Z$ s’arrête sur $\vec x$. Par conséquent le problème de Post est indécidable, et même $\Sigma_1$-complet.</p>
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Pour n’importe quel programme, on peut fabriquer un jeu de dominos qui a une solution exactement quand le programme s’arrête. La solution, quand elle existe, écrit tout le calcul du programme, étape après étape.</p>
+<p>Les dominos sont conçus pour qu’on n’ait pas le choix. Le premier domino écrit en bas l’état de départ de la machine. Pour rattraper le bas, il faut le recopier en haut, et les seuls dominos qui le permettent écrivent en bas, en même temps, l’étape suivante du calcul. Le bas garde donc toujours une étape d’avance : c’est comme recopier une page en ayant toujours la ligne suivante à écrire en dessous.</p>
+<p>Le haut ne peut rattraper le bas qu’à la toute fin : des dominos spéciaux, qui ne servent que lorsque la machine s’est arrêtée, « mangent » le ruban une case à la fois jusqu’à ce que les deux lignes aient la même longueur. Si la machine ne s’arrête jamais, ces dominos ne servent jamais, et le bas garde éternellement son avance : il n’y a pas de solution. Savoir si un jeu de dominos a une solution, ce serait donc savoir si un programme s’arrête.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Les mots sont écrits sur l’alphabet formé des symboles $\Gamma$ de $Z$, de ses états, d’un séparateur $\#$ et d’une lettre $H$ (« arrêté »). Une configuration d’état $q$, de tête sur la case contenant $s$, s’écrit $u\,q\,s\,v$ ($u$ et $v$ mots de $\Gamma$, éventuellement entourés de blancs). On construit d’abord une liste <em>modifiée</em>, dont la solution doit commencer par le premier domino (on note un domino $\frac{\text{haut}}{\text{bas}}$) :</p>
+<ol>
+<li>départ : $\frac{\#}{\#\,B\,q_0\,w\,\#}$, où $q_0w$ est la configuration initiale (le blanc ajouté devant est inoffensif) ;</li>
+<li>copie : $\frac{a}{a}$ pour $a\in\Gamma$ ; séparateurs : $\frac{\#}{\#}$ et $\frac{\#}{B\,\#}$ (ajouter un blanc à droite de la configuration en cours d’écriture) ;</li>
+<li>pour chaque quadruplet : $q\,s\,s'\,q'$ donne $\frac{q\,s}{q'\,s'}$ ; $q\,s\,R\,q'$ donne $\frac{q\,s}{s\,q'}$ ; $q\,s\,L\,q'$ donne $\frac{c\,q\,s}{q'\,c\,s}$ pour chaque $c\in\Gamma$, et, au bord gauche, $\frac{\#\,q\,s}{\#\,q'\,B\,s}$ et $\frac{\#\,q\,s}{B\,\#\,q'\,B\,s}$ ;</li>
+<li>arrêt : $\frac{q\,s}{H\,s}$ pour chaque couple $(q,s)$ qui ne commence aucun quadruplet ;</li>
+<li>effacement : $\frac{a\,H}{H}$ et $\frac{H\,a}{H}$ pour $a\in\Gamma$ ; fin : $\frac{H\,\#\,\#}{\#}$.</li>
+</ol>
+<p><strong>Si $Z$ s’arrête, il y a une solution.</strong> Soit $C_0,C_1,\dots,C_n$ le calcul, $C_n$ une configuration d’arrêt. On écrit le mot $\#C_0\#C_1\#\cdots\#C_n\#C'_n\#E_1\#\cdots\#E_m\#H\#\#$, où $C'_n$ est $C_n$ dont l’état est remplacé par $H$, et où chaque $E_{j+1}$ s’obtient en effaçant une lettre voisine de $H$ dans $E_j$, jusqu’à $H$ seul. Chaque configuration est complétée par les blancs nécessaires (un blanc à droite quand la tête arrive au bout, à gauche quand elle doit y aller). Ce mot s’obtient en haut et en bas avec la même suite de dominos : le domino de départ, puis, pour chaque configuration du haut, des copies et un domino de règle, d’arrêt ou d’effacement qui écrivent en bas la configuration suivante, séparées par un domino séparateur ; enfin $\frac{\#}{\#}$ et le domino de fin.</p>
+<p><strong>S’il y a une solution, $Z$ s’arrête.</strong> Considérons une solution, qui commence par le domino de départ, et suivons la lecture simultanée du haut et du bas. Montrons par récurrence que, chaque fois que le haut a écrit $\#C_0\#\cdots\#C_k$ (avec des configurations éventuellement complétées de blancs), le bas a écrit exactement $\#C_0\#\cdots\#C_k\#C_{k+1}$, où $C_{k+1}$ suit $C_k$ dans le calcul de $Z$, ou bien $C_k$ contient $H$. Le haut doit recopier $C_k$, qui contient une seule lettre d’état, précédée de lettres de $\Gamma$ (ou de $\#$) et suivie d’une lettre de $\Gamma$ (sinon aucun domino ne convient). Les lettres de $\Gamma$ ne peuvent être couvertes que par des copies ; la lettre d’état $q$, avec la lettre $s$ qui la suit, ne peut l’être que par le domino du quadruplet qui commence par $q\,s$ (il y en a au plus un, puisque $Z$ est déterministe), ou par un domino d’arrêt si ce quadruplet n’existe pas. Le bas reçoit donc la configuration suivante. Or, dans tous les dominos sauf les effacements et le domino de fin, le bas est au moins aussi long que le haut : tant qu’aucun $H$ n’apparaît, le bas garde au moins une configuration d’avance, et la solution ne peut pas se terminer. Un $H$ n’apparaît en bas que par un domino d’arrêt, quand le haut recopie une configuration d’arrêt de $Z$ : la machine s’arrête.</p>
+<p><strong>Liste ordinaire.</strong> L’<a href="langages.html#post-langages">astuce des étoiles</a> (étape 2 de la démonstration du chapitre Langages) transforme la liste modifiée en une liste ordinaire qui a une solution si et seulement si la liste modifiée en a une commençant par le premier domino. Le problème est semi-décidable (on essaie toutes les suites par longueur croissante), donc $\Sigma_1$-complet par la <a href="semi-decidabilite.html#k-complet">complétude de l’arrêt</a>.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<p>Pour l’addition $1+1$ (machine <code>exemples/addition.tm</code>), la liste modifiée a 20 dominos et la solution construite à partir du calcul en emploie 71. Le mot commun écrit les configurations successives, puis l’effacement :</p>
+<pre><code>$ python3 post.py
+Problème modifié : 20 dominos ; solution de 71 dominos, vérifiée.
+Mot commun : # B q0 1 1 B 1 1 # B q1 B 1 B 1 1 # B B q2 1 B 1 1 # B B 1 q2 B 1 1
+             # B B 1 B q3 1 1 # B B 1 B q4 B 1 # B B 1 B H B 1 # B B 1 H B 1 # …
+Problème de Post ordinaire : 22 dominos ; solution de 72 dominos, vérifiée.</code></pre>
+<p>Pour la machine à un seul quadruplet <code>q0 1 B q1</code>, la recherche en largeur aveugle (sans connaître le calcul) retrouve une solution de 13 dominos parmi les 14 de la liste : <code>python3 post.py --chercher</code>.</p>
+</div>
+</div>
+
+<div class="seulement techno atelier"><div class="atelier-titre">Atelier technologique — des machines aux dominos, en Python</div>
+<p>Le fichier <code>post.py</code> fabrique la liste de dominos d’une machine, construit la solution à partir du calcul, la vérifie, puis passe à la liste ordinaire. Un mot est un tuple de lettres, chaque lettre étant une chaîne : un symbole, un nom d’état, <code>#</code> ou <code>H</code>.</p>
+<details class="source" open><summary>La liste de dominos d’une machine (39 lignes) · <a href="assets/programmes/post.py" download>télécharger le fichier</a></summary><pre><code>def dominos_modifies(machine, *args):
+    """Liste de dominos dont une solution commençant par le domino 0 existe ssi la machine s'arrête.
+    Renvoie (dominos, noms) où noms[i] explique le rôle du domino i."""
+    sigma = sorted(machine.symboles())
+    etats = sorted(machine.etats())
+    bande = bande_initiale(args)
+    mot = tuple(bande.get(i, BLANC) for i in range(max(bande) + 1)) if bande else (BLANC,)
+    D, noms = [], []
+
+    def ajoute(h, b, nom):
+        D.append((tuple(h), tuple(b)))
+        noms.append(nom)
+
+    # départ : la première configuration, précédée d'un blanc (inoffensif) pour pouvoir aller à gauche
+    ajoute([SEP], [SEP, BLANC, machine.etat_initial] + list(mot) + [SEP], "départ")
+    for a in sigma:
+        ajoute([a], [a], "copie " + a)
+    ajoute([SEP], [SEP], "séparateur")
+    ajoute([SEP], [BLANC, SEP], "séparateur, un blanc ajouté à droite")
+    for (q, s, act, q2) in machine.quadruplets:
+        nom = "règle %s %s %s %s" % (q, s, act, q2)
+        if act == "R":
+            ajoute([q, s], [s, q2], nom)
+        elif act == "L":
+            for c in sigma:
+                ajoute([c, q, s], [q2, c, s], nom)
+            ajoute([SEP, q, s], [SEP, q2, BLANC, s], nom + " (bord gauche)")
+            ajoute([SEP, q, s], [BLANC, SEP, q2, BLANC, s], nom + " (bord gauche, blanc à droite)")
+        else:
+            ajoute([q, s], [q2, act], nom)
+    for q in etats:
+        for s in sigma:
+            if (q, s) not in machine.table:
+                ajoute([q, s], [ARRET, s], "arrêt en %s sur %s" % (q, s))
+    for a in sigma:
+        ajoute([a, ARRET], [ARRET], "effacement à gauche de H")
+        ajoute([ARRET, a], [ARRET], "effacement à droite de H")
+    ajoute([ARRET, SEP, SEP], [SEP], "fin")
+    return D, noms</code></pre></details>
+<p>La solution se construit configuration par configuration, exactement comme dans la première moitié de la démonstration :</p>
+<details class="source" open><summary>La solution, à partir du calcul (68 lignes) · <a href="assets/programmes/post.py" download>télécharger le fichier</a></summary><pre><code>def solution_depuis_calcul(machine, dominos, noms, *args, max_pas=10**5):
+    """Construit la solution du problème modifié à partir du calcul de la machine (qui doit s'arrêter).
+    On écrit les lignes successives (les configurations) ; chaque ligne du haut est recopiée en bas
+    en la transformant en la ligne suivante, le bas ayant toujours une ligne d'avance."""
+    index = {}
+    for i, (h, b) in enumerate(dominos):
+        index.setdefault((tuple(h), tuple(b)), i)
+
+    def ind(h, b):
+        return index[(tuple(h), tuple(b))]
+
+    def copie(mots):
+        return [ind([c], [c]) for c in mots]
+
+    bande = bande_initiale(args)
+    droite = [bande.get(i, BLANC) for i in range(max(bande) + 1)] if bande else [BLANC]
+    gauche, q = [BLANC], machine.etat_initial
+    sol = [0]
+    pad = False                 # faut-il ajouter un blanc à droite de la ligne suivante ?
+    premiere, pas = True, 0
+    while True:
+        s = droite[0]
+        regle = machine.table.get((q, s))
+        bord_gauche = regle is not None and regle[2] == "L" and not gauche
+        # le séparateur du haut qui précède cette ligne écrit, en bas, la fin de la ligne suivante
+        if not premiere and not bord_gauche:
+            sol.append(ind([SEP], ([BLANC] if pad else []) + [SEP]))
+        if regle is None:                                         # la machine s'arrête
+            sol += copie(gauche) + [ind([q, s], [ARRET, s])] + copie(droite[1:])
+            break
+        act, q2 = regle[2], regle[3]
+        ancien_pad, pad = pad, False
+        if act == "R":
+            sol += copie(gauche) + [ind([q, s], [s, q2])] + copie(droite[1:])
+            gauche, droite = gauche + [s], droite[1:]
+            if not droite:
+                droite, pad = [BLANC], True
+        elif act == "L" and bord_gauche:
+            sol.append(ind([SEP, q, s], ([BLANC] if ancien_pad else []) + [SEP, q2, BLANC, s]))
+            sol += copie(droite[1:])
+            droite = [BLANC] + droite
+        elif act == "L":
+            c = gauche[-1]
+            sol += copie(gauche[:-1]) + [ind([c, q, s], [q2, c, s])] + copie(droite[1:])
+            gauche, droite = gauche[:-1], [c] + droite
+        else:
+            sol += copie(gauche) + [ind([q, s], [q2, act])] + copie(droite[1:])
+            droite = [act] + droite[1:]
+        q, premiere, pas = q2, False, pas + 1
+        if pas &gt; max_pas:
+            raise RuntimeError("trop long")
+    # la ligne du bas contient maintenant H ; on efface une lettre par ligne
+    ligne = gauche + [ARRET] + droite
+    while len(ligne) &gt; 1:
+        sol.append(ind([SEP], ([BLANC] if pad else []) + [SEP]))
+        if pad:
+            ligne = ligne + [BLANC]
+            pad = False
+        k = ligne.index(ARRET)
+        if k &gt; 0:
+            sol += copie(ligne[:k - 1]) + [ind([ligne[k - 1], ARRET], [ARRET])] + copie(ligne[k + 1:])
+            ligne = ligne[:k - 1] + ligne[k:]
+        else:
+            sol += [ind([ARRET, ligne[1]], [ARRET])] + copie(ligne[2:])
+            ligne = [ARRET] + ligne[2:]
+    sol.append(ind([SEP], [SEP]))
+    sol.append(ind([ARRET, SEP, SEP], [SEP]))
+    return sol</code></pre></details>
+<p>Le fichier contient aussi une recherche en largeur (<code>chercher</code>), qui ne garde que l’« avance » d’un côté sur l’autre : c’est la semi-décision du problème. Elle trouve les solutions des petits exemples du chapitre, mais elle ne peut jamais conclure qu’il n’y en a pas. Le <a href="#pcp">simulateur</a> plus haut, et ceux du chapitre <a href="langages.html#post-langages">Langages</a>, permettent de faire la même recherche dans le navigateur.</p>
+<details class="source"><summary>Code complet de <code>post.py</code> (262 lignes) · <a href="assets/programmes/post.py" download>télécharger le fichier</a></summary><pre><code>"""post.py : le problème de correspondance de Post, et la traduction d'une machine de Turing en dominos.
+
+Un domino est un couple (haut, bas) de mots ; ici un mot est un tuple de « lettres », chaque lettre
+étant une chaîne (un symbole de la bande, un nom d'état, le séparateur #...). Une solution d'une liste
+de dominos est une suite d'indices telle que la concaténation des hauts égale celle des bas.
+
+Construction (chapitre « Autres modèles ») : pour une machine Z et une entrée x, on fabrique
+ 1. une liste de dominos « modifiée », dont la solution doit commencer par le premier domino ;
+    elle a une solution si et seulement si Z s'arrête sur x : la seule façon d'égaliser le haut et le
+    bas est d'écrire la suite des configurations du calcul, séparées par #, le bas ayant toujours une
+    configuration d'avance ;
+ 2. une liste de dominos ordinaire, par l'astuce des étoiles du chapitre « Langages ».
+
+    python3 post.py                         # dominos pour l'addition 1 + 1, solution vérifiée
+    python3 post.py exemples/successeur.tm 0 --dominos
+    python3 post.py --chercher              # recherche en largeur sur de petits exemples
+
+Licence MIT. Auteurs : Frédéric Prost et Claude.
+"""
+import sys
+from collections import deque
+
+from machines import Machine, BLANC, bande_initiale
+
+SEP, ARRET, ETOILE, FIN = "#", "H", "⋆", "◇"
+
+
+# --------------------------------------------------------------------------- solutions
+def concatener(dominos, indices):
+    haut, bas = [], []
+    for i in indices:
+        haut.extend(dominos[i][0])
+        bas.extend(dominos[i][1])
+    return tuple(haut), tuple(bas)
+
+
+def est_solution(dominos, indices, premier=None):
+    if not indices or (premier is not None and indices[0] != premier):
+        return False
+    h, b = concatener(dominos, indices)
+    return h == b
+
+
+def chercher(dominos, max_noeuds=200000, premier=None):
+    """Recherche en largeur d'une solution. On ne garde que l'« avance » d'un côté sur l'autre :
+    deux suites qui laissent la même avance ont les mêmes prolongements. Renvoie une solution
+    (liste d'indices) ou None si rien n'est trouvé dans la limite : c'est une semi-décision."""
+    depart = [premier] if premier is not None else range(len(dominos))
+    file, vus = deque(), set()
+
+    def avance(h, b):
+        n = min(len(h), len(b))
+        if h[:n] != b[:n]:
+            return None
+        return ("h", h[n:]) if len(h) &gt; n else ("b", b[n:])
+
+    for i in depart:
+        a = avance(*dominos[i])
+        if a is not None:
+            if a[1] == ():
+                return [i]
+            file.append((a, [i]))
+            vus.add(a)
+    while file and len(vus) &lt; max_noeuds:
+        (cote, reste), suite = file.popleft()
+        for i, (h, b) in enumerate(dominos):
+            if cote == "h":
+                a = avance(reste + h, b)
+            else:
+                a = avance(h, reste + b)
+            if a is None:
+                continue
+            if a[1] == ():
+                return suite + [i]
+            if a not in vus:
+                vus.add(a)
+                file.append((a, suite + [i]))
+    return None
+
+
+# --------------------------------------------------------------------------- machine -&gt; dominos
+def dominos_modifies(machine, *args):
+    """Liste de dominos dont une solution commençant par le domino 0 existe ssi la machine s'arrête.
+    Renvoie (dominos, noms) où noms[i] explique le rôle du domino i."""
+    sigma = sorted(machine.symboles())
+    etats = sorted(machine.etats())
+    bande = bande_initiale(args)
+    mot = tuple(bande.get(i, BLANC) for i in range(max(bande) + 1)) if bande else (BLANC,)
+    D, noms = [], []
+
+    def ajoute(h, b, nom):
+        D.append((tuple(h), tuple(b)))
+        noms.append(nom)
+
+    # départ : la première configuration, précédée d'un blanc (inoffensif) pour pouvoir aller à gauche
+    ajoute([SEP], [SEP, BLANC, machine.etat_initial] + list(mot) + [SEP], "départ")
+    for a in sigma:
+        ajoute([a], [a], "copie " + a)
+    ajoute([SEP], [SEP], "séparateur")
+    ajoute([SEP], [BLANC, SEP], "séparateur, un blanc ajouté à droite")
+    for (q, s, act, q2) in machine.quadruplets:
+        nom = "règle %s %s %s %s" % (q, s, act, q2)
+        if act == "R":
+            ajoute([q, s], [s, q2], nom)
+        elif act == "L":
+            for c in sigma:
+                ajoute([c, q, s], [q2, c, s], nom)
+            ajoute([SEP, q, s], [SEP, q2, BLANC, s], nom + " (bord gauche)")
+            ajoute([SEP, q, s], [BLANC, SEP, q2, BLANC, s], nom + " (bord gauche, blanc à droite)")
+        else:
+            ajoute([q, s], [q2, act], nom)
+    for q in etats:
+        for s in sigma:
+            if (q, s) not in machine.table:
+                ajoute([q, s], [ARRET, s], "arrêt en %s sur %s" % (q, s))
+    for a in sigma:
+        ajoute([a, ARRET], [ARRET], "effacement à gauche de H")
+        ajoute([ARRET, a], [ARRET], "effacement à droite de H")
+    ajoute([ARRET, SEP, SEP], [SEP], "fin")
+    return D, noms
+
+
+def solution_depuis_calcul(machine, dominos, noms, *args, max_pas=10**5):
+    """Construit la solution du problème modifié à partir du calcul de la machine (qui doit s'arrêter).
+    On écrit les lignes successives (les configurations) ; chaque ligne du haut est recopiée en bas
+    en la transformant en la ligne suivante, le bas ayant toujours une ligne d'avance."""
+    index = {}
+    for i, (h, b) in enumerate(dominos):
+        index.setdefault((tuple(h), tuple(b)), i)
+
+    def ind(h, b):
+        return index[(tuple(h), tuple(b))]
+
+    def copie(mots):
+        return [ind([c], [c]) for c in mots]
+
+    bande = bande_initiale(args)
+    droite = [bande.get(i, BLANC) for i in range(max(bande) + 1)] if bande else [BLANC]
+    gauche, q = [BLANC], machine.etat_initial
+    sol = [0]
+    pad = False                 # faut-il ajouter un blanc à droite de la ligne suivante ?
+    premiere, pas = True, 0
+    while True:
+        s = droite[0]
+        regle = machine.table.get((q, s))
+        bord_gauche = regle is not None and regle[2] == "L" and not gauche
+        # le séparateur du haut qui précède cette ligne écrit, en bas, la fin de la ligne suivante
+        if not premiere and not bord_gauche:
+            sol.append(ind([SEP], ([BLANC] if pad else []) + [SEP]))
+        if regle is None:                                         # la machine s'arrête
+            sol += copie(gauche) + [ind([q, s], [ARRET, s])] + copie(droite[1:])
+            break
+        act, q2 = regle[2], regle[3]
+        ancien_pad, pad = pad, False
+        if act == "R":
+            sol += copie(gauche) + [ind([q, s], [s, q2])] + copie(droite[1:])
+            gauche, droite = gauche + [s], droite[1:]
+            if not droite:
+                droite, pad = [BLANC], True
+        elif act == "L" and bord_gauche:
+            sol.append(ind([SEP, q, s], ([BLANC] if ancien_pad else []) + [SEP, q2, BLANC, s]))
+            sol += copie(droite[1:])
+            droite = [BLANC] + droite
+        elif act == "L":
+            c = gauche[-1]
+            sol += copie(gauche[:-1]) + [ind([c, q, s], [q2, c, s])] + copie(droite[1:])
+            gauche, droite = gauche[:-1], [c] + droite
+        else:
+            sol += copie(gauche) + [ind([q, s], [q2, act])] + copie(droite[1:])
+            droite = [act] + droite[1:]
+        q, premiere, pas = q2, False, pas + 1
+        if pas &gt; max_pas:
+            raise RuntimeError("trop long")
+    # la ligne du bas contient maintenant H ; on efface une lettre par ligne
+    ligne = gauche + [ARRET] + droite
+    while len(ligne) &gt; 1:
+        sol.append(ind([SEP], ([BLANC] if pad else []) + [SEP]))
+        if pad:
+            ligne = ligne + [BLANC]
+            pad = False
+        k = ligne.index(ARRET)
+        if k &gt; 0:
+            sol += copie(ligne[:k - 1]) + [ind([ligne[k - 1], ARRET], [ARRET])] + copie(ligne[k + 1:])
+            ligne = ligne[:k - 1] + ligne[k:]
+        else:
+            sol += [ind([ARRET, ligne[1]], [ARRET])] + copie(ligne[2:])
+            ligne = [ARRET] + ligne[2:]
+    sol.append(ind([SEP], [SEP]))
+    sol.append(ind([ARRET, SEP, SEP], [SEP]))
+    return sol
+
+
+def vers_ordinaire(dominos):
+    """Astuce des étoiles (chapitre « Langages ») : le premier domino devient le seul qui puisse commencer."""
+    def gauche(w):
+        r = []
+        for c in w:
+            r += [ETOILE, c]
+        return r
+
+    def droite(w):
+        r = []
+        for c in w:
+            r += [c, ETOILE]
+        return r
+    nouveaux = [(tuple(gauche(dominos[0][0])), tuple([ETOILE] + droite(dominos[0][1])))]
+    for h, b in dominos:
+        nouveaux.append((tuple(gauche(h)), tuple(droite(b))))
+    nouveaux.append(((ETOILE, FIN), (FIN,)))
+    return nouveaux
+
+
+def solution_ordinaire(sol_modifiee, nb_dominos):
+    """Une solution 0, i2, ..., ir du problème modifié donne la solution 0, i2+1, ..., ir+1, fin."""
+    return [0] + [i + 1 for i in sol_modifiee[1:]] + [nb_dominos + 1]
+
+
+def afficher_mot(w, max_lettres=60):
+    t = " ".join(w)
+    return t if len(w) &lt;= max_lettres else " ".join(w[:max_lettres]) + " …"
+
+
+def _principal(argv):
+    import os
+    if "--chercher" in argv:
+        exemples = [
+            [(("a",), ("b", "a", "a")), (("a", "b"), ("a", "a")), (("b", "b", "a"), ("b", "b"))],
+            [(("1",), ("1", "1", "1")), (("1", "0", "1", "1", "1"), ("1", "0")), (("1", "0"), ("0",))],
+            [(("a", "b"), ("a",)), (("b",), ("a", "b"))],
+        ]
+        for d in exemples:
+            s = chercher(d)
+            print(" / ".join("%s:%s" % ("".join(h), "".join(b)) for h, b in d), "-&gt;", s)
+        m = Machine.depuis_texte("q0 1 B q1")
+        dm, _ = dominos_modifies(m, 0)
+        print("Machine « q0 1 B q1 » sur 0 :", len(dm), "dominos ; solution trouvée par la recherche :", chercher(dm, premier=0))
+        return
+    voir = "--dominos" in argv
+    argv = [a for a in argv if not a.startswith("--")]
+    if len(argv) &gt;= 2:
+        machine = Machine.depuis_fichier(argv[1])
+        args = [int(x) for x in argv[2:]]
+    else:
+        machine = Machine.depuis_fichier(os.path.join(os.path.dirname(os.path.abspath(__file__)), "exemples", "addition.tm"))
+        args = [1, 1]
+    dm, noms = dominos_modifies(machine, *args)
+    if voir:
+        for i, ((h, b), n) in enumerate(zip(dm, noms)):
+            print("%3d  %-22s / %-28s %s" % (i, " ".join(h), " ".join(b), n))
+    sol = solution_depuis_calcul(machine, dm, noms, *args)
+    assert est_solution(dm, sol, premier=0)
+    h, _ = concatener(dm, sol)
+    print("Problème modifié : %d dominos ; solution de %d dominos, vérifiée." % (len(dm), len(sol)))
+    print("Mot commun :", afficher_mot(h, 80))
+    do = vers_ordinaire(dm)
+    so = solution_ordinaire(sol, len(dm))
+    assert est_solution(do, so)
+    print("Problème de Post ordinaire : %d dominos ; solution de %d dominos, vérifiée." % (len(do), len(so)))
+
+
+if __name__ == "__main__":
+    _principal(sys.argv)</code></pre></details>
+</div>
+<p class="philo-aussi">Le jeu de dominos se traduit à son tour en logique : voir <a href="logique-types.html#floyd">du problème de Post à la logique</a>, au chapitre Logique et types.</p>
+
+
+<h2 id="diophantiennes">Équations diophantiennes</h2>
+
+<div class="seulement philo clair">
+<p>Les équations polynomiales en nombres entiers sont aussi un modèle de calcul universel (voir <a href="equations-diophantiennes.html">Équations diophantiennes</a>).</p>
+</div>
+
+
+<p>Les équations polynomiales à coefficients entiers forment elles aussi un modèle de calcul universel : un ensemble est semi-décidable si et seulement s’il est l’ensemble des paramètres pour lesquels une équation a une solution entière. Ce résultat, le théorème de Matiyasevich-Robinson-Davis-Putnam, et ses conséquences en arithmétique ont leur propre chapitre : <a href="equations-diophantiennes.html">Équations diophantiennes</a>.</p>
+
+<h2 id="systemes-multiplicatifs-fractran">Systèmes multiplicatifs : FRACTRAN</h2>
+
+<div class="seulement philo clair">
+<p>John Conway a inventé un langage dont les programmes sont des listes de fractions. On part d’un nombre, on le multiplie par la première fraction de la liste qui donne un résultat entier, et l’on recommence. Ce jeu d’école primaire suffit à tout calculer.</p>
+</div>
+
+
+<div class="resultat theoreme" id="fractran"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Universalité de FRACTRAN (Conway, 1987)</div></div>
+<div class="enonce"><p>Un programme FRACTRAN est une liste finie de fractions $f_1,\dots,f_k$. À partir d’un entier $n$, on cherche la première fraction $f_i$ telle que $n f_i$ soit entier, on remplace $n$ par $nf_i$, et l’on recommence ; on s’arrête si aucune ne convient. Ce modèle est universel : pour toute fonction calculable $f$, il existe un programme et un nombre premier $q$ tels que, partant de $q\,2^x$, le programme s’arrête si et seulement si $f(x)$ est défini, et alors sur $3^{f(x)}$.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Un programme FRACTRAN est une simple liste de fractions. On part d’un nombre entier ; on le multiplie par la première fraction de la liste qui donne encore un résultat entier ; et l’on recommence. Ce langage étrange peut calculer tout ce qui est calculable.</p>
+<p>Calculer, ici, c’est multiplier, et rien d’autre. Le secret est la décomposition en nombres premiers : un nombre comme 2<sup>3</sup> × 3<sup>5</sup> × 7 contient trois « compteurs » (les exposants 3, 5 et 1), et multiplier par une fraction ajoute ou retire des unités à ces compteurs. On retrouve les machines à compteurs. Le mathématicien John Conway a même écrit un programme de quatorze fractions qui produit, l’un après l’autre, tous les nombres premiers.</p>
+</div>
+<div class="niveau" data-niveau="tech">
+<p>Soit $f$ une fonction calculable et $M$ une machine à compteurs qui la calcule au sens de l’étape 1 du <a href="#compteurs">théorème de Minsky</a> (entrée dans $r_1$ ; à l’arrêt, résultat dans $r_0$ et autres compteurs nuls, quitte à les vider). On suppose aussi qu’aucune instruction ne saute vers elle-même : on remplace au besoin une telle instruction $i$ par un passage par deux instructions nouvelles, $\mathrm{INC}(t,i^*)$ et $i^*:\mathrm{DEC}(t,i,i)$, sur un compteur $t$ inutilisé.</p>
+<p>On associe un nombre premier $p_r$ à chaque compteur $r_r$, avec $p_1=2$ et $p_0=3$ (ici l’indice est celui du compteur, et non le rang du nombre premier), et un nombre premier $q_i$ à chaque instruction, tous distincts. La configuration « instruction $i$, compteurs $c_r$ » est codée par $n=q_i\prod_rp_r^{c_r}$. Le programme FRACTRAN contient, pour chaque instruction $i$ :</p>
+<ul>
+<li>si $i$ est $\mathrm{INC}(r,j)$ : la fraction $\dfrac{q_jp_r}{q_i}$ ;</li>
+<li>si $i$ est $\mathrm{DEC}(r,j,k)$ : la fraction $\dfrac{q_j}{q_ip_r}$, puis, plus loin dans la liste, $\dfrac{q_k}{q_i}$ ;</li>
+<li>si $i$ est l’arrêt : la fraction $\dfrac1{q_i}$.</li>
+</ul>
+<p>Comme $j,k\ne i$, ces fractions sont irréductibles, et $nf$ est entier si et seulement si le dénominateur de $f$ divise $n$. Si $n$ code une configuration d’instruction $i$, seul $q_i$ parmi les $q$ divise $n$, donc seules les fractions de l’instruction $i$ s’appliquent : pour $\mathrm{INC}$, $n$ devient le code de la configuration suivante ; pour $\mathrm{DEC}$, la première fraction s’applique si et seulement si $p_r$ divise $n$, c’est-à-dire $c_r>0$, et donne $q_j\cdot n/(q_ip_r)$ ; sinon la seconde donne $q_k\cdot n/q_i$. À l’arrêt, $n$ devient $\prod_rp_r^{c_r}=3^{f(x)}$, qu’aucune fraction ne peut plus multiplier (chaque dénominateur contient un $q$). Ainsi, partant de $q_1\,2^x$, le programme s’arrête si et seulement si $f(x)$ est défini, et alors sur $3^{f(x)}$.</p>
+<p>Réciproquement, une fonction calculée de cette façon par un programme FRACTRAN est calculable, puisque chaque pas est un calcul arithmétique élémentaire.</p>
+</div>
+<div class="niveau" data-niveau="techno"><p>Le programme à une fraction $\left(\frac{3}{2}\right)$ calcule l’addition : partant de $2^a3^b$, il s’arrête sur $3^{a+b}$.</p></div>
+</div>
+
+<h2 id="automates-cellulaires">Automates cellulaires</h2>
+
+<div class="seulement philo clair">
+<p>Un automate cellulaire est une rangée de cases, chacune noire ou blanche, qui changent toutes en même temps selon la couleur de leurs voisines. Le célèbre « jeu de la vie » de Conway en est un exemple à deux dimensions. Même la règle 110, l’une des plus simples à une dimension, peut tout calculer.</p>
+</div>
+
+
+<div class="resultat definition" id="def-automate-cellulaire"><div class="entete-res"><div class="type">Définition</div><div class="nom">Automates cellulaires, automates élémentaires</div></div>
+<div class="enonce">
+<p>Un <strong>automate cellulaire</strong> à une dimension est donné par un ensemble fini d’états $Q$, un rayon $r\ge1$ et une <strong>règle locale</strong> $f:Q^{2r+1}\to Q$. Une configuration est une suite $c\in Q^{\mathbb Z}$ (une ligne infinie de cellules) ; en un pas, toutes les cellules changent en même temps, selon $c'_i=f(c_{i-r},\dots,c_{i+r})$. Les <strong>automates élémentaires</strong> sont ceux de rayon $1$ sur $Q=\{0,1\}$. Leur règle est donnée par les huit valeurs $f(1,1,1),f(1,1,0),\dots,f(0,0,0)$, que l’on lit comme l’écriture binaire d’un entier entre $0$ et $255$, le <em>numéro de Wolfram</em> de la règle. Ainsi la <strong>règle 110</strong>, $110=01101110$ en binaire, est :</p>
+$$\begin{array}{cccccccc}111&110&101&100&011&010&001&000\\\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow&\downarrow\\0&1&1&0&1&1&1&0\end{array}$$
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Un <em>automate cellulaire</em> est une rangée de cases, blanches ou noires par exemple. À chaque instant, toutes les cases changent en même temps, et chacune choisit sa nouvelle couleur en regardant seulement sa couleur et celle de ses voisines.</p>
+<p>C’est le modèle de calcul le plus proche de la physique : pas de tête de lecture, pas de chef d’orchestre, seulement une règle locale appliquée partout à la fois, comme les lois de la nature. John von Neumann et Stanisław Ulam l’ont inventé vers 1950 pour étudier des machines capables de se reproduire. En dessinant les rangées successives les unes sous les autres, on obtient une image de toute l’histoire du calcul, le même grand tableau qui sert pour les <a href="mathematiques-indecidables.html#pavage-origine">carrelages</a> et pour la <a href="logique-types.html#binaire">logique</a>.</p>
+</div>
+<div class="niveau" data-niveau="techno">
+<div class="ac-widget" data-regle="110" data-depart="droite" data-titre="Diagramme espace-temps d’un automate élémentaire"></div>
+<p>Le simulateur ci-dessus dessine $100$ pas sur une ligne de $160$ cellules refermée en anneau. Quelques règles à essayer : $110$ (des structures localisées qui se déplacent et interagissent), $90$ (le triangle de Sierpinski, voir l’<a href="#ex-am-regle90">exercice</a>), $30$ (un comportement d’apparence aléatoire), $184$ (un modèle de circulation automobile), $240$ (un simple décalage).</p>
+</div>
+</div>
+
+<div class="resultat theoreme" id="ac-simule-mt"><div class="entete-res"><div class="type">Théorème</div><div class="nom">Un automate cellulaire simule une machine de Turing en temps réel</div></div>
+<div class="enonce"><p>Pour toute machine de Turing $Z$, il existe un automate cellulaire de rayon $1$ dont chaque pas réalise un pas de $Z$. Par conséquent, la question « partant de cette configuration finie (entourée de cellules blanches), l’automate fera-t-il apparaître tel état ? » est indécidable pour certains automates. Inversement, l’évolution d’un automate cellulaire à partir d’une configuration finie se calcule par une machine de Turing.</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Un automate cellulaire peut imiter une machine de Turing, à raison d’une étape de la machine pour une étape de l’automate. Inversement, une machine de Turing peut calculer l’évolution d’un automate cellulaire.</p>
+<p>Il suffit que chaque case de l’automate représente une case du ruban, avec en plus une marque « la tête est ici, à telle étape ». La case marquée et ses voisines se mettent à jour selon le programme de la machine, les autres ne bougent pas. Les deux modèles calculent donc exactement les mêmes choses. L’automate peut seulement aller plus vite pour certaines tâches, puisque toutes ses cases travaillent ensemble.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>Prenons pour états de l’automate les symboles $s$ de $Z$ et les couples $(q,s)$ (« la tête, dans l’état $q$, est sur cette case, qui contient $s$ »). La configuration initiale porte $(q_0,\text{blanc})$ en une case et des blancs ailleurs. La règle locale $f(g,c,d)$ est la suivante. Si $c=(q,s)$ et que $Z$ a la transition « écrire $s'$, aller dans l’état $q'$, se déplacer », alors la nouvelle valeur est $s'$ (la tête s’en va) ; si $q$ est un état d’arrêt, la case garde la valeur $(q,s)$. Si $c=s$ est un symbole et que le voisin de gauche $g=(q,t)$ porte une transition vers la droite d’état d’arrivée $q'$, la nouvelle valeur est $(q',s)$ (la tête arrive) ; de même avec le voisin de droite pour une transition vers la gauche. Sinon, $c$ ne change pas. Comme il n’y a qu’une tête, ces cas ne se recouvrent pas, et la configuration au temps $t$ est exactement celle de $Z$ après $t$ pas. L’état $(q_{\text{arrêt}},s)$ apparaît si et seulement si $Z$ s’arrête : on conclut par l’<a href="indecidabilite.html#arret">indécidabilité de l’arrêt</a>. Pour la réciproque, une configuration finie reste finie (elle grandit d’au plus $r$ cases de chaque côté à chaque pas), et l’on applique la règle cellule par cellule.</p></div>
+<div class="niveau" data-niveau="techno"><p>Le programme <a href="assets/code/automates.py">automates.py</a> construit cette règle locale pour une machine de Radó à 3 états, et vérifie que l’automate et la machine ont la même configuration après chacun des 20 premiers pas ; la machine s’arrête au pas 14 avec six symboles $1$, la valeur de <a href="castors-affaires.html#valeurs-bb">Σ(3)</a>.</p></div>
+</div>
+
+<div class="resultat theoreme" id="regle-110"><div class="entete-res"><div class="type">Théorème</div><div class="nom">La règle 110 est universelle (Cook, 2004)</div></div>
+<div class="enonce"><p>L’automate élémentaire 110 est universel : pour toute machine de Turing et toute entrée, il existe une configuration de la règle 110, formée d’un motif fini placé sur un fond périodique, dont l’évolution simule le calcul de la machine. (Résultat cité pour information, conjecturé par Wolfram en 1985 et démontré par Matthew Cook, dont la démonstration a été publiée en 2004.)</p></div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Dans la « règle 110 », chaque case est blanche ou noire et ne regarde que ses deux voisines immédiates. Cette règle minuscule peut pourtant tout calculer.</p>
+<p>Deux couleurs, trois cases regardées, huit situations possibles : on peut difficilement imaginer plus simple. Le physicien Stephen Wolfram l’a soupçonné en 1985, et Matthew Cook l’a démontré en 2004. Dans les images produites par cette règle, on voit des motifs qui se déplacent comme des petits vaisseaux sur un fond régulier et qui se heurtent. Cook a montré qu’en disposant bien ces vaisseaux, leurs collisions reproduisent un calcul.</p>
+<p>La règle 110 rejoint la liste des systèmes qui savent tout calculer avec presque rien : deux compteurs, une liste de fractions, des équations en nombres entiers, le célèbre Jeu de la vie. Comme pour eux, cette puissance a un revers : des questions simples sur son évolution n’ont pas de réponse calculable.</p>
+</div>
+<div class="niveau" data-niveau="tech"><p>Deux précisions, citées pour information. D’abord, la configuration initiale n’est pas finie au sens du <a href="#ac-simule-mt">théorème précédent</a> : il faut un fond périodique infini, et même une répétition périodique d’un motif à droite et d’un autre à gauche ; c’est une configuration calculable, mais pas une configuration à support fini. Ensuite, la simulation de Cook était exponentiellement lente ; Neary et Woods (2006) l’ont rendue polynomiale, ce qui montre que prédire l’évolution de la règle 110 est un problème $\mathsf P$-complet. La règle 110 a aussi servi à construire de très petites machines de Turing universelles.</p></div>
+</div>
+
+<div class="resultat theoreme" id="classification-wolfram"><div class="entete-res"><div class="type">Remarque</div><div class="nom">La classification de Wolfram et l’indécidabilité dans les automates</div></div>
+<div class="enonce">
+<p>Résultats cités pour information.</p>
+<ul>
+<li><strong>Classification de Wolfram (1984).</strong> Wolfram a classé, d’après leur comportement observé à partir de configurations aléatoires, les automates en quatre classes : (I) évolution vers une configuration homogène ; (II) structures stables ou périodiques ; (III) comportement chaotique, d’apparence aléatoire (règle 30) ; (IV) structures localisées complexes qui interagissent (règle 110, Jeu de la vie). Il a conjecturé que les automates de classe IV sont capables de calcul universel. Cette classification est empirique : formalisée, l’appartenance d’un automate à une classe est indécidable (Culik et Yu, 1988). Voir les références de Wolfram et de Culik et Yu dans la <a href="bibliographie.html#automates-cellulaires-biblio">bibliographie</a>.</li>
+<li><strong>Propriétés globales.</strong> Savoir si un automate à une dimension est réversible (sa fonction globale est bijective) est décidable (Amoroso et Patt, 1972), mais c’est indécidable en dimension 2 (Kari, 1990). Savoir si toute configuration finit par devenir uniforme (nilpotence) est indécidable dès la dimension 1 (Kari, 1992).</li>
+<li><strong>Jardins d’Éden.</strong> Une configuration est un <em>jardin d’Éden</em> si elle n’a pas d’antécédent : on ne peut l’obtenir qu’au départ. Par le théorème de Moore et Myhill (1962–1963), un automate a des jardins d’Éden si et seulement s’il existe deux configurations distinctes, ne différant que sur un nombre fini de cellules, qui ont la même image. Le Jeu de la vie a des jardins d’Éden. Leur existence est décidable en dimension 1 et indécidable en dimension 2 (Kari).</li>
+</ul>
+</div>
+<div class="niveau" data-niveau="philo">
+<p class="en-clair"><strong>En clair.</strong> Wolfram a rangé les automates cellulaires en quatre familles selon ce qu’on observe : ceux qui deviennent uniformes, ceux qui se répètent, ceux qui ont l’air chaotiques, et ceux qui produisent des structures complexes. Savoir à quelle famille appartient un automate donné est en général indécidable.</p>
+<p>La classification est très parlante quand on regarde les images, mais elle n’est pas une définition précise : elle décrit ce qu’on voit en essayant quelques départs au hasard. Les automates de la quatrième famille, ceux qui ressemblent à de la vie, sont justement ceux qui savent calculer, et pour eux on ne peut pas prévoir à coup sûr ce qui finira par se passer.</p>
+</div>
+</div>
+
+<!--EXERCICES-->
+<h2 id="exercices">Exercices</h2>
+
+<p class="legende-exo">Niveaux : ★ application directe du cours, ★★ exercice standard, ★★★ approfondissement. Les corrections sont masquées : cliquer sur « Correction » pour les afficher.</p><div class="exercice" id="ex-am-addition"><div class="entete-exo"><span class="etoiles" title="niveau 1">★</span><span class="nom-exo">Exercice 1 — Additionner avec des compteurs</span></div><div class="corps-exo">
+<p>Écrire un programme de <a href="#compteurs">machine à compteurs</a> qui ajoute le contenu du registre 2 au registre 1 (et vide le registre 2).</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>Instruction 0 : $\mathrm{DEC}(2,1,2)$ ; instruction 1 : $\mathrm{INC}(1,0)$. Il n’y a pas d’instruction 2 : y aller arrête la machine. Tant que le registre 2 est non nul, on le décrémente et l’on incrémente le registre 1 ; quand il est vide, $\mathrm{DEC}$ envoie à l’instruction 2 et la machine s’arrête avec $r_1+r_2$ dans le registre 1. Le programme fait $2r_2+1$ pas.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-multiplication"><div class="entete-exo"><span class="etoiles" title="niveau 2">★★</span><span class="nom-exo">Exercice 2 — Multiplier avec des compteurs</span></div><div class="corps-exo">
+<p>Écrire un programme qui place $r_1\times r_2$ dans le registre 3, en partant de $r_3=r_4=0$. On pourra utiliser le registre 4 comme mémoire auxiliaire pour restaurer $r_2$.</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+$$\begin{aligned}
+&0:\ \mathrm{DEC}(1,1,9) &&1:\ \mathrm{DEC}(2,2,4) &&2:\ \mathrm{INC}(3,3)\\
+&3:\ \mathrm{INC}(4,1) &&4:\ \mathrm{DEC}(4,5,0) &&5:\ \mathrm{INC}(2,4)
+\end{aligned}$$
+<p>À chaque unité retirée de $r_1$ (instruction 0), la boucle 1-2-3 transfère $r_2$ dans $r_4$ en ajoutant autant à $r_3$ ; puis la boucle 4-5 remet $r_4$ dans $r_2$ et revient en 0. Quand $r_1$ est vide, l’instruction 0 envoie en 9, qui n’existe pas : arrêt, avec $r_3=r_1r_2$ et $r_2$ intact. Une simulation sur $r_1,r_2\in\{0,\dots,3\}$ le confirme. Le nombre de pas est de l’ordre de $4r_1r_2$ : les machines à compteurs calculent tout, mais lentement, car elles ne connaissent que l’unaire.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-fractran"><div class="entete-exo"><span class="etoiles" title="niveau 3">★★★</span><span class="nom-exo">Exercice 3 — Un programme FRACTRAN pour la multiplication</span></div><div class="corps-exo">
+<p>Montrer que le programme FRACTRAN $\frac{455}{33},\frac{11}{13},\frac1{11},\frac37,\frac{11}2,\frac13$, lancé sur $2^a3^b$, s’arrête sur $5^{ab}$.</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>On lit un entier $2^{r_2}3^{r_3}5^{r_5}7^{r_7}11^{r_{11}}13^{r_{13}}$ comme l’état de registres, les petits premiers $7$, $11$, $13$ jouant le rôle d’états de contrôle. Multiplier par $\frac{455}{33}=\frac{5\cdot7\cdot13}{3\cdot11}$ demande $r_3\ge1$ et $r_{11}\ge1$ : cela retire 1 à $r_3$, ajoute 1 à $r_5$ et $r_7$, et passe de l’état 11 à l’état 13. Puis $\frac{11}{13}$ revient à l’état 11. Tant que $r_{11}=1$ et $r_3>0$, ces deux fractions alternent : elles transfèrent $r_3$ vers $r_5$ (le produit) et vers $r_7$ (une copie). Quand $r_3=0$, $\frac1{11}$ quitte l’état 11 ; alors $\frac37$ (première fraction applicable) recopie $r_7$ dans $r_3$. Quand $r_7=0$, $\frac{11}2$ retire 1 à $r_2$ et relance l’état 11. Ainsi chaque unité de $r_2=a$ ajoute $r_3=b$ à $r_5$. Quand $r_2=0$, seule $\frac13$ s’applique encore et vide $r_3$. Il reste $5^{ab}$. La simulation sur $a,b\le3$ donne bien $5^{ab}$. L’ordre des fractions est essentiel : c’est lui qui code les tests.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-regle110"><div class="entete-exo"><span class="etoiles" title="niveau 1">★</span><span class="nom-exo">Exercice 4 — Faire tourner la règle 110 à la main</span></div><div class="corps-exo">
+<p>Partant d’une seule cellule noire ($\cdots000\,1\,000\cdots$), calculer les trois lignes suivantes de la <a href="#def-automate-cellulaire">règle 110</a>. Dans quelle direction le motif grandit-il ?</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>Seules les cellules dont le voisinage contient le $1$ peuvent changer. La cellule à gauche du $1$ voit $001\mapsto1$, la cellule du $1$ voit $010\mapsto1$, celle de droite voit $100\mapsto0$. Ligne 1 : $11$ (la cellule initiale et sa voisine de gauche). Ligne 2 : $111$. Ligne 3 : $1101$. Le motif grandit vers la gauche, d’une cellule par pas, et reste bordé à droite par la cellule de départ ; le simulateur du texte, lancé avec « une cellule à droite », montre la suite. Le programme <a href="assets/code/automates.py">automates.py</a> imprime les huit premières lignes.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-numeros"><div class="entete-exo"><span class="etoiles" title="niveau 1">★</span><span class="nom-exo">Exercice 5 — Numéros de Wolfram</span></div><div class="corps-exo">
+<p>Quel est le numéro de Wolfram de la règle « chaque cellule prend la valeur de sa voisine de gauche » ? Et de la règle « chaque cellule prend la valeur du ou exclusif de ses deux voisines » ? Combien y a-t-il d’automates élémentaires ?</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>Pour la première, la nouvelle valeur est le premier bit du voisinage : $111,110,101,100\mapsto1$, les autres $\mapsto0$, soit $11110000$ en binaire, $240$. Le motif se décale d’une case vers la droite à chaque pas. Pour la seconde, $f(g,c,d)=g\oplus d$ vaut $1$ pour $110,100,011,001$ : $01011010$, soit $90$. Il y a $2^8=256$ automates élémentaires, un par fonction de $\{0,1\}^3$ dans $\{0,1\}$.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-regle90"><div class="entete-exo"><span class="etoiles" title="niveau 2">★★</span><span class="nom-exo">Exercice 6 — La règle 90 et le triangle de Pascal</span></div><div class="corps-exo">
+<p>Montrer que, partant d’une seule cellule noire en position $0$, la cellule $j$ vaut au temps $t$ le coefficient binomial $\binom{t}{(t+j)/2}$ modulo $2$ si $t+j$ est pair et $|j|\le t$, et $0$ sinon. Quelle figure obtient-on ?</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>Par récurrence sur $t$. Au temps $0$, seule la cellule $0$ vaut $1=\binom00$. Supposons la formule vraie au temps $t$ ; la règle 90 donne $c_{t+1}(j)=c_t(j-1)\oplus c_t(j+1)$. Si $t+1+j$ est impair, $t+(j-1)$ et $t+(j+1)$ le sont aussi, les deux termes sont nuls, et $c_{t+1}(j)=0$. Sinon, posons $k=(t+1+j)/2$ : alors $c_t(j-1)\equiv\binom t{k-1}$ et $c_t(j+1)\equiv\binom tk$ modulo $2$ (avec la convention $\binom tk=0$ hors de $0\le k\le t$), et le ou exclusif est la somme modulo $2$. La formule de Pascal $\binom t{k-1}+\binom tk=\binom{t+1}k$ donne le résultat. On obtient le triangle de Pascal modulo $2$, c’est-à-dire le triangle de Sierpinski, une figure fractale. Le programme <a href="assets/code/automates.py">automates.py</a> le vérifie sur 32 lignes.</p>
+</div></details>
+</div></div>
+
+<div class="exercice" id="ex-am-extinction"><div class="entete-exo"><span class="etoiles" title="niveau 3">★★★</span><span class="nom-exo">Exercice 7 — Savoir si une configuration s’éteint</span></div><div class="corps-exo">
+<p>Montrer qu’il n’existe pas d’algorithme qui, étant donné un automate cellulaire à une dimension ayant un état « blanc » $b$ (avec $f(b,b,b)=b$) et une configuration finie, décide si la configuration finit par devenir entièrement blanche. On pourra modifier la construction du <a href="#ac-simule-mt">théorème de simulation</a>.</p>
+<details class="corrige"><summary>Correction</summary><div class="texte-corrige">
+<p>Partons de l’automate qui simule une machine $Z$ à partir de la bande blanche, et modifions-le en trois points. (1) Les cases que la tête a déjà visitées sont <em>marquées</em> (on double les états : $s$ et $\bar s$) ; la région marquée est un intervalle, puisque la tête se déplace d’une case à la fois, et elle contient toutes les cases non blanches. Le « blanc » de l’automate est le blanc non marqué $b$. (2) Une case $(q_{\text{arrêt}},s)$ devient un état $\varepsilon$, qui émet deux signaux d’effacement $\varepsilon_G$ et $\varepsilon_D$ dans ses deux voisines si elles sont marquées, puis devient $b$. (3) Un signal $\varepsilon_D$ devient $b$ au pas suivant et se transmet à sa voisine de droite si celle-ci est marquée ; de même pour $\varepsilon_G$ vers la gauche. Les signaux parcourent l’intervalle marqué en laissant du blanc derrière eux et disparaissent à ses bords. Tant que $Z$ ne s’est pas arrêtée, la configuration contient la tête, donc n’est pas blanche ; si $Z$ s’arrête, tout devient blanc en un nombre fini de pas. La configuration s’éteint donc si et seulement si $Z$ s’arrête sur la bande blanche, ce qui est indécidable. Résultat cité pour information : la question plus forte « <em>toute</em> configuration finit-elle par devenir blanche ? » (la nilpotence) est elle aussi indécidable (Kari, 1992), mais sa démonstration est beaucoup plus difficile, car il faut contrôler toutes les configurations, y compris celles qui ne codent aucun calcul.</p>
+</div></details>
+</div></div>
+
+<nav class="nav-chap"><a href="calculabilite-ia.html"><small>← Précédent</small>Calculabilité et intelligence artificielle</a><a href="parcours.html" style="text-align:right"><small>Suivant →</small>Parcours de lecture</a></nav>
+<footer class="pied">Calculabilité — manuel à trois niveaux de lecture. Auteurs : Frédéric Prost et Claude. Texte sous licence <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license">CC BY-SA 4.0</a>, code sous licence MIT. Les mathématiques sont rendues par KaTeX (licence MIT), embarqué localement : le site se lit sans connexion.</footer>
+</main>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/turing.js"></script>
+<script src="assets/lambda.js"></script>
+<script src="assets/pcp.js"></script>
+<script src="assets/automates.js"></script>
+<script src="assets/niveaux.js"></script>
+<script src="assets/widgets.js"></script>
+</body>
+</html>
